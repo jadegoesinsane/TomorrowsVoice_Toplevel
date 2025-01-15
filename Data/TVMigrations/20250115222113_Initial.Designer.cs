@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250115215003_Initial")]
+    [Migration("20250115222113_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -51,6 +51,42 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Chapters");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChapterID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ChapterID");
+
+                    b.ToTable("Director");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
                 {
                     b.Property<int>("Id")
@@ -75,6 +111,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasIndex("ChapterID");
 
                     b.ToTable("Rehearsal");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
+                        .WithMany()
+                        .HasForeignKey("ChapterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>

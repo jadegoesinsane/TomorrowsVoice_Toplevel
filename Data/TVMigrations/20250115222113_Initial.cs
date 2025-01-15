@@ -28,6 +28,29 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Director",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Director", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Director_Chapters_ChapterID",
+                        column: x => x.ChapterID,
+                        principalTable: "Chapters",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rehearsal",
                 columns: table => new
                 {
@@ -56,6 +79,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Director_ChapterID",
+                table: "Director",
+                column: "ChapterID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Rehearsal_ChapterID",
                 table: "Rehearsal",
                 column: "ChapterID");
@@ -64,6 +92,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Director");
+
             migrationBuilder.DropTable(
                 name: "Rehearsal");
 
