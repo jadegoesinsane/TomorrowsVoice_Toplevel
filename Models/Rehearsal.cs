@@ -7,12 +7,12 @@ namespace TomorrowsVoice_Toplevel.Models
     {
         public int Id { get; set; }
         
-        [Required(ErrorMessage="")]
+        [Required(ErrorMessage="Please select a start time for this rehearsal")]
         [Display(Name="Start Time")]
         [DataType(DataType.Time)]
         public DateTime StartTime { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please select a end time for this rehearsal")]
         [Display(Name = "End Time")]
         [DataType(DataType.Time)]
         public DateTime EndTime { get; set; }
