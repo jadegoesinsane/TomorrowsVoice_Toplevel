@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 
@@ -22,7 +24,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // GET: Chapter
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Chapters.ToListAsync());
+            var chapters = await _context.Chapters
+                .AsNoTracking()
+                .ToListAsync();
+
+            return View(chapters);
         }
 
         // GET: Chapter/Details/5
@@ -34,6 +40,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
 
             var chapter = await _context.Chapters
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (chapter == null)
             {
@@ -46,7 +53,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // GET: Chapter/Create
         public IActionResult Create()
         {
-            return View();
+            Chapter chapter = new Chapter();
+            return View(chapter);
         }
 
         // POST: Chapter/Create
@@ -56,12 +64,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Name,Address,Postal,DOW")] Chapter chapter)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(chapter);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(chapter);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { chapter.ID });
+                }
             }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            
             return View(chapter);
         }
 
@@ -73,11 +89,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            var chapter = await _context.Chapters.FindAsync(id);
+            var chapter = await _context.Chapters
+                .FirstOrDefaultAsync(c => c.ID == id);
+
             if (chapter == null)
             {
                 return NotFound();
             }
+
             return View(chapter);
         }
 
@@ -86,23 +105,37 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Address,Postal,DOW")] Chapter chapter)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id != chapter.ID)
+            // Get the Chapter to update
+            var chapterToUpdate = await _context.Chapters
+                .Include(c => c.Rehearsals)
+                .FirstOrDefaultAsync(c => c.ID == id);
+
+            if (chapterToUpdate == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //Try updating it with the values posted
+            if (await TryUpdateModelAsync<Chapter>(chapterToUpdate, "",
+                c => c.Name))
             {
                 try
                 {
-                    _context.Update(chapter);
                     await _context.SaveChangesAsync();
+                    //return RedirectToAction(nameof(Index));
+                    //Instead of going back to the Index, why not show the revised
+                    //version in full detail?
+                    return RedirectToAction("Details", new { chapterToUpdate.ID });
+                }
+                catch (RetryLimitExceededException /* dex */)
+                {
+                    ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ChapterExists(chapter.ID))
+                    if (!ChapterExists(chapterToUpdate.ID))
                     {
                         return NotFound();
                     }
@@ -111,9 +144,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+
             }
-            return View(chapter);
+
+            return View(chapterToUpdate);
         }
 
         // GET: Chapter/Delete/5
@@ -125,6 +163,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
 
             var chapter = await _context.Chapters
+                .Include(c => c.Rehearsals)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (chapter == null)
             {
@@ -139,14 +179,38 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var chapter = await _context.Chapters.FindAsync(id);
-            if (chapter != null)
+            var chapter = await _context.Chapters
+                .Include(c => c.Rehearsals)
+                .FirstOrDefaultAsync(c => c.ID == id);
+            try
             {
-                _context.Chapters.Remove(chapter);
-            }
+                if (chapter != null)
+                {
+                    _context.Chapters.Remove(chapter);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                var returnUrl = ViewData["returnURL"]?.ToString();
+                if (string.IsNullOrEmpty(returnUrl))
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                return Redirect(returnUrl);
+            }
+            catch (DbUpdateException dex)
+            {
+                if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
+                {
+                    ModelState.AddModelError("", "Unable to Delete Chapter. Remember, you cannot delete a Chapter.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+
+            }
+            
+            return View(chapter);
         }
 
         private bool ChapterExists(int id)
