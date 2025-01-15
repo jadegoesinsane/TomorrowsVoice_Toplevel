@@ -41,6 +41,7 @@ namespace TomorrowsVoice_Toplevel.Data
 
         #region DbSets
         public DbSet<Chapter> Chapters { get; set; }
+        public DbSet<Director> Directors { get; set; }
 
         #endregion
 
@@ -62,6 +63,7 @@ namespace TomorrowsVoice_Toplevel.Data
             //OnBeforeSaving();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
+        public DbSet<TomorrowsVoice_Toplevel.Models.Director> Director { get; set; } = default!;
 
         /*private void OnBeforeSaving()
         {
