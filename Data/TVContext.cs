@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 using TomorrowsVoice_Toplevel.Models;
 
 namespace TomorrowsVoice_Toplevel.Data
@@ -39,12 +40,15 @@ namespace TomorrowsVoice_Toplevel.Data
         }
 
         #region DbSets
+        public DbSet<Chapter> Chapters { get; set; }
 
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            modelBuilder.Entity<Chapter>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
