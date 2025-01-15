@@ -2,4 +2,4 @@
 Update-Database -Context ApplicationDbContext 
 
 Add-Migration -Context TVContext -o Data\TVMigrations Initial
-Update-Database -Context TVContext 
+Update-Database -Context TVContext
