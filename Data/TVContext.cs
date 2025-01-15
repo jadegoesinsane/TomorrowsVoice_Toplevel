@@ -64,6 +64,7 @@ namespace TomorrowsVoice_Toplevel.Data
             //OnBeforeSaving();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
+        public DbSet<TomorrowsVoice_Toplevel.Models.Director> Director { get; set; } = default!;
 
         /*private void OnBeforeSaving()
         {
