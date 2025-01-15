@@ -26,9 +26,7 @@ namespace TomorrowsVoice_Toplevel.Models
         public int ChapterID { get; set; }
         public Chapter? Chapter { get; set; }
 
-        // Uncomment when RehearsalAttendance classes are set up
-        /*
-        public ICollection<ReherearsalAttendance> ReherearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
-        */
+        public ICollection<RehearsalAttendance> ReherearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
+        
     }
 }

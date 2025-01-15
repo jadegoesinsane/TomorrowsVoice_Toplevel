@@ -43,6 +43,7 @@ namespace TomorrowsVoice_Toplevel.Data
         public DbSet<Chapter> Chapters { get; set; }
         public DbSet<Director> Directors { get; set; }
         public DbSet<Singer> Singers { get; set; }
+        public DbSet<Rehearsal> Rehearsals { get; set; }
         public DbSet<RehearsalAttendance> RehearsalAttendances { get; set; }
         #endregion
 
@@ -65,7 +66,6 @@ namespace TomorrowsVoice_Toplevel.Data
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
         public DbSet<TomorrowsVoice_Toplevel.Models.Director> Director { get; set; } = default!;
-        public DbSet<TomorrowsVoice_Toplevel.Models.Rehearsal> Rehearsal { get; set; } = default!;
 
         /*private void OnBeforeSaving()
         {

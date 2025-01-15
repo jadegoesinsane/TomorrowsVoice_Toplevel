@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 
@@ -22,7 +23,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // GET: Rehearsal
         public async Task<IActionResult> Index()
         {
-            var tVContext = _context.Rehearsal.Include(r => r.Chapter);
+            var tVContext = _context.Rehearsals.Include(r => r.Chapter);
             return View(await tVContext.ToListAsync());
         }
 
@@ -34,8 +35,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            var rehearsal = await _context.Rehearsal
+            var rehearsal = await _context.Rehearsals
                 .Include(r => r.Chapter)
+                .Include(r => r.ReherearsalAttendances).ThenInclude(r=>r.Singer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rehearsal == null)
             {
@@ -59,12 +61,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,Note,ChapterID")] Rehearsal rehearsal)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(rehearsal);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _context.Add(rehearsal);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
+            }
+            
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.ChapterID);
             return View(rehearsal);
         }
@@ -77,7 +87,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            var rehearsal = await _context.Rehearsal.FindAsync(id);
+            var rehearsal = await _context.Rehearsals
+                .Include(r => r.Chapter)
+                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Singer)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (rehearsal == null)
             {
                 return NotFound();
@@ -91,35 +104,49 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartTime,EndTime,Note,ChapterID")] Rehearsal rehearsal)
+        public async Task<IActionResult> Edit(int id) //"Id,StartTime,EndTime,Note,ChapterID"
         {
-            if (id != rehearsal.Id)
+            var RehearsalToUpdate = await _context.Rehearsals
+                .Include(r => r.Chapter)
+                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Singer)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (RehearsalToUpdate == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            // Try updating with posted values
+            if (await TryUpdateModelAsync<Rehearsal>(RehearsalToUpdate, 
+                    "", 
+                    r=>r.StartTime, 
+                    r=>r.EndTime, 
+                    r=>r.Note, 
+                    r=>r.ChapterID))
             {
                 try
                 {
-                    _context.Update(rehearsal);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new {RehearsalToUpdate.Id});
+                }
+                catch (RetryLimitExceededException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes after multiple attempts. Please Try Again.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RehearsalExists(rehearsal.Id))
+                    if (!RehearsalExists(RehearsalToUpdate.Id))
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.ChapterID);
-            return View(rehearsal);
+            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", RehearsalToUpdate.ChapterID);
+            return View(RehearsalToUpdate);
         }
 
         // GET: Rehearsal/Delete/5
@@ -130,8 +157,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            var rehearsal = await _context.Rehearsal
+            var rehearsal = await _context.Rehearsals
                 .Include(r => r.Chapter)
+                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Singer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rehearsal == null)
             {
@@ -146,19 +174,30 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var rehearsal = await _context.Rehearsal.FindAsync(id);
-            if (rehearsal != null)
-            {
-                _context.Rehearsal.Remove(rehearsal);
-            }
+            var rehearsal = await _context.Rehearsals
+                .Include(r => r.Chapter)
+                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Singer)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                if (rehearsal != null)
+                {
+                    _context.Rehearsals.Remove(rehearsal);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to delete record. Please try again.");
+            }
+            return View(rehearsal);
         }
 
         private bool RehearsalExists(int id)
         {
-            return _context.Rehearsal.Any(e => e.Id == id);
+            return _context.Rehearsals.Any(e => e.Id == id);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Rehearsal",
+                name: "Rehearsals",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -63,13 +63,62 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rehearsal", x => x.Id);
+                    table.PrimaryKey("PK_Rehearsals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Rehearsal_Chapters_ChapterID",
+                        name: "FK_Rehearsals_Chapters_ChapterID",
                         column: x => x.ChapterID,
                         principalTable: "Chapters",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Singers",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    ContactName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Singers", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Singers_Chapters_ChapterID",
+                        column: x => x.ChapterID,
+                        principalTable: "Chapters",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RehearsalAttendances",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SignerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    SingerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    RehearsalID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RehearsalAttendances", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_RehearsalAttendances_Rehearsals_RehearsalID",
+                        column: x => x.RehearsalID,
+                        principalTable: "Rehearsals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RehearsalAttendances_Singers_SingerID",
+                        column: x => x.SingerID,
+                        principalTable: "Singers",
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateIndex(
@@ -84,8 +133,23 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "ChapterID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rehearsal_ChapterID",
-                table: "Rehearsal",
+                name: "IX_RehearsalAttendances_RehearsalID",
+                table: "RehearsalAttendances",
+                column: "RehearsalID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RehearsalAttendances_SingerID",
+                table: "RehearsalAttendances",
+                column: "SingerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rehearsals_ChapterID",
+                table: "Rehearsals",
+                column: "ChapterID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Singers_ChapterID",
+                table: "Singers",
                 column: "ChapterID");
         }
 
@@ -96,7 +160,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "Director");
 
             migrationBuilder.DropTable(
-                name: "Rehearsal");
+                name: "RehearsalAttendances");
+
+            migrationBuilder.DropTable(
+                name: "Rehearsals");
+
+            migrationBuilder.DropTable(
+                name: "Singers");
 
             migrationBuilder.DropTable(
                 name: "Chapters");

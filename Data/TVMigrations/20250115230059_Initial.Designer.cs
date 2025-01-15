@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250115222113_Initial")]
+    [Migration("20250115230059_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -110,7 +110,66 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasIndex("ChapterID");
 
-                    b.ToTable("Rehearsal");
+                    b.ToTable("Rehearsals");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.RehearsalAttendance", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RehearsalID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SignerID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SingerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("RehearsalID");
+
+                    b.HasIndex("SingerID");
+
+                    b.ToTable("RehearsalAttendances");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Singer", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChapterID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ChapterID");
+
+                    b.ToTable("Singers");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
@@ -135,9 +194,49 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Chapter");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.RehearsalAttendance", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Rehearsal", "Rehearsal")
+                        .WithMany("ReherearsalAttendances")
+                        .HasForeignKey("RehearsalID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Singer", "Singer")
+                        .WithMany("RehearsalAttendances")
+                        .HasForeignKey("SingerID");
+
+                    b.Navigation("Rehearsal");
+
+                    b.Navigation("Singer");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Singer", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
+                        .WithMany("Singers")
+                        .HasForeignKey("ChapterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
                     b.Navigation("Rehearsals");
+
+                    b.Navigation("Singers");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
+                {
+                    b.Navigation("ReherearsalAttendances");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Singer", b =>
+                {
+                    b.Navigation("RehearsalAttendances");
                 });
 #pragma warning restore 612, 618
         }
