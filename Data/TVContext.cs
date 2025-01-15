@@ -65,6 +65,7 @@ namespace TomorrowsVoice_Toplevel.Data
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
         public DbSet<TomorrowsVoice_Toplevel.Models.Director> Director { get; set; } = default!;
+        public DbSet<TomorrowsVoice_Toplevel.Models.Rehearsal> Rehearsal { get; set; } = default!;
 
         /*private void OnBeforeSaving()
         {
