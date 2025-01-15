@@ -28,6 +28,7 @@ namespace TomorrowsVoice_Toplevel.Models
         [Display(Name = "Chapter")]
         public int ChapterID { get; set; }
         public Chapter? Chapter { get; set; }
-        public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
+     
+        public ICollection<ReherearsalAttendance> ReherearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
     }
 }
