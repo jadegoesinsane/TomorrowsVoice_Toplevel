@@ -21,6 +21,12 @@ namespace TomorrowsVoice_Toplevel.Models
         [MaxLength(100, ErrorMessage = " Name cannot be more than 100 characters long.")]
         public string ContactName { get; set; } = "";
 
+        [Required(ErrorMessage = "Phone number is required.")]
+        [RegularExpression("^\\d{10}$", ErrorMessage = "Please enter a valid 10-digit phone number (no spaces).")]
+        [DataType(DataType.PhoneNumber)]
+        [MaxLength(10)]
+        public string Phone { get; set; } = "";
+
         [Display(Name = "Notes")]
         [StringLength(255)]
         [DataType(DataType.MultilineText)]
