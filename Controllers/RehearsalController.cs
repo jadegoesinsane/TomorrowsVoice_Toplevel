@@ -37,7 +37,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var rehearsal = await _context.Rehearsals
                 .Include(r => r.Chapter)
-                .Include(r => r.ReherearsalAttendances).ThenInclude(r=>r.Singer)
+                .Include(r => r.RehearsalAttendances).ThenInclude(r=>r.Singer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rehearsal == null)
             {
