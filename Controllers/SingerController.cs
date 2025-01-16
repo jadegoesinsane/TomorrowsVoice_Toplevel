@@ -37,7 +37,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var singer = await _context.Singers
                .Include(r => r.Chapter)
-                .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
+                .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Rehearsal)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (singer == null)
             {
@@ -88,10 +88,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            var singer = await _context.Rehearsals
+            var singer = await _context.Singers
                 .Include(r => r.Chapter)
-                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Rehearsal)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Rehearsal)
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (singer == null)
             {
                 return NotFound();
