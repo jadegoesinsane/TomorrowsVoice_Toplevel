@@ -60,7 +60,7 @@ namespace TomorrowsVoice_Toplevel.Data
 
                 try
                 {
-                    // Add some chapters
+                    // Add chapters using data from Tomorrow's Voices Website
                     if (!context.Chapters.Any())
                     {
                         context.Chapters.AddRange(
@@ -103,6 +103,57 @@ namespace TomorrowsVoice_Toplevel.Data
                             {
                                 Name = "Surrey"
                             });
+                        context.SaveChanges();
+                    }
+
+                    // Add Some Directors using data from Tomorrow's Voices Website
+                    if (!context.Directors.Any())
+                    {
+                        context.Directors.AddRange(
+                            new Director
+                            {
+                                FirstName = "Mendelt",
+                                LastName = "Hoekstra",
+                                Email = "mHoekstra@sample.com",
+                                Phone = "0000000000",
+                                ChapterID = 1
+                            }, new Director
+                            {
+                                FirstName = "Melissa",
+                                LastName = "Dutch",
+                                Email = "mDutch@sample.com",
+                                Phone = "1111111111",
+                                ChapterID = 2
+                            }, new Director
+                            {
+                                FirstName = "Anais",
+                                LastName = "Kelsey-Verdecchia",
+                                Email = "aKelsey-Verdecchia@sample.com",
+                                Phone = "2222222222",
+                                ChapterID = 3
+                            }, new Director
+                            {
+                                FirstName = "Brian",
+                                LastName = "Paul D.G.",
+                                Email = "bPaulDG@sample.com",
+                                Phone = "3333333333",
+                                ChapterID = 4
+                            }, new Director
+                            {
+                                FirstName = "Monique",
+                                LastName = "Hoekstra",
+                                Email = "mHoeskra1@sample.com",
+                                Phone = "4444444444",
+                                ChapterID = 5
+                            }, new Director
+                            {
+                                FirstName = "Frances",
+                                LastName = "Olson",
+                                Email = "fOlson@sample.com",
+                                Phone = "5555555555",
+                                ChapterID = 6
+                            });
+                        context.SaveChanges();
                     }
                 }
                 catch (Exception ex)
