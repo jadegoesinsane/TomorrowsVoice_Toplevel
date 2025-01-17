@@ -4,6 +4,16 @@ namespace TomorrowsVoice_Toplevel.Models
 {
     public class Person
     {
+        public string NameFormatted
+        {
+            get
+            {
+                return FirstName
+                    + (string.IsNullOrEmpty(MiddleName) ? " " :
+                        (" " + (char?)MiddleName[0] + ". ").ToUpper())
+                    + LastName;
+            }
+        }
 
         [Display(Name = "First Name")]
         [Required(ErrorMessage = "You cannot leave the first name blank.")]
@@ -34,6 +44,7 @@ namespace TomorrowsVoice_Toplevel.Models
         [Display(Name = "Chapter")]
         [Required(ErrorMessage = "You must select a Chapter")]
         public int ChapterID { get; set; }
+
         public Chapter? Chapter { get; set; }
     }
 }

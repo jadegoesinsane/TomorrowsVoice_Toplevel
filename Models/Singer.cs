@@ -6,6 +6,12 @@ namespace TomorrowsVoice_Toplevel.Models
     {
         public int ID { get; set; }
 
+        [Display(Name = "Singer")]
+        public string Summary
+        {
+            get { return NameFormatted; }
+        }
+
         [Display(Name = "Emergency Contact")]
         [Required(ErrorMessage = "You cannot leave the last name blank.")]
         [MaxLength(100, ErrorMessage = " Name cannot be more than 100 characters long.")]
