@@ -155,6 +155,37 @@ namespace TomorrowsVoice_Toplevel.Data
                             });
                         context.SaveChanges();
                     }
+
+                    // Lists of First and Last Names
+                    Random rnd = new();
+                    string[] firstNames = new string[] { "Emma", "Liam", "Olivia", "Noah", "Ava", "Mason", "Sophia", "Ethan", "Mia", "Lucas" };
+                    string[] lastNames = new string[] { "Smith", "Johnson", "Brown", "Taylor", "Anderson", "White", "Harris", "Martin", "Lewis", "Walker" };
+
+                    // Randomly generate 60 singers and assign 10 to each chapter
+                    if (context.Singers.Count()<60)
+                    {
+                        foreach (Chapter ch in context.Chapters)
+                        {
+                            for (int i = 0; i < 10; i++)
+                            {
+                                Singer singer = new Singer
+                                {
+                                    FirstName = firstNames[rnd.Next(0, 9)],
+                                    LastName = lastNames[rnd.Next(0, 9)],
+                                    ChapterID = ch.ID
+                                };
+                                try
+                                {
+                                    context.Singers.Add(singer);
+                                    context.SaveChanges();
+                                }
+                                catch (Exception)
+                                {
+                                    context.Singers.Remove(singer);
+                                }
+                            }
+                        }                      
+                    }
                 }
                 catch (Exception ex)
                 {
