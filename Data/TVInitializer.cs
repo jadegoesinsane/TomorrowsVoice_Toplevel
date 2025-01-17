@@ -60,7 +60,50 @@ namespace TomorrowsVoice_Toplevel.Data
 
                 try
                 {
-
+                    // Add some chapters
+                    if (!context.Chapters.Any())
+                    {
+                        context.Chapters.AddRange(
+                            new Chapter
+                            {
+                                Name = "St. Catharines",
+                                Address = "188 Linwell Rd",
+                                City = "St. Catharines",
+                                Province = "ON",
+                                Postal = "L2N6N3",
+                                DOW = "Wednesday"
+                            }, new Chapter
+                            {
+                                Name = "Hamilton",
+                                Address = "99 N Oval",
+                                City = "Hamilton",
+                                Province = "ON",
+                                Postal = "L8S3Z2",
+                                DOW = "Monday"
+                            }, new Chapter
+                            {
+                                Name = "Toronto",
+                                Address = "452 College St",
+                                City = "Toronto",
+                                Province = "ON",
+                                Postal = "M6G 1A1",
+                                DOW = "Tuesday"
+                            }, new Chapter
+                            {
+                                Name = "Saskatoon",
+                                Address = "35 – 22nd St. East",
+                                City = "Saskatoon",
+                                Province = "SK",
+                                Postal = "M6G 1A1",
+                                DOW = "Tuesday"
+                            }, new Chapter
+                            {
+                                Name = "Vancouver"
+                            }, new Chapter
+                            {
+                                Name = "Surrey"
+                            });
+                    }
                 }
                 catch (Exception ex)
                 {

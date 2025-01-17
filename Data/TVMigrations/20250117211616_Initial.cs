@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     /// <inheritdoc />
-    public partial class Person : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,6 +19,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Address = table.Column<string>(type: "TEXT", nullable: false),
+                    City = table.Column<string>(type: "TEXT", nullable: false),
+                    Province = table.Column<string>(type: "TEXT", nullable: false),
                     Postal = table.Column<string>(type: "TEXT", nullable: false),
                     DOW = table.Column<string>(type: "TEXT", nullable: false)
                 },

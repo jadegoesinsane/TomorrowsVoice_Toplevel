@@ -27,6 +27,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("DOW")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -37,6 +41,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Postal")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Province")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
