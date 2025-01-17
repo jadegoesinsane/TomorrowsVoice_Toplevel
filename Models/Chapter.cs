@@ -13,6 +13,9 @@ namespace TomorrowsVoice_Toplevel.Models
 
         public string Address { get; set; } = "";
 
+        public string City { get; set; } = "";
+        public string Province { get; set; } = "";
+
         [Display(Name = "Postal Code")]
         public string Postal { get; set; } = "";
 
