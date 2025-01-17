@@ -72,6 +72,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MiddleName")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -86,7 +90,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -103,7 +107,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.HasIndex("ChapterID");
 
@@ -148,6 +152,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -158,8 +167,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MiddleName")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Note")
                         .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
@@ -194,7 +212,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.RehearsalAttendance", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Rehearsal", "Rehearsal")
-                        .WithMany("ReherearsalAttendances")
+                        .WithMany("RehearsalAttendances")
                         .HasForeignKey("RehearsalID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -228,7 +246,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
                 {
-                    b.Navigation("ReherearsalAttendances");
+                    b.Navigation("RehearsalAttendances");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Singer", b =>

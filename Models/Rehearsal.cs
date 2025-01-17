@@ -5,7 +5,7 @@ namespace TomorrowsVoice_Toplevel.Models
 {
     public class Rehearsal
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
         
         [Required(ErrorMessage="Please select a start time for this rehearsal")]
         [Display(Name="Start Time")]
@@ -26,7 +26,7 @@ namespace TomorrowsVoice_Toplevel.Models
         public int ChapterID { get; set; }
         public Chapter? Chapter { get; set; }
 
-        public ICollection<RehearsalAttendance> ReherearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
+        public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
         
     }
 }

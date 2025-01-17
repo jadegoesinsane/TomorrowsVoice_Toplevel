@@ -38,7 +38,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             var rehearsal = await _context.Rehearsals
                 .Include(r => r.Chapter)
                 .Include(r => r.RehearsalAttendances).ThenInclude(r=>r.Singer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (rehearsal == null)
             {
                 return NotFound();
@@ -89,8 +89,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var rehearsal = await _context.Rehearsals
                 .Include(r => r.Chapter)
-                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Singer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (rehearsal == null)
             {
                 return NotFound();
@@ -108,8 +108,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
             var RehearsalToUpdate = await _context.Rehearsals
                 .Include(r => r.Chapter)
-                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Singer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
+                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (RehearsalToUpdate == null)
             {
@@ -127,7 +127,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Details", new {RehearsalToUpdate.Id});
+                    return RedirectToAction("Details", new {RehearsalToUpdate.ID});
                 }
                 catch (RetryLimitExceededException)
                 {
@@ -135,7 +135,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RehearsalExists(RehearsalToUpdate.Id))
+                    if (!RehearsalExists(RehearsalToUpdate.ID))
                     {
                         return NotFound();
                     }
@@ -159,8 +159,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var rehearsal = await _context.Rehearsals
                 .Include(r => r.Chapter)
-                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Singer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (rehearsal == null)
             {
                 return NotFound();
@@ -176,8 +176,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
             var rehearsal = await _context.Rehearsals
                 .Include(r => r.Chapter)
-                .Include(r => r.ReherearsalAttendances).ThenInclude(r => r.Singer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
+                .FirstOrDefaultAsync(m => m.ID == id);
 
             try
             {
@@ -197,7 +197,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
         private bool RehearsalExists(int id)
         {
-            return _context.Rehearsals.Any(e => e.Id == id);
+            return _context.Rehearsals.Any(e => e.ID == id);
         }
     }
 }

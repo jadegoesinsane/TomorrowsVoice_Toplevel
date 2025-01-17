@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Person : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +34,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
@@ -54,7 +55,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "Rehearsals",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -63,7 +64,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rehearsals", x => x.Id);
+                    table.PrimaryKey("PK_Rehearsals", x => x.ID);
                     table.ForeignKey(
                         name: "FK_Rehearsals_Chapters_ChapterID",
                         column: x => x.ChapterID,
@@ -78,10 +79,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     ContactName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -112,7 +116,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         name: "FK_RehearsalAttendances_Rehearsals_RehearsalID",
                         column: x => x.RehearsalID,
                         principalTable: "Rehearsals",
-                        principalColumn: "Id",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RehearsalAttendances_Singers_SingerID",

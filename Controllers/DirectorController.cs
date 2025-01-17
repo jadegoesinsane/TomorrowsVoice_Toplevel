@@ -86,7 +86,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 }
             }
 
-            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", director.ChapterID);
+            ViewData["ChapterID"] = ChapterSelectList(director.ChapterID);
             return View(director);
         }
 
@@ -103,7 +103,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 return NotFound();
             }
-            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", director.ChapterID);
+            ViewData["ChapterID"] = ChapterSelectList(director.ChapterID);
             return View(director);
         }
 
@@ -219,6 +219,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(director);
         }
 
+        // For Adding Chapters
+        private SelectList ChapterSelectList(int? id)
+        {
+            var cQuery = from c in _context.Chapters
+                         orderby c.Name
+                         select c;
+            return new SelectList(cQuery, "ID", "Name", id);
+        }
         private bool DirectorExists(int id)
         {
             return _context.Director.Any(e => e.ID == id);
