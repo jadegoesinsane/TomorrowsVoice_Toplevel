@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -75,7 +75,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
             }
-           
+
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", singer.ChapterID);
             return View(singer);
         }
@@ -186,12 +186,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             try
             {
-                    if (singer != null)
+                if (singer != null)
                 {
                     _context.Singers.Remove(singer);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
-                 }
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             catch (DbUpdateException)
             {
