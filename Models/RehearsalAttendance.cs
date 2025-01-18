@@ -5,7 +5,7 @@ namespace TomorrowsVoice_Toplevel.Models
     public class RehearsalAttendance
     {
         public int ID { get; set; }
-        public int SignerID { get; set; }
+        public int SingerID { get; set; }
 
         public Singer? Singer { get; set; }
 

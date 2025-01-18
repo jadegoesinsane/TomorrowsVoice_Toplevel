@@ -21,7 +21,13 @@ namespace TomorrowsVoice_Toplevel.Models
         [StringLength(255)]
         [DataType(DataType.MultilineText)]
         public string? Note { get; set; }
-     
+
+        [Display(Name = "Chapter")]
+        [Required(ErrorMessage = "You must select a Chapter")]
+        public int ChapterID { get; set; }
+
+        public Chapter? Chapter { get; set; }
+
         public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
     }
 }

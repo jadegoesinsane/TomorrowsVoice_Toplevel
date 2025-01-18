@@ -52,6 +52,36 @@ namespace TomorrowsVoice_Toplevel.Data
             modelBuilder.Entity<Chapter>()
                 .HasIndex(c => c.Name)
                 .IsUnique();
+
+            modelBuilder.Entity<Chapter>()
+                .HasOne(d => d.Director)
+                .WithOne(d => d.Chapter)
+                .HasForeignKey<Director>(d => d.ChapterID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Singer>()
+                .HasOne(s => s.Chapter)
+                .WithMany(s => s.Singers)
+                .HasForeignKey(s => s.ChapterID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Singer>()
+                .HasMany<RehearsalAttendance>(s => s.RehearsalAttendances)
+                .WithOne(s => s.Singer)
+                .HasForeignKey(s => s.SingerID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Rehearsal>()
+                .HasMany<RehearsalAttendance>(r => r.RehearsalAttendances)
+                .WithOne(r => r.Rehearsal)
+                .HasForeignKey(r => r.RehearsalID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Rehearsal>()
+                .HasOne(r => r.Chapter)
+                .WithMany(r => r.Rehearsals)
+                .HasForeignKey(c => c.ChapterID)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

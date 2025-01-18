@@ -41,10 +41,5 @@ namespace TomorrowsVoice_Toplevel.Models
         [MaxLength(10)]
         public string Phone { get; set; } = "";
 
-        [Display(Name = "Chapter")]
-        [Required(ErrorMessage = "You must select a Chapter")]
-        public int ChapterID { get; set; }
-
-        public Chapter? Chapter { get; set; }
     }
 }

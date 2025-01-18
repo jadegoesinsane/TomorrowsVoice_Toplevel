@@ -22,6 +22,9 @@ namespace TomorrowsVoice_Toplevel.Models
         [Display(Name = "Day of Week")]
         public string DOW { get; set; } = "";
 
+        public int DirectorID { get; set; }
+        public Director? Director { get; set; } 
+
         public virtual ICollection<Rehearsal> Rehearsals { get; set; } = new HashSet<Rehearsal>();
         public virtual ICollection<Singer> Singers { get; set; } = new HashSet<Singer>();
         //public virtual ICollection<Event> Events { get; set; } = new HashSet<Event>();

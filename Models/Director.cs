@@ -11,5 +11,11 @@ namespace TomorrowsVoice_Toplevel.Models
         {
             get { return NameFormatted; }
         }
+        [Display(Name = "Chapter")]
+        [Required(ErrorMessage = "You must select a Chapter")]
+        public int ChapterID { get; set; }
+
+        public Chapter? Chapter { get; set; }
+
     }
 }
