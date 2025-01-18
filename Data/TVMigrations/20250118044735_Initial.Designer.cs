@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250117211616_Initial")]
+    [Migration("20250118044735_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -37,6 +37,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<string>("DOW")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("DirectorID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -94,7 +97,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ChapterID");
+                    b.HasIndex("ChapterID")
+                        .IsUnique();
 
                     b.ToTable("Director");
                 });
@@ -134,10 +138,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("RehearsalID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("SignerID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("SingerID")
+                    b.Property<int>("SingerID")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
@@ -201,9 +202,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
-                        .WithMany()
-                        .HasForeignKey("ChapterID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne("Director")
+                        .HasForeignKey("TomorrowsVoice_Toplevel.Models.Director", "ChapterID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Chapter");
@@ -214,7 +215,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
                         .WithMany("Rehearsals")
                         .HasForeignKey("ChapterID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Chapter");
@@ -230,7 +231,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Singer", "Singer")
                         .WithMany("RehearsalAttendances")
-                        .HasForeignKey("SingerID");
+                        .HasForeignKey("SingerID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Rehearsal");
 
@@ -242,7 +245,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
                         .WithMany("Singers")
                         .HasForeignKey("ChapterID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Chapter");
@@ -250,6 +253,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
+                    b.Navigation("Director");
+
                     b.Navigation("Rehearsals");
 
                     b.Navigation("Singers");
