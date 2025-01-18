@@ -1,4 +1,4 @@
-let DDLforChosen = document.getElementById("selectedOptions");
+﻿let DDLforChosen = document.getElementById("selectedOptions");
 let DDLforAvail = document.getElementById("availOptions");
 
 /*function to switch list items from one ddl to another

@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250118044735_Initial")]
+    [Migration("20250118201615_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -72,7 +72,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
@@ -91,7 +90,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
@@ -165,7 +163,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
@@ -188,7 +185,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 

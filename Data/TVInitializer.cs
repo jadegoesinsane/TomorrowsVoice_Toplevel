@@ -170,6 +170,7 @@ namespace TomorrowsVoice_Toplevel.Data
                             {
                                 Singer singer = new Singer
                                 {
+                                    ContactName = $"{firstNames[rnd.Next(0, 9)]} {lastNames[rnd.Next(0, 9)]}",
                                     FirstName = firstNames[rnd.Next(0, 9)],
                                     LastName = lastNames[rnd.Next(0, 9)],
                                     ChapterID = ch.ID

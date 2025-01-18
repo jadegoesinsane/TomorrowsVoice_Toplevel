@@ -40,8 +40,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false)
+                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -88,8 +88,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false)
+                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: true)
                 },
                 constraints: table =>
                 {

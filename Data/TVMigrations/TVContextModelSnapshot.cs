@@ -69,7 +69,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
@@ -88,7 +87,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
@@ -162,7 +160,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
@@ -185,7 +182,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 

@@ -208,7 +208,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
             //For this to work, you must have Included the child collection in the parent object
             var allOptions = _context.Singers;
-            var currentOptionsHS = new HashSet<int>(rehearsal.RehearsalAttendances.Select(b => b.SignerID));
+            var currentOptionsHS = new HashSet<int>(rehearsal.RehearsalAttendances.Select(b => b.SingerID));
             //Instead of one list with a boolean, we will make two lists
             var selected = new List<ListOptionVM>();
             var available = new List<ListOptionVM>();
@@ -244,7 +244,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
 
             var selectedOptionsHS = new HashSet<string>(selectedOptions);
-            var currentOptionsHS = new HashSet<int>(rehearsalToUpdate.RehearsalAttendances.Select(b => b.SignerID));
+            var currentOptionsHS = new HashSet<int>(rehearsalToUpdate.RehearsalAttendances.Select(b => b.SingerID));
             foreach (var s in _context.Singers)
             {
                 if (selectedOptionsHS.Contains(s.ID.ToString()))//it is selected
@@ -253,7 +253,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     {
                         rehearsalToUpdate.RehearsalAttendances.Add(new RehearsalAttendance
                         {
-                            SignerID = s.ID,
+                            SingerID = s.ID,
                             RehearsalID = rehearsalToUpdate.ID
                         });
                     }
@@ -263,7 +263,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     if (currentOptionsHS.Contains(s.ID))//but is currently in the Doctor's collection - Remove it!
                     {
                         RehearsalAttendance? specToRemove = rehearsalToUpdate.RehearsalAttendances
-                            .FirstOrDefault(d => d.SignerID == s.ID);
+                            .FirstOrDefault(d => d.SingerID == s.ID);
                         if (specToRemove != null)
                         {
                             _context.Remove(specToRemove);
