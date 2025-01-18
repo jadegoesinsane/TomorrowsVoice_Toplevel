@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -37,7 +39,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var rehearsal = await _context.Rehearsals
                 .Include(r => r.Chapter)
-                .Include(r => r.RehearsalAttendances).ThenInclude(r=>r.Singer)
+                .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (rehearsal == null)
             {
@@ -50,6 +52,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // GET: Rehearsal/Create
         public IActionResult Create()
         {
+            Rehearsal rehearsal = new Rehearsal();
+            PopulateAttendanceData(rehearsal);
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
             return View();
         }
@@ -59,12 +63,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,Note,ChapterID")] Rehearsal rehearsal)
+        public async Task<IActionResult> Create([Bind("StartTime,EndTime,Note,ChapterID")] string[] selectedOptions, Rehearsal rehearsal)
         {
             try
             {
+                UpdateAttendance(selectedOptions, rehearsal);
                 if (ModelState.IsValid)
                 {
+                    
                     _context.Add(rehearsal);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -74,7 +80,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
             }
-            
+            PopulateAttendanceData(rehearsal);
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.ChapterID);
             return View(rehearsal);
         }
@@ -96,6 +102,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.ChapterID);
+            PopulateAttendanceData(rehearsal);
             return View(rehearsal);
         }
 
@@ -104,30 +111,30 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id) //"Id,StartTime,EndTime,Note,ChapterID"
+        public async Task<IActionResult> Edit(int id,string[] selectedOptions ) //"Id,StartTime,EndTime,Note,ChapterID"
         {
-            var RehearsalToUpdate = await _context.Rehearsals
+            var rehearsalToUpdate = await _context.Rehearsals
                 .Include(r => r.Chapter)
                 .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (RehearsalToUpdate == null)
+            if (rehearsalToUpdate == null)
             {
                 return NotFound();
             }
-
+            UpdateAttendance(selectedOptions, rehearsalToUpdate);
             // Try updating with posted values
-            if (await TryUpdateModelAsync<Rehearsal>(RehearsalToUpdate, 
-                    "", 
-                    r=>r.StartTime, 
-                    r=>r.EndTime, 
-                    r=>r.Note, 
-                    r=>r.ChapterID))
+            if (await TryUpdateModelAsync<Rehearsal>(rehearsalToUpdate,
+                    "",
+                    r => r.StartTime,
+                    r => r.EndTime,
+                    r => r.Note,
+                    r => r.ChapterID))
             {
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Details", new {RehearsalToUpdate.ID});
+                    return RedirectToAction("Details", new { rehearsalToUpdate.ID });
                 }
                 catch (RetryLimitExceededException)
                 {
@@ -135,7 +142,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RehearsalExists(RehearsalToUpdate.ID))
+                    if (!RehearsalExists(rehearsalToUpdate.ID))
                     {
                         return NotFound();
                     }
@@ -145,8 +152,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     }
                 }
             }
-            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", RehearsalToUpdate.ChapterID);
-            return View(RehearsalToUpdate);
+            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsalToUpdate.ChapterID);
+            PopulateAttendanceData(rehearsalToUpdate);
+            return View(rehearsalToUpdate);
         }
 
         // GET: Rehearsal/Delete/5
@@ -194,6 +202,79 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
             return View(rehearsal);
         }
+
+
+        private void PopulateAttendanceData(Rehearsal rehearsal)
+        {
+            //For this to work, you must have Included the child collection in the parent object
+            var allOptions = _context.Singers;
+            var currentOptionsHS = new HashSet<int>(rehearsal.RehearsalAttendances.Select(b => b.SignerID));
+            //Instead of one list with a boolean, we will make two lists
+            var selected = new List<ListOptionVM>();
+            var available = new List<ListOptionVM>();
+            foreach (var s in allOptions)
+            {
+                if (currentOptionsHS.Contains(s.ID))
+                {
+                    selected.Add(new ListOptionVM
+                    {
+                        ID = s.ID,
+                        DisplayText = s.NameFormatted
+                    });
+                }
+                else
+                {
+                    available.Add(new ListOptionVM
+                    {
+                        ID = s.ID,
+                        DisplayText = s.NameFormatted
+                    });
+                }
+            }
+
+            ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+            ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+        }
+        private void UpdateAttendance(string[] selectedOptions, Rehearsal rehearsalToUpdate)
+        {
+            if (selectedOptions == null)
+            {
+                rehearsalToUpdate.RehearsalAttendances = new List<RehearsalAttendance>();
+                return;
+            }
+
+            var selectedOptionsHS = new HashSet<string>(selectedOptions);
+            var currentOptionsHS = new HashSet<int>(rehearsalToUpdate.RehearsalAttendances.Select(b => b.SignerID));
+            foreach (var s in _context.Singers)
+            {
+                if (selectedOptionsHS.Contains(s.ID.ToString()))//it is selected
+                {
+                    if (!currentOptionsHS.Contains(s.ID))//but not currently in the Doctor's collection - Add it!
+                    {
+                        rehearsalToUpdate.RehearsalAttendances.Add(new RehearsalAttendance
+                        {
+                            SignerID = s.ID,
+                            RehearsalID = rehearsalToUpdate.ID
+                        });
+                    }
+                }
+                else //not selected
+                {
+                    if (currentOptionsHS.Contains(s.ID))//but is currently in the Doctor's collection - Remove it!
+                    {
+                        RehearsalAttendance? specToRemove = rehearsalToUpdate.RehearsalAttendances
+                            .FirstOrDefault(d => d.SignerID == s.ID);
+                        if (specToRemove != null)
+                        {
+                            _context.Remove(specToRemove);
+                        }
+                    }
+                }
+            }
+        }
+
+
+       
 
         private bool RehearsalExists(int id)
         {
