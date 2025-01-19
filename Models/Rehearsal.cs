@@ -6,6 +6,13 @@ namespace TomorrowsVoice_Toplevel.Models
     public class Rehearsal
     {
         public int ID { get; set; }
+        public string TimeSummary
+        {
+            get
+            {
+                return $"{StartTime:hh:mm} to {EndTime:hh:mm tt}";
+            }
+        }
 
         [Required(ErrorMessage = "Please select a date for this rehearsal")]
         [DataType(DataType.Date)]
