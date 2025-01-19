@@ -13,6 +13,11 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
+                <label asp-for="RehearsalDate" class="control-label"></label>
+                <input asp-for="RehearsalDate" class="form-control" />
+                <span asp-validation-for="RehearsalDate"  class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="StartTime" class="control-label"></label>
                 <input asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>

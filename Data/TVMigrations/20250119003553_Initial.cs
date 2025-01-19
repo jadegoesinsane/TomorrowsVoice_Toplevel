@@ -60,6 +60,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    RehearsalDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),

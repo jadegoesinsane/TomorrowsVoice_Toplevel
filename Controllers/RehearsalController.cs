@@ -63,7 +63,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StartTime,EndTime,Note,ChapterID")] string[] selectedOptions, Rehearsal rehearsal)
+        public async Task<IActionResult> Create([Bind("RehearsalDate,StartTime,EndTime,Note,ChapterID")] string[] selectedOptions, Rehearsal rehearsal)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,string[] selectedOptions ) //"Id,StartTime,EndTime,Note,ChapterID"
+        public async Task<IActionResult> Edit(int id,string[] selectedOptions ) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
         {
             var rehearsalToUpdate = await _context.Rehearsals
                 .Include(r => r.Chapter)
@@ -126,6 +126,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             // Try updating with posted values
             if (await TryUpdateModelAsync<Rehearsal>(rehearsalToUpdate,
                     "",
+                    r => r.RehearsalDate,
                     r => r.StartTime,
                     r => r.EndTime,
                     r => r.Note,

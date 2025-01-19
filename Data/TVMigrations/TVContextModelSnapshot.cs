@@ -114,6 +114,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("RehearsalDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
 

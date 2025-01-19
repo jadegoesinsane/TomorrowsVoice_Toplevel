@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250118201615_Initial")]
+    [Migration("20250119003553_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -115,6 +115,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Property<string>("Note")
                         .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("RehearsalDate")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartTime")
