@@ -50,27 +50,35 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: Rehearsal/Create
-        public IActionResult Create()
+        public IActionResult Create(int? chapterSelect)
         {
             Rehearsal rehearsal = new Rehearsal();
-            PopulateAttendanceData(rehearsal);
+
+            ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
+
+            // Get all clients and filter by membership if a filter is applied
+            PopulateAttendance(chapterSelect, rehearsal);
+
+
             return View();
         }
+
 
         // POST: Rehearsal/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RehearsalDate,StartTime,EndTime,Note,ChapterID")] string[] selectedOptions, Rehearsal rehearsal)
+        public async Task<IActionResult> Create([Bind("RehearsalDate,StartTime,EndTime,Note,ChapterID")] string[] selectedOptions, Rehearsal rehearsal, int? chapterSelect)
         {
             try
             {
                 UpdateAttendance(selectedOptions, rehearsal);
                 if (ModelState.IsValid)
                 {
-                    
+
                     _context.Add(rehearsal);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -80,13 +88,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
             }
-            PopulateAttendanceData(rehearsal);
+
+            ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+
+            // Get all clients and filter by membership if a filter is applied
+            PopulateAttendance(chapterSelect, rehearsal);
+
+
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.ChapterID);
             return View(rehearsal);
         }
 
         // GET: Rehearsal/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? chapterSelect)
         {
             if (id == null)
             {
@@ -102,7 +116,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.ChapterID);
-            PopulateAttendanceData(rehearsal);
+            ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+
+            // Get all clients and filter by membership if a filter is applied
+
+
+            PopulateAttendance(chapterSelect, rehearsal);
             return View(rehearsal);
         }
 
@@ -111,7 +130,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,string[] selectedOptions ) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
+        public async Task<IActionResult> Edit(int id,string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
         {
             var rehearsalToUpdate = await _context.Rehearsals
                 .Include(r => r.Chapter)
@@ -154,7 +173,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 }
             }
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsalToUpdate.ChapterID);
-            PopulateAttendanceData(rehearsalToUpdate);
+           
+            ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+
+            // Get all clients and filter by membership if a filter is applied
+
+
+            PopulateAttendance(chapterSelect, rehearsalToUpdate);
             return View(rehearsalToUpdate);
         }
 
@@ -205,37 +230,50 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
 
-        private void PopulateAttendanceData(Rehearsal rehearsal)
+
+        private void PopulateAttendance(int? chapterSelect, Rehearsal rehearsal)
         {
-            //For this to work, you must have Included the child collection in the parent object
-            var allOptions = _context.Singers;
+            var singers = _context.Singers.Include(c => c.Chapter).AsQueryable();
+            if (chapterSelect.HasValue)
+            {
+                singers = singers.Where(c => c.ChapterID == chapterSelect.Value);
+            }
+
+            // Format available clients with membership information
+
+
+
+            var allOptions = singers;
             var currentOptionsHS = new HashSet<int>(rehearsal.RehearsalAttendances.Select(b => b.SingerID));
             //Instead of one list with a boolean, we will make two lists
             var selected = new List<ListOptionVM>();
             var available = new List<ListOptionVM>();
-            foreach (var s in allOptions)
+            foreach (var c in allOptions)
             {
-                if (currentOptionsHS.Contains(s.ID))
+                if (currentOptionsHS.Contains(c.ID))
                 {
                     selected.Add(new ListOptionVM
                     {
-                        ID = s.ID,
-                        DisplayText = s.NameFormatted
+                        ID = c.ID,
+                        DisplayText = $"{c.Summary} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
                     });
                 }
                 else
                 {
                     available.Add(new ListOptionVM
                     {
-                        ID = s.ID,
-                        DisplayText = s.NameFormatted
+                        ID = c.ID,
+                        DisplayText = $"{c.Summary} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
                     });
                 }
             }
 
             ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
             ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+
         }
+
+
         private void UpdateAttendance(string[] selectedOptions, Rehearsal rehearsalToUpdate)
         {
             if (selectedOptions == null)
@@ -274,8 +312,24 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
         }
 
+        public IActionResult GetSingersByChapter(int? chapterSelect)
+        {
+            // Get all clients and filter by membership type if specified
+            var singers = _context.Singers.Include(c => c.Chapter).AsQueryable();
+            if (chapterSelect.HasValue)
+            {
+                singers = singers.Where(c => c.ChapterID == chapterSelect.Value);
+            }
 
-       
+            // Format the client list for the response
+            var clientList = singers.Select(c => new
+            {
+                id = c.ID,
+                DisplayText = $"{c.Summary} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
+            }).ToList();
+
+            return Json(clientList);
+        }
 
         private bool RehearsalExists(int id)
         {
