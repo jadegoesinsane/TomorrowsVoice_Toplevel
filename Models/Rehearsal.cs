@@ -6,7 +6,12 @@ namespace TomorrowsVoice_Toplevel.Models
     public class Rehearsal
     {
         public int ID { get; set; }
-        
+
+        [Required(ErrorMessage = "Please select a date for this rehearsal")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? RehearsalDate { get; set; }
+
         [Required(ErrorMessage="Please select a start time for this rehearsal")]
         [Display(Name="Start Time")]
         [DataType(DataType.Time)]
