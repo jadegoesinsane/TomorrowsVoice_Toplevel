@@ -1,0 +1,50 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.ViewModels.AttendanceSummaryVM>
+
+@{
+    ViewData["Title"] = "Summary";
+}
+
+<h2>Summary</h2>
+
+<!-- Form for filtering -->
+<form asp-controller="Rehearsal" asp-action="RehearsalsSummary" method="get" id="filterForm">
+    <label for="startDate" class="control-label">Start Date:</label>
+    <input type="date" id="startDate" name="startDate" class="form-control" />
+
+    <label for="endDate" class="control-label">End Date:</label>
+    <input type="date" id="endDate" name="endDate" class="form-control" />
+
+    <button type="submit">Filter</button>
+</form>
+
+<!-- Export button (this will trigger export action with dates) -->
+<button type="button" class="btn btn-info float-end" onclick="exportToExcel()">Export to Excel</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.City)</th>
+            <th>@Html.DisplayNameFor(model => model.Number_Of_Rehearsals)</th>
+            <th>@Html.DisplayNameFor(model => model.Average_Attendance)</th>
+            <th>@Html.DisplayNameFor(model => model.Highest_Attendance)</th>
+            <th>@Html.DisplayNameFor(model => model.Lowest_Attendance)</th>
+            <th>@Html.DisplayNameFor(model => model.Total_Attendance)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.City)</td>
+                <td>@Html.DisplayFor(modelItem => item.Number_Of_Rehearsals)</td>
+                <td>@Html.DisplayFor(modelItem => item.Average_Attendance)</td>
+                <td>@Html.DisplayFor(modelItem => item.Highest_Attendance)</td>
+                <td>@Html.DisplayFor(modelItem => item.Lowest_Attendance)</td>
+                <td>@Html.DisplayFor(modelItem => item.Total_Attendance)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Hidden form for export (this will submit the data for export action) -->
+
