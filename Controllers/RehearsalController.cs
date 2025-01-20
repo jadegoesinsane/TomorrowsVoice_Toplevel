@@ -61,7 +61,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             Rehearsal rehearsal = new Rehearsal();
 
             ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
-            ViewData["DirectorID"] = new SelectList(_context.Directors, "ID", "Summary");
+            ViewData["DirectorID"] = new SelectList(_context.Directors, "ID", "NameFormatted");
 
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
 
@@ -101,7 +101,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             // Get all clients and filter by membership if a filter is applied
             PopulateAttendance(chapterSelect, rehearsal);
 
-            ViewData["DirectorID"] = new SelectList(_context.Directors, "ID", "Summary");
+            ViewData["DirectorID"] = new SelectList(_context.Directors, "ID", "NameFormatted");
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.Director.ChapterID);
             return View(rehearsal);
         }
@@ -124,7 +124,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.Director.ChapterID);
             ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
-            ViewData["DirectorID"] = new SelectList(_context.Directors, "ID", "Summary", rehearsal.DirectorID);
+            ViewData["DirectorID"] = new SelectList(_context.Directors, "ID", "NameFormatted", rehearsal.DirectorID);
             // Get all clients and filter by membership if a filter is applied
 
 
@@ -180,7 +180,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 }
             }
             ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsalToUpdate.Director.ChapterID);
-            ViewData["DirectorID"] = new SelectList(_context.Directors, "ID", "Summary", rehearsalToUpdate.DirectorID);
+            ViewData["DirectorID"] = new SelectList(_context.Directors, "ID", "NameFormatted", rehearsalToUpdate.DirectorID);
             ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 
             // Get all clients and filter by membership if a filter is applied
@@ -354,7 +354,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
                      Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
                  });
 
-
+            ViewData["StartDate"] = startDate;
+            ViewData["EndDate"] = endDate;
             return View(sumQ);
         }
 

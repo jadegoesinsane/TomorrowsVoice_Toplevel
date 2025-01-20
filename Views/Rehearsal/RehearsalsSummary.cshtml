@@ -2,26 +2,25 @@
 
 @{
     ViewData["Title"] = "Summary";
-    var defaultStartDate = new DateTime(1, 1, 1).ToString("yyyy-MM-dd");
-    var defaultEndDate = DateTime.Now.ToString("yyyy-MM-dd");
+    var selectedStartDate = ViewData["StartDate"] != null ? ((DateTime)ViewData["StartDate"]).ToString("yyyy-MM-dd") : new DateTime(1, 1, 1).ToString("yyyy-MM-dd");
+    var selectedEndDate = ViewData["EndDate"] != null ? ((DateTime)ViewData["EndDate"]).ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
 }
-
 
 <h2>Summary</h2>
 
 <!-- Form for filtering -->
 <form asp-controller="Rehearsal" asp-action="RehearsalsSummary" method="get" id="filterForm">
     <label for="startDate" class="control-label">Start Date:</label>
-    <input type="date" id="startDate" name="startDate" class="form-control" value="@defaultStartDate" />
+    <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" />
 
     <label for="endDate" class="control-label">End Date:</label>
-    <input type="date" id="endDate" name="endDate" class="form-control" value="@defaultEndDate" />
+    <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" />
 
     <button type="submit">Filter</button>
 
-
-<!-- Export button (this will trigger export action with dates) -->
-<button type="button" class="btn btn-info float-end" onclick="exportToExcel()">Export to Excel</button>
+    <!-- Export button (this will trigger export action with dates) -->
+    <button type="button" class="btn btn-info float-end" onclick="exportToExcel()">Export to Excel</button>
+</form>
 
 <table class="table">
     <thead>
@@ -48,26 +47,26 @@
         }
     </tbody>
 </table>
-</form>
-<!-- Hidden form for export (this will submit the data for export action) -->
 
+<!-- Hidden form for export (this will submit the data for export action) -->
 <form id="exportForm" asp-controller="Rehearsal" asp-action="RehearsalsSummaryReport" method="get" style="display:none;">
     <input type="hidden" name="startDate" id="exportStartDate" />
     <input type="hidden" name="endDate" id="exportEndDate" />
 </form>
+
 @section Scripts {
-<script>
-    function exportToExcel() {
-        // Get selected dates
-        var startDate = document.getElementById('startDate').value;
-        var endDate = document.getElementById('endDate').value;
+    <script>
+        function exportToExcel() {
+            // Get selected dates
+            var startDate = document.getElementById('startDate').value;
+            var endDate = document.getElementById('endDate').value;
 
-        // Set the hidden form fields with the selected dates
-        document.getElementById('exportStartDate').value = startDate;
-        document.getElementById('exportEndDate').value = endDate;
+            // Set the hidden form fields with the selected dates
+            document.getElementById('exportStartDate').value = startDate;
+            document.getElementById('exportEndDate').value = endDate;
 
-        // Submit the export form to trigger the export action
-        document.getElementById('exportForm').submit();
-    }
-</script>
+            // Submit the export form to trigger the export action
+            document.getElementById('exportForm').submit();
+        }
+    </script>
 }
