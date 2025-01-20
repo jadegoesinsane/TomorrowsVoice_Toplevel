@@ -260,7 +260,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     selected.Add(new ListOptionVM
                     {
                         ID = c.ID,
-                        DisplayText = $"{c.Summary} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
+                        DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
                     });
                 }
                 else
@@ -268,7 +268,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     available.Add(new ListOptionVM
                     {
                         ID = c.ID,
-                        DisplayText = $"{c.Summary} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
+                        DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
                     });
                 }
             }
@@ -330,7 +330,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             var clientList = singers.Select(c => new
             {
                 id = c.ID,
-                DisplayText = $"{c.Summary} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
+                DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
             }).ToList();
 
             return Json(clientList);

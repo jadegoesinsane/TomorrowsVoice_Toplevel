@@ -6,12 +6,6 @@ namespace TomorrowsVoice_Toplevel.Models
     {
         public int ID { get; set; }
 
-        [Display(Name = "Singer")]
-        public string Summary
-        {
-            get { return NameFormatted; }
-        }
-
         [Display(Name = "Emergency Contact")]
         [Required(ErrorMessage = "You cannot leave the last name blank.")]
         [MaxLength(100, ErrorMessage = " Name cannot be more than 100 characters long.")]
@@ -20,7 +14,7 @@ namespace TomorrowsVoice_Toplevel.Models
         [Display(Name = "Notes")]
         [StringLength(255)]
         [DataType(DataType.MultilineText)]
-        public string? Note { get; set; }
+        public string Note { get; set; } = "";
 
         [Display(Name ="Guardian Email")]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Please follow the correct email format test@email.com")]

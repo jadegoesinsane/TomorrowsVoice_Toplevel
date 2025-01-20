@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class SingerController : Controller
+    public class SingerController : ElephantController
     {
         private readonly TVContext _context;
 
@@ -21,10 +23,100 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: Singer
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID,
+            string? actionButton, string sortDirection = "asc", string sortField = "Singer")
         {
-            var tVContext = _context.Singers.Include(s => s.Chapter);
-            return View(await tVContext.ToListAsync());
+            // Sort Options
+            string[] sortOptions = new[] { "Singer", "Chapter"};
+
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+
+            PopulateDropDownLists();
+
+            var singers = _context.Singers
+                .Include(s => s.Chapter)
+                .Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
+                .AsNoTracking();
+
+            if (ChapterID.HasValue)
+            {
+                singers = singers.Where(s => s.ChapterID == ChapterID);
+                numberFilters++;
+            }
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                singers = singers.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
+                                       || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
+                numberFilters++;
+            }
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                //Keep the Bootstrap collapse open
+                @ViewData["ShowFilter"] = " show";
+
+            }
+            //Before we sort, see if we have called for a change of filtering or sorting
+            if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+
+                if (sortOptions.Contains(actionButton))//Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton;//Sort by the button clicked
+                }
+            }
+            //Now we know which field and direction to sort by
+            if (sortField == "Singer")
+            {
+                if (sortDirection == "asc")
+                {
+                    singers = singers
+                        .OrderBy(s => s.LastName)
+                        .ThenBy(s => s.FirstName);
+                }
+                else
+                {
+                    singers = singers
+                        .OrderByDescending(s => s.LastName)
+                        .ThenBy(s => s.FirstName);
+                }
+            }
+            else if (sortField == "Chapter")
+            {
+                if (sortDirection == "asc")
+                {
+                    singers = singers
+                        .OrderBy(s => s.Chapter.Name);
+                }
+                else
+                {
+                    singers = singers
+                        .OrderByDescending(s => s.Chapter.Name);
+                }
+            }
+
+            //Set sort for next time
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            //Handle Paging
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Singer>.CreateAsync(singers.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
 
         // GET: Singer/Details/5
@@ -202,6 +294,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(singer);
         }
 
+        private SelectList ChapterSelectList(int? selectedId)
+        {
+            return new SelectList(_context.Chapters
+                .OrderBy(c => c.Name), "ID", "Name", selectedId);
+        }
+
+        private void PopulateDropDownLists(Singer? singer = null)
+        {
+            ViewData["ChapterID"] = ChapterSelectList(singer?.ChapterID);
+        }
         private bool SingerExists(int id)
         {
             return _context.Singers.Any(e => e.ID == id);

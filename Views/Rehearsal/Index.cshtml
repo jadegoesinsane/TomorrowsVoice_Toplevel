@@ -36,9 +36,26 @@
             <td>
                 @Html.DisplayFor(modelItem => item.TimeSummary)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
+                <td class="d-none d-xl-table-cell">
+                    @{
+                        string[] noteWords = item.Note.Split(' ');
+                        if (noteWords.Count() > 5)
+                        {
+                            <a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+                                @(string.Join(" ", noteWords.Take(5)) + "...")
+                            </a>
+                            <div class="collapse" id="collapseSum@(item.ID)">
+                                <div class="well">
+                                    @(string.Join(" ", noteWords.Skip(5)))
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @item.Note
+                        }
+                    }
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Director.NameFormatted)
             </td>

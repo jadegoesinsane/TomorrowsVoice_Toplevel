@@ -9,19 +9,48 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+                data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search @ViewData["numberFilters"]
+        </button><br />
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Select by Chapter:</label>
+                        @Html.DropDownList("ChapterID", null, "All Chapters",
+                                 htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Search Singer Name:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-2 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter"
+                               class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <table class="table">
     <thead>
         <tr>
-            
-            <th>
-                @Html.DisplayNameFor(model => model.NameFormatted)
-            </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Singer" class="btn btn-link" />
+                </th>
             <th>
                 @Html.DisplayNameFor(model => model.Note)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Chapter)
-            </th>
+                <th>
+                    <input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
+                </th>
             <th>
                 @Html.DisplayNameFor(model => model.ContactName)
             </th>
@@ -40,9 +69,26 @@
             <td>
                 @Html.DisplayFor(modelItem => item.NameFormatted)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
+                <td class="d-none d-xl-table-cell">
+                    @{
+                        string[] noteWords = item.Note.Split(' ');
+                        if (noteWords.Count() > 5)
+                        {
+                            <a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+                                @(string.Join(" ", noteWords.Take(5)) + "...")
+                            </a>
+                            <div class="collapse" id="collapseSum@(item.ID)">
+                                <div class="well">
+                                    @(string.Join(" ", noteWords.Skip(5)))
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @item.Note
+                        }
+                    }
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Chapter.Name)
             </td>
@@ -65,3 +111,5 @@
 }
     </tbody>
 </table>
+<partial name="_PagingNavBar" />
+</form>
