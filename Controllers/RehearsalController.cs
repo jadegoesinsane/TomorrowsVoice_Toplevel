@@ -348,7 +348,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                  {
                      City = grp.Key.City,
                      Number_Of_Rehearsals = grp.Count(),
-                     Average_Attendance = grp.Average(a => a.RehearsalAttendances.Count),
+                     Average_Attendance = Math.Round(grp.Average(a => a.RehearsalAttendances.Count), 1),
                      Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
                      Lowest_Attendance = grp.Min(a => a.RehearsalAttendances.Count),
                      Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
