@@ -34,9 +34,9 @@ namespace TomorrowsVoice_Toplevel.Models
         [DataType(DataType.MultilineText)]
         public string? Note { get; set; }
 
-        [Display(Name ="Chapter")]
-        public int ChapterID { get; set; }
-        public Chapter? Chapter { get; set; }
+        [Display(Name ="Director")]
+        public int DirectorID { get; set; }
+        public Director? Director { get; set; }
 
         public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
         

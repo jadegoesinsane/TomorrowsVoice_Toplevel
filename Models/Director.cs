@@ -17,5 +17,7 @@ namespace TomorrowsVoice_Toplevel.Models
 
         public Chapter? Chapter { get; set; }
 
+        public virtual ICollection<Rehearsal> Rehearsals { get; set; } = new HashSet<Rehearsal>();
+
     }
 }

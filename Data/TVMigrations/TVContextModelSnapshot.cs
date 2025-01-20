@@ -101,7 +101,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ChapterID")
+                    b.Property<int>("DirectorID")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("EndTime")
@@ -119,7 +119,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ChapterID");
+                    b.HasIndex("DirectorID");
 
                     b.ToTable("Rehearsals");
                 });
@@ -209,13 +209,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
                         .WithMany("Rehearsals")
-                        .HasForeignKey("ChapterID")
+                        .HasForeignKey("DirectorID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Chapter");
+                    b.Navigation("Director");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.RehearsalAttendance", b =>
@@ -252,9 +252,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     b.Navigation("Directors");
 
-                    b.Navigation("Rehearsals");
-
                     b.Navigation("Singers");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
+                {
+                    b.Navigation("Rehearsals");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>

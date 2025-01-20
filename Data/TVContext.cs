@@ -77,9 +77,9 @@ namespace TomorrowsVoice_Toplevel.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Rehearsal>()
-                .HasOne(r => r.Chapter)
-                .WithMany(r => r.Rehearsals)
-                .HasForeignKey(c => c.ChapterID)
+                .HasOne(r => r.Director)
+                .WithMany(r=>r.Rehearsals)
+                .HasForeignKey(c => c.DirectorID)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 

@@ -109,7 +109,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
             // Get the Chapter to update
             var chapterToUpdate = await _context.Chapters
-                .Include(c => c.Rehearsals)
+                .Include(c => c.Directors)
                 .FirstOrDefaultAsync(c => c.ID == id);
 
             if (chapterToUpdate == null)
@@ -163,7 +163,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
 
             var chapter = await _context.Chapters
-                .Include(c => c.Rehearsals)
+                .Include(c => c.Directors)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (chapter == null)
@@ -180,7 +180,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var chapter = await _context.Chapters
-                .Include(c => c.Rehearsals)
+                .Include(c => c.Directors)
                 .FirstOrDefaultAsync(c => c.ID == id);
             try
             {

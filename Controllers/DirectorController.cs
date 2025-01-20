@@ -25,6 +25,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
             var tVContext = _context.Director
                 .Include(d => d.Chapter)
+                .Include(d => d.Rehearsals)
                 .AsNoTracking();
 
             return View(await tVContext.ToListAsync());
@@ -40,6 +41,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var director = await _context.Director
                 .Include(d => d.Chapter)
+                .Include(d => d.Rehearsals)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (director == null)
@@ -116,6 +118,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
             var directorToUpdate = await _context.Directors
                 .Include(d => d.Chapter)
+                .Include(d => d.Rehearsals)
                 .FirstOrDefaultAsync(d => d.ID == id);
 
             if (directorToUpdate == null)
@@ -175,6 +178,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var director = await _context.Director
                 .Include(d => d.Chapter)
+                .Include(d => d.Rehearsals)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (director == null)

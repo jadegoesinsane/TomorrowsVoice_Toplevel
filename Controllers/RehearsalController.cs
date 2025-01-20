@@ -25,7 +25,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // GET: Rehearsal
         public async Task<IActionResult> Index()
         {
-            var tVContext = _context.Rehearsals.Include(r => r.Chapter);
+            var tVContext = _context.Rehearsals.Include(r => r.Director);
             return View(await tVContext.ToListAsync());
         }
 
@@ -38,7 +38,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
 
             var rehearsal = await _context.Rehearsals
-                .Include(r => r.Chapter)
+                .Include(r => r.Director)
                 .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (rehearsal == null)
@@ -95,7 +95,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             PopulateAttendance(chapterSelect, rehearsal);
 
 
-            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.ChapterID);
+            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.Director.ChapterID);
             return View(rehearsal);
         }
 
@@ -108,14 +108,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
 
             var rehearsal = await _context.Rehearsals
-                .Include(r => r.Chapter)
+                .Include(r => r.Director)
                 .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (rehearsal == null)
             {
                 return NotFound();
             }
-            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.ChapterID);
+            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsal.Director.ChapterID);
             ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 
             // Get all clients and filter by membership if a filter is applied
@@ -133,7 +133,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         public async Task<IActionResult> Edit(int id,string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
         {
             var rehearsalToUpdate = await _context.Rehearsals
-                .Include(r => r.Chapter)
+                .Include(r => r.Director)
                 .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
@@ -149,7 +149,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     r => r.StartTime,
                     r => r.EndTime,
                     r => r.Note,
-                    r => r.ChapterID))
+                    r => r.DirectorID))
             {
                 try
                 {
@@ -172,7 +172,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     }
                 }
             }
-            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsalToUpdate.ChapterID);
+            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", rehearsalToUpdate.Director.ChapterID);
            
             ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 
@@ -192,7 +192,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
 
             var rehearsal = await _context.Rehearsals
-                .Include(r => r.Chapter)
+                .Include(r => r.Director)
                 .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (rehearsal == null)
@@ -209,7 +209,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var rehearsal = await _context.Rehearsals
-                .Include(r => r.Chapter)
+                .Include(r => r.Director)
                 .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
@@ -228,8 +228,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
             return View(rehearsal);
         }
-
-
 
         private void PopulateAttendance(int? chapterSelect, Rehearsal rehearsal)
         {

@@ -54,29 +54,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Rehearsals",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RehearsalDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rehearsals", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Rehearsals_Chapters_ChapterID",
-                        column: x => x.ChapterID,
-                        principalTable: "Chapters",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Singers",
                 columns: table => new
                 {
@@ -99,6 +76,29 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         name: "FK_Singers_Chapters_ChapterID",
                         column: x => x.ChapterID,
                         principalTable: "Chapters",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rehearsals",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RehearsalDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    DirectorID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rehearsals", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Rehearsals_Director_DirectorID",
+                        column: x => x.DirectorID,
+                        principalTable: "Director",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -151,9 +151,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "SingerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rehearsals_ChapterID",
+                name: "IX_Rehearsals_DirectorID",
                 table: "Rehearsals",
-                column: "ChapterID");
+                column: "DirectorID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Singers_ChapterID",
@@ -165,9 +165,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Director");
-
-            migrationBuilder.DropTable(
                 name: "RehearsalAttendances");
 
             migrationBuilder.DropTable(
@@ -175,6 +172,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             migrationBuilder.DropTable(
                 name: "Singers");
+
+            migrationBuilder.DropTable(
+                name: "Director");
 
             migrationBuilder.DropTable(
                 name: "Chapters");
