@@ -31,13 +31,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DOW")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("DirectorID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -69,6 +62,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
@@ -76,6 +70,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -87,13 +84,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ChapterID")
-                        .IsUnique();
+                    b.HasIndex("ChapterID");
 
                     b.ToTable("Director");
                 });
@@ -171,6 +168,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -185,6 +185,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
@@ -198,8 +199,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
-                        .WithOne("Director")
-                        .HasForeignKey("TomorrowsVoice_Toplevel.Models.Director", "ChapterID")
+                        .WithMany("Directors")
+                        .HasForeignKey("ChapterID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -249,7 +250,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
-                    b.Navigation("Director");
+                    b.Navigation("Directors");
 
                     b.Navigation("Rehearsals");
 

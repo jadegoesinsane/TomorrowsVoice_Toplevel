@@ -54,9 +54,8 @@ namespace TomorrowsVoice_Toplevel.Data
                 .IsUnique();
 
             modelBuilder.Entity<Chapter>()
-                .HasOne(d => d.Director)
+                .HasMany(d => d.Directors)
                 .WithOne(d => d.Chapter)
-                .HasForeignKey<Director>(d => d.ChapterID)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Singer>()

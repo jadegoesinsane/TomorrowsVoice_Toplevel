@@ -70,32 +70,28 @@ namespace TomorrowsVoice_Toplevel.Data
                                 Address = "188 Linwell Rd",
                                 City = "St. Catharines",
                                 Province = "ON",
-                                Postal = "L2N6N3",
-                                DOW = "Wednesday"
+                                Postal = "L2N6N3"
                             }, new Chapter
                             {
                                 Name = "Hamilton",
                                 Address = "99 N Oval",
                                 City = "Hamilton",
                                 Province = "ON",
-                                Postal = "L8S3Z2",
-                                DOW = "Monday"
+                                Postal = "L8S3Z2"
                             }, new Chapter
                             {
                                 Name = "Toronto",
                                 Address = "452 College St",
                                 City = "Toronto",
                                 Province = "ON",
-                                Postal = "M6G 1A1",
-                                DOW = "Tuesday"
+                                Postal = "M6G 1A1"
                             }, new Chapter
                             {
                                 Name = "Saskatoon",
                                 Address = "35 – 22nd St. East",
                                 City = "Saskatoon",
                                 Province = "SK",
-                                Postal = "M6G 1A1",
-                                DOW = "Tuesday"
+                                Postal = "M6G 1A1"
                             }, new Chapter
                             {
                                 Name = "Vancouver"
@@ -168,9 +164,14 @@ namespace TomorrowsVoice_Toplevel.Data
                         {
                             for (int i = 0; i < 10; i++)
                             {
+                                string contactFirst = firstNames[rnd.Next(0, 9)];
+                                string contactLast = lastNames[rnd.Next(0, 9)];
+
                                 Singer singer = new Singer
                                 {
-                                    ContactName = $"{firstNames[rnd.Next(0, 9)]} {lastNames[rnd.Next(0, 9)]}",
+                                    ContactName = $"{contactFirst} {contactLast}",
+                                    Email = $"{contactFirst.Substring(0, 1).ToLower()}{contactLast}@gmail.com",
+                                    Phone = $"{rnd.Next(100,999)}{rnd.Next(100, 999)}{rnd.Next(1000, 9999)}",
                                     FirstName = firstNames[rnd.Next(0, 9)],
                                     LastName = lastNames[rnd.Next(0, 9)],
                                     ChapterID = ch.ID
@@ -187,6 +188,22 @@ namespace TomorrowsVoice_Toplevel.Data
                             }
                         }                      
                     }
+
+                    // Generate some attendance logs NOT DONE NOT DONE
+
+                    //if (context.Rehearsals.Any())
+                    //{
+                    //    DateTime sample = DateTime.Today;
+
+                    //    context.Rehearsals.AddRange(
+                    //        new Rehearsal
+                    //        {
+                    //            RehearsalDate = sample.AddDays(rnd.Next(7)),
+                    //            StartTime = new DateTime(2025-01-01 )
+                    //            EndTime
+                    //            ChapterID
+                    //        });
+                    //}
                 }
                 catch (Exception ex)
                 {

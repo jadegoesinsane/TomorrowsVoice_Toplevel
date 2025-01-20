@@ -59,7 +59,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,ContactName,Phone,Note,ChapterID")] Singer singer)
+        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,ContactName,Phone,Note,ChapterID,IsActive")] Singer singer)
         {
 
             try
@@ -127,7 +127,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     r => r.Phone,
                     r => r.Note,
                     r => r.ContactName,
-                    r => r.ChapterID))
+                    r => r.ChapterID,
+                    r=>r.IsActive))
             {
                 try
                 {

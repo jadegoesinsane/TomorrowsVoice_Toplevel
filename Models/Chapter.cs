@@ -19,12 +19,7 @@ namespace TomorrowsVoice_Toplevel.Models
         [Display(Name = "Postal Code")]
         public string Postal { get; set; } = "";
 
-        [Display(Name = "Day of Week")]
-        public string DOW { get; set; } = "";
-
-        public int DirectorID { get; set; }
-        public Director? Director { get; set; } 
-
+        public virtual ICollection<Director> Directors { get; set; } = new HashSet<Director>();
         public virtual ICollection<Rehearsal> Rehearsals { get; set; } = new HashSet<Rehearsal>();
         public virtual ICollection<Singer> Singers { get; set; } = new HashSet<Singer>();
         //public virtual ICollection<Event> Events { get; set; } = new HashSet<Event>();

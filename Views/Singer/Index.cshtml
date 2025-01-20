@@ -12,23 +12,24 @@
 <table class="table">
     <thead>
         <tr>
+            
             <th>
-                @Html.DisplayNameFor(model => model.ContactName)
+                @Html.DisplayNameFor(model => model.NameFormatted)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Note)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NameFormatted)
+                @Html.DisplayNameFor(model => model.Chapter)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.ContactName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Phone)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Chapter)
+                @Html.DisplayNameFor(model => model.Email)
             </th>
             <th></th>
         </tr>
@@ -37,22 +38,23 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ContactName)
+                @Html.DisplayFor(modelItem => item.NameFormatted)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Note)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NameFormatted)
+                @Html.DisplayFor(modelItem => item.Chapter.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Email)
+                @Html.DisplayFor(modelItem => item.ContactName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Phone)
             </td>
+            
             <td>
-                @Html.DisplayFor(modelItem => item.Chapter.Name)
+                @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

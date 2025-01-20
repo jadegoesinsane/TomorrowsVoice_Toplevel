@@ -21,9 +21,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     Address = table.Column<string>(type: "TEXT", nullable: false),
                     City = table.Column<string>(type: "TEXT", nullable: false),
                     Province = table.Column<string>(type: "TEXT", nullable: false),
-                    Postal = table.Column<string>(type: "TEXT", nullable: false),
-                    DOW = table.Column<string>(type: "TEXT", nullable: false),
-                    DirectorID = table.Column<int>(type: "INTEGER", nullable: false)
+                    Postal = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,8 +38,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: true)
+                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,12 +84,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ContactName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: true)
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,8 +138,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             migrationBuilder.CreateIndex(
                 name: "IX_Director_ChapterID",
                 table: "Director",
-                column: "ChapterID",
-                unique: true);
+                column: "ChapterID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RehearsalAttendances_RehearsalID",
