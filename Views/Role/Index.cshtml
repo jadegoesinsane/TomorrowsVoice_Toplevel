@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Create person";
+}
+
+<h1>Create person</h1>
+<form asp-action="Index" method="get">
+
+    <div>
+        <label for="role">Choose role :</label>
+        <select id="role" name="role" required>
+            <option value="Singer">Singer</option>
+            <option value="Director">Director</option>
+        </select>
+    </div>
+    <div>
+        <input type="submit" value="submit" />
+    </div>
+</form>
+
