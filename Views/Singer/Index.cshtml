@@ -43,19 +43,16 @@
 					<input type="submit" name="actionButton" value="Singer" class="btn btn-link" />
 				</th>
 				<th>
-					@Html.DisplayNameFor(model => model.Note)
-				</th>
-				<th>
 					<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
 				</th>
 				<th>
-					@Html.DisplayNameFor(model => model.ContactName)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Phone)
+					@Html.DisplayNameFor(model => model.Note)
 				</th>
 				<th>
 					@Html.DisplayNameFor(model => model.Email)
+				</th>
+				<th>
+					Emergency Contact
 				</th>
 				<th></th>
 			</tr>
@@ -66,6 +63,9 @@
 				<tr>
 					<td>
 						@Html.DisplayFor(modelItem => item.NameFormatted)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Chapter.Name)
 					</td>
 					<td class="d-none d-xl-table-cell">
 						@{
@@ -88,17 +88,10 @@
 						}
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.Chapter.Name)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.ContactName)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Phone)
-					</td>
-
-					<td>
 						@Html.DisplayFor(modelItem => item.Email)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.EmergencySummary)
 					</td>
 					<td>
 						<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |

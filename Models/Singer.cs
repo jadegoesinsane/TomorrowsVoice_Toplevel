@@ -6,6 +6,15 @@ namespace TomorrowsVoice_Toplevel.Models
 	{
 		public int ID { get; set; }
 
+		[Display(Name = "Emergency Contact Info")]
+		public string EmergencySummary
+		{
+			get
+			{
+				return $"{ContactName} - {PhoneFormatted}";
+			}
+		}
+
 		[Display(Name = "Emergency Contact")]
 		[Required(ErrorMessage = "You cannot leave the name blank.")]
 		[MaxLength(100, ErrorMessage = "Name cannot be more than 100 characters long.")]
@@ -27,7 +36,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		[RegularExpression("^\\d{10}$", ErrorMessage = "Please enter a valid 10-digit phone number (no spaces).")]
 		[DataType(DataType.PhoneNumber)]
 		[MaxLength(10)]
-		public new string? Phone { get; set; } = "";
+		public override string? Phone { get; set; } = "";
 
 		[Display(Name = "Chapter")]
 		[Required(ErrorMessage = "You must select a Chapter")]

@@ -178,7 +178,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								{
 									ContactName = $"{contactFirst} {contactLast}",
 									Email = $"{contactFirst.Substring(0, 1).ToLower()}{contactLast}@gmail.com",
-									Phone = rnd.Next(213214131, 989898989).ToString(),
+									Phone = $"{rnd.Next(999)}{rnd.Next(999)}{rnd.Next(9999)}",
 									FirstName = firstNames[rnd.Next(firstNameCount)],
 									LastName = contactLast,
 									ChapterID = ch.ID
