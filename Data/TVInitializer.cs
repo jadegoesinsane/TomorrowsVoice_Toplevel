@@ -234,26 +234,28 @@ namespace TomorrowsVoice_Toplevel.Data
 
 					foreach (Rehearsal rehearsal in context.Rehearsals)
 					{
-						List<Singer> singers = context.Singers.Where(s => s.ChapterID == rehearsal.Director.ChapterID).ToList();
-						foreach (Singer singer in singers)
+						if (rehearsal.Director != null)
 						{
-							if (rnd.Next(4) >= 3)
+							foreach (Singer singer in context.Singers.Where(s => s.ChapterID == rehearsal.Director.ChapterID))
 							{
-								RehearsalAttendance attendance = new RehearsalAttendance
+								if (rnd.Next(4) >= 3)
 								{
-									SingerID = singer.ID,
-									Singer = singer,
-									RehearsalID = rehearsal.ID,
-									Rehearsal = rehearsal,
-								};
-								try
-								{
-									context.RehearsalAttendances.Add(attendance);
-									context.SaveChanges();
-								}
-								catch (Exception)
-								{
-									context.RehearsalAttendances.Remove(attendance);
+									RehearsalAttendance attendance = new RehearsalAttendance
+									{
+										SingerID = singer.ID,
+										Singer = singer,
+										RehearsalID = rehearsal.ID,
+										Rehearsal = rehearsal,
+									};
+									try
+									{
+										context.RehearsalAttendances.Add(attendance);
+										context.SaveChanges();
+									}
+									catch (Exception)
+									{
+										context.RehearsalAttendances.Remove(attendance);
+									}
 								}
 							}
 						}

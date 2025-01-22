@@ -71,7 +71,7 @@
 				<thead>
 					<tr>
 						<th>
-							Date
+							Rehearsal
 						</th>
 						<th>
 							Chapter
@@ -87,7 +87,7 @@
 						<tr>
 							<td>
 								<a asp-controller="Rehearsal" asp-action="Details"
-								   asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Rehearsal.Summary)</a>
+								   asp-route-id="@item.Rehearsal.ID">@Html.DisplayFor(modelItem => item.Rehearsal.Summary)</a>
 							</td>
 							<td>
 								@Html.DisplayFor(modelItem => item.Rehearsal.Director.Chapter.Name)

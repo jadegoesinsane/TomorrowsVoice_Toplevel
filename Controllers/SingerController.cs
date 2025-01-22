@@ -128,7 +128,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var singer = await _context.Singers
 			   .Include(s => s.Chapter)
-				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
+				.Include(s => s.RehearsalAttendances)
+					.ThenInclude(ra => ra.Rehearsal)
+					.ThenInclude(r => r.Director)
+					.ThenInclude(d => d.Chapter)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(s => s.ID == id);
 			if (singer == null)
