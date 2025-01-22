@@ -12,6 +12,7 @@ using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.ViewModels;
 using TomorrowsVoice_Toplevel.Utilities;
+using TomorrowsVoice_Toplevel.CustomControllers;
 using System.Drawing;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -19,7 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class RehearsalController : Controller
+    public class RehearsalController : ElephantController
     {
         private readonly TVContext _context;
 
@@ -29,10 +30,86 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: Rehearsal
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string?     SearchString, 
+            int?        DirectorID, 
+            string?     actionButton, 
+            int?        page,
+            int?        pageSizeID,
+            string      sortDirection = "asc", 
+            string      sortField = "Date")
         {
-            var tVContext = _context.Rehearsals.Include(r => r.Director);
-            return View(await tVContext.ToListAsync());
+            // Sort Options
+            string[] sortOpts = new[] { "Date" };
+
+            // Counts number of filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numFilters = 0;
+
+            PopulateDropDown();
+
+            var rehearsals = _context.Rehearsals
+                .Include(r => r.Director)
+                .AsNoTracking();
+
+            // Filters
+            if (DirectorID.HasValue)
+            {
+                rehearsals = rehearsals.Where(r=>r.DirectorID == DirectorID);
+                numFilters++;
+            }
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                rehearsals = rehearsals.Where(r=>r.Note.ToUpper().Contains(SearchString.ToUpper()));
+                numFilters++;
+            }
+
+            // Show how many filters are applied
+            if (numFilters != 0)
+            {
+                ViewData["Filtering"] = " btn-danger";
+                ViewData["numberFilters"] = "(" + numFilters.ToString()
+                    + " Filter" + (numFilters > 1 ? "s" : "") + " Applied)";
+            }
+
+            // Check for sorting change
+            if (!String.IsNullOrEmpty(actionButton))
+            {
+                page = 1;
+                if (sortOpts.Contains(actionButton))
+                {
+                    sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                }
+                sortField = actionButton;
+            }
+
+           // Sorting
+            if (sortField == "Date")
+            {
+                if (sortDirection == "asc")
+                {
+                    rehearsals = rehearsals
+                        .OrderByDescending(r => r.RehearsalDate)
+                        .ThenByDescending(r => r.RehearsalDate);    
+                }
+                else
+                {
+                    rehearsals = rehearsals
+                        .OrderBy(r => r.RehearsalDate)
+                        .ThenBy(r => r.RehearsalDate);
+                }
+            }
+
+            // View data for next sort
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            // Paging
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Rehearsal>.CreateAsync(rehearsals.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
 
         // GET: Rehearsal/Details/5
@@ -234,6 +311,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 ModelState.AddModelError("", "Unable to delete record. Please try again.");
             }
             return View(rehearsal);
+        }
+
+        private SelectList DirectorSelectList(int? id)
+        {
+            return new SelectList(_context.Directors
+                .OrderBy(d => d.FirstName), "ID", "NameFormatted", id);
+        }
+
+        private void PopulateDropDown(Rehearsal? rehearsal = null)
+        {
+            ViewData["DirectorID"] = DirectorSelectList(rehearsal?.DirectorID);
         }
 
         private void PopulateAttendance(int? chapterSelect, Rehearsal rehearsal)
