@@ -60,7 +60,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ContactName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
@@ -89,7 +89,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     RehearsalDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

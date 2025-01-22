@@ -51,7 +51,7 @@
 				<th>
 					@Html.DisplayNameFor(model => model.Email)
 				</th>
-				<th>
+				<th colspan="2" style="border-left: solid 1px;">
 					Emergency Contact
 				</th>
 				<th></th>
@@ -90,8 +90,11 @@
 					<td>
 						@Html.DisplayFor(modelItem => item.Email)
 					</td>
+					<td style="border-left: solid 1px;">
+						@Html.DisplayFor(modelItem => item.ContactName)
+					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.EmergencySummary)
+						@Html.DisplayFor(modelItem => item.PhoneFormatted)
 					</td>
 					<td>
 						<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
