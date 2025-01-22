@@ -1,71 +1,70 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Rehearsal>
 
 @{
-	ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index";
 }
 
 <h1>Rehearsals</h1>
 
 <p>
-	<a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
-	<thead>
-		<tr>
-			<th>
-				Date
-			</th>
-			<th>
-				Time
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Note)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Director)
-			</th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model)
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.RehearsalDate)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.TimeSummary)
-				</td>
-				<td class="d-none d-xl-table-cell">
-					@{
-						string[] noteWords = item.Note.Split(' ');
-						if (noteWords.Count() > 4)
-						{
-							<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
-								@(string.Join(" ", noteWords.Take(4)) + "...")
-							</a>
-							<div class="collapse" id="collapseSum@(item.ID)">
-								<div class="well">
-									@(string.Join(" ", noteWords.Skip(4)))
-								</div>
-							</div>
-						}
-						else
-						{
-							@item.Note
-						}
-					}
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Director.NameFormatted)
-				</td>
-				<td>
-					<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-					<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-					<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-				</td>
-			</tr>
-		}
-	</tbody>
+    <thead>
+        <tr>
+            <th>
+                Date
+            </th>
+            <th>
+                Time
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Director)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RehearsalDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeSummary)
+            </td>
+                <td class="d-none d-xl-table-cell">
+                    @{
+                        string[] noteWords = item.Note.Split(' ');
+                        if (noteWords.Count() > 5)
+                        {
+                            <a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+                                @(string.Join(" ", noteWords.Take(5)) + "...")
+                            </a>
+                            <div class="collapse" id="collapseSum@(item.ID)">
+                                <div class="well">
+                                    @(string.Join(" ", noteWords.Skip(5)))
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @item.Note
+                        }
+                    }
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Director.NameFormatted)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
 </table>
