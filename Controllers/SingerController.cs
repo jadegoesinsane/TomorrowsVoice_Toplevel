@@ -23,7 +23,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: Singer
-		public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID,
+		public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
 			string? actionButton, string sortDirection = "asc", string sortField = "Singer")
 		{
 			// Sort Options
@@ -34,16 +34,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			int numberFilters = 0;
 
 			PopulateDropDownLists();
+			//PopulateMultiLists();
 
 			var singers = _context.Singers
 				.Include(s => s.Chapter)
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking();
 
-			if (ChapterID.HasValue)
+			if (ChapterID.Any(c => c.HasValue))
 			{
-				singers = singers.Where(s => s.ChapterID == ChapterID);
-				numberFilters++;
+				singers = singers.Where(s => ChapterID.Contains(s.ChapterID));
+				foreach(int? id in ChapterID)
+					numberFilters++;
 			}
 			if (!String.IsNullOrEmpty(SearchString))
 			{
@@ -313,6 +315,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["ChapterID"] = ChapterSelectList(singer?.ChapterID);
 		}
 
+		// Multi Select Lists
+		private MultiSelectList MultiChapterList(List<int?> selectedIds)
+		{
+			return new MultiSelectList(_context.Chapters
+				.OrderBy(c => c.Name), "ID", "Name", selectedIds);
+		}
+		private void PopulateMultiLists(Singer? singer = null)
+		{
+			ViewData["ChapterIDs"] = MultiChapterList(new List<int?> { singer?.ChapterID });
+		}
 		private bool SingerExists(int id)
 		{
 			return _context.Singers.Any(e => e.ID == id);
