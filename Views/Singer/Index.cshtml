@@ -45,14 +45,14 @@
 				<th>
 					<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
 				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Note)
+				<th class="d-none d-xxl-table-cell">
+					<input type="submit" value="Notes" class="btn btn-toolbar" />
 				</th>
 				<th>
-					@Html.DisplayNameFor(model => model.Email)
+					<input type="submit" value="Email" class="btn btn-toolbar" />
 				</th>
 				<th colspan="2" style="border-left: solid 1px;">
-					Emergency Contact
+					<input type="submit" value="Emergency Contact" class="btn btn-toolbar" />
 				</th>
 				<th></th>
 			</tr>
@@ -67,17 +67,17 @@
 					<td>
 						@Html.DisplayFor(modelItem => item.Chapter.Name)
 					</td>
-					<td class="d-none d-xl-table-cell">
+					<td class="d-none d-xxl-table-cell" style="width: 240px;">
 						@{
 							string[] noteWords = item.Note.Split(' ');
-							if (noteWords.Count() > 5)
+							if (noteWords.Count() > 4)
 							{
 								<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
-									@(string.Join(" ", noteWords.Take(5)) + "...")
+									@(string.Join(" ", noteWords.Take(4)) + "...")
 								</a>
 								<div class="collapse" id="collapseSum@(item.ID)">
 									<div class="well">
-										@(string.Join(" ", noteWords.Skip(5)))
+										@(string.Join(" ", noteWords.Skip(4)))
 									</div>
 								</div>
 							}
