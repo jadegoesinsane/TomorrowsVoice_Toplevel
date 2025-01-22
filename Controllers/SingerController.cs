@@ -128,10 +128,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var singer = await _context.Singers
 			   .Include(s => s.Chapter)
-				.Include(s => s.RehearsalAttendances)
-					.ThenInclude(ra => ra.Rehearsal)
-					.ThenInclude(r => r.Director)
-					.ThenInclude(d => d.Chapter)
+				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(s => s.ID == id);
 			if (singer == null)
@@ -292,6 +289,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			return View(singer);
+		}
+
+		public PartialViewResult ListOfRehearsalDetails(int id)
+		{
+			var rehearsals = _context.Rehearsals
+				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Where(r => r.RehearsalAttendances.Any(ra => ra.SingerID == id))
+				.OrderBy(r => r.RehearsalDate)
+				.ToList();
+
+			return PartialView("_ListOfRehearsals", rehearsals);
 		}
 
 		private SelectList ChapterSelectList(int? selectedId)

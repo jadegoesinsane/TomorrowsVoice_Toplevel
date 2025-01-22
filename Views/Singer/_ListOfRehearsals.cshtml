@@ -1,0 +1,41 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Rehearsal>
+<br />
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<h4 class="panel-title">List of Rehearsals</h4>
+	</div>
+	<div class="panel-body scrollable-panel">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>
+						Rehearsal
+					</th>
+					<th>
+						Chapter
+					</th>
+					<th>
+						Director
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.OrderByDescending(r => r.RehearsalDate))
+				{
+					<tr>
+						<td>
+							<a asp-controller="Rehearsal" asp-action="Details"
+							   asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Summary)</a>
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Director.Chapter.Name)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Director.NameFormatted)
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
