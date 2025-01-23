@@ -143,8 +143,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Singer/Create
 		public IActionResult Create()
 		{
+			Singer singer = new Singer();
 			PopulateDropDownLists();
-			return View();
+			return View(singer);
 		}
 
 		// POST: Singer/Create
@@ -152,7 +153,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,ContactName,Phone,Note,ChapterID,IsActive")] Singer singer)
+		public async Task<IActionResult> Create([Bind("FirstName,LastName,ContactName,Phone,Note,ChapterID,IsActive")] Singer singer)
 		{
 			try
 			{
