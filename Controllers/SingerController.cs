@@ -44,7 +44,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			if (ChapterID.Any(c => c.HasValue))
 			{
 				singers = singers.Where(s => ChapterID.Contains(s.ChapterID));
-				foreach(int? id in ChapterID)
+				foreach (int? id in ChapterID)
 					numberFilters++;
 			}
 			if (!String.IsNullOrEmpty(SearchString))
@@ -257,8 +257,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var singer = await _context.Singers
-				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Rehearsal)
-				.FirstOrDefaultAsync(m => m.ID == id);
+				.Include(s => s.Chapter)
+				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
+				.AsNoTracking()
+				.FirstOrDefaultAsync(s => s.ID == id);
 			if (singer == null)
 			{
 				return NotFound();
@@ -321,10 +323,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return new MultiSelectList(_context.Chapters
 				.OrderBy(c => c.Name), "ID", "Name", selectedIds);
 		}
+
 		private void PopulateMultiLists(Singer? singer = null)
 		{
 			ViewData["ChapterIDs"] = MultiChapterList(new List<int?> { singer?.ChapterID });
 		}
+
 		private bool SingerExists(int id)
 		{
 			return _context.Singers.Any(e => e.ID == id);
