@@ -165,7 +165,7 @@ namespace TomorrowsVoice_Toplevel.Data
 					string[] baconNotes = new string[] { "Bacon ipsum dolor amet meatball corned beef kevin, alcatra kielbasa biltong drumstick strip steak spare ribs swine. Pastrami shank swine leberkas bresaola, prosciutto frankfurter porchetta ham hock short ribs short loin andouille alcatra. Andouille shank meatball pig venison shankle ground round sausage kielbasa. Chicken pig meatloaf fatback leberkas venison tri-tip burgdoggen tail chuck sausage kevin shank biltong brisket.", "Sirloin shank t-bone capicola strip steak salami, hamburger kielbasa burgdoggen jerky swine andouille rump picanha. Sirloin porchetta ribeye fatback, meatball leberkas swine pancetta beef shoulder pastrami capicola salami chicken. Bacon cow corned beef pastrami venison biltong frankfurter short ribs chicken beef. Burgdoggen shank pig, ground round brisket tail beef ribs turkey spare ribs tenderloin shankle ham rump. Doner alcatra pork chop leberkas spare ribs hamburger t-bone. Boudin filet mignon bacon andouille, shankle pork t-bone landjaeger. Rump pork loin bresaola prosciutto pancetta venison, cow flank sirloin sausage.", "Porchetta pork belly swine filet mignon jowl turducken salami boudin pastrami jerky spare ribs short ribs sausage andouille. Turducken flank ribeye boudin corned beef burgdoggen. Prosciutto pancetta sirloin rump shankle ball tip filet mignon corned beef frankfurter biltong drumstick chicken swine bacon shank. Buffalo kevin andouille porchetta short ribs cow, ham hock pork belly drumstick pastrami capicola picanha venison.", "Picanha andouille salami, porchetta beef ribs t-bone drumstick. Frankfurter tail landjaeger, shank kevin pig drumstick beef bresaola cow. Corned beef pork belly tri-tip, ham drumstick hamburger swine spare ribs short loin cupim flank tongue beef filet mignon cow. Ham hock chicken turducken doner brisket. Strip steak cow beef, kielbasa leberkas swine tongue bacon burgdoggen beef ribs pork chop tenderloin.", "Kielbasa porchetta shoulder boudin, pork strip steak brisket prosciutto t-bone tail. Doner pork loin pork ribeye, drumstick brisket biltong boudin burgdoggen t-bone frankfurter. Flank burgdoggen doner, boudin porchetta andouille landjaeger ham hock capicola pork chop bacon. Landjaeger turducken ribeye leberkas pork loin corned beef. Corned beef turducken landjaeger pig bresaola t-bone bacon andouille meatball beef ribs doner. T-bone fatback cupim chuck beef ribs shank tail strip steak bacon." };
 
 					// Randomly generate 60 singers and assign 10 to each chapter
-					if (context.Singers.Count() < 60)
+					if (!context.Singers.Any())
 					{
 						foreach (Chapter ch in context.Chapters)
 						{
@@ -200,61 +200,66 @@ namespace TomorrowsVoice_Toplevel.Data
 						}
 					}
 
-					foreach (Director d in context.Directors)
+					if (!context.Rehearsals.Any())
 					{
-						DayOfWeek DOW = (DayOfWeek)rnd.Next(7);
-
-						DateTime date = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DOW - 7);
-						DateTime start = date.AddHours(rnd.Next(10, 18));
-						if (rnd.Next(2) == 1)
-							start.AddMinutes(30);
-						DateTime end = start.AddHours(rnd.Next(1, 2));
-
-						for (int i = 0; i < 10; i++)
+						foreach (Director d in context.Directors)
 						{
-							Rehearsal rehearsal = new Rehearsal
+							DayOfWeek DOW = (DayOfWeek)rnd.Next(7);
+
+							DateTime date = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DOW - 7);
+							DateTime start = date.AddHours(rnd.Next(10, 18));
+							if (rnd.Next(2) == 1)
+								start.AddMinutes(30);
+							DateTime end = start.AddHours(rnd.Next(1, 2));
+
+							for (int i = 0; i < 10; i++)
 							{
-								RehearsalDate = date.AddDays(i * 7),
-								StartTime = start,
-								EndTime = end,
-								DirectorID = d.ID,
-								Director = d
-							};
-							try
-							{
-								context.Rehearsals.Add(rehearsal);
-								context.SaveChanges();
-							}
-							catch (Exception)
-							{
-								context.Rehearsals.Remove(rehearsal);
+								Rehearsal rehearsal = new Rehearsal
+								{
+									RehearsalDate = date.AddDays(i * 7),
+									StartTime = start,
+									EndTime = end,
+									DirectorID = d.ID,
+									Director = d
+								};
+								try
+								{
+									context.Rehearsals.Add(rehearsal);
+									context.SaveChanges();
+								}
+								catch (Exception)
+								{
+									context.Rehearsals.Remove(rehearsal);
+								}
 							}
 						}
 					}
-
-					foreach (Rehearsal rehearsal in context.Rehearsals)
+					if (!context.RehearsalAttendances.Any())
 					{
-						if (rehearsal.Director != null)
+						foreach (Rehearsal rehearsal in context.Rehearsals)
 						{
-							foreach (Singer singer in context.Singers.Where(s => s.ChapterID == rehearsal.Director.ChapterID))
+							if (rehearsal.Director != null)
 							{
-								if (rnd.Next(4) >= 3)
+								foreach (Singer singer in context.Singers.Where(s => s.ChapterID == rehearsal.Director.ChapterID))
 								{
-									RehearsalAttendance attendance = new RehearsalAttendance
+									if (rnd.Next(4) >= 3)
 									{
-										SingerID = singer.ID,
-										Singer = singer,
-										RehearsalID = rehearsal.ID,
-										Rehearsal = rehearsal,
-									};
-									try
-									{
-										context.RehearsalAttendances.Add(attendance);
-										context.SaveChanges();
-									}
-									catch (Exception)
-									{
-										context.RehearsalAttendances.Remove(attendance);
+										RehearsalAttendance attendance = new RehearsalAttendance
+										{
+											SingerID = singer.ID,
+											Singer = singer,
+											RehearsalID = rehearsal.ID,
+											Rehearsal = rehearsal,
+										};
+										try
+										{
+											context.RehearsalAttendances.Add(attendance);
+											context.SaveChanges();
+										}
+										catch (Exception)
+										{
+											context.RehearsalAttendances.Remove(attendance);
+										}
 									}
 								}
 							}
