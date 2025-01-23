@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class DirectorController : Controller
-    {
+    public class DirectorController : ElephantController
+	{
         private readonly TVContext _context;
 
         public DirectorController(TVContext context)
@@ -21,15 +24,100 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: Director
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
+			string? actionButton, string sortDirection = "asc", string sortField = "Director")
         {
-            var tVContext = _context.Director
+
+			string[] sortOptions = new[] { "Director", "Chapter" };
+
+			//Count the number of filters applied - start by assuming no filters
+			ViewData["Filtering"] = "btn-outline-secondary";
+			int numberFilters = 0;
+
+
+			var directors = _context.Director
                 .Include(d => d.Chapter)
                 .Include(d => d.Rehearsals)
                 .AsNoTracking();
 
-            return View(await tVContext.ToListAsync());
-        }
+			if (ChapterID.Any(c => c.HasValue))
+			{
+				directors = directors.Where(s => ChapterID.Contains(s.ChapterID));
+				foreach (int? id in ChapterID)
+					numberFilters++;
+			}
+			if (!String.IsNullOrEmpty(SearchString))
+			{
+				directors = directors.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
+									   || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
+				numberFilters++;
+			}
+			//Give feedback about the state of the filters
+			if (numberFilters != 0)
+			{
+				//Toggle the Open/Closed state of the collapse depending on if we are filtering
+				ViewData["Filtering"] = " btn-danger";
+				//Show how many filters have been applied
+				ViewData["numberFilters"] = "(" + numberFilters.ToString()
+					+ " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+				//Keep the Bootstrap collapse open
+				@ViewData["ShowFilter"] = " show";
+			}
+			//Before we sort, see if we have called for a change of filtering or sorting
+			if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+			{
+				page = 1;//Reset page to start
+
+				if (sortOptions.Contains(actionButton))//Change of sort is requested
+				{
+					if (actionButton == sortField) //Reverse order on same field
+					{
+						sortDirection = sortDirection == "asc" ? "desc" : "asc";
+					}
+					sortField = actionButton;//Sort by the button clicked
+				}
+			}
+			//Now we know which field and direction to sort by
+			if (sortField == "Singer")
+			{
+				if (sortDirection == "asc")
+				{
+					directors = directors
+						.OrderBy(s => s.LastName)
+						.ThenBy(s => s.FirstName);
+				}
+				else
+				{
+					directors = directors
+						.OrderByDescending(s => s.LastName)
+						.ThenBy(s => s.FirstName);
+				}
+			}
+			else if (sortField == "Chapter")
+			{
+				if (sortDirection == "asc")
+				{
+					directors = directors
+						.OrderBy(s => s.Chapter.Name);
+				}
+				else
+				{
+					directors = directors
+						.OrderByDescending(s => s.Chapter.Name);
+				}
+			}
+
+			//Set sort for next time
+			ViewData["sortField"] = sortField;
+			ViewData["sortDirection"] = sortDirection;
+			ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
+			//Handle Paging
+			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+			var pagedData = await PaginatedList<Director>.CreateAsync(directors.AsNoTracking(), page ?? 1, pageSize);
+
+			return View(pagedData);
+		}
 
         // GET: Director/Details/5
         public async Task<IActionResult> Details(int? id)
