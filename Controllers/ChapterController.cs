@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -7,12 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class ChapterController : Controller
+    public class ChapterController : ElephantController
     {
         private readonly TVContext _context;
 
@@ -22,13 +25,92 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: Chapter
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
+            string? actionButton, string sortDirection = "asc", string sortField = "Chapter")
         {
-            var chapters = await _context.Chapters
-                .AsNoTracking()
-                .ToListAsync();
 
-            return View(chapters);
+            string[] sortOptions = new[] {"Chapter","Name" };
+
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+
+
+            var chapters =  _context.Chapters
+                .AsNoTracking()
+                 .AsNoTracking();
+
+
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                chapters = chapters.Where(p => p.Name.ToUpper().Contains(SearchString.ToUpper()));
+                                      
+                numberFilters++;
+            }
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                //Keep the Bootstrap collapse open
+                @ViewData["ShowFilter"] = " show";
+            }
+            //Before we sort, see if we have called for a change of filtering or sorting
+            if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+
+                if (sortOptions.Contains(actionButton))//Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton;//Sort by the button clicked
+                }
+            }
+            //Now we know which field and direction to sort by
+            if (sortField == "Name")
+            {
+                if (sortDirection == "asc")
+                {
+                    chapters = chapters
+                        .OrderBy(s => s.Name);
+                }
+                else
+                {
+                    chapters = chapters
+                        .OrderByDescending(s => s.Name);
+                        
+                }
+            }
+            else if (sortField == "Chapter")
+            {
+                if (sortDirection == "asc")
+                {
+                    chapters = chapters
+                        .OrderBy(s => s.Name);
+                }
+                else
+                {
+                    chapters = chapters
+                        .OrderByDescending(s => s.Name);
+                }
+            }
+
+            //Set sort for next time
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
+            //Handle Paging
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Chapter>.CreateAsync(chapters.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
 
         // GET: Chapter/Details/5
