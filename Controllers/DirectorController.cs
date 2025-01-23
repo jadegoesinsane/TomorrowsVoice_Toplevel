@@ -78,7 +78,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 			//Now we know which field and direction to sort by
-			if (sortField == "Singer")
+			if (sortField == "Director")
 			{
 				if (sortDirection == "asc")
 				{
