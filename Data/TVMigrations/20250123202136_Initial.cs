@@ -89,7 +89,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     RehearsalDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -151,9 +151,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "SingerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rehearsals_DirectorID",
+                name: "IX_Rehearsals_DirectorID_RehearsalDate",
                 table: "Rehearsals",
-                column: "DirectorID");
+                columns: new[] { "DirectorID", "RehearsalDate" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Singers_ChapterID",

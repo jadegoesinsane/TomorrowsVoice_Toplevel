@@ -65,6 +65,8 @@
 					</td>
 					<td class="d-none d-xl-table-cell">
 						@{
+							if (item.Note != null)
+							{
 							string[] noteWords = item.Note.Split(' ');
 							if (noteWords.Count() > 4)
 							{
@@ -80,6 +82,7 @@
 							else
 							{
 								@item.Note
+							}
 							}
 						}
 					</td>

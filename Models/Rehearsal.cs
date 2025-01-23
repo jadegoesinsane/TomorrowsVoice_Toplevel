@@ -40,7 +40,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		[Display(Name = "Notes")]
 		[StringLength(255)]
 		[DataType(DataType.MultilineText)]
-		public string Note { get; set; } = "";
+		public string? Note { get; set; }
 
 		[Display(Name = "Director")]
 		public int DirectorID { get; set; }
