@@ -23,13 +23,13 @@ namespace TomorrowsVoice_Toplevel.Models
 		[Display(Name = "Notes")]
 		[StringLength(255)]
 		[DataType(DataType.MultilineText)]
-		public string Note { get; set; } = "";
+		public string? Note { get; set; }
 
 		[Display(Name = "Guardian Email")]
-		[RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Please follow the correct email format test@email.com")]
+		[RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Please follow the correct email format example@email.com")]
 		[StringLength(255)]
 		[DataType(DataType.EmailAddress)]
-		public override string? Email { get; set; } = "";
+		public new string? Email { get; set; } = "";
 
 		[Display(Name = "Emergency Contact Number")]
 		[Required(ErrorMessage = "Emergency contact number is required.")]

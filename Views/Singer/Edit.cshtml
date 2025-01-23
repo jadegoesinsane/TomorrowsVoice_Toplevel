@@ -25,7 +25,7 @@
 		</div>
 	</div>
 
-	<div class="row">
+	<div class="row mt-3">
 		<div class="form-group col-md-4">
 			<label asp-for="ContactName" class="control-label"></label>
 			<input asp-for="ContactName" class="form-control" />
@@ -43,13 +43,13 @@
 		</div>
 	</div>
 
-	<div class="row">
+	<div class="row mt-3">
 		<div class="form-group col-md-4">
 			<label asp-for="ChapterID" class="control-label"></label>
 			<select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
 			<span asp-validation-for="ChapterID" class="text-danger"></span>
 		</div>
-		<div class="form-group col-md-4">
+		<div class="form-group col-md-4 mt-3">
 			<div class="form-check">
 				<input class="form-check-input" asp-for="IsActive" />
 				<label class="form-check-label" asp-for="IsActive"></label>
@@ -57,14 +57,14 @@
 		</div>
 	</div>
 
-	<div class="row">
+	<div class="row mt-3">
 		<div class="form-group col-md-8">
 			<label asp-for="Note" class="control-label"></label>
 			<textarea asp-for="Note" class="form-control"></textarea>
 			<span asp-validation-for="Note" class="text-danger"></span>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row mt-3">
 		<div class="form-group col-md-6">
 			<input type="submit" value="Save" class="btn btn-primary" />
 		</div>

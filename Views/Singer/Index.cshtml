@@ -36,7 +36,8 @@
 							</option>
 						</select>
 					</div>
-					<div class="form-group col-md-2 align-self-end">
+
+					<div class="form-group col-md-2 align-self-end mt-2">
 						<input type="submit" name="actionButton" value="Filter"
 							   class="btn btn-outline-primary" />
 						<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
@@ -52,13 +53,13 @@
 				<th>
 					<input type="submit" name="actionButton" value="Singer" class="btn btn-link" />
 				</th>
-				<th>
+				<th class="d-none d-md-table-cell">
 					<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
 				</th>
 				<th class="d-none d-xxl-table-cell">
 					<input type="submit" value="Notes" class="btn btn-toolbar" />
 				</th>
-				<th>
+				<th class="d-none d-lg-table-cell">
 					<input type="submit" value="Email" class="btn btn-toolbar" />
 				</th>
 				<th colspan="2" style="border-left: solid 1px;">
@@ -74,11 +75,13 @@
 					<td>
 						@Html.DisplayFor(modelItem => item.NameFormatted)
 					</td>
-					<td>
+					<td class="d-none d-md-table-cell">
 						@Html.DisplayFor(modelItem => item.Chapter.Name)
 					</td>
 					<td class="d-none d-xxl-table-cell" style="width: 240px;">
 						@{
+							if (item.Note != null)
+							{
 							string[] noteWords = item.Note.Split(' ');
 							if (noteWords.Count() > 4)
 							{
@@ -95,9 +98,10 @@
 							{
 								@item.Note
 							}
+							}
 						}
 					</td>
-					<td>
+					<td class="d-none d-lg-table-cell">
 						@Html.DisplayFor(modelItem => item.Email)
 					</td>
 					<td style="border-left: solid 1px;">
