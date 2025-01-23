@@ -67,3 +67,19 @@ body {
     padding: .5rem;
 }
 */
+
+/* Footer Image */
+footer {
+    background-image: url(../images/FOOTER.png);
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: cover;
+    background-color: #fff !important;
+}
+
+.footer-container {
+    padding-top: 50px;
+    padding-right: 0px;
+    padding-bottom: 50px;
+    padding-left: 0px;
+}
