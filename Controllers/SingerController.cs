@@ -34,7 +34,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			int numberFilters = 0;
 
 			PopulateDropDownLists();
-			//PopulateMultiLists();
 
 			var singers = _context.Singers
 				.Include(s => s.Chapter)
@@ -144,7 +143,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Singer/Create
 		public IActionResult Create()
 		{
-			ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
+			PopulateDropDownLists();
 			return View();
 		}
 
@@ -169,7 +168,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
 			}
 
-			ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", singer.ChapterID);
+			PopulateDropDownLists(singer);
 			return View(singer);
 		}
 
@@ -189,7 +188,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-			ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", singer.ChapterID);
+			PopulateDropDownLists(singer);
 			return View(singer);
 		}
 
@@ -244,7 +243,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 
-			ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name", singerToUpdate.ChapterID);
+			PopulateDropDownLists(singerToUpdate);
 			return View(singerToUpdate);
 		}
 
@@ -308,25 +307,28 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private SelectList ChapterSelectList(int? selectedId)
 		{
-			return new SelectList(_context.Chapters
+			if (ViewData["ActionName"].ToString() == "Index")
+			{
+				return new SelectList(_context.Chapters
 				.OrderBy(c => c.Name), "ID", "Name", selectedId);
+			}
+			else
+			{
+				var items = _context.Chapters
+				.OrderBy(c => c.Name)
+				.Select(c => new SelectListItem
+				{
+					Value = c.ID.ToString(),
+					Text = c.Name
+				}).ToList();
+				items.Insert(0, new SelectListItem(){ Text = "Select Chapter"});
+				return new SelectList(items, "Value", "Text", selectedId);
+			}
 		}
 
 		private void PopulateDropDownLists(Singer? singer = null)
 		{
 			ViewData["ChapterID"] = ChapterSelectList(singer?.ChapterID);
-		}
-
-		// Multi Select Lists
-		private MultiSelectList MultiChapterList(List<int?> selectedIds)
-		{
-			return new MultiSelectList(_context.Chapters
-				.OrderBy(c => c.Name), "ID", "Name", selectedIds);
-		}
-
-		private void PopulateMultiLists(Singer? singer = null)
-		{
-			ViewData["ChapterIDs"] = MultiChapterList(new List<int?> { singer?.ChapterID });
 		}
 
 		private bool SingerExists(int id)

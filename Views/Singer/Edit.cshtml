@@ -7,76 +7,78 @@
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<input type="hidden" asp-for="ID" />
 
-	<div class="row">
-		<div class="form-group col-md-4">
-			<label asp-for="FirstName" class="control-label"></label>
-			<input asp-for="FirstName" class="form-control" />
-			<span asp-validation-for="FirstName" class="text-danger"></span>
+	<div class="row g-4 my-3">
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<input asp-for="FirstName" class="form-control" placeholder="First Name" />
+				<label asp-for="FirstName" class="control-label"></label>
+				<span asp-validation-for="FirstName" class="text-danger"></span>
+			</div>
 		</div>
-		<div class="form-group col-md-4">
-			<label asp-for="MiddleName" class="control-label"></label>
-			<input asp-for="MiddleName" class="form-control" placeholder="Optional" />
-			<span asp-validation-for="MiddleName" class="text-danger"></span>
+		<div class="col-md-4">
+			<div class="form-floating optional">
+				<input asp-for="MiddleName" class="form-control" placeholder="Middle Name (optional)" />
+				<label asp-for="MiddleName" class="control-label"></label>
+				<span asp-validation-for="MiddleName" class="text-danger"></span>
+			</div>
 		</div>
-		<div class="form-group col-md-4">
-			<label asp-for="LastName" class="control-label"></label>
-			<input asp-for="LastName" class="form-control" />
-			<span asp-validation-for="LastName" class="text-danger"></span>
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<input asp-for="LastName" class="form-control" placeholder="Last Name" />
+				<label asp-for="LastName" class="control-label"></label>
+				<span asp-validation-for="LastName" class="text-danger"></span>
+			</div>
 		</div>
-	</div>
-
-	<div class="row mt-3">
-		<div class="form-group col-md-4">
-			<label asp-for="ContactName" class="control-label"></label>
-			<input asp-for="ContactName" class="form-control" />
-			<span asp-validation-for="ContactName" class="text-danger"></span>
+		<div class="col-md-4">
+			<div class="form-floating optional">
+				<input asp-for="Email" class="form-control" placeholder="Email" />
+				<label asp-for="Email" class="control-label"></label>
+				<span asp-validation-for="Email" class="text-danger"></span>
+			</div>
 		</div>
-		<div class="form-group col-md-4">
-			<label asp-for="Email" class="control-label"></label>
-			<input asp-for="Email" class="form-control" placeholder="Optional" />
-			<span asp-validation-for="Email" class="text-danger"></span>
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<input asp-for="ContactName" class="form-control" placeholder="Emergency Contact" />
+				<label asp-for="ContactName" class="control-label"></label>
+				<span asp-validation-for="ContactName" class="text-danger"></span>
+				</div>
 		</div>
-		<div class="form-group col-md-4">
-			<label asp-for="Phone" class="control-label"></label>
-			<input asp-for="Phone" class="form-control" />
-			<span asp-validation-for="Phone" class="text-danger"></span>
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<input asp-for="Phone" class="form-control" placeholder="Emergency Contact Number" />
+				<label asp-for="Phone" class="control-label"></label>
+				<span asp-validation-for="Phone" class="text-danger"></span>
+			</div>
 		</div>
-	</div>
-
-	<div class="row mt-3">
-		<div class="form-group col-md-4">
-			<label asp-for="ChapterID" class="control-label"></label>
-			<select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
-			<span asp-validation-for="ChapterID" class="text-danger"></span>
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
+				<label asp-for="ChapterID" class="control-label"></label>
+				<span asp-validation-for="ChapterID" class="text-danger"></span>
+			</div>
 		</div>
-		<div class="form-group col-md-4 mt-3">
+		<div class="form-group col-md-4 required">
 			<div class="form-check">
 				<input class="form-check-input" asp-for="IsActive" />
 				<label class="form-check-label" asp-for="IsActive"></label>
 			</div>
 		</div>
-	</div>
-
-	<div class="row mt-3">
-		<div class="form-group col-md-8">
-			<label asp-for="Note" class="control-label"></label>
-			<textarea asp-for="Note" class="form-control"></textarea>
-			<span asp-validation-for="Note" class="text-danger"></span>
+		<div class="col-md-12">
+			<div class="form-floating">
+				<textarea asp-for="Note" class="form-control" style="height: 100px" placeholder="Notes"></textarea>
+				<label asp-for="Note" class="control-label"></label>
+				<span asp-validation-for="Note" class="text-danger"></span>
+			</div>
 		</div>
-	</div>
-	<div class="row mt-3">
+
+
 		<div class="form-group col-md-6">
-			<input type="submit" value="Save" class="btn btn-primary" />
+			<input type="submit" value="Save" class="btn btn-primary" /> |
+			<partial name="_BackToList" />
 		</div>
 	</div>
 </form>
 
-<div>
-	<partial name="_BackToList" />
-</div>
-
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

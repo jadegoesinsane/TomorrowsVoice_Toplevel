@@ -36,7 +36,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		[RegularExpression("^\\d{10}$", ErrorMessage = "Please enter a valid 10-digit phone number (no spaces).")]
 		[DataType(DataType.PhoneNumber)]
 		[MaxLength(10)]
-		public override string Phone { get; set; } = "";
+		public override string Phone { get; set; }
 
 		[Display(Name = "Chapter")]
 		[Required(ErrorMessage = "You must select a Chapter")]

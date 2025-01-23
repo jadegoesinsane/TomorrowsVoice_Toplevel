@@ -20,3 +20,50 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+/* Required Form Control Asterisk */
+.form-floating.required .control-label:after,
+.form-group.required .control-label:after {
+    content:"*";
+    color:red;
+}
+
+.form-floating.optional .control-label:after,
+.form-group.optional .control-label:after {
+    content: " (optional)";
+}
+.form-floating > .control-label {
+    color: rgb(104 114 129);
+}
+/*
+/* Form Floating
+.form-floating > .form-control {
+    padding-top: 0.375rem;
+    padding-right: 0.75rem;
+    padding-bottom: 0.375rem;
+    padding-left: 0.75rem;
+    line-height: 1.5;
+    height: calc(2.5rem + 2px);
+}
+
+.form-floating > label {
+    padding-top: 0.375rem;
+    padding-right: 0.75rem;
+    padding-bottom: 0.375rem;
+    padding-left: 0.75rem;
+}
+
+/* Overwrite Bootstrap5 floating label 
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    background-color: white;
+    color: rgb(104 114 129);
+    opacity: 1;
+    transform: scale(.85) translateY(-1.4rem) translateX(.5rem);
+    height: auto;
+    width: auto;
+    padding: .5rem;
+}
+*/
