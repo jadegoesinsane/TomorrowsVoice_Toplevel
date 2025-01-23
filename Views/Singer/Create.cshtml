@@ -52,7 +52,8 @@
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
-				<select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
+				@Html.DropDownList("ChapterID", ViewBag.Chapters as SelectList, "Select a City ", new { @class = "form-control"})
+				<!--<select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>-->
 				<label asp-for="ChapterID" class="control-label"></label>
 				<span asp-validation-for="ChapterID" class="text-danger"></span>
 			</div>

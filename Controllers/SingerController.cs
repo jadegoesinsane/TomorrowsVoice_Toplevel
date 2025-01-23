@@ -307,10 +307,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private SelectList ChapterSelectList(int? selectedId)
 		{
-			if (ViewData["ActionName"].ToString() == "Index")
-			{
-				return new SelectList(_context.Chapters
+			return new SelectList(_context.Chapters
 				.OrderBy(c => c.Name), "ID", "Name", selectedId);
+			/*if (ViewData["ActionName"].ToString() == "Index")
+			{
+				
 			}
 			else
 			{
@@ -323,7 +324,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}).ToList();
 				items.Insert(0, new SelectListItem(){ Text = "Select Chapter"});
 				return new SelectList(items, "Value", "Text", selectedId);
-			}
+			}*/
 		}
 
 		private void PopulateDropDownLists(Singer? singer = null)
