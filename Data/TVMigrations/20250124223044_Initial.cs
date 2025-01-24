@@ -18,10 +18,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Address = table.Column<string>(type: "TEXT", nullable: false),
-                    City = table.Column<string>(type: "TEXT", nullable: false),
-                    Province = table.Column<string>(type: "TEXT", nullable: false),
-                    Postal = table.Column<string>(type: "TEXT", nullable: false)
+                    Address = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Province = table.Column<int>(type: "INTEGER", nullable: false),
+                    PostalCode = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,11 +89,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    DirectorID = table.Column<int>(type: "INTEGER", nullable: false)
+                    DirectorID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ChapterID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rehearsals", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Rehearsals_Chapters_ChapterID",
+                        column: x => x.ChapterID,
+                        principalTable: "Chapters",
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_Rehearsals_Directors_DirectorID",
                         column: x => x.DirectorID,
@@ -149,6 +154,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "IX_RehearsalAttendances_SingerID",
                 table: "RehearsalAttendances",
                 column: "SingerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rehearsals_ChapterID",
+                table: "Rehearsals",
+                column: "ChapterID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rehearsals_DirectorID_RehearsalDate",

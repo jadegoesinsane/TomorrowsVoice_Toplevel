@@ -144,7 +144,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Address,Postal")] Chapter chapter)
+        public async Task<IActionResult> Create([Bind("ID,Name,Address,PostalCode,Province")] Chapter chapter)
         {
             try
             {
@@ -201,7 +201,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             //Try updating it with the values posted
             if (await TryUpdateModelAsync<Chapter>(chapterToUpdate, "",
-                c => c.Name))
+                c => c.Name, c => c.Address, c => c.PostalCode, c => c.Province))
             {
                 try
                 {

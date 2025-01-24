@@ -18,9 +18,8 @@ namespace TomorrowsVoice_Toplevel.Models
         public string Address { get; set; } = "";
 
 
-
-        [Required(ErrorMessage = "You must select Province!")]
         [Display(Name = "Province")]
+        [Required(ErrorMessage = "You must select Province!")]
         public Province Province { get; set; }
         
 

@@ -46,7 +46,7 @@
                 @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Postal)
+					@Html.DisplayNameFor(model => model.PostalCode)
             </th>
             <th></th>
         </tr>
@@ -61,7 +61,7 @@
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Postal)
+						@Html.DisplayFor(modelItem => item.PostalCode)
             </td>
 					<td>
 						<partial name="_CrudIcons" model="@item.ID" />

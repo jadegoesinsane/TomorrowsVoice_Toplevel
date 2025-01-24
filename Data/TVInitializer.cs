@@ -70,39 +70,44 @@ namespace TomorrowsVoice_Toplevel.Data
 							{
 								Name = "St. Catharines",
 								Address = "188 Linwell Rd",
-								City = "St. Catharines",
-								Province = "ON",
-								Postal = "L2N6N3"
+								Province = Province.Ontario,
+                                PostalCode = "L2N6N3"
 							}, new Chapter
 							{
 								Name = "Hamilton",
 								Address = "99 N Oval",
-								City = "Hamilton",
-								Province = "ON",
-								Postal = "L8S3Z2"
+								
+								Province = Province.Ontario,
+                                PostalCode = "L8S3Z2"
 							}, new Chapter
 							{
 								Name = "Toronto",
 								Address = "452 College St",
-								City = "Toronto",
-								Province = "ON",
-								Postal = "M6G 1A1"
+								
+								Province = Province.Ontario,
+                                PostalCode = "M6G 1A1"
 							}, new Chapter
 							{
 								Name = "Saskatoon",
 								Address = "35 – 22nd St. East",
-								City = "Saskatoon",
-								Province = "SK",
-								Postal = "M6G 1A1"
+								
+								Province = Province.Saskatchewan,
+                                PostalCode = "M6G 1A1"
 							}, new Chapter
 							{
 								Name = "Vancouver",
-								City = "Vancouver"
-							}, new Chapter
+                                Address = "35 – 22nd St. East",
+
+                                Province = Province.Saskatchewan,
+                                PostalCode = "M6G 1A1"
+                            }, new Chapter
 							{
 								Name = "Surrey",
-								City = "Surrey"
-							});
+                                Address = "35 – 22nd St. East",
+
+                                Province = Province.Saskatchewan,
+                                PostalCode = "M6G 1A1"
+                            });
 						context.SaveChanges();
 					}
 

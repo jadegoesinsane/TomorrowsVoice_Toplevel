@@ -91,7 +91,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			if (ChapterID.HasValue)
 			{
-				rehearsals = rehearsals.Where(r => r.Director.ChapterID == ChapterID);
+				rehearsals = rehearsals.Where(r => r.Director. ChapterID == ChapterID);
 				numFilters++;
 			}
 
@@ -523,10 +523,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
 				 .Include(c => c.Director).ThenInclude(c => c.Chapter)
 				 .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate)
-				 .GroupBy(a => new { a.Director.Chapter.City })
+				 .GroupBy(a => new { a.Director.Chapter.Name })
 				 .Select(grp => new AttendanceSummaryVM
 				 {
-					 City = grp.Key.City,
+					 City = grp.Key.Name,
 					 Number_Of_Rehearsals = grp.Count(),
 					 Average_Attendance = Math.Round(grp.Average(a => a.RehearsalAttendances.Count), 1),
 					 Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
@@ -544,10 +544,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
 				  .Include(c => c.Director).ThenInclude(c => c.Chapter)
 				  .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate)
-				  .GroupBy(a => new { a.Director.Chapter.City })
+				  .GroupBy(a => new { a.Director.Chapter.Name })
 				  .Select(grp => new AttendanceSummaryVM
 				  {
-					  City = grp.Key.City,
+					  City = grp.Key.Name,
 					  Number_Of_Rehearsals = grp.Count(),
 					  Average_Attendance = grp.Average(a => a.RehearsalAttendances.Count),
 					  Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),

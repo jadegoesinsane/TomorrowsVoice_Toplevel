@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250124053710_Initial")]
+    [Migration("20250124223044_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -28,10 +28,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("City")
-                        .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -39,13 +36,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Postal")
+                    b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Province")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Province")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
@@ -104,6 +100,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("ChapterID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("DirectorID")
                         .HasColumnType("INTEGER");
 
@@ -121,6 +120,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ChapterID");
 
                     b.HasIndex("DirectorID", "RehearsalDate")
                         .IsUnique();
@@ -212,6 +213,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
                 {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", null)
+                        .WithMany("Rehearsals")
+                        .HasForeignKey("ChapterID");
+
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
                         .WithMany("Rehearsals")
                         .HasForeignKey("DirectorID")
@@ -254,6 +259,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
                     b.Navigation("Directors");
+
+                    b.Navigation("Rehearsals");
 
                     b.Navigation("Singers");
                 });
