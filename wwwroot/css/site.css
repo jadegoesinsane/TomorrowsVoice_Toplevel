@@ -132,6 +132,10 @@ header {
     border-color: #8f3796;
 }
 
+.btn-link {
+    color: #8f3796;
+}
+
 /* Header / Nav Styling */
 a {
     color: rgb(157, 43, 157);

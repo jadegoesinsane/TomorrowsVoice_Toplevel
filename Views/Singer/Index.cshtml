@@ -82,22 +82,22 @@
 						@{
 							if (item.Note != null)
 							{
-							string[] noteWords = item.Note.Split(' ');
-							if (noteWords.Count() > 4)
-							{
-								<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
-									@(string.Join(" ", noteWords.Take(4)) + "...")
-								</a>
-								<div class="collapse" id="collapseSum@(item.ID)">
-									<div class="well">
-										@(string.Join(" ", noteWords.Skip(4)))
+								string[] noteWords = item.Note.Split(' ');
+								if (noteWords.Count() > 4)
+								{
+									<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+										@(string.Join(" ", noteWords.Take(4)) + "...")
+									</a>
+									<div class="collapse" id="collapseSum@(item.ID)">
+										<div class="well">
+											@(string.Join(" ", noteWords.Skip(4)))
+										</div>
 									</div>
-								</div>
-							}
-							else
-							{
-								@item.Note
-							}
+								}
+								else
+								{
+									@item.Note
+								}
 							}
 						}
 					</td>
@@ -111,18 +111,7 @@
 						@Html.DisplayFor(modelItem => item.PhoneFormatted)
 					</td>
 					<td>
-						<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-						   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-							&#x270D;
-						</a>
-						<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-						   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-							&#x1F50E;
-						</a>
-						<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-						   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-							&#x274C;
-						</a>
+						<partial name="_CrudIcons" model="@item.ID" />
 					</td>
 				</tr>
 			}
