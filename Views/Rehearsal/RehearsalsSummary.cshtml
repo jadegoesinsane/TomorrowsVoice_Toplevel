@@ -30,7 +30,7 @@
 
 
     <div class="col-md-4" style="margin-top: 20px;">
-        <button class="btn btn-primary" type="submit">Filter</button>
+        <button class="btn btn-primary" type="submit" onclick="exportToExcel3()">Filter</button>
 
     </div>
 
@@ -41,9 +41,12 @@
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.City)</th>
+
             <th>@Html.DisplayNameFor(model => model.Number_Of_Rehearsals)</th>
             <th>@Html.DisplayNameFor(model => model.Average_Attendance)</th>
+
             <th>@Html.DisplayNameFor(model => model.Highest_Attendance)</th>
+
             <th>@Html.DisplayNameFor(model => model.Lowest_Attendance)</th>
             <th>@Html.DisplayNameFor(model => model.Total_Attendance)</th>
         </tr>
@@ -54,9 +57,13 @@
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.City)</td>
                 <td>@Html.DisplayFor(modelItem => item.Number_Of_Rehearsals)</td>
+
                 <td>@Html.DisplayFor(modelItem => item.Average_Attendance)</td>
+
                 <td>@Html.DisplayFor(modelItem => item.Highest_Attendance)</td>
+
                 <td>@Html.DisplayFor(modelItem => item.Lowest_Attendance)</td>
+
                 <td>@Html.DisplayFor(modelItem => item.Total_Attendance)</td>
             </tr>
         }
@@ -79,11 +86,29 @@
 
 @section Scripts {
     <script>
+        function exportToExcel3() {
+                              // Get selected dates
+            var startDate = document.getElementById('startDate').value;
+            var endDate = document.getElementById('endDate').value;
+
+                              // Validate date range
+            if (new Date(startDate) > new Date(endDate)) {
+                alert("Start Date cannot be later than End Date.");
+                return; // Prevent form submission
+            }
+                          }
+    </script>
+    <script>
         function exportToExcel1() {
             // Get selected dates
             var startDate = document.getElementById('startDate').value;
             var endDate = document.getElementById('endDate').value;
 
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert("Start Date cannot be later than End Date.");
+                return; // Prevent form submission
+            }
             // Set the hidden form fields with the selected dates
             document.getElementById('exportStartDate').value = startDate;
             document.getElementById('exportEndDate').value = endDate;
@@ -98,6 +123,11 @@
             // Get selected dates
             var startDate = document.getElementById('startDate').value;
             var endDate = document.getElementById('endDate').value;
+
+            if (startDate > endDate) {
+                alert("Start Date cannot be later than End Date.");
+                return; // Prevent form submission
+            }
 
             // Set the hidden form fields with the selected dates
             document.getElementById('exportStartDate2').value = startDate;
