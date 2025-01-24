@@ -46,16 +46,16 @@
 					<input type="submit" name="actionButton" value="Date" class="btn btn-link" />
 				</th>
 				
-				<th>
+				<th class="d-none d-lg-table-cell">
 					<input type="submit" value="Director" class="btn btn-toolbar" />
 				</th>
 				<th>
 					<input type="submit" value="Chapter" class="btn btn-toolbar" />
 				</th>
-				<th>
+				<th class="d-none d-sm-table-cell">
 					<input type="submit" value="Attendees" class="btn btn-toolbar" />
 				</th>
-				<th>
+				<th class="d-none d-lg-table-cell">
 					<input type="submit" value="Notes" class="btn btn-toolbar" />
 				</th>
 				<th></th>
@@ -68,14 +68,14 @@
 					<td>
 						@Html.DisplayFor(modelItem => item.Summary)
 					</td>
-					
-					<td>
+
+					<td class="d-none d-lg-table-cell">
 						@Html.DisplayFor(modelItem => item.Director.NameFormatted)
 					</td>
 					<td>
 						@Html.DisplayFor(modelItem => item.Director.Chapter.Name)
 					</td>
-					<td class="d-none d-lg-table-cell">
+					<td class="d-none d-sm-table-cell">
 						@{
 							int singerCount = item.RehearsalAttendances.Count;
 							if (singerCount > 0)
@@ -104,7 +104,7 @@
 							}
 						}
 					</td>
-					<td class="d-none d-xl-table-cell">
+					<td class="d-none d-lg-table-cell">
 						@{
 							if (item.Note != null)
 							{
