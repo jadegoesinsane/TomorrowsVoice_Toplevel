@@ -4,10 +4,9 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<partial name="_ViewHeading" />
 
 <div>
-    <h4>Rehearsal</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -39,6 +38,42 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Director.NameFormatted)
+        </dd>
+        <dt class="col-sm-2">
+            Attendee(s)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                int singerCount = Model.RehearsalAttendances.Count;
+                if (singerCount > 0)
+                {
+                    string firstSinger = Model.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
+                    if (singerCount > 1)
+                    {
+                        string SingerList = "";
+                        var c = Model.RehearsalAttendances.ToList();
+                        for (int i = 0; i < singerCount; i++)
+                        {
+                            SingerList += c[i].Singer.NameFormatted + " <br />";
+                        }
+                        <a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(Model.ID)"
+                           aria-expanded="false" aria-controls="collapseSingers@(Model.ID)">
+                            View all @singerCount attendees
+                        </a>
+                        <div class="collapse" id="collapseSingers@(Model.ID)">
+                            @Html.Raw(SingerList)
+                        </div>
+                    }
+                    else
+                    {
+                        @firstSinger
+                    }
+                }
+                else
+                {
+                    <p>No attendees</p>
+                }
+            }
         </dd>
     </dl>
 </div>

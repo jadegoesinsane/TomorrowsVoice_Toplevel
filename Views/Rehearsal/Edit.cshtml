@@ -4,12 +4,10 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Rehearsal</h4>
+<partial name="_ViewHeading" />
 <hr />
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger"></div>
     <input type="hidden" asp-for="ID" />
     <div class="row">
         <div class="col-md-4">
@@ -43,7 +41,7 @@
         <div class="col-md-8">
             <div class="row">
                 <div class="form-group">
-                    <label for="MembershipFilter" class="control-label">Filter by City</label>
+                    <label for="MembershipFilter" class="control-label">Select a City</label>
                     @Html.DropDownList("chapterSelect", ViewBag.Chapters as SelectList, "All ",
                              new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()" })
                 </div>

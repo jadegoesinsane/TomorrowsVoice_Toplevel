@@ -60,7 +60,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ContactName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Note = table.Column<string>(type: "TEXT", nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
