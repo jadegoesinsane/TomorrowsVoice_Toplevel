@@ -11,16 +11,26 @@ namespace TomorrowsVoice_Toplevel.Models
         [StringLength(50, ErrorMessage = "Name cannot be more than 50 characters long.")]
         public string Name { get; set; } = "";
 
+
+        [Display(Name = "Address")]
+        [Required(ErrorMessage = "You cannot leave the address blank.")]
+        [StringLength(50, ErrorMessage = "address can not be more than 50 characters long.")]
         public string Address { get; set; } = "";
 
-        public string City { get; set; } = "";
-        public string Province { get; set; } = "";
+
+
+        [Required(ErrorMessage = "You must select Province!")]
+        [Display(Name = "Province")]
+        public Province Province { get; set; }
+        
 
         [Display(Name = "Postal Code")]
-        public string Postal { get; set; } = "";
-
+        [Required]
+        [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Invalid postal code.")]
+        public string PostalCode { get; set; } = "";
+       
         public virtual ICollection<Director> Directors { get; set; } = new HashSet<Director>();
-        
+        public virtual ICollection<Rehearsal> Rehearsals { get; set; } = new HashSet<Rehearsal>();
         public virtual ICollection<Singer> Singers { get; set; } = new HashSet<Singer>();
         //public virtual ICollection<Event> Events { get; set; } = new HashSet<Event>();
         //public virtual ICollection<Volunteer> Volunteers { get; set; } = new HashSet<Volunteer>();
