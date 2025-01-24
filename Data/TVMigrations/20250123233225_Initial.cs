@@ -29,7 +29,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Director",
+                name: "Directors",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
@@ -44,9 +44,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Director", x => x.ID);
+                    table.PrimaryKey("PK_Directors", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Director_Chapters_ChapterID",
+                        name: "FK_Directors_Chapters_ChapterID",
                         column: x => x.ChapterID,
                         principalTable: "Chapters",
                         principalColumn: "ID",
@@ -96,9 +96,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     table.PrimaryKey("PK_Rehearsals", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Rehearsals_Director_DirectorID",
+                        name: "FK_Rehearsals_Directors_DirectorID",
                         column: x => x.DirectorID,
-                        principalTable: "Director",
+                        principalTable: "Directors",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -136,8 +136,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Director_ChapterID",
-                table: "Director",
+                name: "IX_Directors_ChapterID",
+                table: "Directors",
                 column: "ChapterID");
 
             migrationBuilder.CreateIndex(
@@ -175,7 +175,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "Singers");
 
             migrationBuilder.DropTable(
-                name: "Director");
+                name: "Directors");
 
             migrationBuilder.DropTable(
                 name: "Chapters");

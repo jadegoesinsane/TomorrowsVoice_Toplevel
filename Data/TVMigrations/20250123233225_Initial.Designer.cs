@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250123202136_Initial")]
+    [Migration("20250123233225_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -95,7 +95,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasIndex("ChapterID");
 
-                    b.ToTable("Director");
+                    b.ToTable("Directors");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>

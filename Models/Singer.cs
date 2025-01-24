@@ -21,7 +21,6 @@ namespace TomorrowsVoice_Toplevel.Models
 		public string ContactName { get; set; } = "";
 
 		[Display(Name = "Notes")]
-		[StringLength(255)]
 		[DataType(DataType.MultilineText)]
 		public string? Note { get; set; }
 

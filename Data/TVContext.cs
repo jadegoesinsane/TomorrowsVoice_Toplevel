@@ -101,8 +101,6 @@ namespace TomorrowsVoice_Toplevel.Data
 			return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 		}
 
-		public DbSet<TomorrowsVoice_Toplevel.Models.Director> Director { get; set; } = default!;
-
 		/*private void OnBeforeSaving()
         {
             var entries = ChangeTracker.Entries();
