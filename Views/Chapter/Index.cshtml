@@ -67,11 +67,20 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Postal)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+						   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+							&#x270D;
+						</a>
+						<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+						   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+							&#x1F50E;
+						</a>
+						<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+						   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+							&#x274C;
+						</a>
+					</td>
         </tr>
 }
     </tbody>

@@ -64,13 +64,10 @@
 
 
     <div class="form-group">
-        <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
+        <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" /> |
+        <partial name="_BackToList" />
     </div>
 </form>
-
-<div>
-    <partial name="_BackToList" />
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

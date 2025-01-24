@@ -101,10 +101,10 @@ header {
     transition: none;
 }
 
-    .btn-primary:hover, .btn-primary:focus {
-        background: linear-gradient(to bottom, #8f3796, #611667);
-        border-color: #8f3796;
-    }
+.btn-primary:hover, .btn-primary:focus {
+    background: linear-gradient(to bottom, #8f3796, #611667);
+    border-color: #8f3796;
+}
 
 .btn-outline-primary {
     border-width: 1.5px;
@@ -112,11 +112,11 @@ header {
     color: #8f3796;
 }
 
-    .btn-outline-primary:hover {
-        color: #fff;
-        background-color: #8f3796;
-        border-color: #8f3796;
-    }
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #8f3796;
+    border-color: #8f3796;
+}
 
 .btn-outline-dark {
     border-width: 1.5px;
@@ -156,6 +156,17 @@ a {
     color: #611667;
 }
 
+/* Tabs */
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #8f3796;
+}
+.nav-link {
+    color: #8f3796;
+}
+.nav-link:focus, .nav-link:hover {
+    color: #611667;
+}
 /* Select2 Custom Styling */
 /*THIS IS THE HOVER!
     .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted {
