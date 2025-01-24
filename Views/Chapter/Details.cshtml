@@ -1,13 +1,9 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Chapter
 
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
+<partial name="_ViewHeading" />
 
 <div>
-    <h4>Chapter</h4>
+    <h4>@Model.Name</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">

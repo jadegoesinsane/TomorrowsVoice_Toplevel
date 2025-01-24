@@ -1,13 +1,9 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Rehearsal>
 
-@{
-	ViewData["Title"] = "Index";
-}
-
 <partial name="_ViewHeading" />
 <h5>@ViewData["AptCount"] rehearsals between @ViewData["StartDate"] and @ViewData["EndDate"]</h5>
 <p>
-	<a asp-action="Create">Create New</a>
+	<a asp-action="Create">Create New @ViewData["ControllerFriendlyName"]</a>
 </p>
 
 <div>
@@ -28,185 +24,184 @@
 	<div class="tab-content" id="nav-tabContent">
 		<div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
 			<br />
-<form asp-action="Index" method="get">
-	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-	<div class="form-horizontal">
-		<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-			Filter/Search @ViewData["numberFilters"]
-		</button><br />
-		<div class="collapse" id="collapseFilter">
-			<div class="card card-body bg-light">
-				<div class="row">
-					<div class="form-group col-md-4">
-						<label class="control-label">Select by Director:</label>
+			<form asp-action="Index" method="get">
+				<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+				<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+				<div class="form-horizontal">
+					<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+						Filter/Search @ViewData["numberFilters"]
+					</button><br />
+					<div class="collapse" id="collapseFilter">
+						<div class="card card-body bg-light">
+							<div class="row">
+								<div class="form-group col-md-4">
+									<label class="control-label">Select by Director:</label>
 									@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control" })
-					</div>
-					<div class="form-group col-md-4">
-						<label class="control-label">Select by Chapter:</label>
-						@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control" })
-					</div>
-					<div class="form-group col-md-4">
-						<label class="control-label">Search Attendance Notes:</label>
+								</div>
+								<div class="form-group col-md-4">
+									<label class="control-label">Select by Chapter:</label>
+									@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control" })
+								</div>
+								<div class="form-group col-md-4">
+									<label class="control-label">Search Attendance Notes:</label>
 									@Html.TextBox("SearchString", null, new { @class = "form-control" })
-					</div>
-					<div class="form-group col-md-3">
-						<label class="control-label">Start Date:</label>
-						<input class="form-control" type="date" id="StartDate" name="StartDate" value="@ViewData["StartDate"]" aria-describedby="EndDate" aria-invalid="false">
-					</div>
-					<div class="form-group col-md-3">
-						<label class="control-label">End Date:</label>
-						<input class="form-control" type="date" id="StartDate" name="EndDate" value="@ViewData["EndDate"]" aria-describedby="EndDate" aria-invalid="false">
-					</div>
-					<div class="form-group col-md-4 align-self-end">
-						<input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
-						<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+								</div>
+								<div class="form-group col-md-3">
+									<label class="control-label">Start Date:</label>
+									<input class="form-control" type="date" id="StartDate" name="StartDate" value="@ViewData["StartDate"]" aria-describedby="EndDate" aria-invalid="false">
+								</div>
+								<div class="form-group col-md-3">
+									<label class="control-label">End Date:</label>
+									<input class="form-control" type="date" id="StartDate" name="EndDate" value="@ViewData["EndDate"]" aria-describedby="EndDate" aria-invalid="false">
+								</div>
+								<div class="form-group col-md-4 align-self-end">
+									<input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+									<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
-	<table class="table">
-		<thead>
-			<tr>
-				<th>
-					<input type="submit" name="actionButton" value="Date" class="btn btn-link" />
-				</th>
-				
-				<th class="d-none d-lg-table-cell">
-					<input type="submit" value="Director" class="btn btn-toolbar" />
-				</th>
-				<th>
-					<input type="submit" value="Chapter" class="btn btn-toolbar" />
-				</th>
-				<th class="d-none d-sm-table-cell">
-					<input type="submit" value="Attendees" class="btn btn-toolbar" />
-				</th>
-				<th class="d-none d-lg-table-cell">
-					<input type="submit" value="Notes" class="btn btn-toolbar" />
-				</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model)
-			{
-				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.Summary)
-					</td>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>
+								<input type="submit" name="actionButton" value="Date" class="btn btn-link" />
+							</th>
 
-					<td class="d-none d-lg-table-cell">
-						@Html.DisplayFor(modelItem => item.Director.NameFormatted)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Director.Chapter.Name)
-					</td>
-					<td class="d-none d-sm-table-cell">
-						@{
-							int singerCount = item.RehearsalAttendances.Count;
-							if (singerCount > 0)
-							{
-								string firstSinger = item.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
-								if (singerCount > 1)
-								{
-									string SingerList = "";
-									var c = item.RehearsalAttendances.ToList();
-									for (int i = 0; i < singerCount; i++)
-									{
-										SingerList += c[i].Singer.NameFormatted + " <br />";
+							<th class="d-none d-lg-table-cell">
+								<input type="submit" value="Director" class="btn btn-toolbar" />
+							</th>
+							<th>
+								<input type="submit" value="Chapter" class="btn btn-toolbar" />
+							</th>
+							<th class="d-none d-sm-table-cell">
+								<input type="submit" value="Attendees" class="btn btn-toolbar" />
+							</th>
+							<th class="d-none d-lg-table-cell">
+								<input type="submit" value="Notes" class="btn btn-toolbar" />
+							</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td>
+									@Html.DisplayFor(modelItem => item.Summary)
+								</td>
+
+								<td class="d-none d-lg-table-cell">
+									@Html.DisplayFor(modelItem => item.Director.NameFormatted)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.Director.Chapter.Name)
+								</td>
+								<td class="d-none d-sm-table-cell">
+									@{
+										int singerCount = item.RehearsalAttendances.Count;
+										if (singerCount > 0)
+										{
+											string firstSinger = item.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
+											if (singerCount > 1)
+											{
+												string SingerList = "";
+												var c = item.RehearsalAttendances.ToList();
+												for (int i = 0; i < singerCount; i++)
+												{
+													SingerList += c[i].Singer.NameFormatted + " <br />";
+												}
+												<a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(item.ID)"
+												   aria-expanded="false" aria-controls="collapseSingers@(item.ID)">
+													View all @singerCount attendees
+												</a>
+												<div class="collapse" id="collapseSingers@(item.ID)">
+													@Html.Raw(SingerList)
+												</div>
+											}
+											else
+											{
+												@firstSinger
+											}
+										}
 									}
-									<a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(item.ID)"
-									   aria-expanded="false" aria-controls="collapseSingers@(item.ID)">
-										View all @singerCount attendees
-									</a>
-									<div class="collapse" id="collapseSingers@(item.ID)">
-										@Html.Raw(SingerList)
-									</div>
-								}
-								else
-								{
-									@firstSinger
-								}
-							}
-						}
-					</td>
-					<td class="d-none d-lg-table-cell">
-						@{
-							if (item.Note != null)
-							{
-								string[] noteWords = item.Note.Split(' ');
-								if (noteWords.Count() > 4)
-								{
-									<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
-										@(string.Join(" ", noteWords.Take(4)) + "...")
-									</a>
-									<div class="collapse" id="collapseSum@(item.ID)">
-										<div class="well">
-											@(string.Join(" ", noteWords.Skip(4)))
-										</div>
-									</div>
-								}
-								else
-								{
-									@item.Note
-								}
-							}
-							else
-							{
-								<p>No Notes</p>
-							}
-						}
-					</td>
-					
+								</td>
+								<td class="d-none d-lg-table-cell">
+									@{
+										if (item.Note != null)
+										{
+											string[] noteWords = item.Note.Split(' ');
+											if (noteWords.Count() > 4)
+											{
+												<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+													@(string.Join(" ", noteWords.Take(4)) + "...")
+												</a>
+												<div class="collapse" id="collapseSum@(item.ID)">
+													<div class="well">
+														@(string.Join(" ", noteWords.Skip(4)))
+													</div>
+												</div>
+											}
+											else
+											{
+												@item.Note
+											}
+										}
+										else
+										{
+											<p>No Notes</p>
+										}
+									}
+								</td>
 
-					<td>
-						<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-						   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-							&#x270D;
-						</a>
-						<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-						   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-							&#x1F50E;
-						</a>
-						<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-						   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-							&#x274C;
-						</a>
-					</td>
-				</tr>
-			}
-		</tbody>
-	</table>
-	<partial name="_PagingNavBar" />
-</form>
-</div>
-<div class="tab-pane fade ml-3" role="tabpanel" id="CalendarPanel" aria-labelledby="Calendar-tab">
-	<br />
+								<td>
+									<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+									   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+										&#x270D;
+									</a>
+									<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+									   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+										&#x1F50E;
+									</a>
+									<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+									   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+										&#x274C;
+									</a>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<partial name="_PagingNavBar" />
+			</form>
+		</div>
+		<div class="tab-pane fade ml-3" role="tabpanel" id="CalendarPanel" aria-labelledby="Calendar-tab">
+			<br />
 			<partial name="_RehearsalCalendar" />
 		</div>
-</div>
+	</div>
 	@section Scripts {
-								<!--	<script type="text/javascript">
-										$('.nav-link').click(function () {
-											var activeTab = $(this).attr("id");
-											switch (activeTab) {
-												case 'Calendar-Tab': $('#CalendarPanel').load('/Rehearsal/RehearsalCalendar');
-													break;
-												default: break;
-											};
-										})
-										</script>-->
-										<script>
-										document.addEventListener('DOMContentLoaded', function () {
-											var calendarEl = document.getElementById('calendar');
-											var calendar = new FullCalendar.Calendar(calendarEl, {
-												initialView: 'dayGridMonth',
-													themeSystem: 'bootstrap5',
-												events: '/Rehearsal/GetRehearsals',
-													eventDisplay: 'block'
-											});//#8f3796
-											calendar.render();
-										});
-									</script>
+		<!--	<script type="text/javascript">
+				$('.nav-link').click(function () {
+					var activeTab = $(this).attr("id");
+					switch (activeTab) {
+						case 'Calendar-Tab': $('#CalendarPanel').load('/Rehearsal/RehearsalCalendar');
+							break;
+						default: break;
+					};
+				})
+				</script>-->
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				var calendarEl = document.getElementById('calendar');
+				var calendar = new FullCalendar.Calendar(calendarEl, {
+					initialView: 'dayGridMonth',
+					themeSystem: 'bootstrap5',
+					events: '/Rehearsal/GetRehearsals',
+					eventDisplay: 'block'
+				});//#8f3796
+				calendar.render();
+			});
+		</script>
 	}

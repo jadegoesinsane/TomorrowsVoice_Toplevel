@@ -1,10 +1,7 @@
 @model TomorrowsVoice_Toplevel.Models.Rehearsal
 
-@{
-    ViewData["Title"] = "Create";
-}
-
 <partial name="_ViewHeading" />
+
 <hr />
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -60,7 +57,7 @@
             </div>
 
     </div>
-           
+
     <div class="form-group">
         <input type="submit" id="btnSubmit" value="Create" class="btn btn-primary" /> |
         <partial name="_BackToList" />
