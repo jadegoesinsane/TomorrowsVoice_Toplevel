@@ -9,6 +9,25 @@
 <p>
 	<a asp-action="Create">Create New</a>
 </p>
+
+<div>
+	<!-- Nav tabs -->
+	<nav>
+		<div class="nav nav-pills" id="myTabs" role="tablist">
+			<button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
+					type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
+				List View
+			</button>
+			<button class="nav-link" id="Calendar-Tab" data-bs-toggle="tab" data-bs-target="#CalendarPanel"
+					type="button" role="tab" aria-controls="CalendarPanel" aria-selected="false">
+				Calendar View
+			</button>
+		</div>
+	</nav>
+	<!-- Tab panes -->
+	<div class="tab-content" id="nav-tabContent">
+		<div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
+			<br />
 <form asp-action="Index" method="get">
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
 	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
@@ -21,7 +40,7 @@
 				<div class="row">
 					<div class="form-group col-md-4">
 						<label class="control-label">Select by Director:</label>
-						@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control" })
+									@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control" })
 					</div>
 					<div class="form-group col-md-4">
 						<label class="control-label">Select by Chapter:</label>
@@ -29,7 +48,7 @@
 					</div>
 					<div class="form-group col-md-4">
 						<label class="control-label">Search Attendance Notes:</label>
-						@Html.TextBox("SearchString", null, new { @class = "form-control" })
+									@Html.TextBox("SearchString", null, new { @class = "form-control" })
 					</div>
 					<div class="form-group col-md-4 align-self-end">
 						<input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
@@ -153,3 +172,33 @@
 	</table>
 	<partial name="_PagingNavBar" />
 </form>
+</div>
+<div class="tab-pane fade ml-3" role="tabpanel" id="CalendarPanel" aria-labelledby="Calendar-tab">
+	<br />
+			<partial name="_RehearsalCalendar" />
+		</div>
+</div>
+	@section Scripts {
+								<!--	<script type="text/javascript">
+										$('.nav-link').click(function () {
+											var activeTab = $(this).attr("id");
+											switch (activeTab) {
+												case 'Calendar-Tab': $('#CalendarPanel').load('/Rehearsal/RehearsalCalendar');
+													break;
+												default: break;
+											};
+										})
+										</script>-->
+										<script>
+										document.addEventListener('DOMContentLoaded', function () {
+											var calendarEl = document.getElementById('calendar');
+											var calendar = new FullCalendar.Calendar(calendarEl, {
+												initialView: 'dayGridMonth',
+													themeSystem: 'bootstrap5',
+												events: '/Rehearsal/GetRehearsals',
+													eventDisplay: 'block'
+											});//#8f3796
+											calendar.render();
+										});
+									</script>
+	}
