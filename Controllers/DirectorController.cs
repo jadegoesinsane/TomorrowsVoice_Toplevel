@@ -311,8 +311,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-		// For Adding Chapters
-		private SelectList ChapterSelectList(int? id)
+        //Partial View for Directors Rehearsal View
+        public PartialViewResult DirectorsRehearsalList(int id)
+        {
+            var rehearsals = _context.Rehearsals
+                .Where(r => r.DirectorID == id)
+                .OrderBy(r => r.RehearsalDate)
+                .ToList();
+
+            return PartialView("_DirectorsRehearsalList", rehearsals);
+        }
+
+
+        // For Adding Chapters
+        private SelectList ChapterSelectList(int? id)
 		{
 			var cQuery = from c in _context.Chapters
 						 orderby c.Name
