@@ -10,13 +10,21 @@
 
 <!-- Form for filtering -->
 <form asp-controller="Rehearsal" asp-action="RehearsalsSummary" method="get" id="filterForm">
-    <label for="startDate" class="control-label">Start Date:</label>
-    <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" />
+    <div class="row">
+        <div class="col-md-4">
+            <label for="startDate" class="control-label">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" />
+        </div>
+        <div class="col-md-4">
+            <label for="endDate" class="control-label">End Date:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" />
+        </div>
 
-    <label for="endDate" class="control-label">End Date:</label>
-    <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" />
+    </div>
 
-    <button type="submit">Filter</button>
+    <div class="col-md-4" style="margin-top: 20px;">
+        <button class="btn btn-primary" type="submit">Filter</button>
+    </div>
 
     <!-- Export button (this will trigger export action with dates) -->
     <button type="button" class="btn btn-info float-end" onclick="exportToExcel()">Export to Excel</button>
