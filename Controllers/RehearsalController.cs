@@ -655,8 +655,89 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			return NotFound("No data.");
 		}
+        public IActionResult RehearsalsDetailReport(DateTime? startDate, DateTime? endDate)
+        {
 
-		private bool RehearsalExists(int id)
+            var appts = _context.RehearsalAttendances
+                .Include(c => c.Rehearsal)
+                    .ThenInclude(c => c.Director)
+                    .ThenInclude(c => c.Chapter)
+                    .Where(a => a.Rehearsal.RehearsalDate >= startDate && a.Rehearsal.RehearsalDate <= endDate)
+                .GroupBy(a => new { a.Rehearsal.Director.Chapter.Name, a.Rehearsal.RehearsalDate })
+                .Select(grp => new RehearsalViewModelDetails
+                {
+                    City = grp.Key.Name,
+                    RehearsalDate = grp.Key.RehearsalDate,  // ??? DateTime ??
+                    NumberOfSingers = grp.Count(),
+                })
+                .ToList();
+
+
+            if (appts.Count > 0)
+            {
+                string startDate1 = startDate.Value.ToShortDateString();
+
+                string endDate1 = endDate.Value.ToShortDateString();
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add($"RehearsalsDetailReport from {startDate1} to {endDate1}");
+
+                    var formattedAppts = appts.Select(a => new
+                    {
+                        a.City,
+                        RehearsalDate = a.RehearsalDate.ToString("yyyy-MM-dd"),  // ?????
+                        a.NumberOfSingers
+                    }).ToList();
+
+                    workSheet.Cells[3, 1].LoadFromCollection(formattedAppts, true);
+
+
+                    workSheet.Cells[4, 1, appts.Count + 3, 2].Style.Font.Bold = true;
+
+                    // ?????
+                   
+
+                    // ????????
+                    workSheet.Cells[1, 1].Value = $"RehearsalsDetailReport from {startDate1} to {endDate1}";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 3])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    // ?? Excel ??
+                    try
+                    {
+                        Byte[] theData = excel.GetAsByteArray();
+                        string filename = $"RehearsalsDetailReport from {startDate1} to {endDate1}.xlsx";
+                        string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        return File(theData, mimeType, filename);
+                    }
+                    catch (Exception)
+                    {
+                        return BadRequest("Could not build and download the file.");
+                    }
+                }
+            }
+
+            return NotFound("No data.");
+        }
+
+        private bool RehearsalExists(int id)
 		{
 			return _context.Rehearsals.Any(e => e.ID == id);
 		}
