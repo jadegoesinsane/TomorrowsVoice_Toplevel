@@ -19,6 +19,7 @@ using System.Drawing;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -269,7 +270,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				Console.WriteLine(ex.GetBaseException().ToString());
 			}
-			
 
 			PopulateDropDown(rehearsalToUpdate);
 			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
@@ -438,6 +438,54 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}).ToList();
 
 			return Json(clientList);
+		}
+
+		// Rehearsal Calender View
+		public PartialViewResult RehearsalCalender()
+		{
+			var rehearsals = _context.Rehearsals
+				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.OrderBy(r => r.RehearsalDate)
+				.ToList();
+
+			return PartialView("_RehearsalCalendar");
+		}
+
+		public string GetColor(int chapter)
+		{
+			switch (chapter)
+			{
+				case 1:
+					return "#8f3796";
+
+				default:
+					return "#fff";
+			}
+		}
+
+		public async Task<IActionResult> GetRehearsals()
+		{
+			var rehearsals = await _context.Rehearsals
+				.Select(r => new
+				{
+					id = r.ID,
+					groupId = r.Director.ChapterID,
+					title = r.Director.Chapter.Name,
+					start = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.StartTime.ToString("THH:mm:ss")}",
+					end = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.EndTime.ToString("THH:mm:ss")}",
+					textColor = "black",
+					backgroundColor =
+					r.Director.ChapterID == 1 ? "#ffadad" :
+					r.Director.ChapterID == 2 ? "#ffd6a5" :
+					r.Director.ChapterID == 3 ? "#fdffb6" :
+					r.Director.ChapterID == 4 ? "#caffbf" :
+					r.Director.ChapterID == 5 ? "#a0c4ff" :
+					r.Director.ChapterID == 6 ? "#bdb2ff" :
+					"#fff",
+					url = Url.Action("Details", "Rehearsal", new { id = r.ID })
+				})
+				.ToListAsync();
+			return Json(rehearsals);
 		}
 
 		public async Task<IActionResult> RehearsalsSummary(DateTime? startDate, DateTime? endDate)
