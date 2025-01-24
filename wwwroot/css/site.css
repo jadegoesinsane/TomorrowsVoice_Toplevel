@@ -1,38 +1,38 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
-
 
 /* Required Form Control Asterisk */
 .form-floating.required .control-label:after,
 .form-group.required .control-label:after {
-    content:"*";
-    color:red;
+    content: "*";
+    color: red;
 }
 
 .form-floating.optional .control-label:after,
 .form-group.optional .control-label:after {
     content: " (optional)";
 }
+
 .form-floating > .control-label {
     color: rgb(104 114 129);
 }
@@ -54,7 +54,7 @@ body {
     padding-left: 0.75rem;
 }
 
-/* Overwrite Bootstrap5 floating label 
+/* Overwrite Bootstrap5 floating label
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
 .form-floating > .form-select ~ label {
@@ -75,6 +75,15 @@ footer {
     background-position: top;
     background-size: cover;
     background-color: #fff !important;
+}
+
+header {
+    background-image: url(../images/HEADER.png);
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: cover;
+    background-color: #fff !important;
+    padding-bottom: 25px;
 }
 
 .footer-container {
