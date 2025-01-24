@@ -11,32 +11,42 @@
 <!-- Form for filtering -->
 <form asp-controller="Rehearsal" asp-action="RehearsalsSummary" method="get" id="filterForm">
     <div class="row">
-     <div class="col-md-4">
-         <label for="startDate" class="control-label">Start Date:</label>
-         <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" />
-     </div>
-     <div class="col-md-4">
-         <label for="endDate" class="control-label">End Date:</label>
-         <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" />
-     </div>
+        <div class="col-md-4">
+            <label for="startDate" class="control-label">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" />
+        </div>
+        <div class="col-md-4">
+            <label for="endDate" class="control-label">End Date:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" />
+        </div>
 
- </div>
 
- <div class="col-md-4" style="margin-top: 20px;">
-     <button class="btn btn-primary" type="submit">Filter</button>
- </div>
+        <!-- Export button (this will trigger export action with dates) -->
 
-    <!-- Export button (this will trigger export action with dates) -->
-    <button type="button" class="btn btn-info float-end" onclick="exportToExcel()">Export to Excel</button>
+
+
+    </div>
+
+
+
+    <div class="col-md-4" style="margin-top: 20px;">
+        <button class="btn btn-primary" type="submit" onclick="exportToExcel3()">Filter</button>
+
+    </div>
+
+
 </form>
 
 <table class="table">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.City)</th>
+
             <th>@Html.DisplayNameFor(model => model.Number_Of_Rehearsals)</th>
             <th>@Html.DisplayNameFor(model => model.Average_Attendance)</th>
+
             <th>@Html.DisplayNameFor(model => model.Highest_Attendance)</th>
+
             <th>@Html.DisplayNameFor(model => model.Lowest_Attendance)</th>
             <th>@Html.DisplayNameFor(model => model.Total_Attendance)</th>
         </tr>
@@ -47,34 +57,84 @@
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.City)</td>
                 <td>@Html.DisplayFor(modelItem => item.Number_Of_Rehearsals)</td>
+
                 <td>@Html.DisplayFor(modelItem => item.Average_Attendance)</td>
+
                 <td>@Html.DisplayFor(modelItem => item.Highest_Attendance)</td>
+
                 <td>@Html.DisplayFor(modelItem => item.Lowest_Attendance)</td>
+
                 <td>@Html.DisplayFor(modelItem => item.Total_Attendance)</td>
             </tr>
         }
     </tbody>
 </table>
 
+<button class="btn btn-primary" onclick="exportToExcel1()">Detail Excel</button>
+<button type="button" class="btn btn-primary" onclick="exportToExcel2()">Summary Excel</button>
+
 <!-- Hidden form for export (this will submit the data for export action) -->
-<form id="exportForm" asp-controller="Rehearsal" asp-action="RehearsalsSummaryReport" method="get" style="display:none;">
+<form id="exportForm" asp-controller="Rehearsal" asp-action="RehearsalsDetailReport" method="get" style="display:none;">
     <input type="hidden" name="startDate" id="exportStartDate" />
     <input type="hidden" name="endDate" id="exportEndDate" />
 </form>
 
+<form id="exportForm2" asp-controller="Rehearsal" asp-action="RehearsalsSummaryReport" method="get" style="display:none;">
+    <input type="hidden" name="startDate" id="exportStartDate2" />
+    <input type="hidden" name="endDate" id="exportEndDate2" />
+</form>
+
 @section Scripts {
     <script>
-        function exportToExcel() {
+        function exportToExcel3() {
+                              // Get selected dates
+            var startDate = document.getElementById('startDate').value;
+            var endDate = document.getElementById('endDate').value;
+
+                              // Validate date range
+            if (new Date(startDate) > new Date(endDate)) {
+                alert("Start Date cannot be later than End Date.");
+                return; // Prevent form submission
+            }
+                          }
+    </script>
+    <script>
+        function exportToExcel1() {
             // Get selected dates
             var startDate = document.getElementById('startDate').value;
             var endDate = document.getElementById('endDate').value;
 
+
+            if (new Date(startDate) > new Date(endDate)) {
+                alert("Start Date cannot be later than End Date.");
+                return; // Prevent form submission
+            }
             // Set the hidden form fields with the selected dates
             document.getElementById('exportStartDate').value = startDate;
             document.getElementById('exportEndDate').value = endDate;
 
             // Submit the export form to trigger the export action
             document.getElementById('exportForm').submit();
+        }
+    </script>
+
+    <script>
+        function exportToExcel2() {
+            // Get selected dates
+            var startDate = document.getElementById('startDate').value;
+            var endDate = document.getElementById('endDate').value;
+
+            if (startDate > endDate) {
+                alert("Start Date cannot be later than End Date.");
+                return; // Prevent form submission
+            }
+
+            // Set the hidden form fields with the selected dates
+            document.getElementById('exportStartDate2').value = startDate;
+            document.getElementById('exportEndDate2').value = endDate;
+
+            // Submit the export form to trigger the export action
+            document.getElementById('exportForm2').submit();
         }
     </script>
 }
