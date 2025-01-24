@@ -36,6 +36,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> Index(
 			string? SearchString,
 			int? DirectorID,
+			int? ChapterID,
 			string? actionButton,
 			int? page,
 			int? pageSizeID,
@@ -52,7 +53,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDown();
 
 			var rehearsals = _context.Rehearsals
-				.Include(r => r.Director)
+				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
+				.Include(r => r.Director).ThenInclude(d => d.Chapter)
 				.AsNoTracking();
 
 			// Filters
@@ -64,6 +66,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			if (!String.IsNullOrEmpty(SearchString))
 			{
 				rehearsals = rehearsals.Where(r => r.Note.ToUpper().Contains(SearchString.ToUpper()));
+				numFilters++;
+			}
+			if (ChapterID.HasValue)
+			{
+				rehearsals = rehearsals.Where(r => r.Director.ChapterID == ChapterID);
 				numFilters++;
 			}
 
@@ -124,7 +131,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var rehearsal = await _context.Rehearsals
-				.Include(r => r.Director)
+				.Include(r => r.Director).ThenInclude(d=>d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -203,7 +210,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var rehearsal = await _context.Rehearsals
-				.Include(r => r.Director)
+				.Include(r => r.Director).ThenInclude(d => d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -224,7 +231,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> Edit(int id, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
 		{
 			var rehearsalToUpdate = await _context.Rehearsals
-				.Include(r => r.Director)
+				.Include(r => r.Director).ThenInclude(d => d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 
@@ -289,7 +296,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var rehearsal = await _context.Rehearsals
-				.Include(r => r.Director)
+				.Include(r => r.Director).ThenInclude(d => d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -306,7 +313,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var rehearsal = await _context.Rehearsals
-				.Include(r => r.Director)
+				.Include(r => r.Director).ThenInclude(d => d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 

@@ -4,7 +4,7 @@
 	ViewData["Title"] = "Index";
 }
 
-<h1>Rehearsals</h1>
+<partial name="_ViewHeading" />
 
 <p>
 	<a asp-action="Create">Create New</a>
@@ -43,6 +43,10 @@
 									@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control" })
 					</div>
 					<div class="form-group col-md-4">
+						<label class="control-label">Select by Chapter:</label>
+						@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control" })
+					</div>
+					<div class="form-group col-md-4">
 						<label class="control-label">Search Attendance Notes:</label>
 									@Html.TextBox("SearchString", null, new { @class = "form-control" })
 					</div>
@@ -60,61 +64,110 @@
 				<th>
 					<input type="submit" name="actionButton" value="Date" class="btn btn-link" />
 				</th>
-				<th>
-					<input type="submit" value="Time" class="btn btn-toolbar" />
-				</th>
-				<th>
-					<input type="submit" value="Note" class="btn btn-toolbar" />
-				</th>
+				
 				<th>
 					<input type="submit" value="Director" class="btn btn-toolbar" />
+				</th>
+				<th>
+					<input type="submit" value="Chapter" class="btn btn-toolbar" />
+				</th>
+				<th>
+					<input type="submit" value="Attendees" class="btn btn-toolbar" />
+				</th>
+				<th>
+					<input type="submit" value="Notes" class="btn btn-toolbar" />
 				</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
-						@foreach (var item in Model)
-						{
-															<tr>
-																<td>
-									@Html.DisplayFor(modelItem => item.RehearsalDate)
-																</td>
-																<td>
-									@Html.DisplayFor(modelItem => item.TimeSummary)
-																</td>
-																<td class="d-none d-xl-table-cell">
-									@{
-										if (item.Note != null)
-										{
-											string[] noteWords = item.Note.Split(' ');
-											if (noteWords.Count() > 4)
-											{
-																																																				<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
-													@(string.Join(" ", noteWords.Take(4)) + "...")
-																																																				</a>
-																																																				<div class="collapse" id="collapseSum@(item.ID)">
-																																																					<div class="well">
-														@(string.Join(" ", noteWords.Skip(4)))
-																																																					</div>
-																																																				</div>
-											}
-											else
-											{
-												@item.Note
-											}
-										}
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Summary)
+					</td>
+					
+					<td>
+						@Html.DisplayFor(modelItem => item.Director.NameFormatted)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Director.Chapter.Name)
+					</td>
+					<td class="d-none d-lg-table-cell">
+						@{
+							int singerCount = item.RehearsalAttendances.Count;
+							if (singerCount > 0)
+							{
+								string firstSinger = item.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
+								if (singerCount > 1)
+								{
+									string SingerList = "";
+									var c = item.RehearsalAttendances.ToList();
+									for (int i = 0; i < singerCount; i++)
+									{
+										SingerList += c[i].Singer.NameFormatted + " <br />";
 									}
-																</td>
-																<td>
-									@Html.DisplayFor(modelItem => item.Director.NameFormatted)
-																</td>
-																<td>
-																	<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-																	<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-																	<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-																</td>
-															</tr>
+									<a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(item.ID)"
+									   aria-expanded="false" aria-controls="collapseSingers@(item.ID)">
+										View all @singerCount attendees
+									</a>
+									<div class="collapse" id="collapseSingers@(item.ID)">
+										@Html.Raw(SingerList)
+									</div>
+								}
+								else
+								{
+									@firstSinger
+								}
+							}
 						}
+					</td>
+					<td class="d-none d-xl-table-cell">
+						@{
+							if (item.Note != null)
+							{
+								string[] noteWords = item.Note.Split(' ');
+								if (noteWords.Count() > 4)
+								{
+									<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+										@(string.Join(" ", noteWords.Take(4)) + "...")
+									</a>
+									<div class="collapse" id="collapseSum@(item.ID)">
+										<div class="well">
+											@(string.Join(" ", noteWords.Skip(4)))
+										</div>
+									</div>
+								}
+								else
+								{
+									@item.Note
+								}
+							}
+							else
+							{
+								<p>No Notes</p>
+							}
+						}
+					</td>
+					
+
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+						   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+							&#x270D;
+						</a>
+						<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+						   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+							&#x1F50E;
+						</a>
+						<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+						   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+							&#x274C;
+						</a>
+					</td>
+				</tr>
+			}
 		</tbody>
 	</table>
 	<partial name="_PagingNavBar" />
