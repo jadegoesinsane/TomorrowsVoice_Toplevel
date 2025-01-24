@@ -442,7 +442,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public async Task<IActionResult> RehearsalsSummary(DateTime? startDate, DateTime? endDate)
 		{
-			startDate ??= new DateTime(1, 1, 1);  // Default to January 1st, 1st year
+			startDate ??= new DateTime(2020, 1, 1);  // Default to January 1st, 1st year
 			endDate ??= DateTime.Now;  // Default to today's date
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
 				 .Include(c => c.Director).ThenInclude(c => c.Chapter)

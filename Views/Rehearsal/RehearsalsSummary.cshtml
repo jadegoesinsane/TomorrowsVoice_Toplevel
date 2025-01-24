@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Summary";
-    var selectedStartDate = ViewData["StartDate"] != null ? ((DateTime)ViewData["StartDate"]).ToString("yyyy-MM-dd") : new DateTime(1, 1, 1).ToString("yyyy-MM-dd");
+    var selectedStartDate = ViewData["StartDate"] != null ? ((DateTime)ViewData["StartDate"]).ToString("yyyy-MM-dd") : new DateTime(2020, 1, 1).ToString("yyyy-MM-dd");
     var selectedEndDate = ViewData["EndDate"] != null ? ((DateTime)ViewData["EndDate"]).ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
 }
 
@@ -11,20 +11,20 @@
 <!-- Form for filtering -->
 <form asp-controller="Rehearsal" asp-action="RehearsalsSummary" method="get" id="filterForm">
     <div class="row">
-        <div class="col-md-4">
-            <label for="startDate" class="control-label">Start Date:</label>
-            <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" />
-        </div>
-        <div class="col-md-4">
-            <label for="endDate" class="control-label">End Date:</label>
-            <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" />
-        </div>
+     <div class="col-md-4">
+         <label for="startDate" class="control-label">Start Date:</label>
+         <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" />
+     </div>
+     <div class="col-md-4">
+         <label for="endDate" class="control-label">End Date:</label>
+         <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" />
+     </div>
 
-    </div>
+ </div>
 
-    <div class="col-md-4" style="margin-top: 20px;">
-        <button class="btn btn-primary" type="submit">Filter</button>
-    </div>
+ <div class="col-md-4" style="margin-top: 20px;">
+     <button class="btn btn-primary" type="submit">Filter</button>
+ </div>
 
     <!-- Export button (this will trigger export action with dates) -->
     <button type="button" class="btn btn-info float-end" onclick="exportToExcel()">Export to Excel</button>
