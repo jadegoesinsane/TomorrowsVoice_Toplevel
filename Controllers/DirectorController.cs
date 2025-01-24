@@ -214,7 +214,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			if (await TryUpdateModelAsync<Director>(directorToUpdate, "", d => d.FirstName, d => d.LastName, d => d.Email, d => d.Phone,
-					r => r.IsActive))
+					r => r.IsActive, r=>r.ChapterID))
 			{
 				try
 				{
