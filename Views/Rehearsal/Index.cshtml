@@ -5,7 +5,7 @@
 }
 
 <partial name="_ViewHeading" />
-
+<h5>@ViewData["AptCount"] rehearsals between @ViewData["StartDate"] and @ViewData["EndDate"]</h5>
 <p>
 	<a asp-action="Create">Create New</a>
 </p>
@@ -49,6 +49,14 @@
 					<div class="form-group col-md-4">
 						<label class="control-label">Search Attendance Notes:</label>
 									@Html.TextBox("SearchString", null, new { @class = "form-control" })
+					</div>
+					<div class="form-group col-md-3">
+						<label class="control-label">Start Date:</label>
+						<input class="form-control" type="date" id="StartDate" name="StartDate" value="@ViewData["StartDate"]" aria-describedby="EndDate" aria-invalid="false">
+					</div>
+					<div class="form-group col-md-3">
+						<label class="control-label">End Date:</label>
+						<input class="form-control" type="date" id="StartDate" name="EndDate" value="@ViewData["EndDate"]" aria-describedby="EndDate" aria-invalid="false">
 					</div>
 					<div class="form-group col-md-4 align-self-end">
 						<input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />

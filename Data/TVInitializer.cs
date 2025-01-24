@@ -96,10 +96,12 @@ namespace TomorrowsVoice_Toplevel.Data
 								Postal = "M6G 1A1"
 							}, new Chapter
 							{
-								Name = "Vancouver"
+								Name = "Vancouver",
+								City = "Vancouver"
 							}, new Chapter
 							{
-								Name = "Surrey"
+								Name = "Surrey",
+								City = "Surrey"
 							});
 						context.SaveChanges();
 					}

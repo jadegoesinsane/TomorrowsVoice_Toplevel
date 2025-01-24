@@ -40,9 +40,29 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			string? actionButton,
 			int? page,
 			int? pageSizeID,
+			DateTime StartDate,
+			DateTime EndDate,
 			string sortDirection = "asc",
 			string sortField = "Date")
 		{
+			if (EndDate == DateTime.MinValue)
+			{
+				StartDate = _context.Rehearsals.Min(o => o.RehearsalDate).Date;
+				EndDate = _context.Rehearsals.Max(o => o.RehearsalDate).Date;
+			}
+			//Check the order of the dates and swap them if required
+			if (EndDate < StartDate)
+			{
+				DateTime temp = EndDate;
+				EndDate = StartDate;
+				StartDate = temp;
+			}
+			//Save to View Data
+			ViewData["StartDate"] = StartDate.ToString("yyyy-MM-dd");
+			ViewData["EndDate"] = EndDate.ToString("yyyy-MM-dd");
+			ViewData["AptCount"] = _context.Rehearsals.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate.AddDays(1)).Count();
+
+
 			// Sort Options
 			string[] sortOpts = new[] { "Date" };
 
@@ -55,6 +75,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var rehearsals = _context.Rehearsals
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate.AddDays(1))
 				.AsNoTracking();
 
 			// Filters
