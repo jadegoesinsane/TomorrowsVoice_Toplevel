@@ -97,7 +97,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ChapterID")
+                    b.Property<int>("ChapterID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DirectorID")
@@ -210,15 +210,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", null)
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
                         .WithMany("Rehearsals")
-                        .HasForeignKey("ChapterID");
+                        .HasForeignKey("ChapterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
                         .WithMany("Rehearsals")
                         .HasForeignKey("DirectorID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Chapter");
 
                     b.Navigation("Director");
                 });

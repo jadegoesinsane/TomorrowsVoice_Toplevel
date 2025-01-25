@@ -90,7 +90,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: false),
-                    ChapterID = table.Column<int>(type: "INTEGER", nullable: true)
+                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,7 +99,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         name: "FK_Rehearsals_Chapters_ChapterID",
                         column: x => x.ChapterID,
                         principalTable: "Chapters",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Rehearsals_Directors_DirectorID",
                         column: x => x.DirectorID,

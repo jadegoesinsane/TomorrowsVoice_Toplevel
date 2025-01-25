@@ -50,7 +50,9 @@ namespace TomorrowsVoice_Toplevel.Models
 		public int DirectorID { get; set; }
 		public Director? Director { get; set; }
 
-
+		[Display(Name ="Chapter")]
+		public int ChapterID { get; set; }
+		public Chapter? Chapter { get; set; }
         
 
         public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();

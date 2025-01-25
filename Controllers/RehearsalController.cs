@@ -74,7 +74,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var rehearsals = _context.Rehearsals
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
-				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Include(r => r.Director)
+				.Include(d => d.Chapter)
 				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate.AddDays(1))
 				.AsNoTracking();
 
@@ -91,7 +92,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			if (ChapterID.HasValue)
 			{
-				rehearsals = rehearsals.Where(r => r.Director. ChapterID == ChapterID);
+				rehearsals = rehearsals.Where(r => r.ChapterID == ChapterID);
 				numFilters++;
 			}
 
@@ -152,7 +153,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var rehearsal = await _context.Rehearsals
-				.Include(r => r.Director).ThenInclude(d=>d.Chapter)
+				.Include(r => r.Director)
+				.Include(d=>d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -182,7 +184,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("RehearsalDate,StartTime,EndTime,Note,DirectorID")] string[] selectedOptions, Rehearsal rehearsal, int? chapterSelect)
+		public async Task<IActionResult> Create([Bind("RehearsalDate,StartTime,EndTime,Note,DirectorID,ChapterID")] string[] selectedOptions, Rehearsal rehearsal, int? chapterSelect)
 		{
 			try
 			{
@@ -231,7 +233,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var rehearsal = await _context.Rehearsals
-				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Include(r => r.Director)
+				.Include(d => d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -252,7 +255,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> Edit(int id, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
 		{
 			var rehearsalToUpdate = await _context.Rehearsals
-				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Include(r => r.Director)
+				.Include(d => d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 
@@ -270,7 +274,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					r => r.StartTime,
 					r => r.EndTime,
 					r => r.Note,
-					r => r.DirectorID))
+					r => r.DirectorID,
+					r => r.ChapterID))
 				{
 					try
 					{
@@ -317,7 +322,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var rehearsal = await _context.Rehearsals
-				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Include(r => r.Director)
+				.Include(d => d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -334,7 +340,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var rehearsal = await _context.Rehearsals
-				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Include(r => r.Director)
+				.Include(d => d.Chapter)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 
@@ -369,7 +376,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private void PopulateDropDown(Rehearsal? rehearsal = null)
 		{
 			ViewData["DirectorID"] = DirectorSelectList(rehearsal?.DirectorID);
-			ViewData["ChapterID"] = ChapterSelectList(rehearsal?.Director?.ChapterID);
+			ViewData["ChapterID"] = ChapterSelectList(rehearsal?.ChapterID);
 		}
 
 		private void PopulateAttendance(int? chapterSelect, Rehearsal rehearsal)
@@ -472,7 +479,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public PartialViewResult RehearsalCalender()
 		{
 			var rehearsals = _context.Rehearsals
-				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Include(r => r.Director)
+				.Include(d => d.Chapter)
 				.OrderBy(r => r.RehearsalDate)
 				.ToList();
 
@@ -497,18 +505,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Select(r => new
 				{
 					id = r.ID,
-					groupId = r.Director.ChapterID,
-					title = r.Director.Chapter.Name,
+					groupId = r.ChapterID,
+					title = r.Chapter.Name,
 					start = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.StartTime.ToString("THH:mm:ss")}",
 					end = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.EndTime.ToString("THH:mm:ss")}",
 					textColor = "black",
 					backgroundColor =
-					r.Director.ChapterID == 1 ? "#ffadad" :
-					r.Director.ChapterID == 2 ? "#ffd6a5" :
-					r.Director.ChapterID == 3 ? "#fdffb6" :
-					r.Director.ChapterID == 4 ? "#caffbf" :
-					r.Director.ChapterID == 5 ? "#a0c4ff" :
-					r.Director.ChapterID == 6 ? "#bdb2ff" :
+					r.ChapterID == 1 ? "#ffadad" :
+					r.ChapterID == 2 ? "#ffd6a5" :
+					r.ChapterID == 3 ? "#fdffb6" :
+					r.ChapterID == 4 ? "#caffbf" :
+					r.ChapterID == 5 ? "#a0c4ff" :
+					r.ChapterID == 6 ? "#bdb2ff" :
 					"#fff",
 					url = Url.Action("Details", "Rehearsal", new { id = r.ID })
 				})
@@ -521,7 +529,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			startDate ??= new DateTime(2020, 1, 1);  // Default to January 1st, 1st year
 			endDate ??= DateTime.Now;  // Default to today's date
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
-				 .Include(c => c.Director).ThenInclude(c => c.Chapter)
+				 .Include(c => c.Director)
+				 .Include(c => c.Chapter)
 				 .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate)
 				 .GroupBy(a => new { a.Director.Chapter.Name })
 				 .Select(grp => new AttendanceSummaryVM
@@ -542,7 +551,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public IActionResult RehearsalsSummaryReport(DateTime? startDate, DateTime? endDate)
 		{
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
-				  .Include(c => c.Director).ThenInclude(c => c.Chapter)
+				  .Include(c => c.Director)
+				  .Include(c => c.Chapter)
 				  .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate)
 				  .GroupBy(a => new { a.Director.Chapter.Name })
 				  .Select(grp => new AttendanceSummaryVM
@@ -663,7 +673,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     .ThenInclude(c => c.Director)
                     .ThenInclude(c => c.Chapter)
                     .Where(a => a.Rehearsal.RehearsalDate >= startDate && a.Rehearsal.RehearsalDate <= endDate)
-                .GroupBy(a => new { a.Rehearsal.Director.Chapter.Name, a.Rehearsal.RehearsalDate })
+                .GroupBy(a => new { a.Rehearsal.Chapter.Name, a.Rehearsal.RehearsalDate })
                 .Select(grp => new RehearsalViewModelDetails
                 {
                     City = grp.Key.Name,

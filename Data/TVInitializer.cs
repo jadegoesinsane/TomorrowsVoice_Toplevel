@@ -236,7 +236,8 @@ namespace TomorrowsVoice_Toplevel.Data
 									StartTime = start,
 									EndTime = end,
 									DirectorID = d.ID,
-									Director = d
+									Director = d,
+									ChapterID = d.ChapterID
 								};
 								if (i % 3 == 0)
 								{
