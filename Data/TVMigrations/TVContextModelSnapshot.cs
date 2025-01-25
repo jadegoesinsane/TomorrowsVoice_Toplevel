@@ -238,7 +238,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Singer", "Singer")
                         .WithMany("RehearsalAttendances")
                         .HasForeignKey("SingerID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Rehearsal");

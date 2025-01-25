@@ -132,7 +132,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         column: x => x.SingerID,
                         principalTable: "Singers",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

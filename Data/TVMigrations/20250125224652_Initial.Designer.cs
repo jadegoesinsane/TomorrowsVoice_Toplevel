@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250125213439_Initial")]
+    [Migration("20250125224652_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -241,7 +241,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Singer", "Singer")
                         .WithMany("RehearsalAttendances")
                         .HasForeignKey("SingerID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Rehearsal");

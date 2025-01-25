@@ -23,6 +23,7 @@
 
     <!-- Tab Panels -->
     <div class="tab-content" id="nav-tabContent">
+        
         <div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
             <br />
             <dl class="row">
@@ -63,13 +64,14 @@
                 <dd class = "col-sm-10">
                     @Html.DisplayFor(model => model.Chapter.Name)
                 </dd>
-                <dt>
+                <dt class="col-sm-2">
                     <label asp-for="Status" class="control-label" aria-labelledby="lblActive"></label>
                     <span id="lblActive" class="visually-hidden">Is Singer Active?:</span>
                 </dt>
-                <dd>
+                <dd class="col-sm-10">
                     @Html.DisplayFor(model => model.Status)
                 </dd>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             </div>
 
         <div class="tab-pane fade ml-3" role="tabpanel" id="RehearsalsPanel" aria-labelledby="Rehearsals-tab">

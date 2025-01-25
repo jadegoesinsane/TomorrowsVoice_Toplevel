@@ -299,6 +299,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 				}
 			}
+			catch (InvalidOperationException)
+			{
+				ModelState.AddModelError("", $"Unable to delete a chapter that has a director associated with it.");
+			}
 
 			return View(chapter);
 		}

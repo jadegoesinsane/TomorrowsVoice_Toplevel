@@ -168,7 +168,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				if (message.Contains("UNIQUE") && message.Contains("Email"))
 				{
 					ModelState.AddModelError("Email", "Unable to save changes. Remember, " +
-						"you cannot have duplicate Email addresses for Instructors.");
+						"you cannot have duplicate Email addresses for Directors.");
 				}
 				else
 				{
@@ -245,7 +245,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					if (message.Contains("UNIQUE") && message.Contains("Email"))
 					{
 						ModelState.AddModelError("Email", "Unable to save changes. Remember, " +
-							"you cannot have duplicate Email addresses for Instructors.");
+							"you cannot have duplicate Email addresses for Directors.");
 					}
 					else
 					{
@@ -302,7 +302,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
 				{
-					ModelState.AddModelError("", "Unable to Delete Instructor. Remember, you cannot delete a Instructor that teaches Group Classes.");
+					ModelState.AddModelError("", "Unable to Delete Director. Remember, you cannot delete a Director that has rehearsals.");
 				}
 				else
 				{
