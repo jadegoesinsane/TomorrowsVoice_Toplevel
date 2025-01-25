@@ -83,7 +83,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.Include(r => r.Director)
 				.Include(d => d.Chapter)
-				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate.AddDays(1))
+				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate)
 				.AsNoTracking();
 
 			// Filters
