@@ -2,39 +2,42 @@
 
 <partial name="_ViewHeading" />
 
-<hr />
-<form asp-action="Create" method="post" enctype="multipart/form-data">
+<form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="row">
-            <div class="form-group, col-md-4">
+    <div class="row g-4 my-3 form-area">
+        <div class="col-md-4">
+            <div class="form-floating required">
+                <input asp-for="RehearsalDate" class="form-control"/>
                 <label asp-for="RehearsalDate" class="control-label"></label>
-                <input asp-for="RehearsalDate" class="form-control" />
-                <span asp-validation-for="RehearsalDate"  class="text-danger"></span>
+                <span asp-validation-for="RehearsalDate" class="text-danger"></span>
             </div>
-            <div class="form-group, col-md-4">
-                <label asp-for="StartTime" class="control-label"></label>
+        </div>
+        <div class="col-md-4">
+            <div class="form-floating required">
                 <input asp-for="StartTime" class="form-control" />
+                <label asp-for="StartTime" class="control-label"></label>
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
-            <div class="form-group, col-md-4">
-                <label asp-for="EndTime" class="control-label"></label>
+        </div>
+        <div class="col-md-4">
+            <div class="form-floating required">
                 <input asp-for="EndTime" class="form-control" />
+                <label asp-for="EndTime" class="control-label"></label>
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
-    </div>
-    <div class="row">
+        </div>
         <div class="col-md-4">
-            <div class="form-group" style="margin-top: 10px">
-                <label asp-for="ChapterID" class="control-label"></label>
+            <div class="form-floating required my-4">
                 <select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
+                <label asp-for="ChapterID" class="control-label"></label>
             </div>
-            <div class="form-group" style="margin-top: 10px">
-                <label asp-for="DirectorID" class="control-label"></label>
+            <div class="form-floating required my-4">
                 <select asp-for="DirectorID" class="form-control" asp-items="ViewBag.DirectorID"></select>
+                <label asp-for="DirectorID" class="control-label"></label>
             </div>
-            <div class="form-group" style="margin-top: 10px">
+            <div class="form-floating my-4">
+                <textarea asp-for="Note" class="form-control" style="height: 100px" placeholder="Notes"></textarea>
                 <label asp-for="Note" class="control-label"></label>
-                <textarea asp-for="Note" class="form-control"></textarea>
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
         </div>
@@ -43,7 +46,7 @@
                 <div class="form-group" style="margin-top: 10px">
                     <label for="MembershipFilter" class="control-label">Select a City</label>
                     @Html.DropDownList("chapterSelect", ViewBag.Chapters as SelectList, "All ",
-                             new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()", @style="width:200px"})
+                             new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()", @style = "width:200px" })
                 </div>
                 <div class="form-group col-md-6" style="margin-top: 10px">
                     <label class="control-label"> Singer(s) Added</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
@@ -61,11 +64,10 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <input type="submit" id="btnSubmit" value="Create" class="btn btn-primary" /> |
-        <partial name="_BackToList" />
-    </div>
+    <partial name="_FormFooter" />
+
 </form>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
