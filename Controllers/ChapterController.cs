@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Utilities;
+
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -25,8 +27,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: Chapter
-        public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
-            string? actionButton, string sortDirection = "asc", string sortField = "Chapter")
+        public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID, string? ProvinceFilter,
+
+			string? actionButton, string sortDirection = "asc", string sortField = "Chapter")
         {
 
             string[] sortOptions = new[] {"Chapter","Name" };
@@ -34,14 +37,25 @@ namespace TomorrowsVoice_Toplevel.Controllers
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
             int numberFilters = 0;
+			if (Enum.TryParse(ProvinceFilter, out Province selectedDOW))
+			{
+				ViewBag.DOWSelectList = Province.Ontario.ToSelectList(selectedDOW);
+			}
+			else
+			{
+				ViewBag.DOWSelectList = Province.Ontario.ToSelectList(null);
+			}
 
-
-            var chapters =  _context.Chapters
+			var chapters =  _context.Chapters
                 .AsNoTracking()
                  .AsNoTracking();
 
-
-            if (!String.IsNullOrEmpty(SearchString))
+			if (!String.IsNullOrEmpty(ProvinceFilter))
+			{
+				chapters = chapters.Where(p => p.Province == selectedDOW);
+				numberFilters++;
+			}
+			if (!String.IsNullOrEmpty(SearchString))
             {
                 chapters = chapters.Where(p => p.Name.ToUpper().Contains(SearchString.ToUpper()));
                                       
@@ -294,7 +308,25 @@ namespace TomorrowsVoice_Toplevel.Controllers
             
             return View(chapter);
         }
-
+        public PartialViewResult ListOfDirectorsDetails(int id)
+        {
+            var query = from p in _context.Directors
+                        where p.ChapterID == id
+                        orderby p.LastName, p.FirstName
+                        select p;
+            return PartialView("_ListOfDirectorsDetails", query.ToList());
+        }
+       
+        public PartialViewResult ListOfSingersDetails(int id)
+        {
+            var query = from p in _context.Singers
+                        where p.ChapterID == id
+                        orderby p.LastName, p.FirstName
+                        select p;
+            return PartialView("_ListOfSingersDetails", query.ToList());
+        }
+       
+        
         private bool ChapterExists(int id)
         {
             return _context.Chapters.Any(e => e.ID == id);
