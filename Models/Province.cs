@@ -3,16 +3,16 @@
     public enum Province
     {
         Alberta,
-        BritishColumbia,
+        British_Columbia,
         Manitoba,
-        NewBrunswick,
-        NewfoundlandAndLabrador,
-        NovaScotia,
+        New_Brunswick,
+        Newfoundland_And_Labrador,
+        Nova_Scotia,
         Ontario,
-        PrinceEdwardIsland,
+        Prince_EdwardIsland,
         Quebec,
         Saskatchewan,
-        NorthwestTerritories,
+        Northwest_Territories,
         Nunavut,
         Yukon
     }

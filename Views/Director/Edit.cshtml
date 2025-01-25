@@ -44,7 +44,7 @@
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
-				@Html.DropDownList("ChapterID", ViewBag.Chapters as SelectList, "Select a City ", new { @class = "form-control" })
+				@Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as SelectList, "Select a Chapter", new { @class = "form-control" })
 				<label asp-for="ChapterID" class="control-label"></label>
 				<span asp-validation-for="ChapterID" class="text-danger"></span>
 			</div>
