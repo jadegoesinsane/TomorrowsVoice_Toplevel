@@ -643,6 +643,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					//Set Style and backgound colour of headings
 					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 6])
 					{
+						headings.Style.Font.Color.SetColor(Color.White);
 						headings.Style.Font.Bold = true;
 						var fill = headings.Style.Fill;
 						fill.PatternType = ExcelFillStyle.Solid;
@@ -745,6 +746,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 3])
 					{
+						headings.Style.Font.Color.SetColor(Color.White);
 						headings.Style.Font.Bold = true;
 						var fill = headings.Style.Fill;
 						fill.PatternType = ExcelFillStyle.Solid;
