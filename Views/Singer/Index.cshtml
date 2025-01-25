@@ -19,7 +19,7 @@
 				<div class="row g-3">
 					<div class="form-group col-md-4">
 						<label class="control-label">Select by Chapter(s):</label>
-						@Html.DropDownList("ChapterID", null, new { @class = "select2 form-control", multiple = "multiple" })
+						@Html.DropDownList("ChapterID", null, new { @class = "select2 form-control" })
 					</div>
 					<div class="form-group col-md-4">
 						<label class="control-label">Search Singer Name:</label>
@@ -125,11 +125,5 @@
 </form>
 
 @section Scripts {
-	<script>
-		$(document).ready(function () {
-			$('.select2').select2({
-				theme: 'bootstrap-5'
-			});
-		});
-	</script>
+
 }
