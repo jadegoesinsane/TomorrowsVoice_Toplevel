@@ -634,7 +634,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                         headings.Style.Font.Bold = true;
                         var fill = headings.Style.Fill;
                         fill.PatternType = ExcelFillStyle.Solid;
-                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                        fill.BackgroundColor.SetColor(Color.Purple);
                     }
 
                     //Autofit columns
