@@ -47,7 +47,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var chapters =  _context.Chapters
-                .AsNoTracking()
                  .AsNoTracking();
 
 			if (!String.IsNullOrEmpty(ProvinceFilter))
