@@ -23,8 +23,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: Singer
-		public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID,
-			string? actionButton, string sortDirection = "asc", string sortField = "Singer")
+		public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID, string? StatusFilter,
+            string? actionButton, string sortDirection = "asc", string sortField = "Singer")
 		{
 			// Sort Options
 			string[] sortOptions = new[] { "Singer", "Chapter" };
@@ -32,15 +32,28 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			//Count the number of filters applied - start by assuming no filters
 			ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
-
-			PopulateDropDownLists();
+            if (Enum.TryParse(StatusFilter, out Status selectedDOW))
+            {
+                ViewBag.DOWSelectList = Status.Active.ToSelectList(selectedDOW);
+            }
+            else
+            {
+                ViewBag.DOWSelectList = Status.Active.ToSelectList(null);
+            }
+            PopulateDropDownLists();
 
 			var singers = _context.Singers
 				.Include(s => s.Chapter)
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking();
 
-			if (ChapterID.HasValue)
+
+            if (!String.IsNullOrEmpty(StatusFilter))
+            {
+                singers = singers.Where(p => p.Status == selectedDOW);
+                numberFilters++;
+            }
+            if (ChapterID.HasValue)
 			{
 				singers = singers.Where(s => s.ChapterID == ChapterID);
 				numberFilters++;

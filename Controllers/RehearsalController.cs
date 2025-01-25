@@ -605,9 +605,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					//Style column for currency
 					workSheet.Column(3).Style.Numberformat.Format = "###,##0.0";
-					workSheet.Column(4).Style.Numberformat.Format = "###,##0.0";
-					workSheet.Column(5).Style.Numberformat.Format = "###,##0.0";
-					workSheet.Column(6).Style.Numberformat.Format = "###,##0.0";
+					workSheet.Column(4).Style.Numberformat.Format = "###,##0";
+					workSheet.Column(5).Style.Numberformat.Format = "###,##0";
+					workSheet.Column(6).Style.Numberformat.Format = "###,##0";
 
 					//Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
 					//Make Date and Patient Bold
@@ -639,7 +639,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						headings.Style.Font.Bold = true;
 						var fill = headings.Style.Fill;
 						fill.PatternType = ExcelFillStyle.Solid;
-						fill.BackgroundColor.SetColor(Color.Purple);
+						fill.BackgroundColor.SetColor(Color.MediumPurple);
 					}
 
 					//Autofit columns
