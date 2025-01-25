@@ -15,7 +15,7 @@ namespace TomorrowsVoice_Toplevel.Models
 			}
 		}
 
-		[Display(Name = "Emergency Contact")]
+		[Display(Name = "Emergency Contact Name")]
 		[Required(ErrorMessage = "You cannot leave the name blank.")]
 		[MaxLength(100, ErrorMessage = "Name cannot be more than 100 characters long.")]
 		public string ContactName { get; set; } = "";
