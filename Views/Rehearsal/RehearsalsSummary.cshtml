@@ -21,7 +21,7 @@
             <div class="form-floating">
                 <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" aria-labelledby="lblEndDate" />
                 <label id="lblEndDate" for="endDate" class="control-label">End Date:</label>
-            </div>            
+            </div>
         </div>
         <div class="col-md">
             <button class="btn btn-outline-primary" type="submit" onclick="exportToExcel3()">Filter</button>
@@ -31,8 +31,6 @@
             <button type="button" class="btn btn-primary" onclick="exportToExcel2()">Summary Excel</button>
         </div>
     </div>
-    
-
 
 </form>
 
@@ -99,7 +97,6 @@
             // Get selected dates
             var startDate = document.getElementById('startDate').value;
             var endDate = document.getElementById('endDate').value;
-
 
             if (new Date(startDate) > new Date(endDate)) {
                 alert("Start Date cannot be later than End Date.");
