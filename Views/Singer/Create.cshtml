@@ -2,12 +2,11 @@
 
 <partial name="_ViewHeading" />
 
-<hr />
-<form asp-action="Create">
+<form asp-action="Create" class="form-container">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<input type="hidden" asp-for="ID" />
 
-	<div class="row g-4 my-3">
+	<div class="row g-4 my-3 form-area">
 		<div class="col-md-4">
 			<div class="form-floating required">
 				<input asp-for="FirstName" class="form-control" placeholder="First Name" />
@@ -41,7 +40,7 @@
 				<input asp-for="ContactName" class="form-control" placeholder="Emergency Contact" />
 				<label asp-for="ContactName" class="control-label"></label>
 				<span asp-validation-for="ContactName" class="text-danger"></span>
-				</div>
+			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
@@ -52,7 +51,7 @@
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
-				@Html.DropDownList("ChapterID", ViewBag.Chapters as SelectList, "Select a City ", new { @class = "form-control"})
+				@Html.DropDownList("ChapterID", ViewBag.Chapters as SelectList, "Select a City ", new { @class = "form-control" })
 				<!--<select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>-->
 				<label asp-for="ChapterID" class="control-label"></label>
 				<span asp-validation-for="ChapterID" class="text-danger"></span>
@@ -71,15 +70,13 @@
 				<span asp-validation-for="Note" class="text-danger"></span>
 			</div>
 		</div>
-
-
-		<div class="form-group col-md-6">
-			<input type="submit" value="Create" class="btn btn-primary" /> |
-			<partial name="_BackToList" />
-		</div>
 	</div>
+	<partial name="_FormFooter" />
+
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }

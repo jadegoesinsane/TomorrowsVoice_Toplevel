@@ -20,7 +20,33 @@ html {
 body {
     margin-bottom: 60px;
 }
-
+/* Form Styling */
+.form-container {
+    width: 100%;
+    box-shadow: 0 2px 10px #0000001f;
+}
+.form-area {
+    border: 2px solid #e9ebf0;
+    box-sizing: inherit;
+    padding: 1rem 1rem 2rem 1rem;
+    margin-bottom: -1rem !important;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+.form-footer {
+    padding: 1rem;
+    background-size: cover;
+    background-position: bottom;
+    background-color: #e9ebf0;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+.form-control:focus {
+    border-color: #C686FE;
+}
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #8f3796;
+}
 /* Required Form Control Asterisk */
 .form-floating.required .control-label:after,
 .form-group.required .control-label:after {
@@ -32,10 +58,37 @@ body {
 .form-group.optional .control-label:after {
     content: " (optional)";
 }
-
+.form-floating > .form-control, .form-floating > .form-select {
+    height: calc(2.5rem + 2px);
+    line-height: 1.25;
+}
 .form-floating > .control-label {
     color: rgb(104 114 129);
+    width: fit-content;
+    height: fit-content;
+    padding: .5rem;
 }
+.form-floating > .form-control {
+    padding: .5rem;
+}
+/* Overwrite Bootstrap5 floating label*/
+.form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    background-color: white;
+    color: rgb(104 114 129);
+    opacity: 1;
+    transform: scale(.85) translateY(-1.25rem) translateX(.5rem);
+    padding: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 /*
 /* Form Floating
 .form-floating > .form-control {
@@ -99,6 +152,7 @@ header {
     background-color: #8f3796;
     border-color: #8f3796;
     transition: none;
+    box-shadow: 0 2px 2px 0 rgba(198, 134, 254, .1),0 3px 1px -2px rgba(198, 134, 254, .18),0 1px 5px 0 rgba(198, 134, 254, .15);
 }
 
 .btn-primary:hover, .btn-primary:focus {
@@ -122,9 +176,8 @@ header {
     border-width: 1.5px;
     color: #8f3796;
 }
-
 .btn-outline-dark:hover {
-    color: #8f3796;
+    color: #C686FE;
 }
 
 .btn-check:active + .btn-outline-primary, .btn-check:checked + .btn-outline-primary, .btn-outline-primary.active, .btn-outline-primary.dropdown-toggle.show, .btn-outline-primary:active {
@@ -135,20 +188,22 @@ header {
 .btn-link {
     color: #8f3796;
 }
+.btn-link:hover {
+    color: #C686FE;
+}
 
 /* Header / Nav Styling */
 a {
     color: rgb(157, 43, 157);
 }
-    a:hover {
-        color: #8f3796;
-    }
+a:hover {
+    color: #8f3796;
+}
 .dropdown-item.active, .dropdown-item:active {
     color: #fff;
     text-decoration: none;
     background-color: #8f3796;
 }
-
 .page-item.active .page-link {
     background-color: #8f3796;
     border-color: #8f3796;
