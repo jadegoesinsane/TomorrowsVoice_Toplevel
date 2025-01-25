@@ -25,7 +25,7 @@
 		<div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
 			<br />
 			<form asp-action="Index" method="get">
-				
+
 				<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
 				<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
 				<div class="form-horizontal">
@@ -194,8 +194,15 @@
 					initialView: 'dayGridMonth',
 					themeSystem: 'bootstrap5',
 					events: '/Rehearsal/GetRehearsals',
-					eventDisplay: 'block'
-				});//#8f3796
+					eventDisplay: 'block',
+					headerToolbar: {
+						start: 'title',
+						center: '',
+						end: 'prev,next today'
+					},
+					navLinks: true,
+					navLinkDayClick: function (date) { window.location.href = '/Rehearsal/SetRehearsal?date=' + date.toISOString().split('T')[0] }
+				});
 				calendar.render();
 			});
 		</script>
