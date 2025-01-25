@@ -23,7 +23,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: Singer
-		public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
+		public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID,
 			string? actionButton, string sortDirection = "asc", string sortField = "Singer")
 		{
 			// Sort Options
@@ -40,11 +40,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking();
 
-			if (ChapterID.Any(c => c.HasValue))
+			if (ChapterID.HasValue)
 			{
-				singers = singers.Where(s => ChapterID.Contains(s.ChapterID));
-				foreach (int? id in ChapterID)
-					numberFilters++;
+				singers = singers.Where(s => s.ChapterID == ChapterID);
+				numberFilters++;
 			}
 			if (!String.IsNullOrEmpty(SearchString))
 			{
