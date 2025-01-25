@@ -6,62 +6,61 @@
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
+            <div class="form-group, col-md-4">
                 <label asp-for="RehearsalDate" class="control-label"></label>
                 <input asp-for="RehearsalDate" class="form-control" />
                 <span asp-validation-for="RehearsalDate"  class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group, col-md-4">
                 <label asp-for="StartTime" class="control-label"></label>
                 <input asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group, col-md-4">
                 <label asp-for="EndTime" class="control-label"></label>
                 <input asp-for="EndTime" class="form-control" />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
-            <div class="form-group">
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group" style="margin-top: 10px">
+                <label asp-for="ChapterID" class="control-label"></label>
+                <select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
+            </div>
+            <div class="form-group" style="margin-top: 10px">
+                <label asp-for="DirectorID" class="control-label"></label>
+                <select asp-for="DirectorID" class="form-control" asp-items="ViewBag.DirectorID"></select>
+            </div>
+            <div class="form-group" style="margin-top: 10px">
                 <label asp-for="Note" class="control-label"></label>
                 <textarea asp-for="Note" class="form-control"></textarea>
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DirectorID" class="control-label"></label>
-                <select asp-for="DirectorID" class ="form-control" asp-items="ViewBag.DirectorID"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChapterID" class="control-label"></label>
-                <select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
-            </div>
         </div>
-
-            <div class="col-md-8">
-                <div class="row">
-                <div class="form-group">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="form-group" style="margin-top: 10px">
                     <label for="MembershipFilter" class="control-label">Select a City</label>
                     @Html.DropDownList("chapterSelect", ViewBag.Chapters as SelectList, "All ",
-                             new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()" })
+                             new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()", @style="width:200px"})
                 </div>
-                    <div class="form-group col-md-6">
-                    <label class="control-label"> Singer Added</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
-                            <strong>-</strong>
-                        </button>
-                        @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
-                    </div>
+                <div class="form-group col-md-6" style="margin-top: 10px">
+                    <label class="control-label"> Singer(s) Added</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+                        <strong>-</strong>
+                    </button>
+                    @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
+                </div>
 
-                    <div class="form-group col-md-6">
-                        <label class="control-label"> Choose Singer</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
-                            <strong>+</strong>
-                        </button>
-                        @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
-                    </div>
+                <div class="form-group col-md-6" style="margin-top: 10px">
+                    <label class="control-label"> Choose Singer(s)</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+                        <strong>+</strong>
+                    </button>
+                    @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
                 </div>
             </div>
-
+        </div>
     </div>
-
     <div class="form-group">
         <input type="submit" id="btnSubmit" value="Create" class="btn btn-primary" /> |
         <partial name="_BackToList" />
