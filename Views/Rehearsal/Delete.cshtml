@@ -5,78 +5,78 @@
     <h4>Rehearsal</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RehearsalDate)
-        </dt>
-        <dt class="col-sm-10">
-            @Html.DisplayFor(model => model.RehearsalDate)
-        </dt>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Note)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Note)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Director)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Director.NameFormatted)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Chapter)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Chapter.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Attendee(s)
-        </dt>
-        <dd class="col-sm-10">
-            @{
-                int singerCount = Model.RehearsalAttendances.Count;
-                if (singerCount > 0)
-                {
-                    string firstSinger = Model.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
-                    if (singerCount > 1)
+        <div class="col-sm-3">
+            <dt>
+                @Html.DisplayNameFor(model => model.Summary)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Summary)
+            </dd>
+        </div>
+        <div class="col-sm-3">
+            <dt>
+                @Html.DisplayNameFor(model => model.Chapter)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Chapter.Name)
+            </dd>
+        </div>
+        <div class="col-sm-6">
+            <dt>
+                @Html.DisplayNameFor(model => model.Director)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Director.NameFormatted)
+            </dd>
+        </div>
+    </dl>
+    <dl class="row">
+        <div class="col-sm-6">
+            <dt>
+                @Html.DisplayNameFor(model => model.Note)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Note)
+            </dd>
+        </div>
+        <div class="col-sm-6">
+            <dt>
+                Attendee(s)
+            </dt>
+            <dd>
+                @{
+                    int singerCount = Model.RehearsalAttendances.Count;
+                    if (singerCount > 0)
                     {
-                        string SingerList = "";
-                        var c = Model.RehearsalAttendances.ToList();
-                        for (int i = 0; i < singerCount; i++)
+                        string firstSinger = Model.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
+                        if (singerCount > 1)
                         {
-                            SingerList += c[i].Singer.NameFormatted + " <br />";
+                            string SingerList = "";
+                            var c = Model.RehearsalAttendances.ToList();
+                            for (int i = 0; i < singerCount; i++)
+                            {
+                                SingerList += c[i].Singer.NameFormatted + " <br />";
+                            }
+                            <a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(Model.ID)"
+                               aria-expanded="false" aria-controls="collapseSingers@(Model.ID)">
+                                View all @singerCount attendees
+                            </a>
+                            <div class="collapse" id="collapseSingers@(Model.ID)">
+                                @Html.Raw(SingerList)
+                            </div>
                         }
-                        <a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(Model.ID)"
-                           aria-expanded="false" aria-controls="collapseSingers@(Model.ID)">
-                            View all @singerCount attendees
-                        </a>
-                        <div class="collapse" id="collapseSingers@(Model.ID)">
-                            @Html.Raw(SingerList)
-                        </div>
+                        else
+                        {
+                            @firstSinger
+                        }
                     }
                     else
                     {
-                        @firstSinger
+                        <p>No attendees</p>
                     }
                 }
-                else
-                {
-                    <p>No attendees</p>
-                }
-            }
-        </dd>
+            </dd>
+        </div>
     </dl>
     
     <form asp-action="Delete">
