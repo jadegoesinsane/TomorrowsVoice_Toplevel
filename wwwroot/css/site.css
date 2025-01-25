@@ -22,7 +22,7 @@ body {
 }
 /* Form Styling */
 .form-container {
-    width: 100%;
+    width: fit-content;
     box-shadow: 0 2px 10px #0000001f;
 }
 .form-area {
