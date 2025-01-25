@@ -60,7 +60,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			//Save to View Data
 			ViewData["StartDate"] = StartDate.ToString("yyyy-MM-dd");
 			ViewData["EndDate"] = EndDate.ToString("yyyy-MM-dd");
-			ViewData["AptCount"] = _context.Rehearsals.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate.AddDays(1)).Count();
+			
 
 
 			// Sort Options
@@ -95,6 +95,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				rehearsals = rehearsals.Where(r => r.ChapterID == ChapterID);
 				numFilters++;
 			}
+
+			ViewData["AptCount"] = rehearsals.Count();
 
 			// Show how many filters are applied
 			if (numFilters != 0)
@@ -532,7 +534,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				 .Include(c => c.Director)
 				 .Include(c => c.Chapter)
 				 .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate)
-				 .GroupBy(a => new { a.Director.Chapter.Name })
+				 .GroupBy(a => new { a.Chapter.Name })
 				 .Select(grp => new AttendanceSummaryVM
 				 {
 					 City = grp.Key.Name,
