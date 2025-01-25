@@ -150,7 +150,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email,Phone,ChapterID,IsActive")] Director director)
+		public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email,Phone,ChapterID,Status")] Director director)
 		{
 			try
 			{
@@ -214,7 +214,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			if (await TryUpdateModelAsync<Director>(directorToUpdate, "", d => d.FirstName, d => d.LastName, d => d.Email, d => d.Phone,
-					r => r.IsActive, r=>r.ChapterID))
+					r => r.Status, r=>r.ChapterID))
 			{
 				try
 				{
