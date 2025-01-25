@@ -15,9 +15,8 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Email)
                     </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PhoneFormatted)
-                    </th>
+                    
+                    <th>Parent</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,7 +32,7 @@
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.PhoneFormatted)
+                            @Html.DisplayFor(modelItem => item.EmergencySummary)
                         </td>
                     </tr>
                 }
