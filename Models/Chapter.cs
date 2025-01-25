@@ -1,10 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace TomorrowsVoice_Toplevel.Models
 {
     public class Chapter
     {
         public int ID { get; set; }
+
+        [Display(Name = "Address Summary")]
+        public string AddressSummary
+        {
+            get
+            {
+                return Address+ ", " + ((PostalCode.Length == 6) ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3) 
+                    : PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4) )+ ", " +Province; 
+						
+
+			}
+        }
 
         [Display(Name = "Name")]
         [Required(ErrorMessage = "You cannot leave the name blank.")]
