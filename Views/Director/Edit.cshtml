@@ -2,54 +2,67 @@
 
 <partial name="_ViewHeading" />
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChapterID" class="control-label"></label>
-                <select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
-                <span asp-validation-for="ChapterID" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <label asp-for="Status" class="control-label"></label>
-                    <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
-                    <span asp-validation-for="Status" class="text-danger"></span>
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" /> |
-                <partial name="_BackToList" />
-            </div>
-            <br />
-        </form>
-    </div>
-</div>
+<form asp-action="Edit" class="form-container">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<input type="hidden" asp-for="ID" />
 
+	<div class="row g-4 my-3 form-area">
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<input asp-for="FirstName" class="form-control" placeholder="First Name" />
+				<label asp-for="FirstName" class="control-label"></label>
+				<span asp-validation-for="FirstName" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-floating optional">
+				<input asp-for="MiddleName" class="form-control" placeholder="Middle Name (optional)" />
+				<label asp-for="MiddleName" class="control-label"></label>
+				<span asp-validation-for="MiddleName" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<input asp-for="LastName" class="form-control" placeholder="Last Name" />
+				<label asp-for="LastName" class="control-label"></label>
+				<span asp-validation-for="LastName" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<input asp-for="Email" class="form-control" placeholder="Email" />
+				<label asp-for="Email" class="control-label"></label>
+				<span asp-validation-for="Email" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-floating required">
+				<input asp-for="Phone" class="form-control" placeholder="Emergency Contact Number" />
+				<label asp-for="Phone" class="control-label"></label>
+				<span asp-validation-for="Phone" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-floating required">
+				@Html.DropDownList("ChapterID", ViewBag.Chapters as SelectList, "Select a City ", new { @class = "form-control" })
+				<label asp-for="ChapterID" class="control-label"></label>
+				<span asp-validation-for="ChapterID" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="form-group col-md-4 required">
+			<div class="form-floating required">
+				<select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
+				<label asp-for="Status" class="control-label"></label>
+				<span asp-validation-for="Status" class="text-danger"></span>
+			</div>
+		</div>
+	</div>
+	<partial name="_FormFooter" />
+
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }

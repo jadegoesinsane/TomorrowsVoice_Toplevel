@@ -2,12 +2,11 @@
 
 <partial name="_ViewHeading" />
 
-<hr />
-<form asp-action="Edit">
+<form asp-action="Edit" class="form-container">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<input type="hidden" asp-for="ID" />
 
-	<div class="row g-4 my-3">
+	<div class="row g-4 my-3 form-area">
 		<div class="col-md-4">
 			<div class="form-floating required">
 				<input asp-for="FirstName" class="form-control" placeholder="First Name" />
@@ -41,7 +40,7 @@
 				<input asp-for="ContactName" class="form-control" placeholder="Emergency Contact" />
 				<label asp-for="ContactName" class="control-label"></label>
 				<span asp-validation-for="ContactName" class="text-danger"></span>
-				</div>
+			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
@@ -52,15 +51,16 @@
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
-				<select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
+				@Html.DropDownList("ChapterID", ViewBag.Chapters as SelectList, "Select a City ", new { @class = "form-control" })
+				<!--<select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>-->
 				<label asp-for="ChapterID" class="control-label"></label>
 				<span asp-validation-for="ChapterID" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="form-group col-md-4 required">
-			<div class="form-check">
-				<label asp-for="Status" class="control-label"></label>
+			<div class="form-floating required">
 				<select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
+				<label asp-for="Status" class="control-label"></label>
 				<span asp-validation-for="Status" class="text-danger"></span>
 			</div>
 		</div>
@@ -71,15 +71,13 @@
 				<span asp-validation-for="Note" class="text-danger"></span>
 			</div>
 		</div>
-
-
-		<div class="form-group col-md-6">
-			<input type="submit" value="Save" class="btn btn-primary" /> |
-			<partial name="_BackToList" />
-		</div>
 	</div>
+	<partial name="_FormFooter" />
+
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }
