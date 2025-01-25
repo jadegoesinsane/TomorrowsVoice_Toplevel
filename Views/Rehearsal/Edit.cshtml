@@ -27,7 +27,7 @@
         <div class="col-md-4">
             <div class="form-group" style="margin-top: 10px">
                 <label asp-for="ChapterID" class="control-label"></label>
-                <select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
+                <select asp-for="ChapterID" class="form-control" id="Filter" onchange="filterByCity()" asp-items="ViewBag.ChapterID"></select>
             </div>
             <div class="form-group" style="margin-top: 10px">
                 <label asp-for="DirectorID" class="control-label"></label>
@@ -41,11 +41,11 @@
         </div>
         <div class="col-md-8">
             <div class="row">
-                <div class="form-group" style="margin-top: 10px">
+@*                 <div class="form-group" style="margin-top: 10px">
                     <label for="MembershipFilter" class="control-label">Select a City</label>
                     @Html.DropDownList("chapterSelect", ViewBag.Chapters as SelectList, "All ",
                              new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()", @style = "width:200px" })
-                </div>
+                </div> *@
                 <div class="form-group col-md-6" style="margin-top: 10px">
                     <label class="control-label"> Singer(s) Added</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
                         <strong>-</strong>

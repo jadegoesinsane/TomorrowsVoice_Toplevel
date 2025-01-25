@@ -27,6 +27,7 @@ using System.Text.Json;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http.Extensions;
 using NuGet.Protocol;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -54,9 +55,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			if (EndDate == DateTime.MinValue)
 			{
-				StartDate = _context.Rehearsals.Min(o => o.RehearsalDate).Date;
-				EndDate = _context.Rehearsals.Max(o => o.RehearsalDate).Date;
-			}
+				int dayInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
+				StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+				EndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dayInMonth);
+            }
 			//Check the order of the dates and swap them if required
 			if (EndDate < StartDate)
 			{
@@ -188,7 +190,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 			PopulateDropDown(rehearsal);
 
-			// Get all clients and filter by membership if a filter is applied
+			// Get all singers and filter by chapter if a filter is applied
 			PopulateAttendance(chapterSelect, rehearsal);
 
 			return View(rehearsal);
@@ -402,7 +404,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				singers = singers.Where(c => c.ChapterID == chapterSelect.Value);
 			}
 
-			// Format available clients with membership information
+			
 
 			var allOptions = singers;
 			var currentOptionsHS = new HashSet<int>(rehearsal.RehearsalAttendances.Select(b => b.SingerID));
@@ -473,14 +475,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public IActionResult GetSingersByChapter(int? chapterSelect)
 		{
-			// Get all clients and filter by membership type if specified
+			// Get all singers and filter
 			var singers = _context.Singers.Include(c => c.Chapter).AsQueryable();
 			if (chapterSelect.HasValue)
 			{
 				singers = singers.Where(c => c.ChapterID == chapterSelect.Value);
 			}
 
-			// Format the client list for the response
+			// Format the singer list for the response
 			var clientList = singers.Select(c => new
 			{
 				id = c.ID,

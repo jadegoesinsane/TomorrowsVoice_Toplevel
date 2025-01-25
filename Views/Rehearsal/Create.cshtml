@@ -1,7 +1,6 @@
 @model TomorrowsVoice_Toplevel.Models.Rehearsal
 
 <partial name="_ViewHeading" />
-
 <form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="row g-4 my-3 form-area">
@@ -28,7 +27,9 @@
         </div>
         <div class="col-md-4">
             <div class="form-floating required my-4">
-                <select asp-for="ChapterID" class="form-control" asp-items="ViewBag.ChapterID"></select>
+                <select asp-for="ChapterID" class="form-control" id="Filter" onchange="filterByCity()" asp-items="ViewBag.ChapterID"></select>
+@*                 @Html.DropDownList("chapterSelect", ViewBag.Chapters as SelectList, "Select a Chapter",
+                         new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()"}) *@
                 <label asp-for="ChapterID" class="control-label"></label>
             </div>
             <div class="form-floating required my-4">
@@ -43,11 +44,6 @@
         </div>
         <div class="col-md-8">
             <div class="row">
-                <div class="form-group" style="margin-top: 10px">
-                    <label for="MembershipFilter" class="control-label">Select a City</label>
-                    @Html.DropDownList("chapterSelect", ViewBag.Chapters as SelectList, "All ",
-                             new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()", @style = "width:200px" })
-                </div>
                 <div class="form-group col-md-6" style="margin-top: 10px">
                     <label class="control-label"> Singer(s) Added</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
                         <strong>-</strong>
