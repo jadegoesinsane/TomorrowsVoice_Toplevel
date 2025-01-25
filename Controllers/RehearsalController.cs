@@ -191,7 +191,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDown(rehearsal);
 
 			// Get all singers and filter by chapter if a filter is applied
-			PopulateAttendance(chapterSelect, rehearsal);
+			PopulateAttendance(_context.Chapters.Select(c => c.ID).FirstOrDefault(), rehearsal);
 
 			return View(rehearsal);
 		}
@@ -235,7 +235,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 
 			// Get all clients and filter by membership if a filter is applied
-			PopulateAttendance(chapterSelect, rehearsal);
+			PopulateAttendance(rehearsal.ChapterID, rehearsal);
 
 			PopulateDropDown(rehearsal);
 			return View(rehearsal);
@@ -403,6 +403,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				singers = singers.Where(c => c.ChapterID == chapterSelect.Value);
 			}
+			else
+			{
+				ViewData["selOpts"] = new MultiSelectList(new List<Singer> {  });
+				ViewData["availOpts"] = new MultiSelectList(new List<Singer> { });
+				return;
+			}
+				
 
 			
 
