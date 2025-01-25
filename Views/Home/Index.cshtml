@@ -1,8 +1,93 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Music Directors of Tomorrow's Voices</p>
+	<h2>Dashboard</h2>
+<div class="card-deck">
+	<div class="card text-white bg-green my-3 d-none d-lg-table-cell">
+		<div class="card-body row">
+			<div class="col-md">
+				<h5 class="card-title">2<br />Singers</h5>
+			</div>
+			<div class="col-md">
+				<div role="img" style="font-size:3rem">?</div>
+			</div>
+		</div>
+		<div class="card-footer bg-dark-green">
+			<button class="btn btn-success" style="width: 100%">Show Singers</button>
+		</div>
+	</div>
+	<div class="card text-white bg-yellow my-3 d-none d-lg-table-cell">
+		<div class="card-body row">
+			<div class="col-md">
+				<h5 class="card-title">213<br />Sessions</h5>
+			</div>
+			<div class="col-md">
+				<div role="img" style="font-size:3rem">&#127900;</div>
+			</div>
+		</div>
+		<div class="card-footer bg-dark-yellow">
+			<button class="btn btn-warning text-white" style="width: 100%">Show Rehearsals</button>
+		</div>
+	</div>
+	<div class="card text-white bg-blue my-3 d-none d-lg-table-cell">
+		<div class="card-body row">
+				<div class="col-md">
+					<h5 class="card-title">2<br />Directors</h5>
+				</div>
+				<div class="col-md">
+					<div role="img" style="font-size:3rem">&#127897;</div>
+				</div>
+		</div>
+		<div class="card-footer bg-dark-blue">
+			<button class="btn btn-info text-white" style="width: 100%">Show Directors</button>
+		</div>
+	</div>
+	<div class="card text-white bg-red my-3 d-none d-lg-table-cell">
+		<div class="card-body row">
+			<div class="col-md">
+				<h5 class="card-title">2<br />Choirs</h5>
+			</div>
+			<div class="col-md">
+				<div role="img" style="font-size:3rem">&#119070;</div>
+			</div>
+		</div>
+		<div class="card-footer bg-dark-red">
+			<button class="btn btn-danger" style="width: 100%">Show Choirs</button>
+		</div>
+	</div>
 </div>
+	<div class="row g-4 my-3">
+		<div class="col">
+			<div class="form-area" style="width:50%;">
+				<div id='calendar'></div>
+			</div>
+		</div>
+	</div>
+	
+
+
+
+@section Scripts {
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var calendarEl = document.getElementById('calendar');
+			var calendar = new FullCalendar.Calendar(calendarEl, {
+				initialView: 'dayGridMonth',
+				themeSystem: 'bootstrap5',
+				events: '/Rehearsal/GetRehearsals',
+				eventDisplay: 'block',
+				headerToolbar: {
+					start: 'title',
+					center: '',
+					end: 'prev,next today'
+				},
+				navLinks: true,
+				navLinkDayClick: function (date) { window.location.href = '/Rehearsal/SetRehearsal?date=' + date.toISOString().split('T')[0] }
+				//'/Rehearsal/SetRehearsal'
+				//window.location.href = '/Rehearsal/Create';
+					//?date=' + date.toISOString().split('T')[0]
+			});
+			calendar.render();
+		});
+	</script>
+}

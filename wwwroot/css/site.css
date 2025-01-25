@@ -237,3 +237,51 @@ a:hover {
     color: #fff;
     background-color: #8f3796 !important;
 }
+
+.card-deck {
+  display: flex;
+  flex-direction: row;
+}
+
+.card-deck > .card {
+    display: flex;
+    flex: 1 0 0%;
+    flex-direction: column;
+    margin-bottom: 0px;
+    margin-right: 1.5rem;
+    margin-left: 1.5rem;
+}
+
+
+/* Custom Colours */
+.bg-red {
+    background-color: #eb6363;
+}
+
+.bg-dark-red {
+    background-color: #d25a5a;
+}
+
+.bg-green {
+    background-color: #5dc98c;
+}
+
+.bg-dark-green {
+    background-color: #53b47e;
+}
+
+.bg-yellow {
+    background-color: #f5c344;
+}
+
+.bg-dark-yellow {
+    background-color: #dcaf3d;
+}
+
+.bg-blue {
+    background-color: #4ca3d4;
+}
+
+.bg-dark-blue {
+    background-color: #4393bf;
+}
