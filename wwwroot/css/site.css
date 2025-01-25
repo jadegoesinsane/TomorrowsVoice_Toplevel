@@ -97,6 +97,14 @@ body {
             padding-right: 5px;
         }
 
+.card .control-label {
+    background-color: rgba(247,248,249, 0.95) !important;
+    font-weight: initial !important;
+    font-size: initial !important;
+}
+.card .form-floating > label {
+    top: 5px;
+}
 /*
 /* Form Floating
 .form-floating > .form-control {

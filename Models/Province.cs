@@ -1,18 +1,26 @@
-﻿namespace TomorrowsVoice_Toplevel.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TomorrowsVoice_Toplevel.Models
 {
     public enum Province
     {
         Alberta,
-        British_Columbia,
+        [Display(Name = "British Columbia")]
+        BritishColumbia,
         Manitoba,
-        New_Brunswick,
-        Newfoundland_And_Labrador,
+        [Display(Name = "New Brunswick")]
+        NewBrunswick,
+        [Display(Name = "Newfoundland and Labrador")]
+        NewfoundlandAndLabrador,
+        [Display(Name = "Nova Scotia")]
         Nova_Scotia,
         Ontario,
-        Prince_EdwardIsland,
+        [Display(Name = "Prince Edward Island")]
+        PrinceEdwardIsland,
         Quebec,
         Saskatchewan,
-        Northwest_Territories,
+        [Display(Name = "Northwest Territories")]
+        NorthwestTerritories,
         Nunavut,
         Yukon
     }
