@@ -1,7 +1,7 @@
 ﻿@{
 	ViewData["Title"] = "Home Page";
 }
-	<h2>Dashboard</h2>
+<h2>Dashboard</h2>
 <div class="card-deck">
 	<div class="card text-black bg-green my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
@@ -31,13 +31,13 @@
 	</div>
 	<div class="card text-black bg-blue my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
-				<div class="col-md">
-					<h5 class="card-title">2<br />Directors</h5>
-				</div>
-				<div class="col-md">
+			<div class="col-md">
+				<h5 class="card-title">2<br />Directors</h5>
+			</div>
+			<div class="col-md">
 				<i style="font-size:3rem; color:white;">&#128100;</i>
-				</div>
-			
+			</div>
+
 		</div>
 		<div class="card-footer bg-dark-blue">
 			<a href="Director" class="btn stretched-link" style="width: 100%">Show Directors</a>
@@ -57,24 +57,44 @@
 		</div>
 	</div>
 </div>
-	<div class="row g-4 my-3">
+<div class="row g-4 my-3">
 
 	<div class="col">
 		<div class="form-footer" style="width:50%;">
-				<h3>Rehearsals</h3>
-			</div>
+			<h3>Rehearsals</h3>
+		</div>
 		<div class="form-area" style="width:50%;">
-				<div id='calendar'></div>
+			<div id='calendar'></div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal -->
+<!--<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Rehearsals</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				...
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
 			</div>
 		</div>
 	</div>
-	
-
-
+</div>-->
 
 @section Scripts {
+	<script src="~/js/rehearsalCalendar.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
+		/*document.addEventListener('DOMContentLoaded', function () {
 			var calendarEl = document.getElementById('calendar');
 			var calendar = new FullCalendar.Calendar(calendarEl, {
 				initialView: 'dayGridMonth',
@@ -93,6 +113,6 @@
 					//?date=' + date.toISOString().split('T')[0]
 			});
 			calendar.render();
-		});
+		});*/
 	</script>
 }
