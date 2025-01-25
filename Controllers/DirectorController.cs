@@ -141,8 +141,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Director/Create
 		public IActionResult Create()
 		{
-			ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
-			return View();
+            Director director = new Director();
+            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
+			return View(director);
 		}
 
 		// POST: Director/Create
@@ -150,7 +151,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email,Phone,ChapterID,Status")] Director director)
+		public async Task<IActionResult> Create([Bind("ID,FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director)
 		{
 			try
 			{
@@ -213,7 +214,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 
-			if (await TryUpdateModelAsync<Director>(directorToUpdate, "", d => d.FirstName, d => d.LastName, d => d.Email, d => d.Phone,
+			if (await TryUpdateModelAsync<Director>(directorToUpdate, "", d => d.FirstName, d => d.MiddleName, d => d.LastName, d => d.Email, d => d.Phone,
 					r => r.Status, r=>r.ChapterID))
 			{
 				try
