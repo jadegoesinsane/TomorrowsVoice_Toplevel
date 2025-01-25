@@ -10,30 +10,27 @@
 
 <!-- Form for filtering -->
 <form asp-controller="Rehearsal" asp-action="RehearsalsSummary" method="get" id="filterForm">
-    <div class="row">
-        <div class="col-md-4">
-            <label for="startDate" class="control-label">Start Date:</label>
-            <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" />
+    <div class="row my-2 p-2">
+        <div class="col-md-2">
+            <div class="form-floating">
+                <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" aria-labelledby="lblStartDate" />
+                <label id="lblStartDate" for="startDate" class="control-label">Start Date:</label>
+            </div>
         </div>
-        <div class="col-md-4">
-            <label for="endDate" class="control-label">End Date:</label>
-            <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" />
+        <div class="col-md-2">
+            <div class="form-floating">
+                <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" aria-labelledby="lblEndDate" />
+                <label id="lblEndDate" for="endDate" class="control-label">End Date:</label>
+            </div>
         </div>
-
-
-        <!-- Export button (this will trigger export action with dates) -->
-
-
-
+        <div class="col-md">
+            <button class="btn btn-outline-primary" type="submit" onclick="exportToExcel3()">Filter</button>
+        </div>
+        <div class="col-md-3 ms-auto d-flex justify-content-between">
+            <button class="btn btn-primary" onclick="exportToExcel1()">Detail Excel</button>
+            <button type="button" class="btn btn-primary" onclick="exportToExcel2()">Summary Excel</button>
+        </div>
     </div>
-
-
-
-    <div class="col-md-4" style="margin-top: 20px;">
-        <button class="btn btn-primary" type="submit" onclick="exportToExcel3()">Filter</button>
-
-    </div>
-
 
 </form>
 
@@ -70,9 +67,6 @@
     </tbody>
 </table>
 
-<button class="btn btn-primary" onclick="exportToExcel1()">Detail Excel</button>
-<button type="button" class="btn btn-primary" onclick="exportToExcel2()">Summary Excel</button>
-
 <!-- Hidden form for export (this will submit the data for export action) -->
 <form id="exportForm" asp-controller="Rehearsal" asp-action="RehearsalsDetailReport" method="get" style="display:none;">
     <input type="hidden" name="startDate" id="exportStartDate" />
@@ -103,7 +97,6 @@
             // Get selected dates
             var startDate = document.getElementById('startDate').value;
             var endDate = document.getElementById('endDate').value;
-
 
             if (new Date(startDate) > new Date(endDate)) {
                 alert("Start Date cannot be later than End Date.");

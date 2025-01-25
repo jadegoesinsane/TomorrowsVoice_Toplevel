@@ -20,11 +20,13 @@ html {
 body {
     margin-bottom: 60px;
 }
+
 /* Form Styling */
 .form-container {
     width: fit-content;
     box-shadow: 0 2px 10px #0000001f;
 }
+
 .form-area {
     border: 2px solid #e9ebf0;
     box-sizing: inherit;
@@ -33,6 +35,7 @@ body {
     margin-left: 0px;
     margin-right: 0px;
 }
+
 .form-footer {
     padding: 1rem;
     background-size: cover;
@@ -41,9 +44,11 @@ body {
     margin-left: 0px;
     margin-right: 0px;
 }
+
 .form-control:focus {
     border-color: #C686FE;
 }
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #8f3796;
 }
@@ -58,36 +63,39 @@ body {
 .form-group.optional .control-label:after {
     content: " (optional)";
 }
+
 .form-floating > .form-control, .form-floating > .form-select {
     height: calc(2.5rem + 2px);
     line-height: 1.25;
 }
+
 .form-floating > .control-label {
     color: rgb(104 114 129);
     width: fit-content;
     height: fit-content;
     padding: .5rem;
 }
+
 .form-floating > .form-control {
     padding: .5rem;
 }
-/* Overwrite Bootstrap5 floating label*/
-.form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {
-    padding-top: .5rem;
-    padding-bottom: .5rem;
-}
+    /* Overwrite Bootstrap5 floating label*/
+    .form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+    }
 
-.form-floating > .form-control:focus ~ label,
-.form-floating > .form-control:not(:placeholder-shown) ~ label,
-.form-floating > .form-select ~ label {
-    background-color: white;
-    color: rgb(104 114 129);
-    opacity: 1;
-    transform: scale(.85) translateY(-1.25rem) translateX(.5rem);
-    padding: 0px;
-    padding-left: 5px;
-    padding-right: 5px;
-}
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label,
+        .form-floating > .form-select ~ label {
+            background-color: white;
+            color: rgb(104 114 129);
+            opacity: 1;
+            transform: scale(.85) translateY(-1.25rem) translateX(.5rem);
+            padding: 0px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
 
 /*
 /* Form Floating
@@ -121,6 +129,7 @@ body {
 }
 */
 
+
 /* Footer Image */
 footer {
     background-image: url(../images/FOOTER.png);
@@ -128,6 +137,14 @@ footer {
     background-position: top;
     background-size: cover;
     background-color: #fff !important;
+}
+
+.footer-container {
+    margin-top: 50px;
+    padding-top: 25px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
 }
 
 header {
@@ -139,14 +156,6 @@ header {
     padding-bottom: 25px;
 }
 
-.footer-container {
-    padding-top: 25px;
-    padding-right: 0px;
-    padding-bottom: 0px;
-    padding-left: 0px;
-}
-
-
 /* Custom Bootstrap Theme */
 .btn-primary {
     background-color: #8f3796;
@@ -155,10 +164,10 @@ header {
     box-shadow: 0 2px 2px 0 rgba(198, 134, 254, .1),0 3px 1px -2px rgba(198, 134, 254, .18),0 1px 5px 0 rgba(198, 134, 254, .15);
 }
 
-.btn-primary:hover, .btn-primary:focus {
-    background: linear-gradient(to bottom, #8f3796, #611667);
-    border-color: #8f3796;
-}
+    .btn-primary:hover, .btn-primary:focus {
+        background: linear-gradient(to bottom, #8f3796, #611667);
+        border-color: #8f3796;
+    }
 
 .btn-outline-primary {
     border-width: 1.5px;
@@ -166,19 +175,20 @@ header {
     color: #8f3796;
 }
 
-.btn-outline-primary:hover {
-    color: #fff;
-    background-color: #8f3796;
-    border-color: #8f3796;
-}
+    .btn-outline-primary:hover {
+        color: #fff;
+        background-color: #8f3796;
+        border-color: #8f3796;
+    }
 
 .btn-outline-dark {
     border-width: 1.5px;
     color: #8f3796;
 }
-.btn-outline-dark:hover {
-    color: #C686FE;
-}
+
+    .btn-outline-dark:hover {
+        color: #C686FE;
+    }
 
 .btn-check:active + .btn-outline-primary, .btn-check:checked + .btn-outline-primary, .btn-outline-primary.active, .btn-outline-primary.dropdown-toggle.show, .btn-outline-primary:active {
     background-color: #8f3796;
@@ -188,44 +198,52 @@ header {
 .btn-link {
     color: #8f3796;
 }
-.btn-link:hover {
-    color: #C686FE;
-}
+
+    .btn-link:hover {
+        color: #C686FE;
+    }
 
 /* Header / Nav Styling */
 a {
     color: rgb(157, 43, 157);
 }
-a:hover {
-    color: #8f3796;
-}
+
+    a:hover {
+        color: #8f3796;
+    }
+
 .dropdown-item.active, .dropdown-item:active {
     color: #fff;
     text-decoration: none;
     background-color: #8f3796;
 }
+
 .page-item.active .page-link {
     background-color: #8f3796;
     border-color: #8f3796;
 }
+
 .page-link {
     color: #8f3796;
 }
-.page-link:hover {
-    color: #611667;
-}
+
+    .page-link:hover {
+        color: #611667;
+    }
 
 /* Tabs */
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #fff;
     background-color: #8f3796;
 }
+
 .nav-link {
     color: #8f3796;
 }
-.nav-link:focus, .nav-link:hover {
-    color: #611667;
-}
+
+    .nav-link:focus, .nav-link:hover {
+        color: #611667;
+    }
 /* Select2 Custom Styling */
 /*THIS IS THE HOVER!
     .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted {
@@ -239,33 +257,39 @@ a:hover {
 }
 
 .card-deck {
-  display: flex;
-  flex-direction: row;
-}
-
-.card-deck > .card {
     display: flex;
-    flex: 1 0 0%;
-    flex-direction: column;
-    margin-bottom: 0px;
-    margin-right: 1.5rem;
-    margin-left: 1.5rem;
+    flex-direction: row;
 }
 
+    .card-deck > .card {
+        display: flex;
+        flex: 1 0 0%;
+        flex-direction: column;
+        margin-bottom: 0px;
+        margin-right: 1.5rem;
+        margin-left: 1.5rem;
+    }
 
+    .card {
+        font-weight: bold;
+        font-size: large;
+    }
+    .card h5, .card a {
+        font-weight: bold;
+    }
 /* Custom Colours */
 .bg-red {
     background-color: #eb6363;
 }
-
+/*d25a5a*/
 .bg-dark-red {
     background-color: #d25a5a;
 }
-
+/*5dc98c*/
 .bg-green {
     background-color: #5dc98c;
 }
-
+/*53b47e*/
 .bg-dark-green {
     background-color: #53b47e;
 }
