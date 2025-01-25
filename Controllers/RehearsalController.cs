@@ -665,87 +665,94 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			return NotFound("No data.");
 		}
-        public IActionResult RehearsalsDetailReport(DateTime? startDate, DateTime? endDate)
+       public IActionResult RehearsalsDetailReport(DateTime? startDate, DateTime? endDate)
+{
+
+    var appts = _context.RehearsalAttendances
+        .Include(c => c.Rehearsal)
+            .ThenInclude(c => c.Director)
+            .ThenInclude(c => c.Chapter)
+            .Where(a => a.Rehearsal.RehearsalDate >= startDate && a.Rehearsal.RehearsalDate <= endDate)
+        .GroupBy(a => new { a.Rehearsal.Director.Chapter.Name, a.Rehearsal.RehearsalDate })
+        .Select(grp => new RehearsalViewModelDetails
         {
-
-            var appts = _context.RehearsalAttendances
-                .Include(c => c.Rehearsal)
-                    .ThenInclude(c => c.Director)
-                    .ThenInclude(c => c.Chapter)
-                    .Where(a => a.Rehearsal.RehearsalDate >= startDate && a.Rehearsal.RehearsalDate <= endDate)
-                .GroupBy(a => new { a.Rehearsal.Chapter.Name, a.Rehearsal.RehearsalDate })
-                .Select(grp => new RehearsalViewModelDetails
-                {
-                    City = grp.Key.Name,
-                    RehearsalDate = grp.Key.RehearsalDate,  // ??? DateTime ??
-                    NumberOfSingers = grp.Count(),
-                })
-                .ToList();
+            City = grp.Key.Name,
+			Rehearsal_Date = grp.Key.RehearsalDate,  // ??? DateTime ??
+            Number_Of_Singers = grp.Count(),
+        })
+        .ToList();
 
 
-            if (appts.Count > 0)
+    if (appts.Count > 0)
+    {
+        string startDate1 = startDate.Value.ToShortDateString();
+
+        string endDate1 = endDate.Value.ToShortDateString();
+        using (ExcelPackage excel = new ExcelPackage())
+        {
+            var workSheet = excel.Workbook.Worksheets.Add($"RehearsalsDetailReport from {startDate1} to {endDate1}");
+
+            var formattedAppts = appts.Select(a => new
             {
-                string startDate1 = startDate.Value.ToShortDateString();
+                a.City,
+                Rehearsal_Date = a.Rehearsal_Date.ToString("yyyy-MM-dd"),  // ?????
+                a.Number_Of_Singers
+			}).ToList();
 
-                string endDate1 = endDate.Value.ToShortDateString();
-                using (ExcelPackage excel = new ExcelPackage())
-                {
-                    var workSheet = excel.Workbook.Worksheets.Add($"RehearsalsDetailReport from {startDate1} to {endDate1}");
-
-                    var formattedAppts = appts.Select(a => new
-                    {
-                        a.City,
-                        RehearsalDate = a.RehearsalDate.ToString("yyyy-MM-dd"),  // ?????
-                        a.NumberOfSingers
-                    }).ToList();
-
-                    workSheet.Cells[3, 1].LoadFromCollection(formattedAppts, true);
+            workSheet.Cells[3, 1].LoadFromCollection(formattedAppts, true);
 
 
-                    workSheet.Cells[4, 1, appts.Count + 3, 2].Style.Font.Bold = true;
+            workSheet.Cells[4, 1, appts.Count + 3, 2].Style.Font.Bold = true;
 
-                    // ?????
-                   
-
-                    // ????????
-                    workSheet.Cells[1, 1].Value = $"RehearsalsDetailReport from {startDate1} to {endDate1}";
-                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
-                    {
-                        Rng.Merge = true;
-                        Rng.Style.Font.Bold = true;
-                        Rng.Style.Font.Size = 18;
-                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    }
-
-                    DateTime utcDate = DateTime.UtcNow;
-                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
-                    using (ExcelRange Rng = workSheet.Cells[2, 3])
-                    {
-                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
-                            localDate.ToShortDateString();
-                        Rng.Style.Font.Bold = true;
-                        Rng.Style.Font.Size = 12;
-                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                    }
-
-                    // ?? Excel ??
-                    try
-                    {
-                        Byte[] theData = excel.GetAsByteArray();
-                        string filename = $"RehearsalsDetailReport from {startDate1} to {endDate1}.xlsx";
-                        string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                        return File(theData, mimeType, filename);
-                    }
-                    catch (Exception)
-                    {
-                        return BadRequest("Could not build and download the file.");
-                    }
-                }
+			workSheet.Column(1).Width = 25;  // City column width
+			workSheet.Column(2).Width = 25;  // Date column width
+			workSheet.Column(3).Width = 25;
+			workSheet.Cells[1, 1].Value = $"Rehearsals Detail Report from {startDate1} to {endDate1}";
+            using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
+            {
+                Rng.Merge = true;
+                Rng.Style.Font.Bold = true;
+                Rng.Style.Font.Size = 14;
+                Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             }
 
-            return NotFound("No data.");
+			using (ExcelRange headings = workSheet.Cells[3, 1, 3, 3])
+			{
+				headings.Style.Font.Bold = true;
+				var fill = headings.Style.Fill;
+				fill.PatternType = ExcelFillStyle.Solid;
+				fill.BackgroundColor.SetColor(Color.MediumPurple);
+			}
+
+			DateTime utcDate = DateTime.UtcNow;
+            TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+            using (ExcelRange Rng = workSheet.Cells[2, 3])
+            {
+                Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                    localDate.ToShortDateString();
+                Rng.Style.Font.Bold = true;
+                Rng.Style.Font.Size = 12;
+                Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+            }
+
+            // ?? Excel ??
+            try
+            {
+                Byte[] theData = excel.GetAsByteArray();
+                string filename = $"RehearsalsDetailReport from {startDate1} to {endDate1}.xlsx";
+                string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                return File(theData, mimeType, filename);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Could not build and download the file.");
+            }
         }
+    }
+
+    return NotFound("No data.");
+}
 
         private bool RehearsalExists(int id)
 		{
