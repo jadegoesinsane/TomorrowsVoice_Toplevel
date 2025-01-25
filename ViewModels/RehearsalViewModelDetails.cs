@@ -1,4 +1,5 @@
-﻿using TomorrowsVoice_Toplevel.Models;
+using System.ComponentModel.DataAnnotations;
+using TomorrowsVoice_Toplevel.Models;
 
 namespace TomorrowsVoice_Toplevel.ViewModels
 {
@@ -6,9 +7,13 @@ namespace TomorrowsVoice_Toplevel.ViewModels
     {
 
 		public string City { get; set; }
-		public DateTime RehearsalDate { get; set; }
-		
-		public int NumberOfSingers { get; set; }
+
+		[Display(Name = "Rehearsal Date")]
+		public DateTime Rehearsal_Date { get; set; }
+
+
+		[Display(Name = "Number Of Singers")]
+		public int Number_Of_Singers { get; set; }
 
 	}
 }

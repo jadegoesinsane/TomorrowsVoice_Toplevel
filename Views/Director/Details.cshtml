@@ -5,46 +5,88 @@
 <div>
     <h4>@Model.NameFormatted</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Chapter)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Chapter.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-    </dl>
 </div>
+<div>
+    <!-- Nav tabs -->
+    <nav>
+        <div class="nav nav-pills" id="myTabs" role="tablist">
+            <button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
+                    type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
+                Basic Details
+            </button>
+            <button class="nav-link" id="Rehearsals-Tab" data-bs-toggle="tab" data-bs-target="#RehearsalsPanel"
+                    type="button" role="tab" aria-controls="RehearsalsPanel" aria-selected="false">
+                Rehearsals
+            </button>
+        </div>
+    </nav>
+
+    <!-- Tab Panels -->
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
+            <br />
+            <dl class="row">
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Phone)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.PhoneFormatted)
+                </dd>
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.Chapter)
+                </dt>
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.Chapter.Name)
+                </dd>
+                <dt>
+                    <label asp-for="Status" class="control-label" aria-labelledby="lblActive"></label>
+                    <span id="lblActive" class="visually-hidden">Is Singer Active?:</span>
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Status)
+                </dd>
+                </dl>
+            </div>
+
+        <div class="tab-pane fade ml-3" role="tabpanel" id="RehearsalsPanel" aria-labelledby="Rehearsals-tab">
+            <br />
+        </div>
+    </div>
+</div>
+<hr />
+<br />
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <partial name="_BackToList" />
 </div>
+<br />
+@section Scripts {
+    <script type="text/javascript">
+        $('.nav-link').click(function () {
+            var activeTab = $(this).attr("id");
+            switch (activeTab) {
+                case 'Rehearsals-Tab': $('#RehearsalsPanel').load('/Director/DirectorsRehearsalList/@Model.ID');
+                    break;
+                default: break;
+            };
+        })
+    </script>
+}

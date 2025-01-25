@@ -86,11 +86,11 @@
 								if (noteWords.Count() > 4)
 								{
 									<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
-										@(string.Join(" ", noteWords.Take(4)) + "...")
+										View Notes
 									</a>
 									<div class="collapse" id="collapseSum@(item.ID)">
 										<div class="well">
-											@(string.Join(" ", noteWords.Skip(4)))
+											@Html.Raw(item.Note)
 										</div>
 									</div>
 								}
@@ -98,6 +98,10 @@
 								{
 									@item.Note
 								}
+							}
+							else
+							{
+								<p>No Notes</p>
 							}
 						}
 					</td>

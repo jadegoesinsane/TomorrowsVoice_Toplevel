@@ -70,39 +70,44 @@ namespace TomorrowsVoice_Toplevel.Data
 							{
 								Name = "St. Catharines",
 								Address = "188 Linwell Rd",
-								City = "St. Catharines",
-								Province = "ON",
-								Postal = "L2N6N3"
+								Province = Province.Ontario,
+                                PostalCode = "L2N6N3"
 							}, new Chapter
 							{
 								Name = "Hamilton",
 								Address = "99 N Oval",
-								City = "Hamilton",
-								Province = "ON",
-								Postal = "L8S3Z2"
+								
+								Province = Province.Ontario,
+                                PostalCode = "L8S3Z2"
 							}, new Chapter
 							{
 								Name = "Toronto",
 								Address = "452 College St",
-								City = "Toronto",
-								Province = "ON",
-								Postal = "M6G 1A1"
+								
+								Province = Province.Ontario,
+                                PostalCode = "M6G 1A1"
 							}, new Chapter
 							{
 								Name = "Saskatoon",
 								Address = "35 – 22nd St. East",
-								City = "Saskatoon",
-								Province = "SK",
-								Postal = "M6G 1A1"
+								
+								Province = Province.Saskatchewan,
+                                PostalCode = "M6G 1A1"
 							}, new Chapter
 							{
 								Name = "Vancouver",
-								City = "Vancouver"
-							}, new Chapter
+                                Address = "35 – 22nd St. East",
+
+                                Province = Province.Saskatchewan,
+                                PostalCode = "M6G 1A1"
+                            }, new Chapter
 							{
 								Name = "Surrey",
-								City = "Surrey"
-							});
+                                Address = "35 – 22nd St. East",
+
+                                Province = Province.Saskatchewan,
+                                PostalCode = "M6G 1A1"
+                            });
 						context.SaveChanges();
 					}
 
@@ -163,8 +168,19 @@ namespace TomorrowsVoice_Toplevel.Data
 					int firstNameCount = firstNames.Length;
 					int lastNameCount = lastNames.Length;
 
-					//Create 5 notes from Bacon ipsum
-					string[] baconNotes = new string[] { "Bacon ipsum dolor amet meatball corned beef kevin, alcatra kielbasa biltong drumstick strip steak spare ribs swine. Pastrami shank swine leberkas bresaola, prosciutto frankfurter porchetta ham hock short ribs short loin andouille alcatra. Andouille shank meatball pig venison shankle ground round sausage kielbasa. Chicken pig meatloaf fatback leberkas venison tri-tip burgdoggen tail chuck sausage kevin shank biltong brisket.", "Sirloin shank t-bone capicola strip steak salami, hamburger kielbasa burgdoggen jerky swine andouille rump picanha. Sirloin porchetta ribeye fatback, meatball leberkas swine pancetta beef shoulder pastrami capicola salami chicken. Bacon cow corned beef pastrami venison biltong frankfurter short ribs chicken beef. Burgdoggen shank pig, ground round brisket tail beef ribs turkey spare ribs tenderloin shankle ham rump. Doner alcatra pork chop leberkas spare ribs hamburger t-bone. Boudin filet mignon bacon andouille, shankle pork t-bone landjaeger. Rump pork loin bresaola prosciutto pancetta venison, cow flank sirloin sausage.", "Porchetta pork belly swine filet mignon jowl turducken salami boudin pastrami jerky spare ribs short ribs sausage andouille. Turducken flank ribeye boudin corned beef burgdoggen. Prosciutto pancetta sirloin rump shankle ball tip filet mignon corned beef frankfurter biltong drumstick chicken swine bacon shank. Buffalo kevin andouille porchetta short ribs cow, ham hock pork belly drumstick pastrami capicola picanha venison.", "Picanha andouille salami, porchetta beef ribs t-bone drumstick. Frankfurter tail landjaeger, shank kevin pig drumstick beef bresaola cow. Corned beef pork belly tri-tip, ham drumstick hamburger swine spare ribs short loin cupim flank tongue beef filet mignon cow. Ham hock chicken turducken doner brisket. Strip steak cow beef, kielbasa leberkas swine tongue bacon burgdoggen beef ribs pork chop tenderloin.", "Kielbasa porchetta shoulder boudin, pork strip steak brisket prosciutto t-bone tail. Doner pork loin pork ribeye, drumstick brisket biltong boudin burgdoggen t-bone frankfurter. Flank burgdoggen doner, boudin porchetta andouille landjaeger ham hock capicola pork chop bacon. Landjaeger turducken ribeye leberkas pork loin corned beef. Corned beef turducken landjaeger pig bresaola t-bone bacon andouille meatball beef ribs doner. T-bone fatback cupim chuck beef ribs shank tail strip steak bacon." };
+					////Create 5 notes from Bacon ipsum
+					//string[] baconNotes = new string[] { "Bacon ipsum dolor amet meatball corned beef kevin, alcatra kielbasa biltong drumstick strip steak spare ribs swine. Pastrami shank swine leberkas bresaola, prosciutto frankfurter porchetta ham hock short ribs short loin andouille alcatra. Andouille shank meatball pig venison shankle ground round sausage kielbasa. Chicken pig meatloaf fatback leberkas venison tri-tip burgdoggen tail chuck sausage kevin shank biltong brisket.", "Sirloin shank t-bone capicola strip steak salami, hamburger kielbasa burgdoggen jerky swine andouille rump picanha. Sirloin porchetta ribeye fatback, meatball leberkas swine pancetta beef shoulder pastrami capicola salami chicken. Bacon cow corned beef pastrami venison biltong frankfurter short ribs chicken beef. Burgdoggen shank pig, ground round brisket tail beef ribs turkey spare ribs tenderloin shankle ham rump. Doner alcatra pork chop leberkas spare ribs hamburger t-bone. Boudin filet mignon bacon andouille, shankle pork t-bone landjaeger. Rump pork loin bresaola prosciutto pancetta venison, cow flank sirloin sausage.", "Porchetta pork belly swine filet mignon jowl turducken salami boudin pastrami jerky spare ribs short ribs sausage andouille. Turducken flank ribeye boudin corned beef burgdoggen. Prosciutto pancetta sirloin rump shankle ball tip filet mignon corned beef frankfurter biltong drumstick chicken swine bacon shank. Buffalo kevin andouille porchetta short ribs cow, ham hock pork belly drumstick pastrami capicola picanha venison.", "Picanha andouille salami, porchetta beef ribs t-bone drumstick. Frankfurter tail landjaeger, shank kevin pig drumstick beef bresaola cow. Corned beef pork belly tri-tip, ham drumstick hamburger swine spare ribs short loin cupim flank tongue beef filet mignon cow. Ham hock chicken turducken doner brisket. Strip steak cow beef, kielbasa leberkas swine tongue bacon burgdoggen beef ribs pork chop tenderloin.", "Kielbasa porchetta shoulder boudin, pork strip steak brisket prosciutto t-bone tail. Doner pork loin pork ribeye, drumstick brisket biltong boudin burgdoggen t-bone frankfurter. Flank burgdoggen doner, boudin porchetta andouille landjaeger ham hock capicola pork chop bacon. Landjaeger turducken ribeye leberkas pork loin corned beef. Corned beef turducken landjaeger pig bresaola t-bone bacon andouille meatball beef ribs doner. T-bone fatback cupim chuck beef ribs shank tail strip steak bacon." };
+
+					// Sample Singer Notes
+					string[] singerNotes = new string[]
+					{
+                        "This singer has severe allergies to peanuts and tree nuts. Exposure to these allergens can cause an anaphylactic reaction, requiring immediate administration of an epinephrine auto-injector (EpiPen) and emergency medical attention. Ensure the child avoids all foods that might contain these allergens.",
+                        "The child has asthma and may require an inhaler during physical activity or in response to environmental triggers like pollen, dust, or cold air. Watch for signs of difficulty breathing, wheezing, or persistent coughing, and ensure they have access to their inhaler at all times.",
+                        "The child has Type 1 Diabetes and requires careful monitoring of blood sugar levels. They may need to check their blood sugar before meals, after physical activity, or if they feel unwell. Be aware of symptoms of hypoglycemia (e.g., shakiness, confusion, sweating) and provide fast-acting glucose if needed.",
+                        "The child has epilepsy and is at risk of seizures. Common signs include sudden staring, uncontrolled movements, or loss of consciousness. If a seizure occurs, ensure the child is in a safe position, do not restrain them, and time the seizure. Notify emergency services if the seizure lasts longer than 5 minutes or if it's the first seizure you observe.",
+                        "The child has severe allergies to bee stings and certain pollens. A bee sting could result in an anaphylactic reaction, requiring immediate use of an epinephrine auto-injector (EpiPen). Symptoms of exposure to other allergens, like hay fever or skin irritation, should be reported, and measures to reduce exposure (e.g., staying indoors during peak pollen times) should be taken."
+                    };
+
 
 					// Sample attendance notes
 					string[] noteString = new string[] {
@@ -197,7 +213,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								if (i % 2 == 0)
 									singer.MiddleName = lastNames[rnd.Next(lastNameCount)][1].ToString().ToUpper();
 								if (i % 3 == 0)
-									singer.Note = baconNotes[rnd.Next(5)];
+									singer.Note = singerNotes[rnd.Next(5)];
 								try
 								{
 									context.Singers.Add(singer);
@@ -231,11 +247,12 @@ namespace TomorrowsVoice_Toplevel.Data
 									StartTime = start,
 									EndTime = end,
 									DirectorID = d.ID,
-									Director = d
+									Director = d,
+									ChapterID = d.ChapterID
 								};
 								if (i % 3 == 0)
 								{
-									rehearsal.Note = noteString[rnd.Next(4)];
+									rehearsal.Note = noteString[rnd.Next(5)];
 								}
 								try
 								{
@@ -280,22 +297,6 @@ namespace TomorrowsVoice_Toplevel.Data
 							}
 						}
 					}
-
-					// Generate some attendance logs NOT DONE NOT DONE
-
-					//if (context.Rehearsals.Any())
-					//{
-					//    DateTime sample = DateTime.Today;
-
-					//    context.Rehearsals.AddRange(
-					//        new Rehearsal
-					//        {
-					//            RehearsalDate = sample.AddDays(rnd.Next(7)),
-					//            StartTime = new DateTime(2025-01-01 )
-					//            EndTime
-					//            ChapterID
-					//        });
-					//}
 				}
 				catch (Exception ex)
 				{

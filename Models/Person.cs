@@ -46,7 +46,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		[MaxLength(10)]
 		public virtual string Phone { get; set; } = "";
 
-		[Display(Name = "Active?")]
-		public bool IsActive { get; set; } = true;
+		[Display(Name = "Status")]
+		public Status Status { get; set; } = Status.Active;
 	}
 }

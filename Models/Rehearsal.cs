@@ -44,16 +44,22 @@ namespace TomorrowsVoice_Toplevel.Models
 		[DataType(DataType.MultilineText)]
 		public string? Note { get; set; }
 
-		[Display(Name = "Director")]
-		public int DirectorID { get; set; }
 
+        [Required(ErrorMessage = "You must select a Director .")]
+        [Display(Name = "Director")]
+		public int DirectorID { get; set; }
 		public Director? Director { get; set; }
 
-		public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
+		[Display(Name ="Chapter")]
+		public int ChapterID { get; set; }
+		public Chapter? Chapter { get; set; }
+        
+
+        public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
-			if (StartTime > EndTime)
+			if (StartTime >= EndTime)
 			{
 				yield return new ValidationResult("Start time must be earlier than end time", ["Start Time"]);
 			}

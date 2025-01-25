@@ -25,10 +25,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("City")
-                        .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -36,13 +33,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Postal")
+                    b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Province")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Province")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
@@ -71,9 +67,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -88,6 +81,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("ID");
 
                     b.HasIndex("ChapterID");
@@ -99,6 +95,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChapterID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DirectorID")
@@ -118,6 +117,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ChapterID");
 
                     b.HasIndex("DirectorID", "RehearsalDate")
                         .IsUnique();
@@ -169,9 +170,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -188,6 +186,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
@@ -209,11 +210,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
                 {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
+                        .WithMany("Rehearsals")
+                        .HasForeignKey("ChapterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
                         .WithMany("Rehearsals")
                         .HasForeignKey("DirectorID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Chapter");
 
                     b.Navigation("Director");
                 });
@@ -251,6 +260,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
                     b.Navigation("Directors");
+
+                    b.Navigation("Rehearsals");
 
                     b.Navigation("Singers");
                 });
