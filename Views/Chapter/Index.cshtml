@@ -47,9 +47,8 @@
             <th>
                 @Html.DisplayNameFor(model => model.Address)
             </th>
-            <th>
-					@Html.DisplayNameFor(model => model.PostalCode)
-            </th>
+				<th>The number of Directors</th>
+				<th>The number of Singers </th>
             <th></th>
         </tr>
     </thead>
@@ -63,7 +62,14 @@
                 @Html.DisplayFor(modelItem => item.AddressSummary)
             </td>
             <td>
-						@Html.DisplayFor(modelItem => item.PostalCode)
+						
+				@item.Directors.Count
+						
+            </td>
+			<td>
+						
+				@item.Singers.Count
+						
             </td>
 					<td>
 						<partial name="_CrudIcons" model="@item.ID" />

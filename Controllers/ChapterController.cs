@@ -44,8 +44,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ViewBag.DOWSelectList = Province.Ontario.ToSelectList(null);
 			}
 
-			var chapters = _context.Chapters
-				 .AsNoTracking();
+			var chapters =  _context.Chapters.Include(c=>c.Singers).Include(c=>c.Directors)
+                 .AsNoTracking();
 
 			if (!String.IsNullOrEmpty(ProvinceFilter))
 			{

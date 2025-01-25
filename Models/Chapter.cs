@@ -11,8 +11,8 @@ namespace TomorrowsVoice_Toplevel.Models
         {
             get
             {
-                return Address+ ", " + ((PostalCode.Length == 6) ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3) 
-                    : PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4) )+ ", " +Province; 
+                return Address+ ", " +Name +", " + Province + ", " +((PostalCode.Length == 6) ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3) 
+                    : PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4) ); 
 						
 
 			}
