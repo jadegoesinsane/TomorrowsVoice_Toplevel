@@ -228,8 +228,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					r => r.FirstName,
 					r => r.LastName,
                    r => r.MiddleName,
-
-                    r => r.ContactName,
+				   r => r.Email,
 					r => r.Phone,
 					r => r.Note,
 					r => r.ContactName,
