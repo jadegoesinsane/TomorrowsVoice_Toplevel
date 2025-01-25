@@ -61,7 +61,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		{
 			if (StartTime >= EndTime)
 			{
-				yield return new ValidationResult("Start time must be earlier than end time", ["Start Time"]);
+				yield return new ValidationResult("Start time must be earlier than end time.", ["StartTime"]);
 			}
 		}
 	}
