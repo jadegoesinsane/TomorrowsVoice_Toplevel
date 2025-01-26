@@ -53,7 +53,10 @@
         {
             <tr>
                 <td>
-                    <a href="@Url.Action("RehearsalDetails", new { city = item.City, startDate = selectedStartDate, endDate = selectedEndDate })">
+                    <a asp-action="RehearsalDetails"
+                       asp-route-city="@item.City"
+                       asp-route-startDate="@selectedStartDate"
+                       asp-route-endDate="@selectedEndDate">
                         @Html.DisplayFor(modelItem => item.City)
                     </a>
                 
