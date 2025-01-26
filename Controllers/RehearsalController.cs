@@ -533,14 +533,34 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					title = r.Chapter.Name,
 					start = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.StartTime.ToString("THH:mm:ss")}",
 					end = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.EndTime.ToString("THH:mm:ss")}",
-					textColor = "black",
+					textColor = "white",
+					borderColor =
+					r.ChapterID == 1 ? "#bc3700" : // light red
+					r.ChapterID == 2 ? "#cc351e" : // dark red
+					r.ChapterID == 3 ? "#00863e" : // light green
+					r.ChapterID == 4 ? "#005d1f" : // dark green
+					r.ChapterID == 5 ? "#856288" : // light purple
+					r.ChapterID == 6 ? "#523256" : // dark purple
+					r.ChapterID == 7 ? "#0176ad" : // light blue
+					r.ChapterID == 8 ? "#035083" : // dark blue
+					r.ChapterID == 9 ? "#222bff" : // really bright blue
+					r.ChapterID == 10 ? "#8325f2" : // really bright purple
+					r.ChapterID == 11 ? "#cc326d" : // dark pink
+					r.ChapterID == 12 ? "#a15c80" : // light pink
+					"#fff",
 					backgroundColor =
-					r.ChapterID == 1 ? "#ffadad" :
-					r.ChapterID == 2 ? "#ffd6a5" :
-					r.ChapterID == 3 ? "#fdffb6" :
-					r.ChapterID == 4 ? "#caffbf" :
-					r.ChapterID == 5 ? "#a0c4ff" :
-					r.ChapterID == 6 ? "#bdb2ff" :
+					r.ChapterID == 1 ? "#bc3700" : // light red
+					r.ChapterID == 2 ? "#cc351e" : // dark red
+					r.ChapterID == 3 ? "#00863e" : // light green
+					r.ChapterID == 4 ? "#005d1f" : // dark green
+					r.ChapterID == 5 ? "#856288" : // light purple
+					r.ChapterID == 6 ? "#523256" : // dark purple
+					r.ChapterID == 7 ? "#0176ad" : // light blue
+					r.ChapterID == 8 ? "#035083" : // dark blue
+					r.ChapterID == 9 ? "#222bff" : // really bright blue
+					r.ChapterID == 10 ? "#8325f2" : // really bright purple
+					r.ChapterID == 11 ? "#cc326d" : // dark pink
+					r.ChapterID == 12 ? "#a15c80" : // light pink
 					"#fff",
 					url = Url.Action("Details", "Rehearsal", new { id = r.ID })
 				})
