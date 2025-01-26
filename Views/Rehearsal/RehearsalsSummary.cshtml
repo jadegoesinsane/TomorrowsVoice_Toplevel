@@ -13,13 +13,13 @@
     <div class="row my-2 p-2">
         <div class="col-md-2">
             <div class="form-floating">
-                <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" aria-labelledby="lblStartDate" />
+                <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate"  max="9999-12-12"  aria-labelledby="lblStartDate" />
                 <label id="lblStartDate" for="startDate" class="control-label">Start Date:</label>
             </div>
         </div>
         <div class="col-md-2">
             <div class="form-floating">
-                <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" aria-labelledby="lblEndDate" />
+                <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate"  max="9999-12-12" aria-labelledby="lblEndDate" />
                 <label id="lblEndDate" for="endDate" class="control-label">End Date:</label>
             </div>
         </div>

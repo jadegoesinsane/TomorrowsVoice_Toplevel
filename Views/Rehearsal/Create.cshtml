@@ -6,7 +6,7 @@
         <div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
         <div class="col-md-2">
             <div class="form-floating required">
-                <input asp-for="RehearsalDate" class="form-control"/>
+                    <input asp-for="RehearsalDate" max="9999-12-12" class="form-control" />
                 <label asp-for="RehearsalDate" class="control-label"></label>
                 <span asp-validation-for="RehearsalDate" class="text-danger"></span>
             </div>
