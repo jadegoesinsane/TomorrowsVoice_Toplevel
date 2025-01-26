@@ -260,7 +260,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			PopulateDropDown(rehearsal);
 			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
-			PopulateAttendance(chapterSelect, rehearsal);
+			PopulateAttendance(rehearsal.ChapterID, rehearsal);
 			return View(rehearsal);
 		}
 
