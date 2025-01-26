@@ -69,7 +69,7 @@ namespace TomorrowsVoice_Toplevel.Data
 				.HasMany<RehearsalAttendance>(s => s.RehearsalAttendances)
 				.WithOne(s => s.Singer)
 				.HasForeignKey(s => s.SingerID)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 
 			modelBuilder.Entity<Rehearsal>()
 				.HasMany<RehearsalAttendance>(r => r.RehearsalAttendances)
@@ -81,6 +81,13 @@ namespace TomorrowsVoice_Toplevel.Data
 				.HasOne(r => r.Director)
 				.WithMany(r => r.Rehearsals)
 				.HasForeignKey(c => c.DirectorID)
+				.OnDelete(DeleteBehavior.Restrict);
+
+			// prevent cascade delete from director to chapter
+			modelBuilder.Entity<Director>()
+				.HasOne<Chapter>(d=>d.Chapter)
+				.WithMany(c=>c.Directors)
+				.HasForeignKey(d=>d.ChapterID)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			// Rehearsal No Director Time Overlap (Assuming one rehearsal a day)
