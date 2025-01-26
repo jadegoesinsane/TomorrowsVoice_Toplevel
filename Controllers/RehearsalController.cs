@@ -598,8 +598,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
         public async Task<IActionResult> RehearsalDetails(string city, DateTime? startDate, DateTime? endDate)
         {
-            startDate ??= new DateTime(2020, 1, 1);  // Default to January 1st, 1st year
-            endDate ??= DateTime.Now;  // Default to today's date
+            startDate ??= new DateTime(2020, 1, 1);  
+            endDate ??= DateTime.Now;  
             ViewData["city"] = city;
             var details = await _context.Rehearsals
                 .Include(r => r.RehearsalAttendances)
@@ -629,12 +629,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					  Lowest_Attendance = grp.Min(a => a.RehearsalAttendances.Count),
 					  Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
 				  });
-			//How many rows?
+			
 			int numRows = sumQ.Count();
 
-			if (numRows > 0) //We have data
+			if (numRows > 0) 
 			{
-				//Create a new spreadsheet from scratch.
+				
 				using (ExcelPackage excel = new ExcelPackage())
 				{
 					string startDate1 = startDate.Value.ToShortDateString();
@@ -643,7 +643,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					var workSheet = excel.Workbook.Worksheets.Add($"RehearsalsSummaryReport from {startDate1} to {endDate1}");
 
-					//Note: Cells[row, column]
+					
 					workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
 
 					//Style column for currency
@@ -673,7 +673,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					{
 						totalfees.Formula = "Sum(" + workSheet.Cells[4, 6].Address + ":" + workSheet.Cells[numRows + 3, 6].Address + ")";
 						totalfees.Style.Font.Bold = true;
-						totalfees.Style.Numberformat.Format = "###,##0.0";
+						totalfees.Style.Numberformat.Format = "###,##0";
 					}
 
 					//Set Style and backgound colour of headings
@@ -743,7 +743,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Select(grp => new RehearsalViewModelDetails
 				{
 					City = grp.Key.Name,
-					Rehearsal_Date = grp.Key.RehearsalDate,  // ??? DateTime ??
+					Rehearsal_Date = grp.Key.RehearsalDate,  
 					Number_Of_Singers = grp.Count(),
 				})
 				.ToList();
@@ -760,7 +760,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					var formattedAppts = appts.Select(a => new
 					{
 						a.City,
-						Rehearsal_Date = a.Rehearsal_Date.ToString("yyyy-MM-dd"),  // ?????
+						Rehearsal_Date = a.Rehearsal_Date.ToString("yyyy-MM-dd"),  
 						a.Number_Of_Singers
 					}).ToList();
 
@@ -768,8 +768,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					workSheet.Cells[4, 1, appts.Count + 3, 2].Style.Font.Bold = true;
 
-					workSheet.Column(1).Width = 25;  // City column width
-					workSheet.Column(2).Width = 25;  // Date column width
+					workSheet.Column(1).Width = 25;  
+					workSheet.Column(2).Width = 25;  
 					workSheet.Column(3).Width = 25;
 					workSheet.Cells[1, 1].Value = $"Rehearsals Detail Report from {startDate1} to {endDate1}";
 					using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
@@ -801,7 +801,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 					}
 
-					// ?? Excel ??
+					
 					try
 					{
 						Byte[] theData = excel.GetAsByteArray();
