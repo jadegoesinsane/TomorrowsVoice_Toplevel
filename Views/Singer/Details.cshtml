@@ -28,22 +28,19 @@
 			<dl class="row">
 				<div class="col-md-2">
 					<dt>
-						<label asp-for="NameFormatted" class="control-label" aria-labelledby="lblName"></label>
-						<span id="lblName" class="visually-hidden">Name:</span>
+						@Html.DisplayNameFor(model => model.NameFormatted)
 					</dt>
 					<dd>@Html.DisplayFor(model => model.NameFormatted)</dd>
 				</div>
 				<div class="col-md-2">
 					<dt>
-						<label asp-for="Email" class="control-label" aria-labelledby="lblEmail"></label>
-						<span id="lblEmail" class="visually-hidden">Guardian Email:</span>
+						@Html.DisplayNameFor(model => model.Email)
 					</dt>
 					<dd>@Html.DisplayFor(model => model.Email)</dd>
 				</div>
 				<div class="col-md-8">
 					<dt>
-						<label asp-for="EmergencySummary" class="control-label" aria-labelledby="lblEmergency"></label>
-						<span id="lblEmergency" class="visually-hidden">Emergency Contact Info:</span>
+						@Html.DisplayNameFor(model => model.EmergencySummary)
 					</dt>
 					<dd>
 						@Html.DisplayFor(model => model.ContactName)
@@ -54,8 +51,7 @@
 			<dl class="row">
 				<div class="col-md-2">
 					<dt>
-						<label asp-for="ChapterID" class="control-label" aria-labelledby="lblChapter"></label>
-						<span id="lblChapter" class="visually-hidden">Chapter:</span>
+						@Html.DisplayNameFor(model => model.Chapter)
 					</dt>
 					<dd>
 						@Html.DisplayFor(model => model.Chapter.Name)
@@ -63,8 +59,7 @@
 				</div>
 				<div class="col-md-2">
 					<dt>
-						<label asp-for="Status" class="control-label" aria-labelledby="lblActive"></label>
-						<span id="lblActive" class="visually-hidden">Is Singer Active?:</span>
+						@Html.DisplayNameFor(model => model.Status)
 					</dt>
 					<dd>
 						@Html.DisplayFor(model => model.Status)
@@ -74,8 +69,7 @@
 			<dl class="row">
 				<div class="col-md-8">
 					<dt>
-						<label asp-for="Note" class="control-label" aria-labelledby="lblNote"></label>
-						<span id="lblNote" class="visually-hidden">Notes:</span>
+						@Html.DisplayNameFor(model => model.Note)
 					</dt>
 					<dd>
 						@Html.DisplayFor(model => model.Note)
@@ -91,8 +85,6 @@
 <hr />
 <br />
 <div>
-	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-	<partial name="_BackToList" />
 </div>
 @section Scripts {
 	<script type="text/javascript">

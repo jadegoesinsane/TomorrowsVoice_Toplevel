@@ -20,13 +20,13 @@
 					<div class="col-md-2">
 						<div class="form-floating">
 							@Html.DropDownList("ChapterID", null, "All Chapters", new { @class = "form-control" })
-							<label class="control-label">Select by Chapter(s):</label>
+							<label class="control-label" for="ChapterID">Select by Chapter(s):</label>
 						</div>
 					</div>
 					<div class="col-md-2">
 						<div class="form-floating">
 							@Html.TextBox("SearchString", null, new { @class = "form-control" })
-							<label class="control-label">Search Singer Name:</label>
+							<label class="control-label" for="SearchString">Search Singer Name:</label>
 							</div>
 						
 					</div>
@@ -34,7 +34,7 @@
 						<div class="form-floating">
 							@Html.DropDownList("StatusFilter", (SelectList)ViewBag.DOWSelectList,
 																"All Status", htmlAttributes: new { @class = "form-control" })
-						<label class="control-label">Select by Status:</label>
+						<label class="control-label" for="StatusFilter">Select by Status:</label>
 						
 															</div>
 
@@ -52,19 +52,19 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th>
+				<th aria-label="Singer">
 					<input type="submit" name="actionButton" value="Singer" class="btn btn-link" />
 				</th>
-				<th class="d-none d-md-table-cell">
+				<th aria-label="Chapter" class="d-none d-md-table-cell">
 					<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
 				</th>
-				<th class="d-none d-xxl-table-cell">
+				<th class="d-none d-xxl-table-cell" aria-label="Notes">
 					<input type="submit" value="Notes" class="btn btn-toolbar" />
 				</th>
-				<th class="d-none d-lg-table-cell">
+				<th class="d-none d-lg-table-cell" aria-label="Email">
 					<input type="submit" value="Email" class="btn btn-toolbar" />
 				</th>
-				<th colspan="2" style="border-left: solid 1px;">
+				<th colspan="2" style="border-left: solid 1px;" aria-label="Emergency Contact">
 					<input type="submit" value="Emergency Contact" class="btn btn-toolbar" />
 				</th>
 				<th aria-label="Actions"></th>

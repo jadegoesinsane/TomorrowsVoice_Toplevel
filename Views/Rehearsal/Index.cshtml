@@ -36,30 +36,30 @@
 						<div class="card card-body bg-light">
 							<div class="row">
 								<div class="form-floating col-md-3">
-									@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control" })
-									<label class="control-label">Select by Director:</label>
-
-								</div>
-								<div class="form-floating col-md-3">
-									@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control" })
-									<label class="control-label">Select by Chapter:</label>
-
-								</div>
-								<div class="form-floating col-md-3">
-									@Html.TextBox("SearchString", null, new { @class = "form-control" })
-									<label class="control-label">Search Attendance Notes:</label>
+                                    <div class="form-floating col-md-3">
+                                        @Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
+                                        <label class="control-label" for="DirectorID">Select by Director:</label>
+                                    </div>
+                                    <div class="form-floating col-md-3">
+                                        @Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control", id = "ChapterID" })
+                                        <label class="control-label" for="ChapterID">Select by Chapter:</label>
+                                    </div>
+                                    <div class="form-floating col-md-3">
+                                        @Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
+                                        <label class="control-label" for="SearchString">Search Attendance Notes:</label>
+                                    </div>
 
 								</div>
 								</div>
 								<div class="row mt-4">
 								<div class="form-floating col-md-3">
-									<input class="form-control" type="date" id="StartDate" name="StartDate" value="@ViewData["StartDate"]" aria-describedby="EndDate" aria-invalid="false">
-									<label class="control-label">Start Date:</label>
+									<input class="form-control" type="date" id="StartDate" name="StartDate" value="@ViewData["StartDate"]" aria-invalid="false">
+									<label class="control-label" for="StartDate">Start Date:</label>
 
 								</div>
 								<div class="form-floating col-md-3">
-									<input class="form-control" type="date" id="StartDate" name="EndDate" value="@ViewData["EndDate"]" aria-describedby="EndDate" aria-invalid="false">
-									<label class="control-label">End Date:</label>
+									<input class="form-control" type="date" id="EndDate" name="EndDate" value="@ViewData["EndDate"]" aria-invalid="false">
+									<label class="control-label" for="EndDate">End Date:</label>
 
 								</div>
 								<div class="col-md-3 d-flex justify-content-evenly">
@@ -76,20 +76,20 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th>
-								<input type="submit" name="actionButton" value="Date" class="btn btn-link" />
+							<th aria-label="Date">
+								<input type="submit" name="actionButton" value="Date" class="btn btn-link"/>
 							</th>
 
-							<th class="d-none d-lg-table-cell">
+							<th class="d-none d-lg-table-cell" aria-label="Director">
 								<input type="submit" value="Director" class="btn btn-toolbar" />
 							</th>
-							<th>
+							<th aria-label="Chapter">
 								<input type="submit" value="Chapter" class="btn btn-toolbar" />
 							</th>
-							<th class="d-none d-sm-table-cell">
+							<th class="d-none d-sm-table-cell" aria-label="Attendees">
 								<input type="submit" value="Attendees" class="btn btn-toolbar" />
 							</th>
-							<th class="d-none d-lg-table-cell">
+							<th class="d-none d-lg-table-cell" aria-label="Note">
 								<input type="submit" value="Notes" class="btn btn-toolbar" />
 							</th>
 							<th aria-label="Actions"></th>
