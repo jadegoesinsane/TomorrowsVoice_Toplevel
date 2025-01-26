@@ -658,23 +658,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					//Note: these are fine if you are only 'doing' one thing to the range of cells.
 					//Otherwise you should USE a range object for efficiency
-					using (ExcelRange totalfees = workSheet.Cells[numRows + 4, 1])//
-					{
-						totalfees.Value = "Totals:";
-						totalfees.Style.Font.Bold = true;
-					}
-					using (ExcelRange totalfees = workSheet.Cells[numRows + 4, 2])//
-					{
-						totalfees.Formula = "Sum(" + workSheet.Cells[4, 2].Address + ":" + workSheet.Cells[numRows + 3, 2].Address + ")";
-						totalfees.Style.Font.Bold = true;
-						totalfees.Style.Numberformat.Format = "###,##0";
-					}
-					using (ExcelRange totalfees = workSheet.Cells[numRows + 4, 6])//
-					{
-						totalfees.Formula = "Sum(" + workSheet.Cells[4, 6].Address + ":" + workSheet.Cells[numRows + 3, 6].Address + ")";
-						totalfees.Style.Font.Bold = true;
-						totalfees.Style.Numberformat.Format = "###,##0";
-					}
+					
 
 					//Set Style and backgound colour of headings
 					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 6])
