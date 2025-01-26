@@ -204,7 +204,8 @@ header {
 }
 
 .btn-link {
-    color: #8f3796;
+    color: #372BE9;
+    text-decoration: none;
 }
 
     .btn-link:hover {
@@ -213,7 +214,8 @@ header {
 
 /* Header / Nav Styling */
 a {
-    color: rgb(157, 43, 157);
+    color: #372BE9 /*rgb(157, 43, 157)*/;
+    text-decoration: none;
 }
 
     a:hover {
