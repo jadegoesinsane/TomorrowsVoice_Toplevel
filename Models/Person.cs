@@ -35,7 +35,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		public string LastName { get; set; } = "";
 
 		[Required(ErrorMessage = "Email address is required.")]
-		[RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[cC][oO][mM]$", ErrorMessage = "Please follow the correct email format test@email.com")]
+		[RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Please follow the correct email format test@email.com")]
 		[StringLength(255)]
 		[DataType(DataType.EmailAddress)]
 		public virtual string Email { get; set; } = "";
