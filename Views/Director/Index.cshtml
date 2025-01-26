@@ -20,13 +20,13 @@
 					<div class="col-md-2">
                         <div class="form-floating">
                             @Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control" })
-						<label class="control-label">Select by Chapter(s):</label>
+						<label class="control-label" for="ChapterID">Select by Chapter(s):</label>
                         </div>
 					</div>
 					<div class="col-md-2">
                         <div class="form-floating">
                             @Html.TextBox("SearchString", null, new { @class = "form-control" })
-						<label class="control-label">Search by Director:</label>
+						<label class="control-label" for="SearchString">Search by Director:</label>
                         </div>
 					</div>
                     <div class="col-md-2 d-flex justify-content-evenly">
@@ -41,16 +41,16 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th aria-label="Director">
                     <input type="submit" name="actionButton" value="Director" class="btn btn-link" />
             </th>
-            <th class="d-none d-md-table-cell">
+            <th class="d-none d-md-table-cell" aria-label="Email">
                 @Html.DisplayNameFor(model => model.Email)
             </th>
-            <th class="d-none d-sm-table-cell">
+            <th class="d-none d-sm-table-cell" aria-label="Phone">
                  @Html.DisplayNameFor(model => model.PhoneFormatted)
             </th>
-            <th>
+            <th aria-label="Chapter">
                     <input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
             </th>
             <th aria-label="Actions"></th>
