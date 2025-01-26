@@ -1,0 +1,27 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.ViewModels.RehearsalDetailsVM>
+
+<h2>@ViewData["City"] Rehearsal Details</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Rehearsal Date</th>
+
+            <th>Attendance </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var detail in Model)
+        {
+            <tr>
+                <td>@detail.RehearsalDate.ToShortDateString()</td>
+
+                <td>@detail.AttendanceCount</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<a asp-action="RehearsalsSummary">Back to Summary</a>

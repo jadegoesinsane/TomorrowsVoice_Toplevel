@@ -52,7 +52,12 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.City)</td>
+                <td>
+                    <a href="@Url.Action("RehearsalDetails", new { city = item.City, startDate = selectedStartDate, endDate = selectedEndDate })">
+                        @Html.DisplayFor(modelItem => item.City)
+                    </a>
+                
+                </td>
                 <td>@Html.DisplayFor(modelItem => item.Number_Of_Rehearsals)</td>
 
                 <td>@Html.DisplayFor(modelItem => item.Average_Attendance)</td>
