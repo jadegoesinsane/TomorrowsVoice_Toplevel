@@ -596,8 +596,24 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["EndDate"] = endDate;
 			return View(sumQ);
 		}
+        public async Task<IActionResult> RehearsalDetails(string city, DateTime? startDate, DateTime? endDate)
+        {
+            startDate ??= new DateTime(2020, 1, 1);  // Default to January 1st, 1st year
+            endDate ??= DateTime.Now;  // Default to today's date
+            ViewData["city"] = city;
+            var details = await _context.Rehearsals
+                .Include(r => r.RehearsalAttendances)
+                .Where(r => r.Chapter.Name == city && r.RehearsalDate >= startDate && r.RehearsalDate <= endDate)
+                .Select(r => new RehearsalDetailsVM
+                {
+                    RehearsalDate = r.RehearsalDate,
+                    AttendanceCount = r.RehearsalAttendances.Count
+                })
+                .ToListAsync();
 
-		public IActionResult RehearsalsSummaryReport(DateTime? startDate, DateTime? endDate)
+            return View(details);
+        }
+        public IActionResult RehearsalsSummaryReport(DateTime? startDate, DateTime? endDate)
 		{
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
 				  .Include(c => c.Director)
