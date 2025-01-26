@@ -38,29 +38,29 @@
 								<div class="form-floating col-md-3">
 									@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control" })
 									<label class="control-label">Select by Director:</label>
-									
+
 								</div>
 								<div class="form-floating col-md-3">
 									@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control" })
 									<label class="control-label">Select by Chapter:</label>
-									
+
 								</div>
 								<div class="form-floating col-md-3">
 									@Html.TextBox("SearchString", null, new { @class = "form-control" })
 									<label class="control-label">Search Attendance Notes:</label>
-									
+
 								</div>
 								</div>
 								<div class="row mt-4">
 								<div class="form-floating col-md-3">
 									<input class="form-control" type="date" id="StartDate" name="StartDate" value="@ViewData["StartDate"]" aria-describedby="EndDate" aria-invalid="false">
 									<label class="control-label">Start Date:</label>
-									
+
 								</div>
 								<div class="form-floating col-md-3">
 									<input class="form-control" type="date" id="StartDate" name="EndDate" value="@ViewData["EndDate"]" aria-describedby="EndDate" aria-invalid="false">
 									<label class="control-label">End Date:</label>
-									
+
 								</div>
 								<div class="col-md-3 d-flex justify-content-evenly">
 									<input type="submit" name="actionButton" value="Filter"
@@ -68,8 +68,7 @@
 									<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
 								</div>
 							</div>
-								
-							
+
 						</div>
 					</div>
 				</div>

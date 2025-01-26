@@ -783,6 +783,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return NotFound("No data.");
 		}
 
+		public int RehearsalCount()
+		{
+			return _context.Rehearsals.Count();
+		}
 		private bool RehearsalExists(int id)
 		{
 			return _context.Rehearsals.Any(e => e.ID == id);

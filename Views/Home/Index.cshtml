@@ -6,11 +6,9 @@
 	<div class="card text-black bg-green my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
 			<div class="col-md">
-				<h5 class="card-title">2<br />Singers</h5>
+				<h5 class="card-title"><span id="singerCount"></span><br />Singers</h5>
 			</div>
-			<div class="col-md">
-				<i style="font-size:3rem">?</i>
-			</div>
+			<div id="microphone" class="col-md img-icon"></div>
 		</div>
 		<div class="card-footer bg-dark-green">
 			<a href="Singer" class="btn stretched-link" style="width: 100%">Show Singers</a>
@@ -19,11 +17,9 @@
 	<div class="card text-black bg-yellow my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
 			<div class="col-md">
-				<h5 class="card-title">213<br />Sessions</h5>
+				<h5 class="card-title"><span id="rehearsalCount"></span><br />Rehearsals</h5>
 			</div>
-			<div class="col-md">
-				<i style="font-size:3rem">&#127900;</i>
-			</div>
+			<div id="note" class="col-md img-icon"></div>
 		</div>
 		<div class="card-footer bg-dark-yellow">
 			<a href="Rehearsal" class="btn stretched-link" style="width: 100%">Show Rehearsals</a>
@@ -32,11 +28,9 @@
 	<div class="card text-black bg-blue my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
 			<div class="col-md">
-				<h5 class="card-title">2<br />Directors</h5>
+				<h5 class="card-title"><span id="directorCount"></span><br />Directors</h5>
 			</div>
-			<div class="col-md">
-				<i style="font-size:3rem; color:white;">&#128100;</i>
-			</div>
+			<div id="speechbubble" class="col-md img-icon"></div>
 
 		</div>
 		<div class="card-footer bg-dark-blue">
@@ -46,14 +40,12 @@
 	<div class="card text-black bg-red my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
 			<div class="col-md">
-				<h5 class="card-title">2<br />Choirs</h5>
+				<h5 class="card-title"><span id="chapterCount"></span><br />Chapters</h5>
 			</div>
-			<div class="col-md">
-				<i style="font-size:3rem">&#119070;</i>
-			</div>
+			<div id="trebleclef" class="col-md img-icon"></div>
 		</div>
 		<div class="card-footer bg-dark-red">
-			<a href="Chapter" class="btn stretched-link" style="width: 100%; color: black !important;">Show Choirs</a>
+			<a href="Chapter" class="btn stretched-link" style="width: 100%; color: black !important;">Show Chapters</a>
 		</div>
 	</div>
 </div>
@@ -68,7 +60,6 @@
 		</div>
 	</div>
 </div>
-
 
 <!-- Modal -->
 <!--<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -90,7 +81,6 @@
 		</div>
 	</div>
 </div>-->
-
 @section Scripts {
 	<script src="~/js/rehearsalCalendar.js"></script>
 	<script>
@@ -114,5 +104,17 @@
 			});
 			calendar.render();
 		});*/
+	</script>
+	<script type="text/javascript">
+		$('#singerCount').load('/Home/SingerCount');
+		$('#rehearsalCount').load('/Home/RehearsalCount');
+		$('#directorCount').load('/Home/DirectorCount');
+		$('#chapterCount').load('/Home/ChapterCount');
+		/*$('#singerCount').load('/Singer/SingerCount', function(response) {
+					// Assuming the response is a number
+					document.getElementById('singerCount').innerText = response;
+				});*/
+		// Simulated data for counts
+
 	</script>
 }

@@ -102,6 +102,7 @@ body {
     font-weight: initial !important;
     font-size: initial !important;
 }
+
 .card .form-floating > label {
     top: 5px;
 }
@@ -136,7 +137,6 @@ body {
     padding: .5rem;
 }
 */
-
 
 /* Footer Image */
 footer {
@@ -278,10 +278,11 @@ a {
         margin-left: 1.5rem;
     }
 
-    .card {
-        font-weight: bold;
-        font-size: large;
-    }
+.card {
+    font-weight: bold;
+    font-size: large;
+}
+
     .card h5, .card a {
         font-weight: bold;
     }
@@ -316,4 +317,26 @@ a {
 
 .bg-dark-blue {
     background-color: #4393bf;
+}
+
+.img-icon {
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: contain;
+}
+
+#microphone {
+    background-image: url(../images/Microphone.png);
+}
+
+#note {
+    background-image: url(../images/Note.png);
+}
+
+#speechbubble {
+    background-image: url(../images/SpeechBubble.png);
+}
+
+#trebleclef {
+    background-image: url(../images/TrebleClef.png);
 }
