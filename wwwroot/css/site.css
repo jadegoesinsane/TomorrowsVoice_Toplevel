@@ -140,7 +140,7 @@ body {
 
 /* Footer Image */
 footer {
-    background-image: url(../images/FOOTER.png);
+    background-image: url(../images/FOOTER2.png);
     background-repeat: no-repeat;
     background-position: top;
     background-size: cover;
@@ -156,7 +156,7 @@ footer {
 }
 
 header {
-    background-image: url(../images/HEADER.png);
+    background-image: url(../images/HEADER2.png);
     background-repeat: no-repeat;
     background-position: bottom;
     background-size: cover;
