@@ -3,28 +3,20 @@
 }
 <h2>Dashboard</h2>
 <div class="card-deck">
-	<div class="card text-black bg-green my-3 d-none d-lg-table-cell">
+	<!-- Chapters -->
+	<div class="card text-black bg-red my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
 			<div class="col-md">
-				<h5 class="card-title"><span id="singerCount"></span><br />Singers</h5>
+				<h5 class="card-title"><span id="chapterCount"></span><br />Chapters</h5>
 			</div>
-			<div id="microphone" class="col-md img-icon"></div>
+			<div id="trebleclef" class="col-md img-icon"></div>
 		</div>
-		<div class="card-footer bg-dark-green">
-			<a href="Singer" class="btn stretched-link" style="width: 100%">Show Singers</a>
+		<div class="card-footer bg-dark-red">
+			<a href="Chapter" class="btn stretched-link" style="width: 100%; color: black !important;">Show Chapters</a>
 		</div>
 	</div>
-	<div class="card text-black bg-yellow my-3 d-none d-lg-table-cell">
-		<div class="card-body row">
-			<div class="col-md">
-				<h5 class="card-title"><span id="rehearsalCount"></span><br />Rehearsals</h5>
-			</div>
-			<div id="note" class="col-md img-icon"></div>
-		</div>
-		<div class="card-footer bg-dark-yellow">
-			<a href="Rehearsal" class="btn stretched-link" style="width: 100%">Show Rehearsals</a>
-		</div>
-	</div>
+
+	<!-- Director -->
 	<div class="card text-black bg-blue my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
 			<div class="col-md">
@@ -37,15 +29,30 @@
 			<a href="Director" class="btn stretched-link" style="width: 100%">Show Directors</a>
 		</div>
 	</div>
-	<div class="card text-black bg-red my-3 d-none d-lg-table-cell">
+
+	<!-- Singers -->
+	<div class="card text-black bg-green my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
 			<div class="col-md">
-				<h5 class="card-title"><span id="chapterCount"></span><br />Chapters</h5>
+				<h5 class="card-title"><span id="singerCount"></span><br />Singers</h5>
 			</div>
-			<div id="trebleclef" class="col-md img-icon"></div>
+			<div id="microphone" class="col-md img-icon"></div>
 		</div>
-		<div class="card-footer bg-dark-red">
-			<a href="Chapter" class="btn stretched-link" style="width: 100%; color: black !important;">Show Chapters</a>
+		<div class="card-footer bg-dark-green">
+			<a href="Singer" class="btn stretched-link" style="width: 100%">Show Singers</a>
+		</div>
+	</div>
+
+	<!-- Rehearsals -->
+	<div class="card text-black bg-yellow my-3 d-none d-lg-table-cell">
+		<div class="card-body row">
+			<div class="col-md">
+				<h5 class="card-title"><span id="rehearsalCount"></span><br />Rehearsals</h5>
+			</div>
+			<div id="note" class="col-md img-icon"></div>
+		</div>
+		<div class="card-footer bg-dark-yellow">
+			<a href="Rehearsal" class="btn stretched-link" style="width: 100%">Show Rehearsals</a>
 		</div>
 	</div>
 </div>
@@ -68,7 +75,6 @@
 		</div>
 	</div>
 </div>
-
 
 <!-- Modal -->
 <!--<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
