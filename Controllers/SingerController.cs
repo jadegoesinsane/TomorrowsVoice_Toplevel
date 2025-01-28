@@ -24,7 +24,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		// GET: Singer
 		public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID, string? StatusFilter,
-            string? actionButton, string sortDirection = "asc", string sortField = "Singer")
+			string? actionButton, string sortDirection = "asc", string sortField = "Singer")
 		{
 			// Sort Options
 			string[] sortOptions = new[] { "Singer", "Chapter" };
@@ -32,28 +32,27 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			//Count the number of filters applied - start by assuming no filters
 			ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
-            if (Enum.TryParse(StatusFilter, out Status selectedDOW))
-            {
-                ViewBag.DOWSelectList = Status.Active.ToSelectList(selectedDOW);
-            }
-            else
-            {
-                ViewBag.DOWSelectList = Status.Active.ToSelectList(null);
-            }
-            PopulateDropDownLists();
+			if (Enum.TryParse(StatusFilter, out Status selectedDOW))
+			{
+				ViewBag.DOWSelectList = Status.Active.ToSelectList(selectedDOW);
+			}
+			else
+			{
+				ViewBag.DOWSelectList = Status.Active.ToSelectList(null);
+			}
+			PopulateDropDownLists();
 
 			var singers = _context.Singers
 				.Include(s => s.Chapter)
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking();
 
-
-            if (!String.IsNullOrEmpty(StatusFilter))
-            {
-                singers = singers.Where(p => p.Status == selectedDOW);
-                numberFilters++;
-            }
-            if (ChapterID.HasValue)
+			if (!String.IsNullOrEmpty(StatusFilter))
+			{
+				singers = singers.Where(p => p.Status == selectedDOW);
+				numberFilters++;
+			}
+			if (ChapterID.HasValue)
 			{
 				singers = singers.Where(s => s.ChapterID == ChapterID);
 				numberFilters++;
@@ -173,6 +172,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(singer);
 					await _context.SaveChangesAsync();
+					Success(string.Format("{0} was successfully added.", singer.NameFormatted), false);
 					return RedirectToAction(nameof(Index));
 				}
 			}
@@ -227,7 +227,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					"",
 					r => r.FirstName,
 					r => r.LastName,
-                   r => r.MiddleName,
+				   r => r.MiddleName,
 				   r => r.Email,
 					r => r.Phone,
 					r => r.Note,
@@ -238,6 +238,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				try
 				{
 					await _context.SaveChangesAsync();
+					Success(string.Format("{0} was successfully updated.", singerToUpdate.NameFormatted), false);
 					return RedirectToAction("Details", new { singerToUpdate.ID });
 				}
 				catch (RetryLimitExceededException)
@@ -297,6 +298,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Singers.Remove(singer);
 					await _context.SaveChangesAsync();
+					Success(string.Format("{0} was successfully deleted.", singer.NameFormatted), false);
 					return RedirectToAction(nameof(Index));
 				}
 			}
@@ -325,7 +327,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.OrderBy(c => c.Name), "ID", "Name", selectedId);
 			/*if (ViewData["ActionName"].ToString() == "Index")
 			{
-				
 			}
 			else
 			{
