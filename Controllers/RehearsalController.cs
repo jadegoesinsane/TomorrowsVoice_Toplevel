@@ -111,6 +111,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ViewData["Filtering"] = " btn-danger";
 				ViewData["numberFilters"] = "(" + numFilters.ToString()
 					+ " Filter" + (numFilters > 1 ? "s" : "") + " Applied)";
+				@ViewData["ShowFilter"] = " show";
 			}
 
 			// Check for sorting change
