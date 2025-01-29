@@ -16,6 +16,17 @@ namespace TomorrowsVoice_Toplevel.Models
 			}
 		}
 
+
+		[Display(Name = "Postal Code")]
+		public string PostalCodeFormat
+		{
+			get
+			{
+				return ((PostalCode.Length == 6) ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3)
+					: PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4));
+			}
+		}
+
 		[Display(Name = "Name")]
 		[Required(ErrorMessage = "You cannot leave the name blank.")]
 		[StringLength(50, ErrorMessage = "Name cannot be more than 50 characters long.")]
