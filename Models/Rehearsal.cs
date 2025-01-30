@@ -49,7 +49,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		public int TotalSingers { get; set; }
 
 
-        [Required(ErrorMessage = "You must select a Director .")]
+        [Required(ErrorMessage = "Please select a Director .")]
         [Display(Name = "Director")]
 		public int DirectorID { get; set; }
 		public Director? Director { get; set; }

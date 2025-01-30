@@ -28,22 +28,22 @@ namespace TomorrowsVoice_Toplevel.Models
 		}
 
 		[Display(Name = "Name")]
-		[Required(ErrorMessage = "You cannot leave the name blank.")]
-		[StringLength(50, ErrorMessage = "Name cannot be more than 50 characters long.")]
+		[Required(ErrorMessage = "Please enter a chapter name.")]
+		[StringLength(50, ErrorMessage = "Chapter name cannot be more than 50 characters long.")]
 		public string Name { get; set; } = "";
 
 		[Display(Name = "Address")]
-		[Required(ErrorMessage = "You cannot leave the address blank.")]
-		[StringLength(50, ErrorMessage = "address can not be more than 50 characters long.")]
+		[Required(ErrorMessage = "Please enter an address.")]
+		[StringLength(50, ErrorMessage = "Address cannot be more than 50 characters long.")]
 		public string Address { get; set; } = "";
 
 		[Display(Name = "Province")]
-		[Required(ErrorMessage = "You must select Province!")]
+		[Required(ErrorMessage = "Please select a Province.")]
 		public Province Province { get; set; }
 
 		[Display(Name = "Postal Code")]
 		[Required]
-		[RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Invalid postal code.")]
+		[RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal Code must follow the format: A1A 2B2.")]
 		public string PostalCode { get; set; } = "";
 
 		public virtual ICollection<Director> Directors { get; set; } = new HashSet<Director>();

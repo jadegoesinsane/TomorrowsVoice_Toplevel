@@ -15,7 +15,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		public int ID { get; set; }
 
 		[Display(Name = "Chapter")]
-		[Required(ErrorMessage = "You must select a Chapter")]
+		[Required(ErrorMessage = "Please select a Chapter")]
 		public int ChapterID { get; set; }
 
 		public Chapter? Chapter { get; set; }
