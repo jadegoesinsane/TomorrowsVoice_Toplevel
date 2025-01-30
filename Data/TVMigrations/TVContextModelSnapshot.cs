@@ -88,6 +88,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasIndex("ChapterID");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Directors");
                 });
 

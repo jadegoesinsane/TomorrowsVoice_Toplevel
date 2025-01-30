@@ -42,7 +42,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		public Province Province { get; set; }
 
 		[Display(Name = "Postal Code")]
-		[Required]
+		[Required(ErrorMessage ="Please enter a postal code.")]
 		[RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal Code must follow the format: A1A 2B2.")]
 		public string PostalCode { get; set; } = "";
 

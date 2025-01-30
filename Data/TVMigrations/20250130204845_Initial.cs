@@ -188,6 +188,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "ChapterID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Directors_Email",
+                table: "Directors",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RehearsalAttendances_RehearsalID",
                 table: "RehearsalAttendances",
                 column: "RehearsalID");

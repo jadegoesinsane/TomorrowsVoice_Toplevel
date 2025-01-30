@@ -25,7 +25,7 @@ namespace TomorrowsVoice_Toplevel.Models
         public string? Note { get; set; }
 
         [Display(Name = "Guardian Email")]
-        [Required(ErrorMessage = "Please enter a guardian mail.")]
+        [Required(ErrorMessage = "Please enter a guardian email.")]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Please follow the correct email format: example@email.com")]
         [StringLength(255)]
         [DataType(DataType.EmailAddress)]

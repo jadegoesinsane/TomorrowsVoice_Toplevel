@@ -165,9 +165,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					return RedirectToAction("Details", new { chapter.ID });
 				}
 			}
-			catch (DbUpdateException)
+			catch (DbUpdateException dex)
 			{
-				ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+				string message = dex.GetBaseException().Message;
+				if (message.Contains("UNIQUE constraint failed") && message.Contains("Chapters.Name"))
+				{
+					ModelState.AddModelError("Name", "Chapter name must be unique. Please enter a unique chapter name.");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+				}
+				
 			}
 
 			return View(chapter);
@@ -236,9 +245,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						throw;
 					}
 				}
-				catch (DbUpdateException)
+				catch (DbUpdateException dex)
 				{
-					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+					string message = dex.GetBaseException().Message;
+					if (message.Contains("UNIQUE constraint failed") && message.Contains("Chapters.Name"))
+					{
+						ModelState.AddModelError("Name", "Chapter name must be unique. Please enter a unique chapter name.");
+					}
+					else
+					{
+						ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+					}
+
 				}
 			}
 

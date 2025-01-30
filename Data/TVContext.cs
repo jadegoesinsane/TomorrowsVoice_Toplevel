@@ -85,6 +85,11 @@ namespace TomorrowsVoice_Toplevel.Data
 				.HasForeignKey(c => c.DirectorID)
 				.OnDelete(DeleteBehavior.Restrict);
 
+			// unique instructor email
+			modelBuilder.Entity<Director>()
+				.HasIndex(d => d.Email)
+				.IsUnique();
+
 			// prevent cascade delete from director to chapter
 			modelBuilder.Entity<Director>()
 				.HasOne<Chapter>(d => d.Chapter)
