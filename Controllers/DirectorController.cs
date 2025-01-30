@@ -250,8 +250,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					string message = dex.GetBaseException().Message;
 					if (message.Contains("UNIQUE") && message.Contains("Email"))
 					{
-						ModelState.AddModelError("Email", "Unable to save changes. Remember, " +
-							"you cannot have duplicate Email addresses for Directors.");
+						ModelState.AddModelError("Email", "Instructor email address must be unique. Please enter a unique director email address.");
 					}
 					else
 					{
