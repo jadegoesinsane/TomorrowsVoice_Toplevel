@@ -7,201 +7,179 @@
 </p>
 
 <div>
-	<!-- Nav tabs -->
-	<nav>
-		<div class="nav nav-pills" id="myTabs" role="tablist">
-			<button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
-					type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
-				List View
-			</button>
-			<button class="nav-link" id="Calendar-Tab" data-bs-toggle="tab" data-bs-target="#CalendarPanel"
-					type="button" role="tab" aria-controls="CalendarPanel" aria-selected="false">
-				Calendar View
-			</button>
-		</div>
-	</nav>
-	<!-- Tab panes -->
-	<div class="tab-content" id="nav-tabContent">
-		<div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
-			<br />
-			<form asp-action="Index" method="get">
+	<form asp-action="Index" method="get">
 
-				<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-				<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-				<div class="form-horizontal">
-					<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-						Filter/Search @ViewData["numberFilters"]
-					</button><br />
-					<div class="collapse  @ViewData["ShowFilter"]"  id="collapseFilter">
-						<div class="card card-body bg-light">
-							<div class="row">
-                                    <div class="form-floating col-md-3">
-                                        @Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
-                                        <label class="control-label" for="DirectorID">Select by Director:</label>
-                                    </div>
-                                    <div class="form-floating col-md-3">
-                                        @Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control", id = "ChapterID" })
-                                        <label class="control-label" for="ChapterID">Select by Chapter:</label>
-                                    </div>
-                                    <div class="form-floating col-md-3">
-                                        @Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
-                                        <label class="control-label" for="SearchString">Search Attendance Notes:</label>
-                                    </div>
-								</div>
-								<div class="row mt-4">
-								<div class="form-floating col-md-3">
-									<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
-									<label class="control-label" for="StartDate">Start Date:</label>
-
-								</div>
-								<div class="form-floating col-md-3">
-									<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
-									<label class="control-label" for="EndDate">End Date:</label>
-
-								</div>
-								<div class="col-md-3 d-flex justify-content-evenly">
-									<input type="submit" name="actionButton" value="Filter"
-										   class="btn btn-outline-primary" />
-									<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-								</div>
-							</div>
-
+		<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+		<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+		<div class="form-horizontal">
+			<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+				Filter/Search @ViewData["numberFilters"]
+			</button><br />
+			<div class="collapse  @ViewData["ShowFilter"]" id="collapseFilter">
+				<div class="card card-body bg-light">
+					<div class="row">
+						<div class="form-floating col-md-3">
+							@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
+							<label class="control-label" for="DirectorID">Select by Director:</label>
+						</div>
+						<div class="form-floating col-md-3">
+							@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control", id = "ChapterID" })
+							<label class="control-label" for="ChapterID">Select by Chapter:</label>
+						</div>
+						<div class="form-floating col-md-3">
+							@Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
+							<label class="control-label" for="SearchString">Search Attendance Notes:</label>
 						</div>
 					</div>
+					<div class="row mt-4">
+						<div class="form-floating col-md-3">
+							<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
+							<label class="control-label" for="StartDate">Start Date:</label>
+
+						</div>
+						<div class="form-floating col-md-3">
+							<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
+							<label class="control-label" for="EndDate">End Date:</label>
+
+						</div>
+						<div class="col-md-3 d-flex justify-content-evenly">
+							<input type="submit" name="actionButton" value="Filter"
+								   class="btn btn-outline-primary" />
+							<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+						</div>
+					</div>
+
 				</div>
-				<h5 style="margin-top: 10px">@ViewData["AptCount"] results between @ViewData["StartDate"] and @ViewData["EndDate"]</h5>
-				<table class="table">
-					<thead>
-						<tr>
-							<th aria-label="Date">
-								<input type="submit" name="actionButton" value="Date" class="btn btn-link"/>
-							</th>
-
-							<th class="d-none d-lg-table-cell" aria-label="Director">Director</th>
-							<th aria-label="Chapter">Chapter</th>
-							<th class="d-none d-sm-table-cell" aria-label="Attendees">Attendees</th>
-							<th class="d-none d-lg-table-cell" aria-label="Note">Notes</th>
-							<th aria-label="Actions"></th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach (var item in Model)
-						{
-							<tr>
-								<td>
-									@Html.DisplayFor(modelItem => item.Summary)
-								</td>
-
-								<td class="d-none d-lg-table-cell">
-									@Html.DisplayFor(modelItem => item.Director.NameFormatted)
-								</td>
-								<td>
-									@Html.DisplayFor(modelItem => item.Chapter.Name)
-								</td>
-								<td class="d-none d-sm-table-cell">
-									@{
-										int singerCount = item.RehearsalAttendances.Count;
-										if (singerCount > 0)
-										{
-											string firstSinger = item.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
-											if (singerCount > 1)
-											{
-												string SingerList = "";
-												var c = item.RehearsalAttendances.ToList();
-												for (int i = 0; i < singerCount; i++)
-												{
-													SingerList += c[i].Singer.NameFormatted + " <br />";
-												}
-												<a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(item.ID)"
-												   aria-expanded="false" aria-controls="collapseSingers@(item.ID)">
-													View all @singerCount attendees
-												</a>
-												<div class="collapse" id="collapseSingers@(item.ID)">
-													@Html.Raw(SingerList)
-												</div>
-											}
-											else
-											{
-												@firstSinger
-											}
-										}
-										else
-										{
-											<p>No Attendance Data</p>
-										}
-									}
-								</td>
-								<td class="d-none d-lg-table-cell" style="width: 240px;">
-									@{
-										if (item.Note != null)
-										{
-											string[] noteWords = item.Note.Split(' ');
-											if (noteWords.Count() > 4)
-											{
-												<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
-													View Notes
-												</a>
-												<div class="collapse" id="collapseSum@(item.ID)">
-													<div class="well">
-														@Html.Raw(item.Note)
-													</div>
-												</div>
-											}
-											else
-											{
-												@item.Note
-											}
-										}
-										else
-										{
-											<p>No Notes</p>
-										}
-									}
-								</td>
-
-								<td>
-									<partial name="_CrudIcons" model="@item.ID" />
-								</td>
-							</tr>
-						}
-					</tbody>
-				</table>
-				<partial name="_PagingNavBar" />
-			</form>
+			</div>
 		</div>
-		<div class="tab-pane fade ml-3" role="tabpanel" id="CalendarPanel" aria-labelledby="Calendar-tab">
-			<br />
-			<partial name="_RehearsalCalendar" />
-		</div>
-	</div>
-	@section Scripts {
-		<!--	<script type="text/javascript">
-				$('.nav-link').click(function () {
-					var activeTab = $(this).attr("id");
-					switch (activeTab) {
-						case 'Calendar-Tab': $('#CalendarPanel').load('/Rehearsal/RehearsalCalendar');
-							break;
-						default: break;
-					};
-				})
-				</script>-->
-		<script>
-			document.addEventListener('DOMContentLoaded', function () {
-				var calendarEl = document.getElementById('calendar');
-				var calendar = new FullCalendar.Calendar(calendarEl, {
-					initialView: 'dayGridMonth',
-					themeSystem: 'bootstrap5',
-					events: '/Rehearsal/GetRehearsals',
-					eventDisplay: 'block',
-					headerToolbar: {
-						start: 'title',
-						center: '',
-						end: 'prev,next today'
-					},
-					navLinks: true,
-					navLinkDayClick: function (date) { window.location.href = '/Rehearsal/SetRehearsal?date=' + date.toISOString().split('T')[0] }
-				});
-				calendar.render();
+		<h5 style="margin-top: 10px">@ViewData["AptCount"] results between @ViewData["StartDate"] and @ViewData["EndDate"]</h5>
+		<table class="table">
+			<thead>
+				<tr>
+					<th aria-label="Date">
+						<input type="submit" name="actionButton" value="Date" class="btn btn-link" />
+					</th>
+
+					<th class="d-none d-lg-table-cell" aria-label="Director">Director</th>
+					<th aria-label="Chapter">Chapter</th>
+					<th class="d-none d-sm-table-cell" aria-label="Attendees">Attendees</th>
+					<th class="d-none d-lg-table-cell" aria-label="Note">Notes</th>
+					<th aria-label="Actions"></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							@Html.DisplayFor(modelItem => item.Summary)
+						</td>
+
+						<td class="d-none d-lg-table-cell">
+							@Html.DisplayFor(modelItem => item.Director.NameFormatted)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Chapter.Name)
+						</td>
+						<td class="d-none d-sm-table-cell">
+							@{
+								int singerCount = item.RehearsalAttendances.Count;
+								if (singerCount > 0)
+								{
+									string firstSinger = item.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
+									if (singerCount > 1)
+									{
+										string SingerList = "";
+										var c = item.RehearsalAttendances.ToList();
+										for (int i = 0; i < singerCount; i++)
+										{
+											SingerList += c[i].Singer.NameFormatted + " <br />";
+										}
+										<a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(item.ID)"
+										   aria-expanded="false" aria-controls="collapseSingers@(item.ID)">
+											View all @singerCount attendees
+										</a>
+										<div class="collapse" id="collapseSingers@(item.ID)">
+											@Html.Raw(SingerList)
+										</div>
+									}
+									else
+									{
+										@firstSinger
+									}
+								}
+								else
+								{
+									<p>No Attendance Data</p>
+								}
+							}
+						</td>
+						<td class="d-none d-lg-table-cell" style="width: 240px;">
+							@{
+								if (item.Note != null)
+								{
+									string[] noteWords = item.Note.Split(' ');
+									if (noteWords.Count() > 4)
+									{
+										<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
+											View Notes
+										</a>
+										<div class="collapse" id="collapseSum@(item.ID)">
+											<div class="well">
+												@Html.Raw(item.Note)
+											</div>
+										</div>
+									}
+									else
+									{
+										@item.Note
+									}
+								}
+								else
+								{
+									<p>No Notes</p>
+								}
+							}
+						</td>
+
+						<td>
+							<partial name="_CrudIcons" model="@item.ID" />
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<partial name="_PagingNavBar" />
+	</form>
+</div>
+@section Scripts {
+	<!--	<script type="text/javascript">
+			$('.nav-link').click(function () {
+				var activeTab = $(this).attr("id");
+				switch (activeTab) {
+					case 'Calendar-Tab': $('#CalendarPanel').load('/Rehearsal/RehearsalCalendar');
+						break;
+					default: break;
+				};
+			})
+			</script>-->
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var calendarEl = document.getElementById('calendar');
+			var calendar = new FullCalendar.Calendar(calendarEl, {
+				initialView: 'dayGridMonth',
+				themeSystem: 'bootstrap5',
+				events: '/Rehearsal/GetRehearsals',
+				eventDisplay: 'block',
+				headerToolbar: {
+					start: 'title',
+					center: '',
+					end: 'prev,next today'
+				},
+				navLinks: true,
+				navLinkDayClick: function (date) { window.location.href = '/Rehearsal/SetRehearsal?date=' + date.toISOString().split('T')[0] }
 			});
-		</script>
-	}
+			calendar.render();
+		});
+	</script>
+}
