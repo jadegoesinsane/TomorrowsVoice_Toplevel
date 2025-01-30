@@ -111,6 +111,28 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UploadedFiles",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FileName = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    MimeType = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    Discriminator = table.Column<string>(type: "TEXT", maxLength: 21, nullable: false),
+                    DirectorID = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UploadedFiles", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_UploadedFiles_Directors_DirectorID",
+                        column: x => x.DirectorID,
+                        principalTable: "Directors",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RehearsalAttendances",
                 columns: table => new
                 {
@@ -132,6 +154,24 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         name: "FK_RehearsalAttendances_Singers_SingerID",
                         column: x => x.SingerID,
                         principalTable: "Singers",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileContent",
+                columns: table => new
+                {
+                    FileContentID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Content = table.Column<byte[]>(type: "BLOB", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileContent", x => x.FileContentID);
+                    table.ForeignKey(
+                        name: "FK_FileContent_UploadedFiles_FileContentID",
+                        column: x => x.FileContentID,
+                        principalTable: "UploadedFiles",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -172,13 +212,24 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "IX_Singers_ChapterID",
                 table: "Singers",
                 column: "ChapterID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UploadedFiles_DirectorID",
+                table: "UploadedFiles",
+                column: "DirectorID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "FileContent");
+
+            migrationBuilder.DropTable(
                 name: "RehearsalAttendances");
+
+            migrationBuilder.DropTable(
+                name: "UploadedFiles");
 
             migrationBuilder.DropTable(
                 name: "Rehearsals");

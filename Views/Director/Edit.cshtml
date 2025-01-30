@@ -3,57 +3,118 @@
 <partial name="_ViewHeading" />
 
 <form asp-action="Edit" class="form-container">
-	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div asp-validation-summary="All" class="text-danger"></div>
 	<input type="hidden" asp-for="ID" />
+	<div class="form-area">
+		<div class="row g-4 my-3">
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="FirstName" class="form-control" placeholder="First Name" />
+					<label asp-for="FirstName" class="control-label"></label>
+					<span asp-validation-for="FirstName" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating optional">
+					<input asp-for="MiddleName" class="form-control" placeholder="Middle Name (optional)" />
+					<label asp-for="MiddleName" class="control-label"></label>
+					<span asp-validation-for="MiddleName" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="LastName" class="form-control" placeholder="Last Name" />
+					<label asp-for="LastName" class="control-label"></label>
+					<span asp-validation-for="LastName" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="Email" class="form-control" placeholder="Email" />
+					<label asp-for="Email" class="control-label"></label>
+					<span asp-validation-for="Email" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="Phone" class="form-control" placeholder="Emergency Contact Number" />
+					<label asp-for="Phone" class="control-label"></label>
+					<span asp-validation-for="Phone" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					@Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as SelectList, "Select a Chapter", new { @class = "form-control" })
+					<label asp-for="ChapterID" class="control-label"></label>
+					<span asp-validation-for="ChapterID" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="form-group col-md-4 required">
+				<div class="form-floating required">
+					<select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
+					<label asp-for="Status" class="control-label"></label>
+					<span asp-validation-for="Status" class="text-danger"></span>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-4">
+				@{
+					int fileCount = Model.VulnerableSectorChecks.Count;
+					if (fileCount > 0)
+					{
+						<label class="control-label"> Current Documents:</label>
+					}
+					else
+					{
+						<label class="control-label">No Documents Uploaded</label>
+					}
+				}
+				<div class="ml-md-3">
+					@{
+						if (fileCount > 0)
+						{
+							var firstFile = Model.VulnerableSectorChecks.FirstOrDefault(); ;
+							if (fileCount > 1)
+							{
+								<a class="" role="button" data-bs-toggle="collapse"
+								   href="#collapseDocs@(Model.ID)" aria-expanded="false"
+								   aria-controls="collapseDocs@(Model.ID)">
+									<span class="badge bg-info">@fileCount</span> Current Documents...
+								</a>
+								<div class="collapse" id="collapseDocs@(Model.ID)">
+									@{
+										foreach (var d in Model.VulnerableSectorChecks)
+										{
+											<a asp-action="Download" asp-route-id="@d.ID">@d.FileName</a> <br />
+										}
+									}
+								</div>
+							}
+							else
+							{
+								<a asp-action="Download" asp-route-id="@firstFile.?ID">@firstFile?.FileName</a>
+							}
+						}
+					}
+				</div>
+			</div>
 
-	<div class="row g-4 my-3 form-area">
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="FirstName" class="form-control" placeholder="First Name" />
-				<label asp-for="FirstName" class="control-label"></label>
-				<span asp-validation-for="FirstName" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating optional">
-				<input asp-for="MiddleName" class="form-control" placeholder="Middle Name (optional)" />
-				<label asp-for="MiddleName" class="control-label"></label>
-				<span asp-validation-for="MiddleName" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="LastName" class="form-control" placeholder="Last Name" />
-				<label asp-for="LastName" class="control-label"></label>
-				<span asp-validation-for="LastName" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="Email" class="form-control" placeholder="Email" />
-				<label asp-for="Email" class="control-label"></label>
-				<span asp-validation-for="Email" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="Phone" class="form-control" placeholder="Emergency Contact Number" />
-				<label asp-for="Phone" class="control-label"></label>
-				<span asp-validation-for="Phone" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				@Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as SelectList, "Select a Chapter", new { @class = "form-control" })
-				<label asp-for="ChapterID" class="control-label"></label>
-				<span asp-validation-for="ChapterID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group col-md-4 required">
-			<div class="form-floating required">
-				<select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
-				<label asp-for="Status" class="control-label"></label>
-				<span asp-validation-for="Status" class="text-danger"></span>
+			<div class="form-group col-md-4">
+				@{
+					if (fileCount > 0)
+					{
+						<label class="control-label custom-file-label">Update Vulnerable Sector Check:</label>
+					}
+					else
+					{
+						<label class="control-label custom-file-label">Upload Vulnerable Sector Check:</label>
+					}
+					
+				}
+				<div class="input-group mb-3">
+					<input type="file" class="form-control" name="theFiles" multiple="multiple">
+				</div>
 			</div>
 		</div>
 	</div>

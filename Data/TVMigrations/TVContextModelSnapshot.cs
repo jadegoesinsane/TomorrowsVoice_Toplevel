@@ -91,6 +91,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Directors");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.FileContent", b =>
+                {
+                    b.Property<int>("FileContentID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.HasKey("FileContentID");
+
+                    b.ToTable("FileContent");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
                 {
                     b.Property<int>("ID")
@@ -201,6 +214,46 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Singers");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.UploadedFile", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("UploadedFiles");
+
+                    b.HasDiscriminator().HasValue("UploadedFile");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorDocument", b =>
+                {
+                    b.HasBaseType("TomorrowsVoice_Toplevel.Models.UploadedFile");
+
+                    b.Property<int>("DirectorID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("DirectorID");
+
+                    b.HasDiscriminator().HasValue("DirectorDocument");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
@@ -210,6 +263,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired();
 
                     b.Navigation("Chapter");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.FileContent", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.UploadedFile", "UploadedFile")
+                        .WithOne("FileContent")
+                        .HasForeignKey("TomorrowsVoice_Toplevel.Models.FileContent", "FileContentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UploadedFile");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
@@ -261,6 +325,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Chapter");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorDocument", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
+                        .WithMany("VulnerableSectorChecks")
+                        .HasForeignKey("DirectorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Director");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
                     b.Navigation("Directors");
@@ -273,6 +348,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
                 {
                     b.Navigation("Rehearsals");
+
+                    b.Navigation("VulnerableSectorChecks");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
@@ -283,6 +360,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Singer", b =>
                 {
                     b.Navigation("RehearsalAttendances");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.UploadedFile", b =>
+                {
+                    b.Navigation("FileContent");
                 });
 #pragma warning restore 612, 618
         }

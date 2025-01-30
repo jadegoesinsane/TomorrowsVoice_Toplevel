@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
@@ -108,7 +110,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			//Set sort for next time
 			ViewData["sortField"] = sortField;
 			ViewData["sortDirection"] = sortDirection;
-			ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
+			PopulateDropDownLists();
 			//Handle Paging
 			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
 			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
@@ -141,8 +143,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Director/Create
 		public IActionResult Create()
 		{
-            Director director = new Director();
-            ViewData["ChapterID"] = new SelectList(_context.Chapters, "ID", "Name");
+			Director director = new Director();
+			PopulateDropDownLists(director);
 			return View(director);
 		}
 
@@ -151,15 +153,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director)
+		public async Task<IActionResult> Create([Bind("ID,FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director,
+			List<IFormFile> theFiles)
 		{
 			try
 			{
 				if (ModelState.IsValid)
 				{
+					await AddDocumentsAsync(director, theFiles);
 					_context.Add(director);
 					await _context.SaveChangesAsync();
-					return RedirectToAction(nameof(Index));
+					return RedirectToAction("Details", new { director.ID });
 				}
 			}
 			catch (DbUpdateException dex)
@@ -176,7 +180,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 
-			ViewData["ChapterID"] = ChapterSelectList(director.ChapterID);
+			PopulateDropDownLists(director);
 			return View(director);
 		}
 
@@ -188,12 +192,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 
-			var director = await _context.Directors.FindAsync(id);
+			var director = await _context.Directors
+				.Include(d => d.VulnerableSectorChecks)
+				.FirstOrDefaultAsync(d => d.ID == id);
+
 			if (director == null)
 			{
 				return NotFound();
 			}
-			ViewData["ChapterID"] = ChapterSelectList(director.ChapterID);
+			PopulateDropDownLists(director);
 			return View(director);
 		}
 
@@ -202,11 +209,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id)
+		public async Task<IActionResult> Edit(int id, List<IFormFile> theFiles)
 		{
 			var directorToUpdate = await _context.Directors
 				.Include(d => d.Chapter)
 				.Include(d => d.Rehearsals)
+				.Include(d => d.VulnerableSectorChecks)
 				.FirstOrDefaultAsync(d => d.ID == id);
 
 			if (directorToUpdate == null)
@@ -214,19 +222,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 
-			if (await TryUpdateModelAsync<Director>(directorToUpdate, "", d => d.FirstName, d => d.MiddleName, d => d.LastName, d => d.Email, d => d.Phone,
-					r => r.Status, r=>r.ChapterID))
+			if (await TryUpdateModelAsync<Director>(directorToUpdate, "",
+				d => d.FirstName, d => d.MiddleName, d => d.LastName, d => d.Email, d => d.Phone, r => r.Status, r => r.ChapterID))
 			{
 				try
 				{
+					await AddDocumentsAsync(directorToUpdate, theFiles);
 					await _context.SaveChangesAsync();
-					var returnUrl = ViewData["returnURL"]?.ToString();
-
-					if (string.IsNullOrEmpty(returnUrl))
-					{
-						return RedirectToAction(nameof(Index));
-					}
-					return Redirect(returnUrl);
+					return RedirectToAction("Details", new { directorToUpdate.ID });
+				}
+				catch (RetryLimitExceededException)
+				{
+					ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
 				}
 				catch (DbUpdateConcurrencyException)
 				{
@@ -253,6 +260,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					}
 				}
 			}
+			PopulateDropDownLists(directorToUpdate);
 			return View(directorToUpdate);
 		}
 
@@ -267,6 +275,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var director = await _context.Directors
 				.Include(d => d.Chapter)
 				.Include(d => d.Rehearsals)
+				.Include(d => d.VulnerableSectorChecks)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (director == null)
@@ -282,6 +291,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var director = await _context.Directors
+				.Include(d => d.VulnerableSectorChecks)
 				.FirstOrDefaultAsync(d => d.ID == id);
 			try
 			{
@@ -315,25 +325,78 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-        //Partial View for Directors Rehearsal View
-        public PartialViewResult DirectorsRehearsalList(int id)
-        {
-            var rehearsals = _context.Rehearsals
-                .Where(r => r.DirectorID == id)
-                .OrderBy(r => r.RehearsalDate)
-                .ToList();
-
-            return PartialView("_DirectorsRehearsalList", rehearsals);
-        }
-
-
-        // For Adding Chapters
-        private SelectList ChapterSelectList(int? id)
+		// For Adding Chapters
+		private SelectList ChapterSelectList(int? selectedId)
 		{
-			var cQuery = from c in _context.Chapters
-						 orderby c.Name
-						 select c;
-			return new SelectList(cQuery, "ID", "Name", id);
+			return new SelectList(_context
+				.Chapters
+				.OrderBy(c => c.Name), "ID", "Name", selectedId);
+		}
+
+		public void PopulateDropDownLists(Director? director = null)
+		{
+			ViewData["ChapterID"] = ChapterSelectList(director?.ChapterID);
+		}
+
+		//Partial View for Directors Rehearsal View
+		public PartialViewResult DirectorsRehearsalList(int id)
+		{
+			var rehearsals = _context.Rehearsals
+				.Where(r => r.DirectorID == id)
+				.OrderBy(r => r.RehearsalDate)
+				.ToList();
+
+			return PartialView("_DirectorsRehearsalList", rehearsals);
+		}
+
+		public PartialViewResult ListOfDocumentsDetails(int id)
+		{
+			var query = from d in _context.DirectorDocuments
+						where d.DirectorID == id
+						orderby d.FileName
+						select d;
+			return PartialView("_ListOfDocuments", query.ToList());
+		}
+
+		public async Task<FileContentResult> Download(int id)
+		{
+			var theFile = await _context.UploadedFiles
+				.Include(d => d.FileContent)
+				.Where(f => f.ID == id)
+				.FirstOrDefaultAsync();
+
+			if (theFile?.FileContent?.Content == null || theFile.MimeType == null)
+			{
+				return new FileContentResult(Array.Empty<byte>(), "application/octet-stream");
+			}
+
+			return File(theFile.FileContent.Content, theFile.MimeType, theFile.FileName);
+		}
+
+		private async Task AddDocumentsAsync(Director director, List<IFormFile> theFiles)
+		{
+			foreach (var f in theFiles)
+			{
+				if (f != null)
+				{
+					string mimeType = f.ContentType;
+					string fileName = Path.GetFileName(f.FileName);
+					long fileLength = f.Length;
+
+					if (!(fileName == "" || fileLength == 0))
+					{
+						DirectorDocument d = new DirectorDocument();
+						using (var memoryStream = new MemoryStream())
+						{
+							await f.CopyToAsync(memoryStream);
+							d.FileContent.Content = memoryStream.ToArray();
+						}
+						d.MimeType = mimeType;
+						d.FileName = fileName;
+						director.VulnerableSectorChecks.Add(d);
+					};
+				}
+			}
 		}
 
 		private bool DirectorExists(int id)

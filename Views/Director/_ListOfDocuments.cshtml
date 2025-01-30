@@ -1,0 +1,34 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.DirectorDocument>
+<br />
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<h4 class="panel-title">Document List</h4>
+	</div>
+	<div class="panel-body scrollable-panel">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>
+						@Html.DisplayNameFor(model => model.FileName)
+					</th>
+					<th>
+						Type of File
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							<a asp-action="Download" asp-route-id="@item.ID">@item.FileName</a> <br />
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.MimeType)
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>

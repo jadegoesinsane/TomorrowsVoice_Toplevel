@@ -42,6 +42,8 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		public DbSet<Chapter> Chapters { get; set; }
 		public DbSet<Director> Directors { get; set; }
+		public DbSet<DirectorDocument> DirectorDocuments { get; set; }
+		public DbSet<UploadedFile> UploadedFiles { get; set; }
 		public DbSet<Singer> Singers { get; set; }
 		public DbSet<Rehearsal> Rehearsals { get; set; }
 		public DbSet<RehearsalAttendance> RehearsalAttendances { get; set; }
@@ -85,9 +87,9 @@ namespace TomorrowsVoice_Toplevel.Data
 
 			// prevent cascade delete from director to chapter
 			modelBuilder.Entity<Director>()
-				.HasOne<Chapter>(d=>d.Chapter)
-				.WithMany(c=>c.Directors)
-				.HasForeignKey(d=>d.ChapterID)
+				.HasOne<Chapter>(d => d.Chapter)
+				.WithMany(c => c.Directors)
+				.HasForeignKey(d => d.ChapterID)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			// Rehearsal No Director Time Overlap (Assuming one rehearsal a day)

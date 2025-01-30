@@ -5,8 +5,8 @@
 <form asp-action="Create" class="form-container">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<input type="hidden" asp-for="ID" />
-
-	<div class="row g-4 my-3 form-area">
+	<div class="form-area">
+	<div class="row g-4 my-3">
 		<div class="col-md-4">
 			<div class="form-floating required">
 				<input asp-for="FirstName" class="form-control" placeholder="First Name" />
@@ -44,7 +44,7 @@
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
-				@Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as SelectList, "Select a City", new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as IEnumerable<SelectListItem>, "Select a City", new { @class = "form-control" })
 				<label asp-for="ChapterID" class="control-label"></label>
 				<span asp-validation-for="ChapterID" class="text-danger"></span>
 			</div>
@@ -56,6 +56,15 @@
 				<span asp-validation-for="Status" class="text-danger"></span>
 			</div>
 		</div>
+	</div>
+	<div class="row">
+		<div class="form-group col-md-4">
+				<label class="control-label custom-file-label">Upload Vulnerable Sector Check:</label>
+			<div class="input-group mb-3">
+				<input type="file" class="form-control" name="theFiles" multiple="multiple">
+			</div>
+		</div>
+	</div>
 	</div>
 	<partial name="_FormFooter" />
 
