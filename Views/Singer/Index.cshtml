@@ -27,16 +27,16 @@
 						<div class="form-floating">
 							@Html.TextBox("SearchString", null, new { @class = "form-control" })
 							<label class="control-label" for="SearchString">Search Singer Name:</label>
-							</div>
-						
+						</div>
+
 					</div>
 					<div class="col-md-2">
 						<div class="form-floating">
 							@Html.DropDownList("StatusFilter", (SelectList)ViewBag.DOWSelectList,
 																"All Status", htmlAttributes: new { @class = "form-control" })
-						<label class="control-label" for="StatusFilter">Select by Status:</label>
-						
-															</div>
+							<label class="control-label" for="StatusFilter">Select by Status:</label>
+
+						</div>
 
 					</div>
 					<div class="col-md-2  d-flex justify-content-evenly">
@@ -108,7 +108,7 @@
 						@Html.DisplayFor(modelItem => item.ContactName)
 					</td>
 					<td>
-						@Html.DisplayFor(modelItem => item.PhoneFormatted)
+						<a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
 					</td>
 					<td>
 						<partial name="_CrudIcons" model="@item.ID" />

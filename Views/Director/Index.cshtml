@@ -66,7 +66,7 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td class="d-none d-sm-table-cell">
-                @Html.DisplayFor(modelItem => item.PhoneFormatted)
+                        <a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Chapter.Name)
