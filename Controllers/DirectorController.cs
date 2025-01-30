@@ -287,7 +287,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (director != null)
 				{
-					_context.Directors.Remove(director);
+					//_context.Directors.Remove(director);
+
+					// Archive a director instead of deleting them
+					director.Status = Status.Archived;
 				}
 
 				await _context.SaveChangesAsync();

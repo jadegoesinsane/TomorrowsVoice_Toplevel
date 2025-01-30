@@ -44,6 +44,10 @@ namespace TomorrowsVoice_Toplevel.Models
 		[DataType(DataType.MultilineText)]
 		public string? Note { get; set; }
 
+		[Required(ErrorMessage ="Please enter the total number of singers enrolled.")]
+		[Display(Name ="Singers Enrolled")]
+		public int TotalSingers { get; set; }
+
 
         [Required(ErrorMessage = "You must select a Director .")]
         [Display(Name = "Director")]
@@ -63,6 +67,10 @@ namespace TomorrowsVoice_Toplevel.Models
 			{
 				yield return new ValidationResult("Start time must be earlier than end time.", ["StartTime"]);
 			}
-		}
-	}
+            if (RehearsalDate > DateTime.Today)
+            {
+                yield return new ValidationResult("Rehearsal Date should not be later than today's date.");
+            }
+        }
+    }
 }

@@ -247,7 +247,8 @@ namespace TomorrowsVoice_Toplevel.Data
                                     EndTime = end,
                                     DirectorID = d.ID,
                                     Director = d,
-                                    ChapterID = d.ChapterID
+                                    ChapterID = d.ChapterID,
+                                    TotalSingers = context.Singers.Where(s=>s.ChapterID == d.ChapterID && s.Status == Status.Active).Count()
                                 };
                                 if (i % 3 == 0)
                                 {

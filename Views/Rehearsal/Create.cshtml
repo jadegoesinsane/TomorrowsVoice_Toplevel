@@ -68,7 +68,15 @@
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
         </div>
-        
+            @* Input for total number of active singers per chapter *@
+            <div class="w-100" style="margin:0px;"></div>
+            <div class="col-md-6">
+                <div class="form-floating required">
+                    <input asp-for="TotalSingers" class="form-control" />
+                    <label asp-for="TotalSingers" class="control-label"></label>
+                    <span asp-validation-for="TotalSingers" class="text-danger"></span>
+                </div>
+            </div>
     </div>
     <partial name="_FormFooter" />
 </form>

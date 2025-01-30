@@ -89,6 +89,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    TotalSingers = table.Column<int>(type: "INTEGER", nullable: false),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: false)
                 },

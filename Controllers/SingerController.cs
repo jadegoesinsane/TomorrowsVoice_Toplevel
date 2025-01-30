@@ -43,7 +43,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDownLists();
 
 			var singers = _context.Singers
-				.Include(s => s.Chapter)
+                .Include(s => s.Chapter)
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking();
 
@@ -296,9 +296,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (singer != null)
 				{
-					_context.Singers.Remove(singer);
-					await _context.SaveChangesAsync();
-					Success(string.Format("{0} was successfully deleted.", singer.NameFormatted), false);
+                    //_context.Singers.Remove(singer);
+
+					// Here we are archiving a singer instead of deleting them
+                    singer.Status = Status.Archived;
+                    await _context.SaveChangesAsync();
+                    Success(string.Format("{0} was successfully archived.", singer.NameFormatted), false);
 					return RedirectToAction(nameof(Index));
 				}
 			}
