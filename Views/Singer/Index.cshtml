@@ -58,7 +58,6 @@
 				<th aria-label="Chapter" class="d-none d-md-table-cell">
 					<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
 				</th>
-				<th class="d-none d-xxl-table-cell" aria-label="Notes">Notes</th>
 				<th class="d-none d-lg-table-cell" aria-label="Email">Email</th>
 				<th colspan="2" style="border-left: solid 1px;" aria-label="Emergency Contact">Emergency Contact</th>
 				<th aria-label="Actions"></th>
@@ -73,33 +72,6 @@
 					</td>
 					<td class="d-none d-md-table-cell">
 						@Html.DisplayFor(modelItem => item.Chapter.Name)
-					</td>
-					<td class="d-none d-xxl-table-cell" style="width: 240px;">
-						@{
-							if (item.Note != null)
-							{
-								string[] noteWords = item.Note.Split(' ');
-								if (noteWords.Count() > 4)
-								{
-									<a class="" role="button" data-bs-toggle="collapse" href="#collapseSum@(item.ID)" aria-expanded="false" aria-controls="collapseSum@(item.ID)">
-										View Notes
-									</a>
-									<div class="collapse" id="collapseSum@(item.ID)">
-										<div class="well">
-											@Html.Raw(item.Note)
-										</div>
-									</div>
-								}
-								else
-								{
-									@item.Note
-								}
-							}
-							else
-							{
-								<p>No Notes</p>
-							}
-						}
 					</td>
 					<td class="d-none d-lg-table-cell">
 						@Html.DisplayFor(modelItem => item.Email)
