@@ -212,6 +212,11 @@ header {
         color: #C686FE;
     }
 
+th > .btn {
+    padding: 0px !important;
+    font-weight: bold;
+}
+
 /* Header / Nav Styling */
 a {
     color: #372BE9 /*rgb(157, 43, 157)*/;
