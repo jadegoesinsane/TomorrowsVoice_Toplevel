@@ -27,7 +27,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		// GET: Director
 		public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
-			string? actionButton, string sortDirection = "asc", string sortField = "Director")
+			string? actionButton, string? StatusFilter, string sortDirection = "asc", string sortField = "Director")
 		{
 			string[] sortOptions = new[] { "Director", "Chapter" };
 
@@ -35,7 +35,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
 
-			var directors = _context.Directors
+            // Select list for statuses
+            if (Enum.TryParse(StatusFilter, out Status selectedStatus))
+            {
+                ViewBag.StatusSelectList = Status.Active.ToSelectList(selectedStatus);
+            }
+            else
+            {
+                ViewBag.StatusSelectList = Status.Active.ToSelectList(null);
+            }
+
+            var directors = _context.Directors
 				.Include(d => d.Chapter)
 				.Include(d => d.Rehearsals)
 				.AsNoTracking();
@@ -46,7 +56,24 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				foreach (int? id in ChapterID)
 					numberFilters++;
 			}
-			if (!String.IsNullOrEmpty(SearchString))
+			//  filter by status
+            if (!String.IsNullOrEmpty(StatusFilter))
+            {
+                directors = directors.Where(p => p.Status == selectedStatus);
+
+                // filter out archived singers if the user does not specifically select "archived"
+                if (selectedStatus != Status.Archived)
+                {
+                    directors = directors.Where(d => d.Status != Status.Archived);
+                }
+                numberFilters++;
+            }
+            // filter out singers even if status filter has not been set
+            else
+            {
+                directors = directors.Where(d => d.Status != Status.Archived);
+            }
+            if (!String.IsNullOrEmpty(SearchString))
 			{
 				directors = directors.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
 									   || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));

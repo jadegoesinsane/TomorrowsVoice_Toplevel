@@ -50,7 +50,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			if (!String.IsNullOrEmpty(StatusFilter))
 			{
 				singers = singers.Where(p => p.Status == selectedDOW);
+				
+				// filter out archived singers if the user does not specifically select "archived"
+				if (selectedDOW != Status.Archived)
+				{
+					singers = singers.Where(s => s.Status != Status.Archived);
+				}
 				numberFilters++;
+			}
+			// filter out singers even if status filter has not been set
+			else
+			{
+				singers = singers.Where(s => s.Status != Status.Archived);
 			}
 			if (ChapterID.HasValue)
 			{
