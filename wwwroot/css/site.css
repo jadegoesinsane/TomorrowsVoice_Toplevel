@@ -17,9 +17,26 @@ html {
     min-height: 100%;
 }
 
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+}
+
 body {
+    font-family: Montserrat, Arial, Tahoma, sans-serif;
     margin-bottom: 60px;
 }
+
+/* Header Styling */
+h2 {
+    font-size: 45px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    line-height: 3rem;
+}
+
 
 /* Form Styling */
 .form-container {
@@ -165,6 +182,9 @@ header {
 }
 
 /* Custom Bootstrap Theme */
+td > .btn {
+    font-family: 'Segoe UI Emoji';
+}
 .btn-primary {
     background-color: #8f3796;
     border-color: #8f3796;
@@ -286,11 +306,10 @@ a {
     }
 
 .card {
-    font-weight: bold;
     font-size: large;
 }
 
-    .card h5, .card a {
+    .card a {
         font-weight: bold;
     }
 /* Custom Colours */
