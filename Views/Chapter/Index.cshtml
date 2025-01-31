@@ -68,13 +68,13 @@
 				</button>
             </td>
             <td>
-						
-				@item.Directors.Count
+
+						@item.Directors.Where(s => s.Status == Status.Active).Count()
 						
             </td>
 			<td>
-						
-				@item.Singers.Count
+
+						@item.Singers.Where(s => s.Status == Status.Active).Count()
 						
             </td>
 					<td>

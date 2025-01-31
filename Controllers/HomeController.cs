@@ -34,7 +34,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public string SingerCount()
 		{
-            return $"{_context.Singers.Count()} Singers";
+            return $"{_context.Singers.Where(s => s.Status == Status.Active).Count()} Singers";
 		}
 		public string RehearsalCount()
 		{
@@ -42,7 +42,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
         public string DirectorCount()
         {
-			return $"{_context.Directors.Count()} Directors";
+			return $"{_context.Directors.Where(s => s.Status == Status.Active).Count()} Directors";
 		}
         public string ChapterCount()
         {

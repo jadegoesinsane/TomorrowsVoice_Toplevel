@@ -328,7 +328,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public PartialViewResult ListOfDirectorsDetails(int id)
 		{
 			var query = from p in _context.Directors
-						where p.ChapterID == id
+						where (p.ChapterID == id && p.Status == Status.Active)
 						orderby p.LastName, p.FirstName
 						select p;
 			ViewBag.ChapterID = id;
@@ -338,7 +338,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public PartialViewResult ListOfSingersDetails(int id)
 		{
 			var query = from p in _context.Singers
-						where p.ChapterID == id
+						where (p.ChapterID == id && p.Status == Status.Active)
 						orderby p.LastName, p.FirstName
 						select p;
 			return PartialView("_ListOfSingersDetails", query.ToList());
