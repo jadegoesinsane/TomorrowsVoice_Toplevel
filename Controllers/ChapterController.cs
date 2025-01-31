@@ -331,6 +331,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						where p.ChapterID == id
 						orderby p.LastName, p.FirstName
 						select p;
+			ViewBag.ChapterID = id;
 			return PartialView("_ListOfDirectorsDetails", query.ToList());
 		}
 

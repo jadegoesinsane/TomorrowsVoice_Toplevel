@@ -25,7 +25,7 @@
                 {
                     <tr>
                         <td>
-                            <a asp-action="Details" asp-controller="Director" asp-route-ID="@item.ID">
+                            <a asp-action="Details" asp-controller="Director" asp-route-ID="@item.ID" asp-route-chapterID="@ViewBag.ChapterID">
                                 @Html.DisplayFor(modelItem => item.NameFormatted)
                             </a>
                         </td>
@@ -41,4 +41,3 @@
         </table>
     </div>
 </div>
-
