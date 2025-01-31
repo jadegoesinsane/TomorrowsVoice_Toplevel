@@ -1,13 +1,16 @@
 ﻿@{
 	ViewData["Title"] = "Home Page";
 }
-<h2>Dashboard</h2>
+<h1>Dashboard</h1>
 <div class="card-deck">
 	<!-- Chapters -->
 	<div class="card text-black bg-red my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
-			<div class="col-md">
-				<h5 class="card-title"><span id="chapterCount"></span><br />Chapters</h5>
+			<div class="col-md-8">
+				<p>
+					<strong><span id="chapterCount" /></strong>
+				</p>
+				<!--<h5 class="card-title"><span id="chapterCount"></span><br />Chapters</h5>-->
 			</div>
 			<div id="trebleclef" class="col-md img-icon"></div>
 		</div>
@@ -19,8 +22,10 @@
 	<!-- Director -->
 	<div class="card text-black bg-blue my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
-			<div class="col-md">
-				<h5 class="card-title"><span id="directorCount"></span><br />Directors</h5>
+			<div class="col-md-8">
+				<p>
+					<strong><span id="directorCount" /></strong>
+				</p>
 			</div>
 			<div id="speechbubble" class="col-md img-icon"></div>
 
@@ -33,8 +38,10 @@
 	<!-- Singers -->
 	<div class="card text-black bg-green my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
-			<div class="col-md">
-				<h5 class="card-title"><span id="singerCount"></span><br />Singers</h5>
+			<div class="col-md-8">
+				<p>
+					<strong><span id="singerCount" /></strong>
+				</p>
 			</div>
 			<div id="microphone" class="col-md img-icon"></div>
 		</div>
@@ -46,8 +53,10 @@
 	<!-- Rehearsals -->
 	<div class="card text-black bg-yellow my-3 d-none d-lg-table-cell">
 		<div class="card-body row">
-			<div class="col-md">
-				<h5 class="card-title"><span id="rehearsalCount"></span><br />Rehearsals</h5>
+			<div class="col-md-8">
+				<p>
+					<strong><span id="rehearsalCount" /></strong>
+				</p>
 			</div>
 			<div id="note" class="col-md img-icon"></div>
 		</div>
@@ -60,7 +69,7 @@
 <div class="row g-4 my-3">
 	<div class="col-md-9">
 		<div class="form-footer">
-			<h3>Rehearsals</h3>
+			<h2>Rehearsals</h2>
 		</div>
 		<div class="form-area">
 			<div id='calendar'></div>
@@ -68,10 +77,12 @@
 	</div>
 	<div class="col-md-3">
 		<div class="form-footer">
-			<h3>Events</h3>
+			<h2>Events</h2>
 		</div>
 		<div class="form-area">
-			<h2>Coming Soon</h2>
+			<p>
+				<span>Coming Soon</span>
+			</p>
 		</div>
 	</div>
 </div>

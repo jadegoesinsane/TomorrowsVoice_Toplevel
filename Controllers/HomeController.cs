@@ -32,21 +32,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-		public int SingerCount()
+		public string SingerCount()
 		{
-			return _context.Singers.Count();
+            return $"{_context.Singers.Count()} Singers";
 		}
-		public int RehearsalCount()
+		public string RehearsalCount()
 		{
-			return _context.Rehearsals.Count();
+			return $"{_context.Rehearsals.Count()} Rehearsals";
 		}
-        public int DirectorCount()
+        public string DirectorCount()
         {
-            return _context.Directors.Count();
-        }
-        public int ChapterCount()
+			return $"{_context.Directors.Count()} Directors";
+		}
+        public string ChapterCount()
         {
-            return _context.Directors.Count();
-        }
+			return $"{_context.Chapters.Count()} Chapters";
+		}
 	}
 }
