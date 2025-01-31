@@ -187,8 +187,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				rehearsal.RehearsalDate = DateTime.Today;
 			}
-
-			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+            rehearsal.TotalSingers = GetActiveSingersCount(_context.Chapters.Select(c => c.ID).FirstOrDefault());
+            ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 			PopulateDropDown(rehearsal);
 
 			// Get all singers and filter by chapter if a filter is applied
@@ -206,7 +206,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			try
 			{
-				UpdateAttendance(selectedOptions, rehearsal);
+
+                rehearsal.TotalSingers = GetActiveSingersCount(rehearsal.ChapterID);
+                UpdateAttendance(selectedOptions, rehearsal);
 				if (ModelState.IsValid)
 				{
 					_context.Add(rehearsal);
@@ -803,8 +805,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return NotFound("No data.");
 		}
-
-		public int RehearsalCount()
+        private int GetActiveSingersCount(int chapterId)
+        {
+            return _context.Singers
+                           .Where(s => s.ChapterID == chapterId && s.Status == Status.Active) 
+                           .Count();
+        }
+        public int RehearsalCount()
 		{
 			return _context.Rehearsals.Count();
 		}
