@@ -261,7 +261,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-			PopulateDropDown(rehearsal);
+            rehearsal.TotalSingers = GetActiveSingersCount(rehearsal.ChapterID);
+            PopulateDropDown(rehearsal);
 			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 			PopulateAttendance(rehearsal.ChapterID, rehearsal);
 			return View(rehearsal);
@@ -286,7 +287,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			try
 			{
-				UpdateAttendance(selectedOptions, rehearsalToUpdate);
+                rehearsalToUpdate.TotalSingers = GetActiveSingersCount(rehearsalToUpdate.ChapterID);
+                UpdateAttendance(selectedOptions, rehearsalToUpdate);
 
 				if (await TryUpdateModelAsync(rehearsalToUpdate,
 					"",
