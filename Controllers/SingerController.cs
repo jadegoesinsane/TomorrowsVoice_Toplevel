@@ -413,20 +413,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 										errorCount++;
 										continue; // Skip adding this singer if the chapter isn't found
 									}
-									if (!IsValidEmail(singer.Email))
-									{
-										feedBack += $"Error: Invalid email format for {singer.FirstName} {singer.LastName}.<br />";
-										errorCount++;
-										continue;
-									}
-
-									// Validate Phone format
-									if (!IsValidPhone(singer.Phone))
-									{
-										feedBack += $"Error: Invalid phone format for {singer.FirstName} {singer.LastName}.<br />";
-										errorCount++;
-										continue;
-									}
+									
 									_context.Singers.Add(singer);
 									_context.SaveChanges();
 									successCount++;
