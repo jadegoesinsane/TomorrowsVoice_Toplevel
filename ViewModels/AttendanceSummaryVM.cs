@@ -15,6 +15,10 @@ namespace TomorrowsVoice_Toplevel.ViewModels
 
         public double Average_Attendance { get; set; }
 
+        [Display(Name = "Average Attendance Rate")]
+
+        public double Average_Attendance_Rate { get; set; }
+
         [Display(Name = "Highest Attendance")]
 
         public double Highest_Attendance { get; set; }

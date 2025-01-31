@@ -592,7 +592,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					 City = grp.Key.Name,
 					 Number_Of_Rehearsals = grp.Count(),
 					 Average_Attendance = Math.Round(grp.Average(a => a.RehearsalAttendances.Count), 1),
-					 Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
+                     Average_Attendance_Rate = Math.Round(grp.Average(a => a.RehearsalAttendances.Count) / grp.Average(a => a.TotalSingers), 2),
+                     Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
 					 Lowest_Attendance = grp.Min(a => a.RehearsalAttendances.Count),
 					 Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
 				 });
@@ -630,7 +631,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					  City = grp.Key.Name,
 					  Number_Of_Rehearsals = grp.Count(),
 					  Average_Attendance = grp.Average(a => a.RehearsalAttendances.Count),
-					  Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
+                      Average_Attendance_Rate = grp.Average(a => a.RehearsalAttendances.Count)/grp.Average(a=>a.TotalSingers),
+
+                      Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
 					  Lowest_Attendance = grp.Min(a => a.RehearsalAttendances.Count),
 					  Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
 				  });
