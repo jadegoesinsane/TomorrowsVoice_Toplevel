@@ -409,9 +409,23 @@ namespace TomorrowsVoice_Toplevel.Controllers
 									}
 									else
 									{
-										feedBack += "Error: Chapter '" + chapterName + "' not found for singer " + singer.FirstName + ".<br />";
+										feedBack += "Error: Chapter '" + chapterName + "' not found for singer " + singer.NameFormatted + ".<br />";
 										errorCount++;
 										continue; // Skip adding this singer if the chapter isn't found
+									}
+									if (!IsValidEmail(singer.Email))
+									{
+										feedBack += $"Error: Invalid email format for {singer.FirstName} {singer.LastName}.<br />";
+										errorCount++;
+										continue;
+									}
+
+									// Validate Phone format
+									if (!IsValidPhone(singer.Phone))
+									{
+										feedBack += $"Error: Invalid phone format for {singer.FirstName} {singer.LastName}.<br />";
+										errorCount++;
+										continue;
 									}
 									_context.Singers.Add(singer);
 									_context.SaveChanges();
@@ -422,12 +436,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 									errorCount++;
 									if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
 									{
-										feedBack += "Error: Record " + singer.FirstName +
+										feedBack += "Error: Record " + singer.NameFormatted +
 											" was rejected as a duplicate." + "<br />";
 									}
 									else
 									{
-										feedBack += "Error: Record " + singer.FirstName +
+										feedBack += "Error: Record " + singer.NameFormatted +
 											" caused a database error." + "<br />";
 									}
 									//Here is the trick to using SaveChanges in a loop.  You must remove the 
@@ -439,12 +453,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 									errorCount++;
 									if (ex.GetBaseException().Message.Contains("correct format"))
 									{
-										feedBack += "Error: Record " + singer.FirstName
+										feedBack += "Error: Record " + singer.NameFormatted
 											+ " was rejected becuase it was not in the correct format." + "<br />";
 									}
 									else
 									{
-										feedBack += "Error: Record " + singer.FirstName
+										feedBack += "Error: Record " + singer.NameFormatted
 											+ " caused and error." + "<br />";
 									}
 								}
@@ -456,8 +470,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						else
 						{
 							feedBack = "Error: You may have selected the wrong file to upload.<br /> " +
-								"Remember, you must have the heading 'Appointment Reason' in the " +
-								"first cell of the first row.";
+								"Remember, you must have the order and content of the first row  " +
+								"must be exactly the same as instructions.";
 						}
 					}
 					else
