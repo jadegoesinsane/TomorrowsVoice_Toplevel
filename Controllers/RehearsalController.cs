@@ -406,7 +406,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var singers = _context.Singers.Include(c => c.Chapter).AsQueryable();
 			if (chapterSelect.HasValue)
 			{
-				singers = singers.Where(c => c.ChapterID == chapterSelect.Value);
+				singers = singers.Where(c => c.ChapterID == chapterSelect.Value && c.Status == Status.Active);
 			}
 			else
 			{
