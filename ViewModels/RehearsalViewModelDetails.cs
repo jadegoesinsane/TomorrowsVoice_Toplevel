@@ -15,5 +15,9 @@ namespace TomorrowsVoice_Toplevel.ViewModels
 		[Display(Name = "Number Of Singers")]
 		public int Number_Of_Singers { get; set; }
 
-	}
+
+        [Display(Name = "Attendance Rate")]
+
+        public string  Attendance_Rate { get; set; }
+    }
 }

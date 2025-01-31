@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TomorrowsVoice_Toplevel.ViewModels.RehearsalDetailsVM>
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.ViewModels.RehearsalViewModelDetails>
 
 <h2>@ViewData["City"] Rehearsal Details</h2>
 
@@ -9,15 +9,19 @@
             <th>Rehearsal Date</th>
 
             <th>Attendance </th>
+
+            <th>Attendance rate</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var detail in Model)
         {
             <tr>
-                <td>@detail.RehearsalDate.ToShortDateString()</td>
+                <td>@detail.Rehearsal_Date.ToShortDateString()</td>
 
-                <td>@detail.AttendanceCount</td>
+                <td>@detail.Number_Of_Singers</td>
+
+                <td>@detail.Attendance_Rate</td>
             </tr>
         }
     </tbody>

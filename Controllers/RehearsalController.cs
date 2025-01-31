@@ -604,17 +604,24 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
         public async Task<IActionResult> RehearsalDetails(string city, DateTime? startDate, DateTime? endDate)
         {
-            startDate ??= new DateTime(2020, 1, 1);  
-            endDate ??= DateTime.Now;  
+           
+
+            
+
+            startDate ??= new DateTime(2020, 1, 1);
+            endDate ??= DateTime.Now;
             ViewData["city"] = city;
             var details = await _context.Rehearsals
                 .Include(r => r.RehearsalAttendances)
                 .Where(r => r.Chapter.Name == city && r.RehearsalDate >= startDate && r.RehearsalDate <= endDate)
-                .Select(r => new RehearsalDetailsVM
-                {
-                    RehearsalDate = r.RehearsalDate,
-                    AttendanceCount = r.RehearsalAttendances.Count
-                })
+                 .Select(r => new RehearsalViewModelDetails
+                 {
+                    
+                     Rehearsal_Date = r.RehearsalDate,
+                     Number_Of_Singers = r.RehearsalAttendances.Count(),
+                     Attendance_Rate = $" {r.RehearsalAttendances.Count()} / {r.TotalSingers} ",
+                 })
+
                 .ToListAsync();
 
             return View(details);
@@ -625,7 +632,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				  .Include(c => c.Director)
 				  .Include(c => c.Chapter)
 				  .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate)
-				  .GroupBy(a => new { a.Director.Chapter.Name })
+				  .GroupBy(a => new { a.Chapter.Name })
 				  .Select(grp => new AttendanceSummaryVM
 				  {
 					  City = grp.Key.Name,
@@ -656,7 +663,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					//Style column for currency
 					workSheet.Column(3).Style.Numberformat.Format = "###,##0.0";
-					workSheet.Column(4).Style.Numberformat.Format = "###,##0";
+					workSheet.Column(4).Style.Numberformat.Format = "###,##0.00";
 					workSheet.Column(5).Style.Numberformat.Format = "###,##0";
 					workSheet.Column(6).Style.Numberformat.Format = "###,##0";
 
@@ -669,7 +676,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					
 
 					//Set Style and backgound colour of headings
-					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 6])
+					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 7])
 					{
 						headings.Style.Font.Color.SetColor(Color.White);
 						headings.Style.Font.Bold = true;
@@ -685,7 +692,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					//Add a title and timestamp at the top of the report
 					workSheet.Cells[1, 1].Value = $"Rehearsals Summary Report from {startDate1} to {endDate1}";
-					using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 6])
+					using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 7])
 					{
 						Rng.Merge = true; //Merge columns start and end range
 						Rng.Style.Font.Bold = true; //Font should be bold
@@ -697,7 +704,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					DateTime utcDate = DateTime.UtcNow;
 					TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 					DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
-					using (ExcelRange Rng = workSheet.Cells[2, 6])
+					using (ExcelRange Rng = workSheet.Cells[2, 7])
 					{
 						Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
 							localDate.ToShortDateString();
@@ -731,13 +738,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					.ThenInclude(c => c.Director)
 					.ThenInclude(c => c.Chapter)
 					.Where(a => a.Rehearsal.RehearsalDate >= startDate && a.Rehearsal.RehearsalDate <= endDate)
-				.GroupBy(a => new { a.Rehearsal.Director.Chapter.Name, a.Rehearsal.RehearsalDate })
+				.GroupBy(a => new { a.Rehearsal.Chapter.Name, a.Rehearsal.RehearsalDate, a.Rehearsal.TotalSingers })
 				.Select(grp => new RehearsalViewModelDetails
 				{
 					City = grp.Key.Name,
 					Rehearsal_Date = grp.Key.RehearsalDate,  
 					Number_Of_Singers = grp.Count(),
-				})
+                    Attendance_Rate=$" {grp.Count()} / {grp.Key.TotalSingers} "  ,
+                })
 				.ToList();
 
 			if (appts.Count > 0)
@@ -753,18 +761,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					{
 						a.City,
 						Rehearsal_Date = a.Rehearsal_Date.ToString("yyyy-MM-dd"),  
-						a.Number_Of_Singers
+						a.Number_Of_Singers,
+						a.Attendance_Rate
 					}).ToList();
 
 					workSheet.Cells[3, 1].LoadFromCollection(formattedAppts, true);
 
 					workSheet.Cells[4, 1, appts.Count + 3, 2].Style.Font.Bold = true;
+                    workSheet.Cells[3, 3, appts.Count + 3, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
 
-					workSheet.Column(1).Width = 25;  
+                    workSheet.Column(1).Width = 25;  
 					workSheet.Column(2).Width = 25;  
 					workSheet.Column(3).Width = 25;
-					workSheet.Cells[1, 1].Value = $"Rehearsals Detail Report from {startDate1} to {endDate1}";
-					using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
+                    workSheet.Column(4).Width = 25;
+                    workSheet.Cells[1, 1].Value = $"Rehearsals Detail Report from {startDate1} to {endDate1}";
+					using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 4])
 					{
 						Rng.Merge = true;
 						Rng.Style.Font.Bold = true;
@@ -772,7 +783,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 					}
 
-					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 3])
+					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 4])
 					{
 						headings.Style.Font.Color.SetColor(Color.White);
 						headings.Style.Font.Bold = true;
