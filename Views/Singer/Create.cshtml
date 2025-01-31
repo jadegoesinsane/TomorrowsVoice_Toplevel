@@ -1,7 +1,32 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Singer
 
 <partial name="_ViewHeading" />
-
+<div class="text-danger">@Html.Raw(TempData["Feedback"])</div>
+<form asp-action="InsertFromExcel" asp-controller="Singer" method="post" enctype="multipart/form-data">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label class="control-label custom-file-label">Upload Excel File:</label>
+				<div class="input-group mb-3">
+					<input type="file" class="form-control" name="theExcel" id="theExcel">
+				</div>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Upload Data" class="btn btn-primary" />
+			</div>
+		</div>
+		<div class="col-md-7">
+			<p>
+				Put all the data to upload into the first column of the Excel spreadsheet.<br />
+				Start the data in the second row of your spreadsheet to leave room for the <br />
+				heading "FitnessCategory" in the first row.<br />
+				The program looks for this column heading to help make sure you uploaded the correct file.
+			</p>
+		</div>
+	</div>
+</form>
 <form asp-action="Create" class="form-container">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<input type="hidden" asp-for="ID" />
