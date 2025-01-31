@@ -89,6 +89,15 @@
             };
         })
     </script>
+
+    <script type="text/javascript">
+        function openGoogleMaps(address) {
+            // Encode the address to ensure it's correctly formatted for a URL
+            var formattedAddress = encodeURIComponent(address);
+            var url = 'https://www.google.com/maps?q=' + formattedAddress;
+            window.open(url, '_blank');
+        }
+    </script>
 }
 
 
