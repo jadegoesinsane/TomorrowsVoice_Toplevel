@@ -62,8 +62,8 @@
 
 					<th class="d-none d-lg-table-cell" aria-label="Director">Director</th>
 					<th aria-label="Chapter">Chapter</th>
-					<th aria-label="Enrollments">Enrollments</th>
-					<th class="d-none d-sm-table-cell" aria-label="Attendees">Attendees</th>
+					<th aria-label="Attendances Rate">Attendances Rate</th>
+					<th class="d-none d-sm-table-cell" aria-label="Attendances">Attendances</th>
 					<th aria-label="Actions"></th>
 				</tr>
 			</thead>
@@ -82,7 +82,13 @@
 							@Html.DisplayFor(modelItem => item.Chapter.Name)
 						</td>
 						<td>
-							@Html.DisplayFor(modelItem => item.TotalSingers)
+
+							@{
+								var exercises = item.RehearsalAttendances.ToList();
+								int exerciseCount = exercises.Count;
+								@Html.Raw(exerciseCount)
+							}/ @Html.DisplayFor(modelItem => item.TotalSingers)
+
 						</td>
 						<td class="d-none d-sm-table-cell">
 							@{
