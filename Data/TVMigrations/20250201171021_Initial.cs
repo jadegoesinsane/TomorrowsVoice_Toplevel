@@ -211,10 +211,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "ChapterID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rehearsals_DirectorID_RehearsalDate",
+                name: "IX_Rehearsals_DirectorID_RehearsalDate_Status",
                 table: "Rehearsals",
-                columns: new[] { "DirectorID", "RehearsalDate" },
-                unique: true);
+                columns: new[] { "DirectorID", "RehearsalDate", "Status" },
+                unique: true,
+                filter: "[Status] = 0");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Singers_ChapterID",

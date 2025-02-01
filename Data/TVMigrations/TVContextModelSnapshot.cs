@@ -145,8 +145,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasIndex("ChapterID");
 
-                    b.HasIndex("DirectorID", "RehearsalDate")
-                        .IsUnique();
+                    b.HasIndex("DirectorID", "RehearsalDate", "Status")
+                        .IsUnique()
+                        .HasFilter("[Status] = 0");
 
                     b.ToTable("Rehearsals");
                 });

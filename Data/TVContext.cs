@@ -97,10 +97,11 @@ namespace TomorrowsVoice_Toplevel.Data
 				.HasForeignKey(d => d.ChapterID)
 				.OnDelete(DeleteBehavior.Restrict);
 
-			// Rehearsal No Director Time Overlap (Assuming one rehearsal a day)
+			// Rehearsal No Director Time Overlap (Assuming one rehearsal a day) only if rehearsal is Active
 			modelBuilder.Entity<Rehearsal>()
-				.HasIndex(r => new { r.DirectorID, r.RehearsalDate })
-				.IsUnique();
+				.HasIndex(r => new { r.DirectorID, r.RehearsalDate, r.Status })
+				.IsUnique()
+				.HasFilter("[Status] = 0");
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)
