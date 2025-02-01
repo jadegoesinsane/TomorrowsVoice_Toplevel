@@ -1,11 +1,11 @@
 ﻿@{
 	if (ViewData["ActionName"].ToString() == "Details")
 	{
-		@:<h2>@ViewData["ControllerFriendlyName"] Details</h2>
+		@:<h1>@ViewData["ControllerFriendlyName"] Details</h1>
 	}
 	else if (ViewData["ActionName"].ToString() == "Index")
 	{
-		@:<h2>@ViewData["ControllerFriendlyName"]s</h2>
+		@:<h1>@ViewData["ControllerFriendlyName"]s</h1>
 	}
 	else if (ViewData["ActionName"].ToString() == "Delete" ||
 				ViewData["ActionName"].ToString() == "Remove")
@@ -19,13 +19,13 @@
 			summary = Model.Summary.ToString();
 		}
 
-		@:<h2>@ViewData["ActionName"] @ViewData["ControllerFriendlyName"]</h2>
+		@:<h1>@ViewData["ActionName"] @ViewData["ControllerFriendlyName"]</h1>
 		<p>
-			<h3>Are you sure you want to @(ViewData["ActionName"].ToString().ToLower()) @(summary)?</h3>
+			<h2>Are you sure you want to @(ViewData["ActionName"].ToString().ToLower()) @(summary)?</h2>
 		</p>
 	}
 	else
 	{
-		@:<h2>@ViewData["ActionName"] @ViewData["ControllerFriendlyName"]</h2>
+		@:<h1>@ViewData["ActionName"] @ViewData["ControllerFriendlyName"]</h1>
 	}
 }
