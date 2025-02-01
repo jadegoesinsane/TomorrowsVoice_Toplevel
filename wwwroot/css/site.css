@@ -319,35 +319,35 @@ a {
     }
 /* Custom Colours */
 .bg-red {
-    background-color: #eb6363;
+    background-color: #E8A4A1;
 }
 /*d25a5a*/
 .bg-dark-red {
-    background-color: #d25a5a;
+    background-color: #DD7973;
 }
 /*5dc98c*/
 .bg-green {
-    background-color: #5dc98c;
+    background-color: #87C099;
 }
 /*53b47e*/
 .bg-dark-green {
-    background-color: #53b47e;
+    background-color: #58A771;
 }
 
 .bg-yellow {
-    background-color: #f5c344;
+    background-color: #eee29f;
 }
 
 .bg-dark-yellow {
-    background-color: #dcaf3d;
+    background-color: #e2d04c;
 }
 
 .bg-blue {
-    background-color: #4ca3d4;
+    background-color: #78BEC9;
 }
 
 .bg-dark-blue {
-    background-color: #4393bf;
+    background-color: #47A4B3;
 }
 
 .img-icon {
