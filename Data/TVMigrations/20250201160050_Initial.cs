@@ -20,7 +20,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Address = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Province = table.Column<int>(type: "INTEGER", nullable: false),
-                    PostalCode = table.Column<string>(type: "TEXT", nullable: false)
+                    PostalCode = table.Column<string>(type: "TEXT", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,6 +91,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     TotalSingers = table.Column<int>(type: "INTEGER", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: false)
                 },

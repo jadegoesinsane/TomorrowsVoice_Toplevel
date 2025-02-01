@@ -44,8 +44,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ViewBag.DOWSelectList = Province.Ontario.ToSelectList(null);
 			}
 
-			var chapters =  _context.Chapters.Include(c=>c.Singers).Include(c=>c.Directors)
-                 .AsNoTracking();
+			var chapters =  _context.Chapters
+				.Include(c=>c.Singers)
+				.Include(c=>c.Directors)
+				.Where(c=>c.Status != Status.Archived)
+                .AsNoTracking();
 
 			if (!String.IsNullOrEmpty(ProvinceFilter))
 			{
@@ -295,8 +298,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (chapter != null)
 				{
-					_context.Chapters.Remove(chapter);
-				}
+                    //_context.Chapters.Remove(chapter);
+                    // Archive a chatper instead of deleting it
+                    chapter.Status = Status.Archived;
+                }
 
 				await _context.SaveChangesAsync();
 				var returnUrl = ViewData["returnURL"]?.ToString();
