@@ -48,6 +48,9 @@ namespace TomorrowsVoice_Toplevel.Models
 		[Display(Name ="Singers Enrolled")]
 		public int TotalSingers { get; set; }
 
+		// status for archiving purposes
+		public Status Status { get; set; }
+
 
         [Required(ErrorMessage = "Please select a Director .")]
         [Display(Name = "Director")]
