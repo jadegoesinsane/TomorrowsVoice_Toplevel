@@ -46,6 +46,9 @@ namespace TomorrowsVoice_Toplevel.Models
 		[RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal Code must follow the format: A1A 2B2.")]
 		public string PostalCode { get; set; } = "";
 
+		// status for archiving purposes
+		public Status Status { get; set; } = Status.Active;
+
 		public virtual ICollection<Director> Directors { get; set; } = new HashSet<Director>();
 		public virtual ICollection<Rehearsal> Rehearsals { get; set; } = new HashSet<Rehearsal>();
 		public virtual ICollection<Singer> Singers { get; set; } = new HashSet<Singer>();
