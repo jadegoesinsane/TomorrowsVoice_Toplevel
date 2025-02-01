@@ -395,7 +395,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
 								Singer singer = new Singer();
 								try
 								{
-									
+									if (string.IsNullOrEmpty(workSheet.Cells[row, 1].Text) || // FirstName
+										string.IsNullOrEmpty(workSheet.Cells[row, 3].Text) || // LastName
+										string.IsNullOrEmpty(workSheet.Cells[row, 4].Text) || // Email
+										string.IsNullOrEmpty(workSheet.Cells[row, 5].Text) || // ContactName
+										string.IsNullOrEmpty(workSheet.Cells[row, 6].Text))   // Phone
+									{
+										feedBack += $"Error: Missing required information in row {row}. Please ensure FirstName, LastName, Email, ContactName, and Phone are provided.<br />";
+										errorCount++;
+										continue; // Skip this row if any required field is missing
+									}
 									singer.FirstName = workSheet.Cells[row, 1].Text;
 									singer.MiddleName = workSheet.Cells[row, 2].Text;
 									singer.LastName = workSheet.Cells[row, 3].Text;
@@ -405,19 +414,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 									singer.Note = workSheet.Cells[row, 8].Text;
 									string chapterName = workSheet.Cells[row, 7].Text;
 									singer.Status = Status.Active;
-									// Fetch the Chapter from the database using the Chapter name (you can adjust this lookup logic)
+									
 									var chapter = await _context.Chapters
-										.FirstOrDefaultAsync(c => c.Name == chapterName); // Replace `Name` with whatever property you are using to identify the chapter
+										.FirstOrDefaultAsync(c => c.Name == chapterName); 
 
 									if (chapter != null)
 									{
-										singer.ChapterID = chapter.ID;  // Set the ChapterID based on the lookup
+										singer.ChapterID = chapter.ID;  
 									}
 									else
 									{
 										feedBack += "Error: Chapter '" + chapterName + "' not found for singer " + singer.NameFormatted + ".<br />";
 										errorCount++;
-										continue; // Skip adding this singer if the chapter isn't found
+										continue; 
 									}
 									
 									_context.Singers.Add(singer);
@@ -437,8 +446,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 										feedBack += "Error: Record " + singer.NameFormatted +
 											" caused a database error." + "<br />";
 									}
-									//Here is the trick to using SaveChanges in a loop.  You must remove the 
-									//offending object from the cue or it will keep raising the same error.
+									
 									_context.Remove(singer);
 								}
 								catch (Exception ex)
