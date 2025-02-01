@@ -597,7 +597,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					 City = grp.Key.Name,
 					 Number_Of_Rehearsals = grp.Count(),
 					 Average_Attendance = Math.Round(grp.Average(a => a.RehearsalAttendances.Count), 1),
-                     Average_Attendance_Rate = Math.Round(grp.Average(a => a.RehearsalAttendances.Count) / grp.Average(a => a.TotalSingers), 2),
+					 Average_Attendance_Rate = Math.Round(grp.Average(a => a.RehearsalAttendances.Count) / grp.Average(a => a.TotalSingers) * 100, 2) + "%",
                      Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
 					 Lowest_Attendance = grp.Min(a => a.RehearsalAttendances.Count),
 					 Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
@@ -643,9 +643,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					  City = grp.Key.Name,
 					  Number_Of_Rehearsals = grp.Count(),
 					  Average_Attendance = grp.Average(a => a.RehearsalAttendances.Count),
-                      Average_Attendance_Rate = grp.Average(a => a.RehearsalAttendances.Count)/grp.Average(a=>a.TotalSingers),
+					  Average_Attendance_Rate = Math.Round(grp.Average(a => a.RehearsalAttendances.Count) / grp.Average(a => a.TotalSingers) * 100, 2) + "%",
 
-                      Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
+					  Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
 					  Lowest_Attendance = grp.Min(a => a.RehearsalAttendances.Count),
 					  Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
 				  });
@@ -668,10 +668,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					//Style column for currency
 					workSheet.Column(3).Style.Numberformat.Format = "###,##0.0";
-					workSheet.Column(4).Style.Numberformat.Format = "###,##0.00";
+					
 					workSheet.Column(5).Style.Numberformat.Format = "###,##0";
 					workSheet.Column(6).Style.Numberformat.Format = "###,##0";
-
+					workSheet.Cells[3, 4, sumQ.ToList().Count + 3, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 					//Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
 					//Make Date and Patient Bold
 					workSheet.Cells[4, 1, numRows + 3, 2].Style.Font.Bold = true;
