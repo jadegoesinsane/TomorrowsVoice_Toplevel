@@ -1,0 +1,60 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Singer
+
+<partial name="_ViewHeading" />
+<div class="text-danger">@Html.Raw(TempData["Feedback"])</div>
+<form asp-action="InsertFromExcel" asp-controller="Singer" method="post" enctype="multipart/form-data">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<label class="control-label custom-file-label">Upload Singers by Excel File:</label>
+				<div class="input-group mb-3">
+					<input type="file" class="form-control" name="theExcel" id="theExcel">
+				</div>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Upload Data" class="btn btn-primary" />
+			</div>
+		</div>
+		<div class="col-md-8 offset-md-1">
+			<p>
+				Please follow the order of the columns exactly as provided:
+				<br />FirstName, MiddleName, LastName, Email, ContactName, Phone, Chapter, Note.
+				<br />The first row should contain the headers, which are the titles of each column. Do not modify the headers.
+				<br />Starting from the second row, enter the relevant information for each person under the corresponding column. Each person’s details should be entered in a new row.
+				<br />The program looks for this column heading to help make sure you uploaded the correct file.
+			</p>
+		</div>
+	</div>
+	<div class="row">
+        <div class="col-md-8 offset-md-4">
+			<h3>Excel Formatting Example</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>FirstName</th>
+                        <th>MiddleName</th>
+                        <th>LastName</th>
+                        <th>Email</th>
+                        <th>ContactName</th>
+                        <th>Phone</th>
+                        <th>Chapter</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cecil</td>
+						<td>Gershwin</td>
+						<td>Palmer</td>
+						<td>cRobles@gmail.com</td>
+						<td>Carlos Robles</td>
+						<td>9055551409</td>
+						<td>St. Catharines</td>
+						<td>Has peanut allergies.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+	</div>
+</form>

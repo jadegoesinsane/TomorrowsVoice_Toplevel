@@ -40,7 +40,17 @@
 								<li><a class="dropdown-item" asp-area="" asp-controller="Rehearsal" asp-action="Index">Rehearsals</a></li>
 								<li><a class="dropdown-item" asp-area="" asp-controller="Rehearsal" asp-action="RehearsalsSummary">Rehearsal Summary</a></li>
 							</ul>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Admin Actions
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="adminDropdown">
+								<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Upload">Upload Singers</a></li>
+							</ul>
+						</li>
 					</ul>
+
 					<!--<partial name="_LoginPartial" />-->
 				</div>
 			</div>

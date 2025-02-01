@@ -325,6 +325,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(singer);
 		}
 
+		// GET: Singer/Upload/
+		public async Task<IActionResult> Upload()
+		{
+			return View();
+		}
+
 		public PartialViewResult ListOfRehearsalDetails(int id)
 		{
 			var rehearsals = _context.Rehearsals
@@ -480,7 +486,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			//Note that we are assuming that you are using the Preferred Approach to Lookup Values
 			//And the custom LookupsController
-			return RedirectToAction(nameof(Create));
+			return RedirectToAction(nameof(Upload));
 		}
 		private void PopulateDropDownLists(Singer? singer = null)
 		{
