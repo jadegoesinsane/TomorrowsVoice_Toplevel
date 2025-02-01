@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
+using NToastNotify;
 using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.CustomControllers
@@ -46,50 +47,6 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 				CookieHelper.CookieSet(HttpContext, ControllerName() + "URL", "", -1);
 			}
 			return base.OnActionExecutionAsync(context, next);
-		}
-
-		// Alert Controller
-		public void Success(string message, bool dismissable = false)
-		{
-			AddAlert(AlertStyles.Success, message, dismissable);
-		}
-
-		public void Information(string message, bool dismissable = false)
-		{
-			AddAlert(AlertStyles.Information, message, dismissable);
-		}
-
-		public void Warning(string message, bool dismissable = false)
-		{
-			AddAlert(AlertStyles.Warning, message, dismissable);
-		}
-
-		public void Danger(string message, bool dismissable = false)
-		{
-			AddAlert(AlertStyles.Danger, message, dismissable);
-		}
-
-		private void AddAlert(string alertStyle, string message, bool dismissable)
-		{
-			List<Alert> alerts = new List<Alert>();
-
-			if (TempData.ContainsKey(Alert.TempDataKey) && TempData[Alert.TempDataKey] != null)
-			{
-				var tempDataValue = TempData[Alert.TempDataKey].ToString();
-				if (!string.IsNullOrEmpty(tempDataValue))
-				{
-					alerts = JsonConvert.DeserializeObject<List<Alert>>(tempDataValue);
-				}
-			}
-
-			alerts.Add(new Alert
-			{
-				AlertStyle = alertStyle,
-				Message = message,
-				Dismissable = dismissable
-			});
-
-			TempData[Alert.TempDataKey] = JsonConvert.SerializeObject(alerts);
 		}
 	}
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using NToastNotify;
 using OfficeOpenXml;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -17,10 +18,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	public class SingerController : ElephantController
 	{
 		private readonly TVContext _context;
+		private readonly IToastNotification _toastNotification;
 
-		public SingerController(TVContext context)
+		public SingerController(TVContext context, IToastNotification toastNotification)
 		{
 			_context = context;
+			_toastNotification = toastNotification;
 		}
 
 		// GET: Singer
@@ -44,14 +47,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDownLists();
 
 			var singers = _context.Singers
-                .Include(s => s.Chapter)
+				.Include(s => s.Chapter)
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking();
 
 			if (!String.IsNullOrEmpty(StatusFilter))
 			{
 				singers = singers.Where(p => p.Status == selectedDOW);
-				
+
 				// filter out archived singers if the user does not specifically select "archived"
 				if (selectedDOW != Status.Archived)
 				{
@@ -184,8 +187,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(singer);
 					await _context.SaveChangesAsync();
-					Success(string.Format("{0} was successfully added.", singer.NameFormatted), false);
-					return RedirectToAction(nameof(Index));
+					_toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
+					return RedirectToAction("Details", new { singer.ID });
 				}
 			}
 			catch (DbUpdateException)
@@ -250,7 +253,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				try
 				{
 					await _context.SaveChangesAsync();
-					Success(string.Format("{0} was successfully updated.", singerToUpdate.NameFormatted), false);
+					_toastNotification.AddSuccessToastMessage($"{singerToUpdate.NameFormatted} was successfully updated.");
 					return RedirectToAction("Details", new { singerToUpdate.ID });
 				}
 				catch (RetryLimitExceededException)
@@ -308,12 +311,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (singer != null)
 				{
-                    //_context.Singers.Remove(singer);
+					//_context.Singers.Remove(singer);
 
 					// Here we are archiving a singer instead of deleting them
-                    singer.Status = Status.Archived;
-                    await _context.SaveChangesAsync();
-                    Success(string.Format("{0} was successfully archived.", singer.NameFormatted), false);
+					singer.Status = Status.Archived;
+					await _context.SaveChangesAsync();
+					_toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was archived.");
 					return RedirectToAction(nameof(Index));
 				}
 			}
@@ -363,7 +366,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}*/
 		}
 
-
 		public async Task<IActionResult> InsertFromExcel(IFormFile theExcel)
 		{
 			string feedBack = string.Empty;
@@ -386,9 +388,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						var end = workSheet.Dimension.End;
 						int successCount = 0;
 						int errorCount = 0;
-						if (workSheet.Cells[1, 1].Text == "FirstName"&& workSheet.Cells[1, 2].Text == "MiddleName" && workSheet.Cells[1, 3].Text == "LastName" &&
+						if (workSheet.Cells[1, 1].Text == "FirstName" && workSheet.Cells[1, 2].Text == "MiddleName" && workSheet.Cells[1, 3].Text == "LastName" &&
 							workSheet.Cells[1, 4].Text == "Email" && workSheet.Cells[1, 5].Text == "ContactName" && workSheet.Cells[1, 6].Text == "Phone" &&
-							workSheet.Cells[1, 7].Text == "Chapter" && workSheet.Cells[1, 8].Text == "Note" )
+							workSheet.Cells[1, 7].Text == "Chapter" && workSheet.Cells[1, 8].Text == "Note")
 						{
 							for (int row = start.Row + 1; row <= end.Row; row++)
 							{
@@ -414,21 +416,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
 									singer.Note = workSheet.Cells[row, 8].Text;
 									string chapterName = workSheet.Cells[row, 7].Text;
 									singer.Status = Status.Active;
-									
+
 									var chapter = await _context.Chapters
-										.FirstOrDefaultAsync(c => c.Name == chapterName); 
+										.FirstOrDefaultAsync(c => c.Name == chapterName);
 
 									if (chapter != null)
 									{
-										singer.ChapterID = chapter.ID;  
+										singer.ChapterID = chapter.ID;
 									}
 									else
 									{
 										feedBack += "Error: Chapter '" + chapterName + "' not found for singer " + singer.NameFormatted + ".<br />";
 										errorCount++;
-										continue; 
+										continue;
 									}
-									
+
 									_context.Singers.Add(singer);
 									_context.SaveChanges();
 									successCount++;
@@ -446,7 +448,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 										feedBack += "Error: Record " + singer.NameFormatted +
 											" caused a database error." + "<br />";
 									}
-									
+
 									_context.Remove(singer);
 								}
 								catch (Exception ex)
@@ -496,6 +498,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			//And the custom LookupsController
 			return RedirectToAction(nameof(Upload));
 		}
+
 		private void PopulateDropDownLists(Singer? singer = null)
 		{
 			ViewData["ChapterID"] = ChapterSelectList(singer?.ChapterID);

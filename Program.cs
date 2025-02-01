@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using NToastNotify;
 using TomorrowsVoice_Toplevel.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,6 +59,14 @@ builder.Services.AddControllersWithViews();
 //To give access to IHttpContextAccessor for Audit Data with IAuditable
 builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+// To add our toasters for CRUD operations & alerts
+builder.Services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
+{
+	CloseButton = true,
+	PositionClass = ToastPositions.BottomCenter,
+	ProgressBar = true
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,6 +87,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseNToastNotify();
 
 app.MapControllerRoute(
 	name: "default",

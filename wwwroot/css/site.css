@@ -371,3 +371,9 @@ a {
 #trebleclef {
     background-image: url(../images/TrebleClef.png);
 }
+
+/* Toaster Notification */
+
+.toast-success {
+    box-shadow: none !important;
+}
