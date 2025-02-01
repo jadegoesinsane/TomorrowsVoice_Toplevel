@@ -40,6 +40,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("Province")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("ID");
 
                     b.HasIndex("Name")
@@ -131,6 +134,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TotalSingers")
                         .HasColumnType("INTEGER");

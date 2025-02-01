@@ -28,6 +28,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http.Extensions;
 using NuGet.Protocol;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using System.IO;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -83,7 +84,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.Include(r => r.Director)
 				.Include(d => d.Chapter)
-				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate)
+				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate && a.Status != Status.Archived)
 				.AsNoTracking();
 
 			// Filters
@@ -371,8 +372,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (rehearsal != null)
 				{
-					_context.Rehearsals.Remove(rehearsal);
-					await _context.SaveChangesAsync();
+                    //_context.Rehearsals.Remove(rehearsal);
+                    // Archive a rehearsal instead of deleting it
+                    rehearsal.Status = Status.Archived;
+                    await _context.SaveChangesAsync();
 					return RedirectToAction(nameof(Index));
 				}
 			}

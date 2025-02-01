@@ -49,7 +49,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		public int TotalSingers { get; set; }
 
 		// status for archiving purposes
-		public Status Status { get; set; }
+		public Status Status { get; set; } = Status.Active;
 
 
         [Required(ErrorMessage = "Please select a Director .")]
