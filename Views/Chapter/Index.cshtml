@@ -60,13 +60,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
-				<dd class="col-sm-10">
-						
-				<button class="btn btn-link" onclick="openGoogleMaps('@item.AddressSummary')">
-                @Html.DisplayFor(modelItem => item.AddressSummary)
-				</button>
-            </td>
+			<td>
+					
+				<a href="https://www.google.com/maps?q=@item.AddressSummary" target="_blank">
+							@Html.DisplayFor(modelItem => item.AddressSummary)
+				</a>
+			</td>
+				
             <td>
 
 						@item.Directors.Where(s => s.Status == Status.Active).Count()
@@ -86,17 +86,3 @@
 </table>
     <partial name="_PagingNavBar" />
 </form>
-
-
-@section Scripts {
-	
-
-	<script type="text/javascript">
-		function openGoogleMaps(address) {
-			
-			var formattedAddress = encodeURIComponent(address);
-			var url = 'https://www.google.com/maps?q=' + formattedAddress;
-			window.open(url, '_blank');
-		}
-	</script>
-}
