@@ -348,7 +348,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return PartialView("_ListOfSingersDetails", query.ToList());
 		}
 
-		private bool ChapterExists(int id)
+        public JsonResult GetChapterData()
+        {
+            var data = new Chapter
+            {
+                Name = "Welland",
+                Province = Province.Ontario,
+                Address = "100 Niagara College Blvd",
+                PostalCode = "L3C 7L3"
+            };
+            return Json(data);
+        }
+
+        private bool ChapterExists(int id)
 		{
 			return _context.Chapters.Any(e => e.ID == id);
 		}
