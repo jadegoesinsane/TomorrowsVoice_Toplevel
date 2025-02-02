@@ -6,7 +6,7 @@ namespace TomorrowsVoice_Toplevel.Models
 	{
 		public int ID { get; set; }
 
-		[Display(Name ="Rehearsal Time")]
+		[Display(Name = "Rehearsal Time")]
 		public string Summary
 		{
 			get
@@ -23,7 +23,7 @@ namespace TomorrowsVoice_Toplevel.Models
 			}
 		}
 
-		[Display(Name="Date")]
+		[Display(Name = "Date")]
 		[Required(ErrorMessage = "Please select a date for this rehearsal")]
 		[DataType(DataType.Date)]
 		[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -44,25 +44,25 @@ namespace TomorrowsVoice_Toplevel.Models
 		[DataType(DataType.MultilineText)]
 		public string? Note { get; set; }
 
-		[Required(ErrorMessage ="Please enter the total number of singers enrolled.")]
-		[Display(Name ="Singers Enrolled")]
+		[Required(ErrorMessage = "Please enter the total number of singers enrolled.")]
+		[Display(Name = "Singers Enrolled")]
 		public int TotalSingers { get; set; }
 
 		// status for archiving purposes
 		public Status Status { get; set; } = Status.Active;
 
-
-        [Required(ErrorMessage = "Please select a Director .")]
-        [Display(Name = "Director")]
+		[Required(ErrorMessage = "Please select a Director .")]
+		[Display(Name = "Director")]
 		public int DirectorID { get; set; }
+
 		public Director? Director { get; set; }
 
-		[Display(Name ="Chapter")]
+		[Display(Name = "Chapter")]
 		public int ChapterID { get; set; }
-		public Chapter? Chapter { get; set; }
-        
 
-        public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
+		public Chapter? Chapter { get; set; }
+
+		public ICollection<RehearsalAttendance> RehearsalAttendances { get; set; } = new HashSet<RehearsalAttendance>();
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
@@ -70,10 +70,10 @@ namespace TomorrowsVoice_Toplevel.Models
 			{
 				yield return new ValidationResult("Start time must be earlier than end time.", ["StartTime"]);
 			}
-            if (RehearsalDate > DateTime.Today)
+			/*if (RehearsalDate > DateTime.Today)
             {
                 yield return new ValidationResult("Rehearsal Date should not be later than today's date.");
-            }
-        }
-    }
+            }*/
+		}
+	}
 }

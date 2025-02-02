@@ -232,7 +232,7 @@ namespace TomorrowsVoice_Toplevel.Data
 						{
 							DayOfWeek DOW = (DayOfWeek)rnd.Next(7);
 
-							DateTime date = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DOW - 7).AddMonths(-(rnd.Next(2, 4)));
+							DateTime date = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DOW - 7);
 							DateTime start = date.AddHours(rnd.Next(10, 18));
 							if (rnd.Next(2) == 1)
 								start.AddMinutes(30);
