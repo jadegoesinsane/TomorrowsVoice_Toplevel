@@ -59,7 +59,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				int dayInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
 				StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 				EndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dayInMonth);
-            }
+			}
 			//Check the order of the dates and swap them if required
 			if (EndDate < StartDate)
 			{
@@ -156,7 +156,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: Rehearsal/Details/5
-		public async Task<IActionResult> Details(int? id)
+		public async Task<IActionResult> Details(int? id, int? directorID)
 		{
 			if (id == null)
 			{
@@ -172,7 +172,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-
+			ViewBag.DirectorID = directorID;
 			return View(rehearsal);
 		}
 
@@ -188,8 +188,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				rehearsal.RehearsalDate = DateTime.Today;
 			}
-            rehearsal.TotalSingers = GetActiveSingersCount(_context.Chapters.Select(c => c.ID).FirstOrDefault());
-            ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+			rehearsal.TotalSingers = GetActiveSingersCount(_context.Chapters.Select(c => c.ID).FirstOrDefault());
+			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 			PopulateDropDown(rehearsal);
 
 			// Get all singers and filter by chapter if a filter is applied
@@ -207,9 +207,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			try
 			{
-
-                rehearsal.TotalSingers = GetActiveSingersCount(rehearsal.ChapterID);
-                UpdateAttendance(selectedOptions, rehearsal);
+				rehearsal.TotalSingers = GetActiveSingersCount(rehearsal.ChapterID);
+				UpdateAttendance(selectedOptions, rehearsal);
 				if (ModelState.IsValid)
 				{
 					_context.Add(rehearsal);
@@ -262,8 +261,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-            rehearsal.TotalSingers = GetActiveSingersCount(rehearsal.ChapterID);
-            PopulateDropDown(rehearsal);
+			rehearsal.TotalSingers = GetActiveSingersCount(rehearsal.ChapterID);
+			PopulateDropDown(rehearsal);
 			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 			PopulateAttendance(rehearsal.ChapterID, rehearsal);
 			return View(rehearsal);
@@ -288,8 +287,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			try
 			{
-                rehearsalToUpdate.TotalSingers = GetActiveSingersCount(rehearsalToUpdate.ChapterID);
-                UpdateAttendance(selectedOptions, rehearsalToUpdate);
+				rehearsalToUpdate.TotalSingers = GetActiveSingersCount(rehearsalToUpdate.ChapterID);
+				UpdateAttendance(selectedOptions, rehearsalToUpdate);
 
 				if (await TryUpdateModelAsync(rehearsalToUpdate,
 					"",
@@ -372,10 +371,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (rehearsal != null)
 				{
-                    //_context.Rehearsals.Remove(rehearsal);
-                    // Archive a rehearsal instead of deleting it
-                    rehearsal.Status = Status.Archived;
-                    await _context.SaveChangesAsync();
+					//_context.Rehearsals.Remove(rehearsal);
+					// Archive a rehearsal instead of deleting it
+					rehearsal.Status = Status.Archived;
+					await _context.SaveChangesAsync();
 					return RedirectToAction(nameof(Index));
 				}
 			}
@@ -389,14 +388,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private SelectList DirectorSelectList(int? id)
 		{
 			return new SelectList(_context.Directors
-				.Where(d=>d.Status!=Status.Archived)
+				.Where(d => d.Status != Status.Archived)
 				.OrderBy(d => d.FirstName), "ID", "NameFormatted", id);
 		}
 
 		private SelectList ChapterSelectList(int? id)
 		{
 			return new SelectList(_context.Chapters
-				.Where(c=>c.Status != Status.Archived)
+				.Where(c => c.Status != Status.Archived)
 				.OrderBy(c => c.Name), "ID", "Name", id);
 		}
 
@@ -415,13 +414,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			else
 			{
-				ViewData["selOpts"] = new MultiSelectList(new List<Singer> {  });
+				ViewData["selOpts"] = new MultiSelectList(new List<Singer> { });
 				ViewData["availOpts"] = new MultiSelectList(new List<Singer> { });
 				return;
 			}
-				
-
-			
 
 			var allOptions = singers;
 			var currentOptionsHS = new HashSet<int>(rehearsal.RehearsalAttendances.Select(b => b.SingerID));
@@ -536,7 +532,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> GetRehearsals()
 		{
 			var rehearsals = await _context.Rehearsals
-                .Select(r => new
+				.Select(r => new
 				{
 					id = r.ID,
 					groupId = r.ChapterID,
@@ -598,7 +594,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					 Number_Of_Rehearsals = grp.Count(),
 					 Average_Attendance = Math.Round(grp.Average(a => a.RehearsalAttendances.Count), 1),
 					 Average_Attendance_Rate = Math.Round(grp.Average(a => a.RehearsalAttendances.Count) / grp.Average(a => a.TotalSingers) * 100, 2) + "%",
-                     Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
+					 Highest_Attendance = grp.Max(a => a.RehearsalAttendances.Count),
 					 Lowest_Attendance = grp.Min(a => a.RehearsalAttendances.Count),
 					 Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
 				 });
@@ -607,31 +603,28 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["EndDate"] = endDate;
 			return View(sumQ);
 		}
-        public async Task<IActionResult> RehearsalDetails(string city, DateTime? startDate, DateTime? endDate)
-        {
-           
 
-            
+		public async Task<IActionResult> RehearsalDetails(string city, DateTime? startDate, DateTime? endDate)
+		{
+			startDate ??= new DateTime(2020, 1, 1);
+			endDate ??= DateTime.Now;
+			ViewData["city"] = city;
+			var details = await _context.Rehearsals
+				.Include(r => r.RehearsalAttendances)
+				.Where(r => r.Chapter.Name == city && r.RehearsalDate >= startDate && r.RehearsalDate <= endDate && r.Status != Status.Archived)
+				 .Select(r => new RehearsalViewModelDetails
+				 {
+					 Rehearsal_Date = r.RehearsalDate,
+					 Number_Of_Singers = r.RehearsalAttendances.Count(),
+					 Attendance_Rate = $" {r.RehearsalAttendances.Count()} / {r.TotalSingers} ",
+				 })
 
-            startDate ??= new DateTime(2020, 1, 1);
-            endDate ??= DateTime.Now;
-            ViewData["city"] = city;
-            var details = await _context.Rehearsals
-                .Include(r => r.RehearsalAttendances)
-                .Where(r => r.Chapter.Name == city && r.RehearsalDate >= startDate && r.RehearsalDate <= endDate && r.Status != Status.Archived)
-                 .Select(r => new RehearsalViewModelDetails
-                 {
-                    
-                     Rehearsal_Date = r.RehearsalDate,
-                     Number_Of_Singers = r.RehearsalAttendances.Count(),
-                     Attendance_Rate = $" {r.RehearsalAttendances.Count()} / {r.TotalSingers} ",
-                 })
+				.ToListAsync();
 
-                .ToListAsync();
+			return View(details);
+		}
 
-            return View(details);
-        }
-        public IActionResult RehearsalsSummaryReport(DateTime? startDate, DateTime? endDate)
+		public IActionResult RehearsalsSummaryReport(DateTime? startDate, DateTime? endDate)
 		{
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
 				  .Include(c => c.Director)
@@ -649,12 +642,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					  Lowest_Attendance = grp.Min(a => a.RehearsalAttendances.Count),
 					  Total_Attendance = grp.Sum(a => a.RehearsalAttendances.Count)
 				  });
-			
+
 			int numRows = sumQ.Count();
 
-			if (numRows > 0) 
+			if (numRows > 0)
 			{
-				
 				using (ExcelPackage excel = new ExcelPackage())
 				{
 					string startDate1 = startDate.Value.ToShortDateString();
@@ -663,12 +655,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					var workSheet = excel.Workbook.Worksheets.Add($"RehearsalsSummaryReport from {startDate1} to {endDate1}");
 
-					
 					workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
 
 					//Style column for currency
 					workSheet.Column(3).Style.Numberformat.Format = "###,##0.0";
-					
+
 					workSheet.Column(5).Style.Numberformat.Format = "###,##0";
 					workSheet.Column(6).Style.Numberformat.Format = "###,##0";
 					workSheet.Cells[3, 4, sumQ.ToList().Count + 3, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
@@ -678,7 +669,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					//Note: these are fine if you are only 'doing' one thing to the range of cells.
 					//Otherwise you should USE a range object for efficiency
-					
 
 					//Set Style and backgound colour of headings
 					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 7])
@@ -747,10 +737,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Select(grp => new RehearsalViewModelDetails
 				{
 					City = grp.Key.Name,
-					Rehearsal_Date = grp.Key.RehearsalDate,  
+					Rehearsal_Date = grp.Key.RehearsalDate,
 					Number_Of_Singers = grp.Count(),
-                    Attendance_Rate=$" {grp.Count()} / {grp.Key.TotalSingers} "  ,
-                })
+					Attendance_Rate = $" {grp.Count()} / {grp.Key.TotalSingers} ",
+				})
 				.ToList();
 
 			if (appts.Count > 0)
@@ -765,7 +755,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					var formattedAppts = appts.Select(a => new
 					{
 						a.City,
-						Rehearsal_Date = a.Rehearsal_Date.ToString("yyyy-MM-dd"),  
+						Rehearsal_Date = a.Rehearsal_Date.ToString("yyyy-MM-dd"),
 						a.Number_Of_Singers,
 						a.Attendance_Rate
 					}).ToList();
@@ -773,13 +763,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					workSheet.Cells[3, 1].LoadFromCollection(formattedAppts, true);
 
 					workSheet.Cells[4, 1, appts.Count + 3, 2].Style.Font.Bold = true;
-                    workSheet.Cells[3, 3, appts.Count + 3, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+					workSheet.Cells[3, 3, appts.Count + 3, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
 
-                    workSheet.Column(1).Width = 25;  
-					workSheet.Column(2).Width = 25;  
+					workSheet.Column(1).Width = 25;
+					workSheet.Column(2).Width = 25;
 					workSheet.Column(3).Width = 25;
-                    workSheet.Column(4).Width = 25;
-                    workSheet.Cells[1, 1].Value = $"Rehearsals Detail Report from {startDate1} to {endDate1}";
+					workSheet.Column(4).Width = 25;
+					workSheet.Cells[1, 1].Value = $"Rehearsals Detail Report from {startDate1} to {endDate1}";
 					using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 4])
 					{
 						Rng.Merge = true;
@@ -809,7 +799,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 					}
 
-					
 					try
 					{
 						Byte[] theData = excel.GetAsByteArray();
@@ -826,16 +815,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return NotFound("No data.");
 		}
-        private int GetActiveSingersCount(int chapterId)
-        {
-            return _context.Singers
-                           .Where(s => s.ChapterID == chapterId && s.Status == Status.Active) 
-                           .Count();
-        }
-        public int RehearsalCount()
+
+		private int GetActiveSingersCount(int chapterId)
+		{
+			return _context.Singers
+						   .Where(s => s.ChapterID == chapterId && s.Status == Status.Active)
+						   .Count();
+		}
+
+		public int RehearsalCount()
 		{
 			return _context.Rehearsals.Count();
 		}
+
 		private bool RehearsalExists(int id)
 		{
 			return _context.Rehearsals.Any(e => e.ID == id);

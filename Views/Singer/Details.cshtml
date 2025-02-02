@@ -85,6 +85,13 @@
 <div>
 	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
 	<partial name="_BackToList" />
+	@{
+		if (ViewBag.ChapterID != null)
+		{
+			int chapterID = ViewBag.ChapterID;
+			<a asp-action="Details" asp-controller="Chapter" asp-route-ID="@chapterID"> | Return to Chapter Details</a>
+		}
+	}
 </div>
 @section Scripts {
 	<script type="text/javascript">

@@ -146,7 +146,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: Singer/Details/5
-		public async Task<IActionResult> Details(int? id)
+		public async Task<IActionResult> Details(int? id, int? chapterID)
 		{
 			if (id == null)
 			{
@@ -162,7 +162,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-
+			ViewBag.ChapterID = chapterID;
 			return View(singer);
 		}
 

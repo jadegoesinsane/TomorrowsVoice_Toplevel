@@ -370,6 +370,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Where(r => r.DirectorID == id)
 				.OrderBy(r => r.RehearsalDate)
 				.ToList();
+			ViewBag.DirectorID = id;
 			return PartialView("_DirectorsRehearsalList", rehearsals);
 		}
 
@@ -379,6 +380,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						where d.DirectorID == id
 						orderby d.FileName
 						select d;
+			ViewBag.DirectorID = id;
 			return PartialView("_ListOfDocuments", query.ToList());
 		}
 

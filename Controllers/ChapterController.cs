@@ -44,11 +44,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ViewBag.DOWSelectList = Province.Ontario.ToSelectList(null);
 			}
 
-			var chapters =  _context.Chapters
-				.Include(c=>c.Singers)
-				.Include(c=>c.Directors)
-				.Where(c=>c.Status != Status.Archived)
-                .AsNoTracking();
+			var chapters = _context.Chapters
+				.Include(c => c.Singers)
+				.Include(c => c.Directors)
+				.Where(c => c.Status != Status.Archived)
+				.AsNoTracking();
 
 			if (!String.IsNullOrEmpty(ProvinceFilter))
 			{
@@ -179,7 +179,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 				}
-				
 			}
 
 			return View(chapter);
@@ -259,7 +258,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					{
 						ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 					}
-
 				}
 			}
 
@@ -298,10 +296,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (chapter != null)
 				{
-                    //_context.Chapters.Remove(chapter);
-                    // Archive a chatper instead of deleting it
-                    chapter.Status = Status.Archived;
-                }
+					//_context.Chapters.Remove(chapter);
+					// Archive a chatper instead of deleting it
+					chapter.Status = Status.Archived;
+				}
 
 				await _context.SaveChangesAsync();
 				var returnUrl = ViewData["returnURL"]?.ToString();
@@ -346,6 +344,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						where (p.ChapterID == id && p.Status == Status.Active)
 						orderby p.LastName, p.FirstName
 						select p;
+			ViewBag.ChapterID = id;
 			return PartialView("_ListOfSingersDetails", query.ToList());
 		}
 
