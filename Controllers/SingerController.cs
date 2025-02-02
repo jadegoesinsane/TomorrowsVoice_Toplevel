@@ -341,7 +341,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Where(r => r.RehearsalAttendances.Any(ra => ra.SingerID == id))
 				.OrderBy(r => r.RehearsalDate)
 				.ToList();
-
+			ViewBag.SingerID = id;
 			return PartialView("_ListOfRehearsals", rehearsals);
 		}
 

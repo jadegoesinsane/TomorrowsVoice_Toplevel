@@ -3,106 +3,111 @@
 <partial name="_ViewHeading" />
 
 <div>
-    <hr />
-    <dl class="row">
-        <div class="col-sm-3">
-            <dt>
-                @Html.DisplayNameFor(model => model.Summary)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.RehearsalDate),@Html.DisplayFor(model => model.StartTime)-@Html.DisplayFor(model => model.EndTime)
-            </dd>
-        </div>
-        <div class="col-sm-3">
-            <dt>
-                @Html.DisplayNameFor(model => model.Chapter)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Chapter.Name)
-            </dd>
-        </div>
-        <div class="col-sm-6">
-            <dt>
-                @Html.DisplayNameFor(model => model.Director)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Director.NameFormatted)
-            </dd>
-        </div>
-    </dl>
-    <dl class="row">
-        <div class="col-sm-3">
-            <dt>
-                Attendances Rate
-            </dt>
-            <dd>
-                @{
-                var exercises = Model.RehearsalAttendances.ToList();
-                int exerciseCount = exercises.Count;
-                    @Html.Raw(exerciseCount)
-                }/ @Html.DisplayFor(model => model.TotalSingers)
-            </dd>
-        </div>
-        <div class="col-sm-6">
-            <dt>
-                Attendee(s)
-            </dt>
-            <dd>
-                @{
-                    int singerCount = Model.RehearsalAttendances.Count;
-                    if (singerCount > 0)
-                    {
-                        string firstSinger = Model.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
-                        if (singerCount > 1)
-                        {
-                            string SingerList = "";
-                            var c = Model.RehearsalAttendances.ToList();
-                            for (int i = 0; i < singerCount; i++)
-                            {
-                                SingerList += c[i].Singer.NameFormatted + " <br />";
-                            }
-                            <a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(Model.ID)"
-                               aria-expanded="false" aria-controls="collapseSingers@(Model.ID)">
-                                View all @singerCount attendees
-                            </a>
-                            <div class="collapse" id="collapseSingers@(Model.ID)">
-                                @Html.Raw(SingerList)
-                            </div>
-                        }
-                        else
-                        {
-                            @firstSinger
-                        }
-                    }
-                    else
-                    {
-                        <p>No attendees</p>
-                    }
-                }
-            </dd>
-        </div>
+	<hr />
+	<dl class="row">
+		<div class="col-sm-3">
+			<dt>
+				@Html.DisplayNameFor(model => model.Summary)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.RehearsalDate),@Html.DisplayFor(model => model.StartTime)-@Html.DisplayFor(model => model.EndTime)
+			</dd>
+		</div>
+		<div class="col-sm-3">
+			<dt>
+				@Html.DisplayNameFor(model => model.Chapter)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Chapter.Name)
+			</dd>
+		</div>
+		<div class="col-sm-6">
+			<dt>
+				@Html.DisplayNameFor(model => model.Director)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Director.NameFormatted)
+			</dd>
+		</div>
+	</dl>
+	<dl class="row">
+		<div class="col-sm-3">
+			<dt>
+				Attendances Rate
+			</dt>
+			<dd>
+				@{
+					var exercises = Model.RehearsalAttendances.ToList();
+					int exerciseCount = exercises.Count;
+					@Html.Raw(exerciseCount)
+				}/ @Html.DisplayFor(model => model.TotalSingers)
+			</dd>
+		</div>
+		<div class="col-sm-6">
+			<dt>
+				Attendee(s)
+			</dt>
+			<dd>
+				@{
+					int singerCount = Model.RehearsalAttendances.Count;
+					if (singerCount > 0)
+					{
+						string firstSinger = Model.RehearsalAttendances.FirstOrDefault().Singer.NameFormatted;
+						if (singerCount > 1)
+						{
+							string SingerList = "";
+							var c = Model.RehearsalAttendances.ToList();
+							for (int i = 0; i < singerCount; i++)
+							{
+								SingerList += c[i].Singer.NameFormatted + " <br />";
+							}
+													<a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(Model.ID)"
+													   aria-expanded="false" aria-controls="collapseSingers@(Model.ID)">
+														View all @singerCount attendees
+													</a>
+													<div class="collapse" id="collapseSingers@(Model.ID)">
+								@Html.Raw(SingerList)
+													</div>
+						}
+						else
+						{
+							@firstSinger
+						}
+					}
+					else
+					{
+										<p>No attendees</p>
+					}
+				}
+			</dd>
+		</div>
 
-    </dl>
-    <dl class="row">
-        <div class="col-sm-12">
-            <dt>
-                @Html.DisplayNameFor(model => model.Note)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Note)
-            </dd>
+	</dl>
+	<dl class="row">
+		<div class="col-sm-12">
+			<dt>
+				@Html.DisplayNameFor(model => model.Note)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Note)
+			</dd>
 
-        </div>
-    </dl>
+		</div>
+	</dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <partial name="_BackToList" />
-    @{
-        if (ViewBag.DirectorID != null)
-        {
-            int directorID = ViewBag.DirectorID;
-            <a asp-action="Details" asp-controller="Director" asp-route-ID="@directorID"> | Return to Director Details</a>
-        }
-    }
+	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
+	<partial name="_BackToList" />
+	@{
+		if (ViewBag.DirectorID != null)
+		{
+			int directorID = ViewBag.DirectorID;
+							<a asp-action="Details" asp-controller="Director" asp-route-ID="@directorID"> | Return to Director Details</a>
+		}
+		if (ViewBag.SingerID != null)
+		{
+			int singerID = ViewBag.SingerID;
+							<a asp-action="Details" asp-controller="Singer" asp-route-ID="@singerID"> | Return to Singer Details</a>
+		}
+	}
 </div>
