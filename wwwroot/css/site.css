@@ -128,6 +128,53 @@ h2 {
 .card .form-floating > label {
     top: 5px;
 }
+
+.card > svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 15%;
+    padding:5px;
+}
+
+.card-body > p {
+    margin-top:8px;
+    margin-bottom:8px;
+}
+
+/* Card Counters */
+@property --num {
+    syntax: '<integer>';
+    initial-value: 0;
+    inherits: false;
+}
+
+@property --rehearsal {
+    syntax: '<integer>';
+    initial-value: 0;
+    inherits: false;
+}
+
+.count {
+    counter-reset: num var(--num);
+    animation: updateNum 5s forwards;
+}
+
+@keyframes updateNum {
+
+        from {
+            --num: 0;
+        }
+    to {
+        --num: var(--num);
+    }
+    
+}
+
+.count::before {
+    content: counter(num);
+}
+
 /*
 /* Form Floating
 .form-floating > .form-control {

@@ -3,6 +3,7 @@ using NToastNotify;
 using System.Diagnostics;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -19,7 +20,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public IActionResult Index()
 		{
-			return View();
+			var model = new HomeVM
+			{
+				SingerCount = _context.Singers.Where(s => s.Status == Status.Active).Count(),
+				RehearsalCount = _context.Rehearsals.Where(r => r.Status == Status.Active).Count(),
+				DirectorCount = _context.Directors.Where(s => s.Status == Status.Active).Count(),
+				ChapterCount = _context.Chapters.Where(c => c.Status == Status.Active).Count()
+			};
+			return View(model);
 		}
 
 		public IActionResult Privacy()
