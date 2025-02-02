@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250202014616_Initial")]
+    [Migration("20250202025547_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -223,6 +223,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasKey("ID");
 
                     b.HasIndex("ChapterID");
+
+                    b.HasIndex("FirstName", "LastName", "Email")
+                        .IsUnique();
 
                     b.ToTable("Singers");
                 });

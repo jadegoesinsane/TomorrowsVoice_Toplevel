@@ -1,7 +1,6 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Director
 
 <partial name="_ViewHeading" />
-
 <form asp-action="Create" class="form-container">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<input type="hidden" asp-for="ID" />
@@ -74,4 +73,19 @@
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
+	<script type="text/javascript">
+		function fillFields() {
+			$.ajax({
+				url: '@Url.Action("GetDirectorData", "Director")',
+				type: 'GET',
+				success: function (data) {
+					document.getElementById('FirstName').value = "Bob";
+					document.getElementById('LastName').value = "Jeremy";
+					document.getElementById('Email').value = "bjeremy@gmail.com";
+					document.getElementById('Phone').value = "9051012233";
+					document.getElementById('ChapterID').value = 7;
+				}
+			})
+		}
+	</script>
 }

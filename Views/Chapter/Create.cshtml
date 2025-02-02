@@ -46,4 +46,19 @@
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
+	<script type="text/javascript">
+		function fillFields() {
+			$.ajax({
+			url: '@Url.Action("GetChapterData", "Chapter")',
+			type: 'GET',
+				success: function (data)
+				{
+					document.getElementById('Name').value = "Welland";
+					document.getElementById('Province').value = 6;
+					document.getElementById('Address').value = "100 Niagara College Blvd";
+					document.getElementById('PostalCode').value = "L3C 7L3";
+				}
+			})
+		}
+	</script>
 }

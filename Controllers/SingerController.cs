@@ -191,9 +191,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					return RedirectToAction("Details", new { singer.ID });
 				}
 			}
-			catch (DbUpdateException)
+			
+			catch (DbUpdateException dex)
 			{
-				ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
+				string message = dex.GetBaseException().Message;
+				if (message.Contains("UNIQUE") && message.Contains("Singers.Email"))
+				{
+					ModelState.AddModelError("", "Unable to save changes. Remember, " +
+						"you cannot have duplicate Name and Email.");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+				}
 			}
 
 			PopulateDropDownLists(singer);
@@ -260,15 +270,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					ModelState.AddModelError("", "Unable to save changes after multiple attempts. Please Try Again.");
 				}
-				catch (DbUpdateConcurrencyException)
+				catch (DbUpdateException dex)
 				{
-					if (!SingerExists(singerToUpdate.ID))
+					string message = dex.GetBaseException().Message;
+					if (message.Contains("UNIQUE") && message.Contains("Singers.Email"))
 					{
-						return NotFound();
+						ModelState.AddModelError("", "Unable to save changes. Remember, " +
+							"you cannot have duplicate Name and Email.");
 					}
 					else
 					{
-						ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
+						ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 					}
 				}
 			}

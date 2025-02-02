@@ -829,7 +829,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return _context.Rehearsals.Count();
 		}
 
-		private bool RehearsalExists(int id)
+        public JsonResult GetRehearsalData()
+        {
+
+            var data = new Rehearsal
+            {
+                StartTime = DateTime.Now.Add(new TimeSpan(4, 30, 0)),
+                EndTime = DateTime.Now.Add(new TimeSpan(5, 45, 0)),
+                Note = "We had 2 guardians call to inform us their child wouldn't be able to attend today",
+                ChapterID = 7,
+                DirectorID = 7,
+            };
+            return Json(data);
+        }
+
+        private bool RehearsalExists(int id)
 		{
 			return _context.Rehearsals.Any(e => e.ID == id);
 		}

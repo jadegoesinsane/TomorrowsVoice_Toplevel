@@ -223,6 +223,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "ChapterID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Singers_FirstName_LastName_Email",
+                table: "Singers",
+                columns: new[] { "FirstName", "LastName", "Email" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UploadedFiles_DirectorID",
                 table: "UploadedFiles",
                 column: "DirectorID");

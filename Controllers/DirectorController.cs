@@ -425,7 +425,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 		}
 
-		private bool DirectorExists(int id)
+        public JsonResult GetDirectorData()
+        {
+            var data = new Director
+            {
+                FirstName = "Bob",
+                LastName = "Jeremy",
+                Email = "bjeremy@gmail.com",
+                Phone = "9051012233",
+                ChapterID = 7
+            };
+            return Json(data);
+        }
+
+        private bool DirectorExists(int id)
 		{
 			return _context.Directors.Any(e => e.ID == id);
 		}

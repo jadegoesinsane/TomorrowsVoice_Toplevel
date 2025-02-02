@@ -99,4 +99,21 @@
                 .catch(error => console.error('Error fetching clients:', error));
         }
     </script>
+
+    <!-- Script for demo auto fill -->
+    <script type="text/javascript">
+        function fillFields() {
+            $.ajax({
+                url: '@Url.Action("GetRehearsalData", "Rehearsal")',
+                type: 'GET',
+                success: function (data) {
+                    document.getElementById('StartTime').value = "16:30";
+                    document.getElementById('EndTime').value = "17:45";
+                    document.getElementById('Note').value = "We had a guardian call to inform us their child wouldn't be able to attend today";
+                    document.getElementById('DirectorID').value = 7;
+                    document.getElementById('ChapterID').value = 7;
+                }
+            })
+        }
+    </script>
 }
