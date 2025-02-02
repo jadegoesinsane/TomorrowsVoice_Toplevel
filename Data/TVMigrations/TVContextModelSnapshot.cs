@@ -221,6 +221,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasIndex("ChapterID");
 
+                    b.HasIndex("FirstName", "LastName", "Email")
+                        .IsUnique();
+
                     b.ToTable("Singers");
                 });
 

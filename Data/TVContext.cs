@@ -102,6 +102,10 @@ namespace TomorrowsVoice_Toplevel.Data
 				.HasIndex(r => new { r.DirectorID, r.RehearsalDate, r.Status })
 				.IsUnique()
 				.HasFilter("[Status] = 0");
+
+			modelBuilder.Entity<Singer>()
+			.HasIndex(p => new { p.FirstName, p.LastName, p.Email })
+			.IsUnique();
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)
