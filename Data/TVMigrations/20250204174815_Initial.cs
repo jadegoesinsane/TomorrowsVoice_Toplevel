@@ -21,7 +21,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     Address = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Province = table.Column<int>(type: "INTEGER", nullable: false),
                     PostalCode = table.Column<string>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false)
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -35,12 +40,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false)
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -64,10 +74,15 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Phone = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false)
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -93,7 +108,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     TotalSingers = table.Column<int>(type: "INTEGER", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: false),
-                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false)
+                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {

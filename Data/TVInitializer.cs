@@ -40,6 +40,99 @@ namespace TomorrowsVoice_Toplevel.Data
 						{
 							context.Database.EnsureCreated(); //Create and update the database as per the Model
 						}
+
+						//--------------------------------------------------------------------
+						// Triggers
+						string sqlCmd = @"
+                            CREATE TRIGGER SetChapterTimestampOnUpdate
+                            AFTER UPDATE ON Chapters
+                            BEGIN
+                                UPDATE Chapters
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						sqlCmd = @"
+                            CREATE TRIGGER SetChapterTimestampOnInsert
+                            AFTER INSERT ON Chapters
+                            BEGIN
+                                UPDATE Chapters
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						// Repeat for Directors
+						sqlCmd = @"
+                            CREATE TRIGGER SetDirectorTimestampOnUpdate
+                            AFTER UPDATE ON Directors
+                            BEGIN
+                                UPDATE Directors
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						sqlCmd = @"
+                            CREATE TRIGGER SetDirectorTimestampOnInsert
+                            AFTER INSERT ON Directors
+                            BEGIN
+                                UPDATE Directors
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						// Repeat for Rehearsals
+						sqlCmd = @"
+                            CREATE TRIGGER SetRehearsalTimestampOnUpdate
+                            AFTER UPDATE ON Rehearsals
+                            BEGIN
+                                UPDATE Rehearsals
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						sqlCmd = @"
+                            CREATE TRIGGER SetRehearsalTimestampOnInsert
+                            AFTER INSERT ON Rehearsals
+                            BEGIN
+                                UPDATE Rehearsals
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						// Repeat for Singers
+						sqlCmd = @"
+                            CREATE TRIGGER SetSingerTimestampOnUpdate
+                            AFTER UPDATE ON Singers
+                            BEGIN
+                                UPDATE Singers
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						sqlCmd = @"
+                            CREATE TRIGGER SetSingerTimestampOnInsert
+                            AFTER INSERT ON Singers
+                            BEGIN
+                                UPDATE Singers
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
 					}
 					else //The database is already created
 					{

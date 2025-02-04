@@ -2,7 +2,7 @@
 
 namespace TomorrowsVoice_Toplevel.Models
 {
-	public class Rehearsal : IValidatableObject
+	public class Rehearsal : Auditable, IValidatableObject
 	{
 		public int ID { get; set; }
 

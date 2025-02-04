@@ -2,7 +2,7 @@
 
 namespace TomorrowsVoice_Toplevel.Models
 {
-	public class Person
+	public class Person : Auditable
 	{
 		[Display(Name = "Full Name")]
 		public string NameFormatted
@@ -48,5 +48,10 @@ namespace TomorrowsVoice_Toplevel.Models
 
 		[Display(Name = "Status")]
 		public Status Status { get; set; } = Status.Active;
+
+		// Concurrency
+		[ScaffoldColumn(false)]
+		[Timestamp]
+		public Byte[]? RowVersion { get; set; }
 	}
 }

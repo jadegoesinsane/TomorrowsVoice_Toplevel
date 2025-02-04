@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TomorrowsVoice_Toplevel.Models
 {
-	public class Chapter
+	public class Chapter : Auditable
 	{
 		public int ID { get; set; }
 
@@ -15,7 +15,6 @@ namespace TomorrowsVoice_Toplevel.Models
 					: PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4));
 			}
 		}
-
 
 		[Display(Name = "Postal Code")]
 		public string PostalCodeFormat
@@ -42,7 +41,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		public Province Province { get; set; }
 
 		[Display(Name = "Postal Code")]
-		[Required(ErrorMessage ="Please enter a postal code.")]
+		[Required(ErrorMessage = "Please enter a postal code.")]
 		[RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal Code must follow the format: A1A 2B2.")]
 		public string PostalCode { get; set; } = "";
 
