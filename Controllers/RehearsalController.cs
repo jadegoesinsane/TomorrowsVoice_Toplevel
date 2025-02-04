@@ -29,6 +29,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using NuGet.Protocol;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.IO;
+using NToastNotify;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -36,7 +37,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	{
 		private readonly TVContext _context;
 
-		public RehearsalController(TVContext context)
+		public RehearsalController(TVContext context, IToastNotification toastNotification) : base(toastNotification)
 		{
 			_context = context;
 		}
@@ -829,21 +830,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return _context.Rehearsals.Count();
 		}
 
-        public JsonResult GetRehearsalData()
-        {
+		public JsonResult GetRehearsalData()
+		{
+			var data = new Rehearsal
+			{
+				StartTime = DateTime.Now.Add(new TimeSpan(4, 30, 0)),
+				EndTime = DateTime.Now.Add(new TimeSpan(5, 45, 0)),
+				Note = "We had 2 guardians call to inform us their child wouldn't be able to attend today",
+				ChapterID = 7,
+				DirectorID = 7,
+			};
+			return Json(data);
+		}
 
-            var data = new Rehearsal
-            {
-                StartTime = DateTime.Now.Add(new TimeSpan(4, 30, 0)),
-                EndTime = DateTime.Now.Add(new TimeSpan(5, 45, 0)),
-                Note = "We had 2 guardians call to inform us their child wouldn't be able to attend today",
-                ChapterID = 7,
-                DirectorID = 7,
-            };
-            return Json(data);
-        }
-
-        private bool RehearsalExists(int id)
+		private bool RehearsalExists(int id)
 		{
 			return _context.Rehearsals.Any(e => e.ID == id);
 		}

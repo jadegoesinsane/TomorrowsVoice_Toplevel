@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
@@ -20,7 +21,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	{
 		private readonly TVContext _context;
 
-		public ChapterController(TVContext context)
+		public ChapterController(TVContext context, IToastNotification toastNotification) : base(toastNotification)
 		{
 			_context = context;
 		}
@@ -348,19 +349,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return PartialView("_ListOfSingersDetails", query.ToList());
 		}
 
-        public JsonResult GetChapterData()
-        {
-            var data = new Chapter
-            {
-                Name = "Welland",
-                Province = Province.Ontario,
-                Address = "100 Niagara College Blvd",
-                PostalCode = "L3C 7L3"
-            };
-            return Json(data);
-        }
+		public JsonResult GetChapterData()
+		{
+			var data = new Chapter
+			{
+				Name = "Welland",
+				Province = Province.Ontario,
+				Address = "100 Niagara College Blvd",
+				PostalCode = "L3C 7L3"
+			};
+			return Json(data);
+		}
 
-        private bool ChapterExists(int id)
+		private bool ChapterExists(int id)
 		{
 			return _context.Chapters.Any(e => e.ID == id);
 		}

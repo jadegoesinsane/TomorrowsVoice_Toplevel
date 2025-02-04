@@ -18,12 +18,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	public class SingerController : ElephantController
 	{
 		private readonly TVContext _context;
-		private readonly IToastNotification _toastNotification;
 
-		public SingerController(TVContext context, IToastNotification toastNotification)
+		public SingerController(TVContext context, IToastNotification toastNotification) : base(toastNotification)
 		{
 			_context = context;
-			_toastNotification = toastNotification;
 		}
 
 		// GET: Singer
@@ -106,30 +104,36 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			//Now we know which field and direction to sort by
 			if (sortField == "Singer")
 			{
+				ViewData["chapterSort"] = "fa fa-solid fa-sort";
 				if (sortDirection == "asc")
 				{
 					singers = singers
 						.OrderBy(s => s.LastName)
 						.ThenBy(s => s.FirstName);
+					ViewData["singerSort"] = "fa fa-solid fa-sort-up";
 				}
 				else
 				{
 					singers = singers
 						.OrderByDescending(s => s.LastName)
 						.ThenBy(s => s.FirstName);
+					ViewData["singerSort"] = "fa fa-solid fa-sort-down";
 				}
 			}
 			else if (sortField == "Chapter")
 			{
+				ViewData["singerSort"] = "fa fa-solid fa-sort";
 				if (sortDirection == "asc")
 				{
 					singers = singers
 						.OrderBy(s => s.Chapter.Name);
+					ViewData["chapterSort"] = "fa fa-solid fa-sort-up";
 				}
 				else
 				{
 					singers = singers
 						.OrderByDescending(s => s.Chapter.Name);
+					ViewData["chapterSort"] = "fa fa-solid fa-sort-down";
 				}
 			}
 
@@ -187,11 +191,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(singer);
 					await _context.SaveChangesAsync();
-					_toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
+					AddSuccessToast(singer.NameFormatted);
+					//_toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
 					return RedirectToAction("Details", new { singer.ID });
 				}
 			}
-			
 			catch (DbUpdateException dex)
 			{
 				string message = dex.GetBaseException().Message;
@@ -263,7 +267,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				try
 				{
 					await _context.SaveChangesAsync();
-					_toastNotification.AddSuccessToastMessage($"{singerToUpdate.NameFormatted} was successfully updated.");
+					AddSuccessToast(singerToUpdate.NameFormatted);
 					return RedirectToAction("Details", new { singerToUpdate.ID });
 				}
 				catch (RetryLimitExceededException)
@@ -328,7 +332,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					// Here we are archiving a singer instead of deleting them
 					singer.Status = Status.Archived;
 					await _context.SaveChangesAsync();
-					_toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was archived.");
+					AddSuccessToast(singer.NameFormatted);
 					return RedirectToAction(nameof(Index));
 				}
 			}

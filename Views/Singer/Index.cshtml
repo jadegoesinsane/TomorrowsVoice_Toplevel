@@ -1,94 +1,88 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Singer>
 
-<partial name="_ViewHeading" />
-
-<p>
-	<a asp-action="Create">Create New @ViewData["ControllerFriendlyName"]</a>
-</p>
-
 <form asp-action="Index" method="get">
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
 	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
 	<div class="form-horizontal my-3">
-		<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
-				data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-			Filter/Search @ViewData["numberFilters"]
-		</button><br />
-		<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-			<div class="card card-body bg-light">
-				<div class="row g-3">
-					<div class="col-md-2">
-						<div class="form-floating">
-							@Html.DropDownList("ChapterID", null, "All Chapters", new { @class = "form-control" })
-							<label class="control-label" for="ChapterID">Select by Chapter(s):</label>
-						</div>
-					</div>
-					<div class="col-md-2">
-						<div class="form-floating">
-							@Html.TextBox("SearchString", null, new { @class = "form-control" })
-							<label class="control-label" for="SearchString">Search Singer Name:</label>
-						</div>
-
-					</div>
-					<div class="col-md-2">
-						<div class="form-floating">
-							@Html.DropDownList("StatusFilter", (SelectList)ViewBag.DOWSelectList,
-																"All Status", htmlAttributes: new { @class = "form-control" })
-							<label class="control-label" for="StatusFilter">Select by Status:</label>
-
-						</div>
-
-					</div>
-					<div class="col-md-2  d-flex justify-content-evenly">
-						<input type="submit" name="actionButton" value="Filter"
-							   class="btn btn-outline-primary" />
-						<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-					</div>
-				</div>
+		<div class="row align-items-center">
+			<h1 class="col m-0">Singers</h1>
+			<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a>
+		</div>
+	</div>
+	<button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+			data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+		<i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
+	</button>
+	<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+		<div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
+			<div class="p-2">
+				<strong><label class="control-label" for="SearchString">Singer Name</label></strong>
+				@Html.TextBox("SearchString", null, new { @class = "form-control" })
+			</div>
+			<div class="p-2">
+				<strong><label class="control-label" for="ChapterID">Chapter</label></strong>
+				@Html.DropDownList("ChapterID", null, "Any", new { @class = "form-control" })
+			</div>
+			<div class="p-2">
+				<strong><label class="control-label" for="StatusFilter">Status</label></strong>
+				@Html.DropDownList("StatusFilter", (SelectList)ViewBag.DOWSelectList,
+									"Any", htmlAttributes: new { @class = "form-control" })
+			</div>
+			<div class="p-2 ms-auto">
+				<button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
+					<i class=" bi bi-funnel-fill"></i>Apply
+				</button>
+			</div>
+			<div class="p-2">
+				<a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
 			</div>
 		</div>
 	</div>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th aria-label="Singer">
-					<input type="submit" name="actionButton" value="Singer" class="btn btn-link me-2" />
-				</th>
-				<th aria-label="Chapter" class="d-none d-md-table-cell">
-					<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
-				</th>
-				<th class="d-none d-lg-table-cell" aria-label="Email">Email</th>
-				<th colspan="2" style="border-left: solid 1px;" aria-label="Emergency Contact">Emergency Contact</th>
-				<th aria-label="Actions"></th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model)
-			{
+		<table class="table my-2">
+			<thead>
 				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.NameFormatted)
-					</td>
-					<td class="d-none d-md-table-cell">
-						@Html.DisplayFor(modelItem => item.Chapter.Name)
-					</td>
-					<td class="d-none d-lg-table-cell">
-						@Html.DisplayFor(modelItem => item.Email)
-					</td>
-					<td style="border-left: solid 1px;">
-						@Html.DisplayFor(modelItem => item.ContactName)
-					</td>
-					<td>
-						<a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
-					</td>
-					<td>
-						<partial name="_CrudIcons" model="@item.ID" />
-					</td>
+					<th aria-label="Singer">
+						<input type="submit" name="actionButton" value="Singer" class="btn btn-link" />
+						<i class="sort-icon @ViewData["singerSort"]" />
+					</th>
+					<th aria-label="Chapter" class="d-none d-md-table-cell">
+						<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
+						<i class="sort-icon @ViewData["chapterSort"]" />
+					</th>
+					<th style="border-left: solid 1px;" aria-label="Emergency Contact">Emergency Contact</th>
+					<th class="d-none d-lg-table-cell" aria-label="Email">Email</th>
+					<th class="" aria-label="Phone">Phone</th>
+					<th aria-label="Actions"></th>
 				</tr>
-			}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							@Html.DisplayFor(modelItem => item.NameFormatted)
+						</td>
+						<td class="d-none d-md-table-cell">
+							@Html.DisplayFor(modelItem => item.Chapter.Name)
+						</td>
+						<td style="border-left: solid 1px;">
+							@Html.DisplayFor(modelItem => item.ContactName)
+						</td>
+						<td class="d-none d-lg-table-cell">
+							@Html.DisplayFor(modelItem => item.Email)
+						</td>
+						<td>
+							<a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
+						</td>
+						<td>
+							<partial name="_CrudIcons" model="@item.ID" />
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	
 	<partial name="_PagingNavBar" />
 </form>
 

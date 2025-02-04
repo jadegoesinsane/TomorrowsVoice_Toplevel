@@ -15,9 +15,16 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 	/// </summary>
 	public class ElephantController : CognizantController
 	{
+		protected readonly IToastNotification _toastNotification;
+
 		//This is the list of Actions that will add the ReturnURL to ViewData
 		internal string[] ActionWithURL = [ "Details", "Create", "Edit", "Delete",
 			"Add", "Update", "Remove" ];
+
+		public ElephantController(IToastNotification toastNotification)
+		{
+			_toastNotification = toastNotification;
+		}
 
 		public override void OnActionExecuting(ActionExecutingContext context)
 		{
@@ -47,6 +54,25 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 				CookieHelper.CookieSet(HttpContext, ControllerName() + "URL", "", -1);
 			}
 			return base.OnActionExecutionAsync(context, next);
+		}
+
+		// Toasty Notifications
+		// Success
+		protected void AddSuccessToast(string name)
+		{
+			string action = ViewData["ActionName"]?.ToString().ToLower();
+			if (action.EndsWith('e'))
+				action += "d.";
+			else
+				action += "ed.";
+			string message = $"{name} was successfully {action}";
+			_toastNotification.AddSuccessToastMessage(message);
+		}
+
+		// Error
+		protected void AddErrorToast(string message)
+		{
+			_toastNotification.AddErrorToastMessage(message);
 		}
 	}
 }

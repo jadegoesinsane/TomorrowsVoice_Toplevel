@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
@@ -20,7 +21,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	{
 		private readonly TVContext _context;
 
-		public DirectorController(TVContext context)
+		public DirectorController(TVContext context, IToastNotification toastNotification) : base(toastNotification)
 		{
 			_context = context;
 		}
@@ -35,17 +36,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
 
-            // Select list for statuses
-            if (Enum.TryParse(StatusFilter, out Status selectedStatus))
-            {
-                ViewBag.StatusSelectList = Status.Active.ToSelectList(selectedStatus);
-            }
-            else
-            {
-                ViewBag.StatusSelectList = Status.Active.ToSelectList(null);
-            }
+			// Select list for statuses
+			if (Enum.TryParse(StatusFilter, out Status selectedStatus))
+			{
+				ViewBag.StatusSelectList = Status.Active.ToSelectList(selectedStatus);
+			}
+			else
+			{
+				ViewBag.StatusSelectList = Status.Active.ToSelectList(null);
+			}
 
-            var directors = _context.Directors
+			var directors = _context.Directors
 				.Include(d => d.Chapter)
 				.Include(d => d.Rehearsals)
 				.AsNoTracking();
@@ -57,23 +58,23 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					numberFilters++;
 			}
 			//  filter by status
-            if (!String.IsNullOrEmpty(StatusFilter))
-            {
-                directors = directors.Where(p => p.Status == selectedStatus);
+			if (!String.IsNullOrEmpty(StatusFilter))
+			{
+				directors = directors.Where(p => p.Status == selectedStatus);
 
-                // filter out archived singers if the user does not specifically select "archived"
-                if (selectedStatus != Status.Archived)
-                {
-                    directors = directors.Where(d => d.Status != Status.Archived);
-                }
-                numberFilters++;
-            }
-            // filter out singers even if status filter has not been set
-            else
-            {
-                directors = directors.Where(d => d.Status != Status.Archived);
-            }
-            if (!String.IsNullOrEmpty(SearchString))
+				// filter out archived singers if the user does not specifically select "archived"
+				if (selectedStatus != Status.Archived)
+				{
+					directors = directors.Where(d => d.Status != Status.Archived);
+				}
+				numberFilters++;
+			}
+			// filter out singers even if status filter has not been set
+			else
+			{
+				directors = directors.Where(d => d.Status != Status.Archived);
+			}
+			if (!String.IsNullOrEmpty(SearchString))
 			{
 				directors = directors.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
 									   || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
@@ -425,20 +426,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 		}
 
-        public JsonResult GetDirectorData()
-        {
-            var data = new Director
-            {
-                FirstName = "Bob",
-                LastName = "Jeremy",
-                Email = "bjeremy@gmail.com",
-                Phone = "9051012233",
-                ChapterID = 7
-            };
-            return Json(data);
-        }
+		public JsonResult GetDirectorData()
+		{
+			var data = new Director
+			{
+				FirstName = "Bob",
+				LastName = "Jeremy",
+				Email = "bjeremy@gmail.com",
+				Phone = "9051012233",
+				ChapterID = 7
+			};
+			return Json(data);
+		}
 
-        private bool DirectorExists(int id)
+		private bool DirectorExists(int id)
 		{
 			return _context.Directors.Any(e => e.ID == id);
 		}
