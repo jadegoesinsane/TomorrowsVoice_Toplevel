@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -209,7 +210,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id)
+		public async Task<IActionResult> Edit(int id, Byte[] RowVersion)
 		{
 			// Get the Chapter to update
 			var chapterToUpdate = await _context.Chapters
@@ -220,6 +221,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
+
+			//Put the original RowVersion value in the OriginalValues collection for the entity
+			_context.Entry(chapterToUpdate).Property("RowVersion").OriginalValue = RowVersion;
 
 			//Try updating it with the values posted
 			if (await TryUpdateModelAsync<Chapter>(chapterToUpdate, "",
@@ -245,7 +249,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					}
 					else
 					{
-						throw;
+						ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+							+ "was modified by another user. Please go back and refresh.");
 					}
 				}
 				catch (DbUpdateException dex)

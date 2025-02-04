@@ -275,7 +275,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
+		public async Task<IActionResult> Edit(int id, Byte[] RowVersion, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
 		{
 			var rehearsalToUpdate = await _context.Rehearsals
 				.Include(r => r.Director)
@@ -287,6 +287,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
+
+			//Put the original RowVersion value in the OriginalValues collection for the entity
+			_context.Entry(rehearsalToUpdate).Property("RowVersion").OriginalValue = RowVersion;
+
 			try
 			{
 				rehearsalToUpdate.TotalSingers = GetActiveSingersCount(rehearsalToUpdate.ChapterID);
@@ -318,7 +322,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						}
 						else
 						{
-							ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
+							ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+								+ "was modified by another user. Please go back and refresh.");
 						}
 					}
 				}

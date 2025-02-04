@@ -43,6 +43,7 @@ namespace TomorrowsVoice_Toplevel.Data
 
 						//--------------------------------------------------------------------
 						// Triggers
+						// Chapters
 						string sqlCmd = @"
                             CREATE TRIGGER SetChapterTimestampOnUpdate
                             AFTER UPDATE ON Chapters
@@ -65,7 +66,7 @@ namespace TomorrowsVoice_Toplevel.Data
                         ";
 						context.Database.ExecuteSqlRaw(sqlCmd);
 
-						// Repeat for Directors
+						// Directors
 						sqlCmd = @"
                             CREATE TRIGGER SetDirectorTimestampOnUpdate
                             AFTER UPDATE ON Directors
@@ -88,7 +89,7 @@ namespace TomorrowsVoice_Toplevel.Data
                         ";
 						context.Database.ExecuteSqlRaw(sqlCmd);
 
-						// Repeat for Rehearsals
+						// Rehearsals
 						sqlCmd = @"
                             CREATE TRIGGER SetRehearsalTimestampOnUpdate
                             AFTER UPDATE ON Rehearsals
@@ -111,7 +112,7 @@ namespace TomorrowsVoice_Toplevel.Data
                         ";
 						context.Database.ExecuteSqlRaw(sqlCmd);
 
-						// Repeat for Singers
+						// Singers
 						sqlCmd = @"
                             CREATE TRIGGER SetSingerTimestampOnUpdate
                             AFTER UPDATE ON Singers

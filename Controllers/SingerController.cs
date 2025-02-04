@@ -239,7 +239,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id)
+		public async Task<IActionResult> Edit(int id, Byte[] RowVersion)
 		{
 			var singerToUpdate = await _context.Singers
 			   .Include(r => r.Chapter)
@@ -251,18 +251,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 
+			//Put the original RowVersion value in the OriginalValues collection for the entity
+			_context.Entry(singerToUpdate).Property("RowVersion").OriginalValue = RowVersion;
+
 			// Try updating with posted values
-			if (await TryUpdateModelAsync<Singer>(singerToUpdate,
-					"",
-					r => r.FirstName,
-					r => r.LastName,
-				   r => r.MiddleName,
-				   r => r.Email,
-					r => r.Phone,
-					r => r.Note,
-					r => r.ContactName,
-					r => r.ChapterID,
-					r => r.Status))
+			if (await TryUpdateModelAsync<Singer>(singerToUpdate, "",
+				r => r.FirstName, r => r.MiddleName, r => r.LastName, r => r.Email, r => r.Phone,
+				r => r.Note, r => r.ContactName, r => r.ChapterID, r => r.Status))
 			{
 				try
 				{
@@ -273,6 +268,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				catch (RetryLimitExceededException)
 				{
 					ModelState.AddModelError("", "Unable to save changes after multiple attempts. Please Try Again.");
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!SingerExists(singerToUpdate.ID))
+					{
+						return NotFound();
+					}
+					else
+					{
+						ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+							+ "was modified by another user. Please go back and refresh.");
+					}
 				}
 				catch (DbUpdateException dex)
 				{
@@ -286,6 +293,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					{
 						ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 					}
+				}
+				catch (Exception ex)
+				{
+					ModelState.AddModelError("", ex.GetBaseException().Message.ToString());
 				}
 			}
 
