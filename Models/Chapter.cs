@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Models
 {
@@ -51,7 +52,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		public virtual ICollection<Director> Directors { get; set; } = new HashSet<Director>();
 		public virtual ICollection<Rehearsal> Rehearsals { get; set; } = new HashSet<Rehearsal>();
 		public virtual ICollection<Singer> Singers { get; set; } = new HashSet<Singer>();
-		//public virtual ICollection<Event> Events { get; set; } = new HashSet<Event>();
+		public virtual ICollection<ChapterEvent> ChapterEvents { get; set; } = new HashSet<ChapterEvent>();
 		//public virtual ICollection<Volunteer> Volunteers { get; set; } = new HashSet<Volunteer>();
 	}
 }
