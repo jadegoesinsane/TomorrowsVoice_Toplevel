@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
 {
@@ -47,6 +48,14 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<Singer> Singers { get; set; }
 		public DbSet<Rehearsal> Rehearsals { get; set; }
 		public DbSet<RehearsalAttendance> RehearsalAttendances { get; set; }
+
+		// Volunteer DbSets
+		public DbSet<Event> Events { get; set; }
+
+		public DbSet<ChapterEvent> ChapterEvents { get; set; }
+		public DbSet<Shift> Shifts { get; set; }
+		public DbSet<Volunteer> Volunteers { get; set; }
+		public DbSet<VolunteerShift> VolunteerShifts { get; set; }
 
 		#endregion DbSets
 
@@ -106,6 +115,14 @@ namespace TomorrowsVoice_Toplevel.Data
 			modelBuilder.Entity<Singer>()
 			.HasIndex(p => new { p.FirstName, p.LastName, p.Email })
 			.IsUnique();
+
+			// Many to Many Chapter Event PK
+			modelBuilder.Entity<ChapterEvent>()
+				.HasKey(ce => new { ce.ChapterID, ce.EventID });
+
+			// Many to Many Volunteer Shift PK
+			modelBuilder.Entity<VolunteerShift>()
+				.HasKey(vs => new { vs.VolunteerID, vs.ShiftID });
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)

@@ -4,6 +4,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
 	public class Event
 	{
+		public int ID { get; set; }
 		public string Name { get; set; }
 
 		[Display(Name = "Start")]

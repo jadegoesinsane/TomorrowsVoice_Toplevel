@@ -1,8 +1,7 @@
-﻿using TomorrowsVoice_Toplevel.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
 {
@@ -387,6 +386,140 @@ namespace TomorrowsVoice_Toplevel.Data
 											context.RehearsalAttendances.Remove(attendance);
 										}
 									}
+								}
+							}
+						}
+					}
+					// Volunteering Seeding
+
+					// Volunteers
+					// Randomly generate 50 singers
+					if (!context.Volunteers.Any())
+					{
+						for (int i = 0; i < 50; i++)
+						{
+							string first = firstNames[rnd.Next(firstNameCount)];
+							string last = lastNames[rnd.Next(lastNameCount)];
+
+							Volunteer volunteer = new Volunteer
+							{
+								Email = $"{first.Substring(0, 1).ToLower()}{last}@gmail.com",
+								Phone = $"{rnd.Next(100, 1000)}{rnd.Next(100, 1000)}{rnd.Next(1000, 10000)}",
+								FirstName = first,
+								LastName = last,
+							};
+							if (i % 2 == 0)
+								volunteer.MiddleName = lastNames[rnd.Next(lastNameCount)][1].ToString().ToUpper();
+							try
+							{
+								context.Volunteers.Add(volunteer);
+								context.SaveChanges();
+							}
+							catch (Exception)
+							{
+								context.Volunteers.Remove(volunteer);
+							}
+						}
+					}
+
+					// Events
+					if (!context.Events.Any())
+					{
+						Event wrappingEvent = new Event
+						{
+							Name = "Gift Wrapping",
+							StartDate = new DateTime(2024, 11, 29),
+							EndDate = new DateTime(2024, 12, 22),
+							Descripion = "Join us to help wrap gifts for those in need!",
+							Location = "Pen Center, St. Catharines",
+							Status = Status.Active
+						};
+						var chapter = context.Chapters.FirstOrDefault(c => c.Name == "St. Catharines");
+						context.Events.Add(wrappingEvent);
+						context.SaveChanges();
+						context.ChapterEvents.Add(new ChapterEvent { EventID = wrappingEvent.ID, ChapterID = chapter.ID });
+						context.SaveChanges();
+					}
+
+					// Shifts
+					if (!context.Shifts.Any())
+					{
+						foreach (Event @event in context.Events)
+						{
+							if (@event.Name == "Gift Wrapping")
+							{
+								List<DateTime> dates = new List<DateTime>
+								{
+									new DateTime(2024, 11, 29),
+									new DateTime(2024, 12, 2),
+									new DateTime(2024, 12, 3),
+									new DateTime(2024, 12, 6),
+									new DateTime(2024, 12, 7),
+									new DateTime(2024, 12, 8),
+									new DateTime(2024, 12, 11),
+									new DateTime(2024, 12, 12),
+									new DateTime(2024, 12, 16),
+									new DateTime(2024, 12, 17),
+									new DateTime(2024, 12, 20),
+									new DateTime(2024, 12, 21),
+									new DateTime(2024, 12, 22)
+								};
+
+								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+								{
+									(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
+									(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 2pm to 6pm
+									(new TimeSpan(18, 0, 0), new TimeSpan(21, 0, 0))   // 6pm to 9pm
+								};
+
+								foreach (var date in dates)
+								{
+									foreach (var time in times)
+									{
+										if (date.DayOfWeek == DayOfWeek.Sunday && time.Start.Hours >= 18)
+											continue;
+
+										Shift shift = new Shift
+										{
+											EventID = @event.ID,
+											StartAt = date.Add(time.Start),
+											EndAt = date.Add(time.End),
+											VolunteersNeeded = 5
+										};
+										context.Shifts.Add(shift);
+									}
+								}
+							}
+						}
+						context.SaveChanges();
+					}
+
+					if (!context.VolunteerShifts.Any())
+					{
+						foreach (Shift shift in context.Shifts)
+						{
+							List<Volunteer> volunteers = context.Volunteers
+								.OrderBy(v => Guid.NewGuid())
+								.Take(rnd.Next(6))
+								.ToList();
+
+							foreach (Volunteer volunteer in volunteers)
+							{
+								VolunteerShift volunteerShift = new VolunteerShift
+								{
+									VolunteerID = volunteer.ID,
+									ShiftID = shift.ID,
+									Shift = shift,
+									Volunteer = volunteer
+								};
+								try
+								{
+									context.VolunteerShifts.Add(volunteerShift);
+									context.SaveChanges();
+								}
+								catch (Exception)
+								{
+									context.VolunteerShifts.Remove(volunteerShift);
 								}
 							}
 						}

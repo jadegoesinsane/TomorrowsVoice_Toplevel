@@ -4,6 +4,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
 	public class Shift
 	{
+		public int ID { get; set; }
+
 		[Required(ErrorMessage = "Shift requires a start time.")]
 		[Display(Name = "Start Time")]
 		[DataType(DataType.DateTime)]
