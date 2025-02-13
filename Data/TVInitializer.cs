@@ -155,50 +155,75 @@ namespace TomorrowsVoice_Toplevel.Data
 
 				try
 				{
+					// Add cities using data from TV's Website
+					if (!context.Cities.Any())
+					{
+						context.Cities.AddRange(
+							new City
+							{
+								Name = "St. Catharines",
+								Province = Province.Ontario
+							},
+							new City
+							{
+								Name = "Hamilton",
+								Province = Province.Ontario
+							},
+							new City
+							{
+								Name = "Toronto",
+								Province = Province.Ontario
+							},
+							new City
+							{
+								Name = "Saskatoon",
+								Province = Province.Saskatchewan
+							},
+							new City
+							{
+								Name = "Vancouver",
+								Province = Province.Saskatchewan
+							},
+							new City
+							{
+								Name = "Surrey",
+								Province = Province.Saskatchewan
+							});
+						context.SaveChanges();
+					}
 					// Add chapters using data from Tomorrow's Voices Website
 					if (!context.Chapters.Any())
 					{
 						context.Chapters.AddRange(
 							new Chapter
 							{
-								Name = "St. Catharines",
+								CityID = context.Cities.FirstOrDefault(c => c.Name == "St. Catharines").ID,
 								Address = "188 Linwell Rd",
-								Province = Province.Ontario,
 								PostalCode = "L2N6N3"
 							}, new Chapter
 							{
-								Name = "Hamilton",
+								CityID = context.Cities.FirstOrDefault(c => c.Name == "Hamilton").ID,
 								Address = "99 N Oval",
-
-								Province = Province.Ontario,
 								PostalCode = "L8S3Z2"
 							}, new Chapter
 							{
-								Name = "Toronto",
+								CityID = context.Cities.FirstOrDefault(c => c.Name == "Toronto").ID,
 								Address = "452 College St",
-
-								Province = Province.Ontario,
 								PostalCode = "M6G 1A1"
 							}, new Chapter
 							{
-								Name = "Saskatoon",
+								CityID = context.Cities.FirstOrDefault(c => c.Name == "Saskatoon").ID,
 								Address = "35 – 22nd St. East",
-
-								Province = Province.Saskatchewan,
 								PostalCode = "M6G 1A1"
 							}, new Chapter
 							{
-								Name = "Vancouver",
+								CityID = context.Cities.FirstOrDefault(c => c.Name == "Vancouver").ID,
 								Address = "35 – 22nd St. East",
-
-								Province = Province.Saskatchewan,
 								PostalCode = "M6G 1A1"
 							}, new Chapter
 							{
-								Name = "Surrey",
+								CityID = context.Cities.FirstOrDefault(c => c.Name == "Surrey").ID,
 								Address = "35 – 22nd St. East",
-
-								Province = Province.Saskatchewan,
 								PostalCode = "M6G 1A1"
 							});
 						context.SaveChanges();
@@ -434,7 +459,7 @@ namespace TomorrowsVoice_Toplevel.Data
 							Location = "Pen Center, St. Catharines",
 							Status = Status.Active
 						};
-						var chapter = context.Chapters.FirstOrDefault(c => c.Name == "St. Catharines");
+						var chapter = context.Chapters.FirstOrDefault(c => c.City.Name == "St. Catharines");
 						context.Events.Add(wrappingEvent);
 						context.SaveChanges();
 						context.ChapterEvents.Add(new ChapterEvent { EventID = wrappingEvent.ID, ChapterID = chapter.ID });

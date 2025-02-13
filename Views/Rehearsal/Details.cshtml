@@ -18,7 +18,7 @@
 				@Html.DisplayNameFor(model => model.Chapter)
 			</dt>
 			<dd>
-				@Html.DisplayFor(model => model.Chapter.Name)
+				@Html.DisplayFor(model => model.Chapter.City.Name)
 			</dd>
 		</div>
 		<div class="col-sm-6">
@@ -61,13 +61,13 @@
 							{
 								SingerList += c[i].Singer.NameFormatted + " <br />";
 							}
-													<a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(Model.ID)"
-													   aria-expanded="false" aria-controls="collapseSingers@(Model.ID)">
-														View all @singerCount attendees
-													</a>
-													<div class="collapse" id="collapseSingers@(Model.ID)">
+							<a class="" role="button" data-bs-toggle="collapse" href="#collapseSingers@(Model.ID)"
+							   aria-expanded="false" aria-controls="collapseSingers@(Model.ID)">
+								View all @singerCount attendees
+							</a>
+							<div class="collapse" id="collapseSingers@(Model.ID)">
 								@Html.Raw(SingerList)
-													</div>
+							</div>
 						}
 						else
 						{
@@ -76,7 +76,7 @@
 					}
 					else
 					{
-										<p>No attendees</p>
+						<p>No attendees</p>
 					}
 				}
 			</dd>
@@ -102,12 +102,12 @@
 		if (ViewBag.DirectorID != null)
 		{
 			int directorID = ViewBag.DirectorID;
-							<a asp-action="Details" asp-controller="Director" asp-route-ID="@directorID"> | Return to Director Details</a>
+			<a asp-action="Details" asp-controller="Director" asp-route-ID="@directorID"> | Return to Director Details</a>
 		}
 		if (ViewBag.SingerID != null)
 		{
 			int singerID = ViewBag.SingerID;
-							<a asp-action="Details" asp-controller="Singer" asp-route-ID="@singerID"> | Return to Singer Details</a>
+			<a asp-action="Details" asp-controller="Singer" asp-route-ID="@singerID"> | Return to Singer Details</a>
 		}
 	}
 </div>

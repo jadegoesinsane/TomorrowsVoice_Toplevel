@@ -84,7 +84,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var rehearsals = _context.Rehearsals
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.Include(r => r.Director)
-				.Include(d => d.Chapter)
+				.Include(d => d.Chapter).ThenInclude(c => c.City)
 				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate && a.Status != Status.Archived)
 				.AsNoTracking();
 
@@ -166,7 +166,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var rehearsal = await _context.Rehearsals
 				.Include(r => r.Director)
-				.Include(d => d.Chapter)
+				.Include(d => d.Chapter).ThenInclude(c => c.City)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -256,7 +256,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var rehearsal = await _context.Rehearsals
 				.Include(r => r.Director)
-				.Include(d => d.Chapter)
+				.Include(d => d.Chapter).ThenInclude(c => c.City)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -352,7 +352,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var rehearsal = await _context.Rehearsals
 				.Include(r => r.Director)
-				.Include(d => d.Chapter)
+				.Include(d => d.Chapter).ThenInclude(c => c.City)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (rehearsal == null)
@@ -401,9 +401,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private SelectList ChapterSelectList(int? id)
 		{
-			return new SelectList(_context.Chapters
-				.Where(c => c.Status != Status.Archived)
+			return new SelectList(_context
+				.Cities
 				.OrderBy(c => c.Name), "ID", "Name", id);
+			//return new SelectList(_context.Chapters
+			//	.Where(c => c.Status != Status.Archived)
+			//	.OrderBy(c => c.City.Name), "ID", "Name", id);
 		}
 
 		private void PopulateDropDown(Rehearsal? rehearsal = null)
@@ -438,7 +441,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					selected.Add(new ListOptionVM
 					{
 						ID = c.ID,
-						DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
+						DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.City.Name : "None")})"
 					});
 				}
 				else
@@ -446,7 +449,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					available.Add(new ListOptionVM
 					{
 						ID = c.ID,
-						DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
+						DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.City.Name : "None")})"
 					});
 				}
 			}
@@ -506,7 +509,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var clientList = singers.Select(c => new
 			{
 				id = c.ID,
-				DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.Name : "None")})"
+				DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.City.Name : "None")})"
 			}).ToList();
 
 			return Json(clientList);
@@ -543,7 +546,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					id = r.ID,
 					groupId = r.ChapterID,
-					title = r.Chapter.Name,
+					title = r.Chapter.City.Name,
 					start = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.StartTime.ToString("THH:mm:ss")}",
 					end = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.EndTime.ToString("THH:mm:ss")}",
 					textColor = "white",
@@ -594,7 +597,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				 .Include(c => c.Director)
 				 .Include(c => c.Chapter)
 				 .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate && a.Status != Status.Archived)
-				 .GroupBy(a => new { a.Chapter.Name })
+				 .GroupBy(a => new { a.Chapter.City.Name })
 				 .Select(grp => new AttendanceSummaryVM
 				 {
 					 City = grp.Key.Name,
@@ -618,7 +621,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["city"] = city;
 			var details = await _context.Rehearsals
 				.Include(r => r.RehearsalAttendances)
-				.Where(r => r.Chapter.Name == city && r.RehearsalDate >= startDate && r.RehearsalDate <= endDate && r.Status != Status.Archived)
+				.Where(r => r.Chapter.City.Name == city && r.RehearsalDate >= startDate && r.RehearsalDate <= endDate && r.Status != Status.Archived)
 				 .Select(r => new RehearsalViewModelDetails
 				 {
 					 Rehearsal_Date = r.RehearsalDate,
@@ -637,7 +640,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				  .Include(c => c.Director)
 				  .Include(c => c.Chapter)
 				  .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate && a.Status != Status.Archived)
-				  .GroupBy(a => new { a.Chapter.Name })
+				  .GroupBy(a => new { a.Chapter.City.Name })
 				  .Select(grp => new AttendanceSummaryVM
 				  {
 					  City = grp.Key.Name,
@@ -740,7 +743,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					.ThenInclude(c => c.Director)
 					.ThenInclude(c => c.Chapter)
 					.Where(a => a.Rehearsal.RehearsalDate >= startDate && a.Rehearsal.RehearsalDate <= endDate && a.Rehearsal.Status != Status.Archived)
-				.GroupBy(a => new { a.Rehearsal.Chapter.Name, a.Rehearsal.RehearsalDate, a.Rehearsal.TotalSingers })
+				.GroupBy(a => new { a.Rehearsal.Chapter.City.Name, a.Rehearsal.RehearsalDate, a.Rehearsal.TotalSingers })
 				.Select(grp => new RehearsalViewModelDetails
 				{
 					City = grp.Key.Name,

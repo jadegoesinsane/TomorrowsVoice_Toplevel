@@ -32,7 +32,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			string? actionButton, string sortDirection = "asc", string sortField = "Chapter")
 		{
-			string[] sortOptions = new[] { "Chapter", "Name" };
+			string[] sortOptions = new[] { "City" };
 
 			//Count the number of filters applied - start by assuming no filters
 			ViewData["Filtering"] = "btn-outline-secondary";
@@ -49,18 +49,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var chapters = _context.Chapters
 				.Include(c => c.Singers)
 				.Include(c => c.Directors)
+				.Include(c => c.City)
 				.Where(c => c.Status != Status.Archived)
 				.AsNoTracking();
 
 			if (!String.IsNullOrEmpty(ProvinceFilter))
 			{
-				chapters = chapters.Where(p => p.Province == selectedDOW);
+				chapters = chapters.Where(c => c.City.Province == selectedDOW);
 				numberFilters++;
 			}
 			if (!String.IsNullOrEmpty(SearchString))
 			{
-				chapters = chapters.Where(p => p.Name.ToUpper().Contains(SearchString.ToUpper()));
-
+				chapters = chapters.Where(c => c.City.Name.ToUpper().Contains(SearchString.ToUpper()));
 				numberFilters++;
 			}
 			//Give feedback about the state of the filters
@@ -89,30 +89,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 			//Now we know which field and direction to sort by
-			if (sortField == "Name")
+			if (sortField == "City")
 			{
 				if (sortDirection == "asc")
 				{
 					chapters = chapters
-						.OrderBy(s => s.Name);
+						.OrderBy(s => s.City.Name);
 				}
 				else
 				{
 					chapters = chapters
-						.OrderByDescending(s => s.Name);
-				}
-			}
-			else if (sortField == "Chapter")
-			{
-				if (sortDirection == "asc")
-				{
-					chapters = chapters
-						.OrderBy(s => s.Name);
-				}
-				else
-				{
-					chapters = chapters
-						.OrderByDescending(s => s.Name);
+						.OrderByDescending(s => s.City.Name);
 				}
 			}
 
@@ -137,13 +124,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var chapter = await _context.Chapters
+				.Include(c => c.City)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (chapter == null)
 			{
 				return NotFound();
 			}
-
+			PopulateDropDownLists(chapter);
 			return View(chapter);
 		}
 
@@ -151,6 +139,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public IActionResult Create()
 		{
 			Chapter chapter = new Chapter();
+			PopulateDropDownLists(chapter);
 			return View(chapter);
 		}
 
@@ -159,7 +148,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,Address,PostalCode,Province")] Chapter chapter)
+		public async Task<IActionResult> Create([Bind("ID,Name,Address,PostalCode,Province,CityID")] Chapter chapter)
 		{
 			try
 			{
@@ -182,7 +171,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 				}
 			}
-
+			PopulateDropDownLists(chapter);
 			return View(chapter);
 		}
 
@@ -195,13 +184,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var chapter = await _context.Chapters
+				.Include(c => c.City)
 				.FirstOrDefaultAsync(c => c.ID == id);
 
 			if (chapter == null)
 			{
 				return NotFound();
 			}
-
+			PopulateDropDownLists(chapter);
 			return View(chapter);
 		}
 
@@ -215,6 +205,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			// Get the Chapter to update
 			var chapterToUpdate = await _context.Chapters
 				.Include(c => c.Directors)
+				.Include(c => c.City)
 				.FirstOrDefaultAsync(c => c.ID == id);
 
 			if (chapterToUpdate == null)
@@ -227,7 +218,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			//Try updating it with the values posted
 			if (await TryUpdateModelAsync<Chapter>(chapterToUpdate, "",
-				c => c.Name, c => c.Address, c => c.PostalCode, c => c.Province))
+				c => c.CityID, c => c.PostalCode))
 			{
 				try
 				{
@@ -280,13 +271,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var chapter = await _context.Chapters
 				.Include(c => c.Directors)
+				.Include(c => c.City)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (chapter == null)
 			{
 				return NotFound();
 			}
-
+			PopulateDropDownLists(chapter);
 			return View(chapter);
 		}
 
@@ -334,6 +326,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(chapter);
 		}
 
+		public void PopulateDropDownLists(Chapter? chapter = null)
+		{
+			ViewData["CityID"] = CitySelectList(chapter?.CityID);
+		}
+
+		// For adding Cities
+		private SelectList CitySelectList(int? selectedId)
+		{
+			return new SelectList(_context
+				.Cities
+				.OrderBy(c => c.Name), "ID", "Name", selectedId);
+		}
+
 		public PartialViewResult ListOfDirectorsDetails(int id)
 		{
 			var query = from p in _context.Directors
@@ -358,8 +363,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			var data = new Chapter
 			{
-				Name = "Welland",
-				Province = Province.Ontario,
+				//Name = "Welland",
+				//Province = Province.Ontario,
 				Address = "100 Niagara College Blvd",
 				PostalCode = "L3C 7L3"
 			};

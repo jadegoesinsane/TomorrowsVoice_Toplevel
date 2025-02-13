@@ -1,46 +1,52 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Chapter
 
-
 <div style="display: grid; place-content: center;">
-<partial name="_ViewHeading" />
-<form asp-action="Create" class="form-container">
-	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-	<input type="hidden" asp-for="ID" />
+	<partial name="_ViewHeading" />
+	<form asp-action="Create" class="form-container">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input type="hidden" asp-for="ID" />
 
-	<div class="row g-4 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
-		<div class="col-md-4">
+		<div class="row g-4 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
+			@* <div class="col-md-4">
 			<div class="form-floating required">
-				<input asp-for="Name" class="form-control" placeholder="Name" />
-				<label asp-for="Name" class="control-label"></label>
-				<span asp-validation-for="Name" class="text-danger"></span>
+			<input asp-for="Name" class="form-control" placeholder="Name" />
+			<label asp-for="Name" class="control-label"></label>
+			<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			</div>
+			<div class="col-md-4">
+			<div class="form-floating required">
+			<select asp-for="Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()"></select>
+			<label asp-for="Province" class="control-label"></label>
+			<span asp-validation-for="Province" class="text-danger"></span>
+			</div>
+			</div> *@
+			<div class="col-md-4">
+				<div class="form-floating required">
+					@Html.DropDownListFor(model => model.CityID, ViewBag.CityID as SelectList, "Select a city", new { @class = "form-control" })
+					<label asp-for="CityID" class="control-label"></label>
+					<span asp-validation-for="CityID" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="w-100"></div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="Address" class="form-control" placeholder="Address" />
+					<label asp-for="Address" class="control-label"></label>
+					<span asp-validation-for="Address" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="PostalCode" class="form-control" placeholder="Postal Code" />
+					<label asp-for="PostalCode" class="control-label"></label>
+					<span asp-validation-for="PostalCode" class="text-danger"></span>
+				</div>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<select asp-for="Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()"></select>
-				<label asp-for="Province" class="control-label"></label>
-				<span asp-validation-for="Province" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="w-100"></div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="Address" class="form-control" placeholder="Address" />
-				<label asp-for="Address" class="control-label"></label>
-				<span asp-validation-for="Address" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="PostalCode" class="form-control" placeholder="Postal Code" />
-				<label asp-for="PostalCode" class="control-label"></label>
-				<span asp-validation-for="PostalCode" class="text-danger"></span>
-			</div>
-		</div>
-	</div>
-	<partial name="_FormFooter" />
+		<partial name="_FormFooter" />
 
-</form>
+	</form>
 </div>
 @section Scripts {
 	@{
@@ -49,10 +55,9 @@
 	<script type="text/javascript">
 		function fillFields() {
 			$.ajax({
-			url: '@Url.Action("GetChapterData", "Chapter")',
-			type: 'GET',
-				success: function (data)
-				{
+				url: '@Url.Action("GetChapterData", "Chapter")',
+				type: 'GET',
+				success: function (data) {
 					document.getElementById('Name').value = "Welland";
 					document.getElementById('Province').value = 6;
 					document.getElementById('Address').value = "100 Niagara College Blvd";

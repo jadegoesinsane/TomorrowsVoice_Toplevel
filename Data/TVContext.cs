@@ -41,6 +41,7 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		#region DbSets
 
+		public DbSet<City> Cities { get; set; }
 		public DbSet<Chapter> Chapters { get; set; }
 		public DbSet<Director> Directors { get; set; }
 		public DbSet<DirectorDocument> DirectorDocuments { get; set; }
@@ -61,8 +62,8 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<Chapter>()
-				.HasIndex(c => c.Name)
+			modelBuilder.Entity<City>()
+				.HasIndex(c => new { c.Province, c.Name })
 				.IsUnique();
 
 			modelBuilder.Entity<Chapter>()

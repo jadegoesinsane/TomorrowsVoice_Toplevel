@@ -28,7 +28,7 @@
 							   asp-route-id="@item.ID" asp-route-singerID="@ViewBag.SingerID">@Html.DisplayFor(modelItem => item.Summary)</a>
 						</td>
 						<td>
-							@Html.DisplayFor(modelItem => item.Director.Chapter.Name)
+							@Html.DisplayFor(modelItem => item.Director.Chapter.City.Name)
 						</td>
 						<td>
 							@Html.DisplayFor(modelItem => item.Director.NameFormatted)

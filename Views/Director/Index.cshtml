@@ -18,27 +18,27 @@
 			<div class="card card-body bg-light">
 				<div class="row">
 					<div class="col-md-2">
-                        <div class="form-floating">
-                            @Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control" })
-						<label class="control-label" for="ChapterID">Select by Chapter(s):</label>
-                        </div>
+						<div class="form-floating">
+							@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control" })
+							<label class="control-label" for="ChapterID">Select by Chapter(s):</label>
+						</div>
 					</div>
 					<div class="col-md-2">
-                        <div class="form-floating">
-                            @Html.TextBox("SearchString", null, new { @class = "form-control" })
-						<label class="control-label" for="SearchString">Search by Director:</label>
-                        </div>
+						<div class="form-floating">
+							@Html.TextBox("SearchString", null, new { @class = "form-control" })
+							<label class="control-label" for="SearchString">Search by Director:</label>
+						</div>
 					</div>
-                    <div class="col-md-2">
-                        <div class="form-floating">
-                            @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
-                                     "All Status", htmlAttributes: new { @class = "form-control" })
-                            <label class="control-label" for="StatusFilter">Select by Status:</label>
+					<div class="col-md-2">
+						<div class="form-floating">
+							@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
+																"All Status", htmlAttributes: new { @class = "form-control" })
+							<label class="control-label" for="StatusFilter">Select by Status:</label>
 
-                        </div>
+						</div>
 
-                    </div>
-                    <div class="col-md-2 d-flex justify-content-evenly">
+					</div>
+					<div class="col-md-2 d-flex justify-content-evenly">
 						<input type="submit" name="actionButton" value="Filter"
 							   class="btn btn-outline-primary" />
 						<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
@@ -47,45 +47,46 @@
 			</div>
 		</div>
 	</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th aria-label="Director">
-                    <input type="submit" name="actionButton" value="Director" class="btn btn-link" />
-            </th>
-            <th class="d-none d-md-table-cell" aria-label="Email">
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th class="d-none d-sm-table-cell" aria-label="Phone">
-                 @Html.DisplayNameFor(model => model.PhoneFormatted)
-            </th>
-            <th aria-label="Chapter">
-                    <input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
-            </th>
-            <th aria-label="Actions"></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NameFormatted)
-            </td>
-            <td class="d-none d-md-table-cell">
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td class="d-none d-sm-table-cell">
-                        <a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Chapter.Name)
-            </td>
+	<table class="table">
+		<thead>
+			<tr>
+				<th aria-label="Director">
+					<input type="submit" name="actionButton" value="Director" class="btn btn-link" />
+				</th>
+				<th class="d-none d-md-table-cell" aria-label="Email">
+					@Html.DisplayNameFor(model => model.Email)
+				</th>
+				<th class="d-none d-sm-table-cell" aria-label="Phone">
+					@Html.DisplayNameFor(model => model.PhoneFormatted)
+				</th>
+				<th aria-label="Chapter">
+					<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
+				</th>
+				<th aria-label="Actions"></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
 					<td>
-                        <partial name="_CrudIcons" model="@item.ID" />
+						@Html.DisplayFor(modelItem => item.NameFormatted)
 					</td>
-        </tr>
-}
-    </tbody>
-</table>
-    <partial name="_PagingNavBar" />
+					<td class="d-none d-md-table-cell">
+						@Html.DisplayFor(modelItem => item.Email)
+					</td>
+					<td class="d-none d-sm-table-cell">
+						<a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Chapter.City.Name)
+					</td>
+					<td>
+						<partial name="_CrudIcons" model="@item.ID" />
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<partial name="_PagingNavBar" />
 </form>

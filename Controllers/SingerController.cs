@@ -45,7 +45,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDownLists();
 
 			var singers = _context.Singers
-				.Include(s => s.Chapter)
+				.Include(s => s.Chapter).ThenInclude(c => c.City)
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking();
 
@@ -126,13 +126,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				if (sortDirection == "asc")
 				{
 					singers = singers
-						.OrderBy(s => s.Chapter.Name);
+						.OrderBy(s => s.Chapter.City.Name);
 					ViewData["chapterSort"] = "fa fa-solid fa-sort-up";
 				}
 				else
 				{
 					singers = singers
-						.OrderByDescending(s => s.Chapter.Name);
+						.OrderByDescending(s => s.Chapter.City.Name);
 					ViewData["chapterSort"] = "fa fa-solid fa-sort-down";
 				}
 			}
@@ -158,7 +158,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var singer = await _context.Singers
-			   .Include(s => s.Chapter)
+			   .Include(s => s.Chapter).ThenInclude(c => c.City)
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(s => s.ID == id);
@@ -223,7 +223,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var singer = await _context.Singers
-				.Include(r => r.Chapter)
+				.Include(r => r.Chapter).ThenInclude(c => c.City)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Rehearsal)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (singer == null)
@@ -242,7 +242,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> Edit(int id, Byte[] RowVersion)
 		{
 			var singerToUpdate = await _context.Singers
-			   .Include(r => r.Chapter)
+			   .Include(r => r.Chapter).ThenInclude(c => c.City)
 			   .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Rehearsal)
 			   .FirstOrDefaultAsync(m => m.ID == id);
 
@@ -306,7 +306,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						if (databaseValues.ChapterID != clientValues.ChapterID)
 						{
 							Chapter? chapter = await _context.Chapters.FirstOrDefaultAsync(c => c.ID == clientValues.ChapterID);
-							string cName = chapter?.Name ?? "Unknown";
+							string cName = chapter?.City.Name ?? "Unknown";
 							ModelState.AddModelError("ChapterID", "Current value: "
 								+ cName);
 						}
@@ -358,7 +358,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var singer = await _context.Singers
-				.Include(s => s.Chapter)
+				.Include(s => s.Chapter).ThenInclude(c => c.City)
 				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(s => s.ID == id);
@@ -419,8 +419,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private SelectList ChapterSelectList(int? selectedId)
 		{
-			return new SelectList(_context.Chapters
+			return new SelectList(_context
+				.Cities
 				.OrderBy(c => c.Name), "ID", "Name", selectedId);
+			//return new SelectList(_context.Chapters
+			//	.OrderBy(c => c.City.Name), "ID", "Name", selectedId);
 			/*if (ViewData["ActionName"].ToString() == "Index")
 			{
 			}
@@ -490,7 +493,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 									singer.Status = Status.Active;
 
 									var chapter = await _context.Chapters
-										.FirstOrDefaultAsync(c => c.Name == chapterName);
+										.FirstOrDefaultAsync(c => c.City.Name == chapterName);
 
 									if (chapter != null)
 									{

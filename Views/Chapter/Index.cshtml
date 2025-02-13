@@ -22,14 +22,12 @@
 						@Html.DropDownList("ProvinceFilter", (SelectList)ViewBag.DOWSelectList,
 															"All Provinces", htmlAttributes: new { @class = "form-control" })
 						<label class="control-label" for="ProvinceFilter">Select by Province(s):</label>
-						
-						
+
 					</div>
 					<div class="col-md-3 form-floating">
 						@Html.TextBox("SearchString", null, new { @class = "form-control" })
 						<label class="control-label" for="SearchString">Search Name:</label>
 					</div>
-
 
 					<div class="col-md-2 d-flex justify-content-evenly">
 						<input type="submit" name="actionButton" value="Filter"
@@ -40,49 +38,44 @@
 			</div>
 		</div>
 	</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th aria-label="Name">
-                 <input type="submit" name="actionButton" value="Name" class="btn btn-link" />
-            </th>
-            <th aria-label="Address">
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
+	<table class="table">
+		<thead>
+			<tr>
+				<th aria-label="City">
+					<input type="submit" name="actionButton" value="City" class="btn btn-link" />
+				</th>
+				<th aria-label="Address">
+					@Html.DisplayNameFor(model => model.Address)
+				</th>
 				<th aria-label="Number of Directors">Num. of Directors</th>
 				<th aria-label="Number of Singers">Num. of Singers </th>
 				<th aria-label="Actions"></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-			<td>
-					
-				<a href="https://www.google.com/maps?q=@item.AddressSummary" target="_blank">
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.City.Name)
+					</td>
+					<td>
+						<a href="https://www.google.com/maps?q=@item.AddressSummary" target="_blank">
 							@Html.DisplayFor(modelItem => item.AddressSummary)
-				</a>
-			</td>
-				
-            <td>
-
+						</a>
+					</td>
+					<td>
 						@item.Directors.Where(s => s.Status == Status.Active).Count()
-						
-            </td>
-			<td>
-
+					</td>
+					<td>
 						@item.Singers.Where(s => s.Status == Status.Active).Count()
-						
-            </td>
+					</td>
 					<td>
 						<partial name="_CrudIcons" model="@item.ID" />
 					</td>
-        </tr>
-}
-    </tbody>
-</table>
-    <partial name="_PagingNavBar" />
+				</tr>
+			}
+		</tbody>
+	</table>
+	<partial name="_PagingNavBar" />
 </form>

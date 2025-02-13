@@ -48,6 +48,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var directors = _context.Directors
 				.Include(d => d.Chapter)
+					.ThenInclude(c => c.City)
 				.Include(d => d.Rehearsals)
 				.AsNoTracking();
 
@@ -126,12 +127,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				if (sortDirection == "asc")
 				{
 					directors = directors
-						.OrderBy(s => s.Chapter.Name);
+						.OrderBy(s => s.Chapter.City.Name);
 				}
 				else
 				{
 					directors = directors
-						.OrderByDescending(s => s.Chapter.Name);
+						.OrderByDescending(s => s.Chapter.City.Name);
 				}
 			}
 
@@ -157,6 +158,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var director = await _context.Directors
 				.Include(d => d.Chapter)
+					.ThenInclude(c => c.City)
 				.Include(d => d.Rehearsals)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(m => m.ID == id);
@@ -304,6 +306,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var director = await _context.Directors
 				.Include(d => d.Chapter)
+					.ThenInclude(c => c.City)
 				.Include(d => d.Rehearsals)
 				.Include(d => d.VulnerableSectorChecks)
 				.AsNoTracking()
@@ -359,8 +362,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private SelectList ChapterSelectList(int? selectedId)
 		{
 			return new SelectList(_context
-				.Chapters
+				.Cities
 				.OrderBy(c => c.Name), "ID", "Name", selectedId);
+			//.Chapters
+			//.OrderBy(c => c.City.Name), "ID", "ID", selectedId);
+			//.OrderBy(c => c.City.Name), "ID", "Name", selectedId);
 		}
 
 		public void PopulateDropDownLists(Director? director = null)

@@ -39,50 +39,50 @@
 		</div>
 	</div>
 
-		<table class="table my-2">
-			<thead>
+	<table class="table my-2">
+		<thead>
+			<tr>
+				<th aria-label="Singer">
+					<input type="submit" name="actionButton" value="Singer" class="btn btn-link" />
+					<i class="sort-icon @ViewData["singerSort"]" />
+				</th>
+				<th aria-label="Chapter" class="d-none d-md-table-cell">
+					<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
+					<i class="sort-icon @ViewData["chapterSort"]" />
+				</th>
+				<th style="border-left: solid 1px;" aria-label="Emergency Contact">Emergency Contact</th>
+				<th class="d-none d-lg-table-cell" aria-label="Email">Email</th>
+				<th class="" aria-label="Phone">Phone</th>
+				<th aria-label="Actions"></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
 				<tr>
-					<th aria-label="Singer">
-						<input type="submit" name="actionButton" value="Singer" class="btn btn-link" />
-						<i class="sort-icon @ViewData["singerSort"]" />
-					</th>
-					<th aria-label="Chapter" class="d-none d-md-table-cell">
-						<input type="submit" name="actionButton" value="Chapter" class="btn btn-link" />
-						<i class="sort-icon @ViewData["chapterSort"]" />
-					</th>
-					<th style="border-left: solid 1px;" aria-label="Emergency Contact">Emergency Contact</th>
-					<th class="d-none d-lg-table-cell" aria-label="Email">Email</th>
-					<th class="" aria-label="Phone">Phone</th>
-					<th aria-label="Actions"></th>
+					<td>
+						@Html.DisplayFor(modelItem => item.NameFormatted)
+					</td>
+					<td class="d-none d-md-table-cell">
+						@Html.DisplayFor(modelItem => item.Chapter.City.Name)
+					</td>
+					<td style="border-left: solid 1px;">
+						@Html.DisplayFor(modelItem => item.ContactName)
+					</td>
+					<td class="d-none d-lg-table-cell">
+						@Html.DisplayFor(modelItem => item.Email)
+					</td>
+					<td>
+						<a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
+					</td>
+					<td>
+						<partial name="_CrudIcons" model="@item.ID" />
+					</td>
 				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in Model)
-				{
-					<tr>
-						<td>
-							@Html.DisplayFor(modelItem => item.NameFormatted)
-						</td>
-						<td class="d-none d-md-table-cell">
-							@Html.DisplayFor(modelItem => item.Chapter.Name)
-						</td>
-						<td style="border-left: solid 1px;">
-							@Html.DisplayFor(modelItem => item.ContactName)
-						</td>
-						<td class="d-none d-lg-table-cell">
-							@Html.DisplayFor(modelItem => item.Email)
-						</td>
-						<td>
-							<a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
-						</td>
-						<td>
-							<partial name="_CrudIcons" model="@item.ID" />
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	
+			}
+		</tbody>
+	</table>
+
 	<partial name="_PagingNavBar" />
 </form>
 

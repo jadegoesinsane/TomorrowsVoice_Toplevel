@@ -54,7 +54,7 @@
 						@Html.DisplayNameFor(model => model.Chapter)
 					</dt>
 					<dd>
-						@Html.DisplayFor(model => model.Chapter.Name)
+						@Html.DisplayFor(model => model.Chapter.City.Name)
 					</dd>
 				</div>
 				<div class="col-md-2">
@@ -85,11 +85,11 @@
 <hr />
 <br />
 <div>
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <partial name="_BackToList" />
-    </form>
+	<form asp-action="Delete">
+		<input type="hidden" asp-for="ID" />
+		<input type="submit" value="Delete" class="btn btn-danger" /> |
+		<partial name="_BackToList" />
+	</form>
 </div>
 @section Scripts {
 	<script type="text/javascript">

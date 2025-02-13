@@ -12,25 +12,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Chapters",
+                name: "Cities",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Address = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Province = table.Column<int>(type: "INTEGER", nullable: false),
-                    PostalCode = table.Column<string>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
+                    Province = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chapters", x => x.ID);
+                    table.PrimaryKey("PK_Cities", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,6 +64,80 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Volunteers", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Chapters",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CityID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Address = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    PostalCode = table.Column<string>(type: "TEXT", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chapters", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Chapters_Cities_CityID",
+                        column: x => x.CityID,
+                        principalTable: "Cities",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Shifts",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    VolunteersNeeded = table.Column<int>(type: "INTEGER", nullable: false),
+                    VolunteersSignedUp = table.Column<int>(type: "INTEGER", nullable: false),
+                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shifts", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Shifts_Events_EventID",
+                        column: x => x.EventID,
+                        principalTable: "Events",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChapterEvents",
+                columns: table => new
+                {
+                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
+                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChapterEvents", x => new { x.ChapterID, x.EventID });
+                    table.ForeignKey(
+                        name: "FK_ChapterEvents_Chapters_ChapterID",
+                        column: x => x.ChapterID,
+                        principalTable: "Chapters",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChapterEvents_Events_EventID",
+                        column: x => x.EventID,
+                        principalTable: "Events",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -137,48 +203,25 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChapterEvents",
+                name: "VolunteerShifts",
                 columns: table => new
                 {
-                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
-                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
+                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ShiftID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChapterEvents", x => new { x.ChapterID, x.EventID });
+                    table.PrimaryKey("PK_VolunteerShifts", x => new { x.VolunteerID, x.ShiftID });
                     table.ForeignKey(
-                        name: "FK_ChapterEvents_Chapters_ChapterID",
-                        column: x => x.ChapterID,
-                        principalTable: "Chapters",
+                        name: "FK_VolunteerShifts_Shifts_ShiftID",
+                        column: x => x.ShiftID,
+                        principalTable: "Shifts",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ChapterEvents_Events_EventID",
-                        column: x => x.EventID,
-                        principalTable: "Events",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Shifts",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    VolunteersNeeded = table.Column<int>(type: "INTEGER", nullable: false),
-                    VolunteersSignedUp = table.Column<int>(type: "INTEGER", nullable: false),
-                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Shifts", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Shifts_Events_EventID",
-                        column: x => x.EventID,
-                        principalTable: "Events",
+                        name: "FK_VolunteerShifts_Volunteers_VolunteerID",
+                        column: x => x.VolunteerID,
+                        principalTable: "Volunteers",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -243,30 +286,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VolunteerShifts",
-                columns: table => new
-                {
-                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: false),
-                    ShiftID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VolunteerShifts", x => new { x.VolunteerID, x.ShiftID });
-                    table.ForeignKey(
-                        name: "FK_VolunteerShifts_Shifts_ShiftID",
-                        column: x => x.ShiftID,
-                        principalTable: "Shifts",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VolunteerShifts_Volunteers_VolunteerID",
-                        column: x => x.VolunteerID,
-                        principalTable: "Volunteers",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RehearsalAttendances",
                 columns: table => new
                 {
@@ -316,9 +335,14 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "EventID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chapters_Name",
+                name: "IX_Chapters_CityID",
                 table: "Chapters",
-                column: "Name",
+                column: "CityID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cities_Province_Name",
+                table: "Cities",
+                columns: new[] { "Province", "Name" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -419,6 +443,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             migrationBuilder.DropTable(
                 name: "Chapters");
+
+            migrationBuilder.DropTable(
+                name: "Cities");
         }
     }
 }

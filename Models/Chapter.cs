@@ -7,12 +7,20 @@ namespace TomorrowsVoice_Toplevel.Models
 	{
 		public int ID { get; set; }
 
+		/*public string Name
+		{
+			get
+			{
+				return City.Name;
+			}
+		}*/
+
 		[Display(Name = "Address Summary")]
 		public string AddressSummary
 		{
 			get
 			{
-				return Address + ", " + Name + ", " + Province + ", " + ((PostalCode.Length == 6) ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3)
+				return Address + ", " + /*Name + ", " + Province + ", " +*/ ((PostalCode.Length == 6) ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3)
 					: PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4));
 			}
 		}
@@ -27,19 +35,16 @@ namespace TomorrowsVoice_Toplevel.Models
 			}
 		}
 
-		[Display(Name = "Name")]
-		[Required(ErrorMessage = "Please enter a chapter name.")]
-		[StringLength(50, ErrorMessage = "Chapter name cannot be more than 50 characters long.")]
-		public string Name { get; set; } = "";
+		[Display(Name = "City")]
+		[Required(ErrorMessage = "Please select a city.")]
+		public int CityID { get; set; }
+
+		public City? City { get; set; }
 
 		[Display(Name = "Address")]
 		[Required(ErrorMessage = "Please enter an address.")]
 		[StringLength(50, ErrorMessage = "Address cannot be more than 50 characters long.")]
 		public string Address { get; set; } = "";
-
-		[Display(Name = "Province")]
-		[Required(ErrorMessage = "Please select a Province.")]
-		public Province Province { get; set; }
 
 		[Display(Name = "Postal Code")]
 		[Required(ErrorMessage = "Please enter a postal code.")]

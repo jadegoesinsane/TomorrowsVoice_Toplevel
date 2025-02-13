@@ -28,6 +28,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CityID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
@@ -35,17 +38,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Province")
-                        .HasColumnType("INTEGER");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -64,10 +59,31 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
+                    b.HasIndex("CityID");
 
                     b.ToTable("Chapters");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.City", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Province")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Province", "Name")
+                        .IsUnique();
+
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
@@ -488,6 +504,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasIndex("DirectorID");
 
                     b.HasDiscriminator().HasValue("DirectorDocument");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>

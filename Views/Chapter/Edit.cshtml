@@ -8,18 +8,25 @@
 		<input type="hidden" asp-for="RowVersion" />
 
 		<div class="row g-4 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
-			<div class="col-md-4">
-				<div class="form-floating required">
-					<input asp-for="Name" class="form-control" placeholder="Name" />
-					<label asp-for="Name" class="control-label"></label>
-					<span asp-validation-for="Name" class="text-danger"></span>
-				</div>
+			@* <div class="col-md-4">
+			<div class="form-floating required">
+			<input asp-for="Name" class="form-control" placeholder="Name" />
+			<label asp-for="Name" class="control-label"></label>
+			<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
 			</div>
 			<div class="col-md-4">
+			<div class="form-floating required">
+			<select asp-for="Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()"></select>
+			<label asp-for="Province" class="control-label"></label>
+			<span asp-validation-for="Province" class="text-danger"></span>
+			</div>
+			</div> *@
+			<div class="col-md-4">
 				<div class="form-floating required">
-					<select asp-for="Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()"></select>
-					<label asp-for="Province" class="control-label"></label>
-					<span asp-validation-for="Province" class="text-danger"></span>
+					@Html.DropDownListFor(model => model.CityID, ViewBag.CityID as SelectList, "Select a city", new { @class = "form-control" })
+					<label asp-for="CityID" class="control-label"></label>
+					<span asp-validation-for="CityID" class="text-danger"></span>
 				</div>
 			</div>
 			<div class="w-100"></div>
