@@ -22,7 +22,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	{
 		private readonly TVContext _context;
 
-		public ChapterController(TVContext context, IToastNotification toastNotification) : base(toastNotification)
+		public ChapterController(TVContext context, IToastNotification toastNotification) : base(context, toastNotification)
 		{
 			_context = context;
 		}
@@ -328,16 +328,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public void PopulateDropDownLists(Chapter? chapter = null)
 		{
-			ViewData["CityID"] = CitySelectList(chapter?.CityID);
+			ViewData["CityID"] = CitySelectList(chapter?.CityID, true);
 		}
 
 		// For adding Cities
-		private SelectList CitySelectList(int? selectedId)
-		{
-			return new SelectList(_context
-				.Cities
-				.OrderBy(c => c.Name), "ID", "Name", selectedId);
-		}
+		//private SelectList CitySelectList(int? selectedId)
+		//{
+		//	return new SelectList(_context
+		//		.Cities
+		//		.OrderBy(c => c.Name), "ID", "Name", selectedId);
+		//}
 
 		public PartialViewResult ListOfDirectorsDetails(int id)
 		{

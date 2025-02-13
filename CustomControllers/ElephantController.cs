@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NToastNotify;
+using TomorrowsVoice_Toplevel.Data;
+using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.CustomControllers
@@ -15,14 +19,16 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 	/// </summary>
 	public class ElephantController : CognizantController
 	{
+		private readonly TVContext _context;
 		protected readonly IToastNotification _toastNotification;
 
 		//This is the list of Actions that will add the ReturnURL to ViewData
 		internal string[] ActionWithURL = [ "Details", "Create", "Edit", "Delete",
 			"Add", "Update", "Remove" ];
 
-		public ElephantController(IToastNotification toastNotification)
+		public ElephantController(TVContext context, IToastNotification toastNotification)
 		{
+			_context = context;
 			_toastNotification = toastNotification;
 		}
 
@@ -55,6 +61,32 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			}
 			return base.OnActionExecutionAsync(context, next);
 		}
+
+		#region Select Lists
+
+		// For adding Cities
+		internal SelectList CitySelectList(int? id, bool searchActive = false)
+		{
+			if (searchActive)
+			{
+				var chapters = _context.Chapters.Where(c => c.Status == Status.Active);
+				var cities = _context.Cities
+					.Join(chapters,
+						  city => city.ID,
+						  chapter => chapter.CityID,
+						  (city, chapter) => city)
+					.Distinct()
+					.OrderBy(c => c.Name);
+
+				return new SelectList(cities, "ID", "Name", id);
+			}
+			//return new SelectList(_context.Cities.Where(c => _context.Chapters.Where(ch => ch.CityID == c.ID && ch.Status == Status.Active)));
+			return new SelectList(_context
+				.Cities
+				.OrderBy(c => c.Name), "ID", "Name", id);
+		}
+
+		#endregion Select Lists
 
 		// Toasty Notifications
 		// Success

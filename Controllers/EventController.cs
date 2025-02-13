@@ -16,7 +16,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	{
 		private readonly TVContext _context;
 
-		public EventController(TVContext context, IToastNotification toastNotification) : base(toastNotification)
+		public EventController(TVContext context, IToastNotification toastNotification) : base(context, toastNotification)
 		{
 			_context = context;
 		}
