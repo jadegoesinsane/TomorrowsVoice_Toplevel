@@ -576,7 +576,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private void PopulateDropDownLists(Singer? singer = null)
 		{
-			ViewData["ChapterID"] = ChapterSelectList(singer?.ChapterID);
+			ViewData["ChapterID"] = CitySelectList(singer?.ChapterID, Status.Active);
 		}
 
 		private bool SingerExists(int id)

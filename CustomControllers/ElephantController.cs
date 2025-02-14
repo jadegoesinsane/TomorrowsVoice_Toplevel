@@ -64,13 +64,14 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 
 		#region Select Lists
 
-		// For adding Cities
-		internal SelectList CitySelectList(int? id, bool searchActive = false)
+		// Get Cities (With chapters of a certain status?)
+		internal SelectList CitySelectList(int? id, Status? status = null)
 		{
-			if (searchActive)
+			IQueryable cities;
+			if (status.HasValue)
 			{
-				var chapters = _context.Chapters.Where(c => c.Status == Status.Active);
-				var cities = _context.Cities
+				var chapters = _context.Chapters.Where(c => c.Status == status);
+				cities = _context.Cities
 					.Join(chapters,
 						  city => city.ID,
 						  chapter => chapter.CityID,
@@ -80,11 +81,54 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 
 				return new SelectList(cities, "ID", "Name", id);
 			}
-			//return new SelectList(_context.Cities.Where(c => _context.Chapters.Where(ch => ch.CityID == c.ID && ch.Status == Status.Active)));
-			return new SelectList(_context
+			cities = _context
 				.Cities
-				.OrderBy(c => c.Name), "ID", "Name", id);
+				.OrderBy(c => c.Name);
+			return new SelectList(cities, "ID", "Name", id);
 		}
+
+		// Get Directors
+
+		internal SelectList DirectorSelectList(int? id, Status? status = null)
+		{
+			var directors = _context.Directors
+					.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
+
+			if (status.HasValue)
+				directors = directors.Where(d => d.Status == status)
+					.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
+
+			return new SelectList(directors, "ID", "NameFormatted", id);
+		}
+
+		// Get Singers
+
+		internal SelectList SingerSelectList(int? id, Status? status = null)
+		{
+			var singers = _context.Singers
+					.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
+
+			if (status.HasValue)
+				singers = singers.Where(d => d.Status == status)
+					.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
+
+			return new SelectList(singers, "ID", "NameFormatted", id);
+		}
+
+		// Get Chapters
+
+		//internal SelectList ChapterSelectList(int? id, Status? status = null)
+		//{
+		//	var chapters = _context.Chapters
+		//		.OrderBy(c => c.City.Name);
+
+		//	if (status.HasValue)
+		//		chapters = chapters
+		//			.Where(c => c.Status == status)
+		//			.OrderBy(c => c.City.Name);
+
+		//	return new SelectList(chapters, "ID", "Name", id);
+		//}
 
 		#endregion Select Lists
 

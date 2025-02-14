@@ -195,7 +195,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDown(rehearsal);
 
 			// Get all singers and filter by chapter if a filter is applied
-			PopulateAttendance(_context.Chapters.Select(c => c.ID).FirstOrDefault(), rehearsal);
+			PopulateAttendance(_context.Chapters.OrderBy(c => c.City.Name).Where(c => c.Status == Status.Active).Select(c => c.ID).FirstOrDefault(), rehearsal);
 
 			return View(rehearsal);
 		}
@@ -265,7 +265,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			rehearsal.TotalSingers = GetActiveSingersCount(rehearsal.ChapterID);
 			PopulateDropDown(rehearsal);
-			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+			//ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
 			PopulateAttendance(rehearsal.ChapterID, rehearsal);
 			return View(rehearsal);
 		}
@@ -392,12 +392,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(rehearsal);
 		}
 
-		private SelectList DirectorSelectList(int? id)
-		{
-			return new SelectList(_context.Directors
-				.Where(d => d.Status != Status.Archived)
-				.OrderBy(d => d.FirstName), "ID", "NameFormatted", id);
-		}
+		//private SelectList DirectorSelectList(int? id)
+		//{
+		//	return new SelectList(_context.Directors
+		//		.Where(d => d.Status != Status.Archived)
+		//		.OrderBy(d => d.FirstName), "ID", "NameFormatted", id);
+		//}
 
 		private SelectList ChapterSelectList(int? id)
 		{
@@ -411,13 +411,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private void PopulateDropDown(Rehearsal? rehearsal = null)
 		{
-			ViewData["DirectorID"] = DirectorSelectList(rehearsal?.DirectorID);
-			ViewData["ChapterID"] = ChapterSelectList(rehearsal?.ChapterID);
+			ViewData["DirectorID"] = DirectorSelectList(rehearsal?.DirectorID, Status.Active);
+			ViewData["ChapterID"] = CitySelectList(rehearsal?.ChapterID, Status.Active);
 		}
 
 		private void PopulateAttendance(int? chapterSelect, Rehearsal rehearsal)
 		{
-			var singers = _context.Singers.Include(c => c.Chapter).AsQueryable();
+			var singers = _context.Singers.Include(c => c.Chapter).ThenInclude(ch => ch.City).AsQueryable();
 			if (chapterSelect.HasValue)
 			{
 				singers = singers.Where(c => c.ChapterID == chapterSelect.Value && c.Status == Status.Active);
@@ -441,7 +441,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					selected.Add(new ListOptionVM
 					{
 						ID = c.ID,
-						DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.City.Name : "None")})"
+						DisplayText = $"{c.NameFormatted} ({c.Chapter?.City?.Name ?? "None"})"
 					});
 				}
 				else
@@ -449,7 +449,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					available.Add(new ListOptionVM
 					{
 						ID = c.ID,
-						DisplayText = $"{c.NameFormatted} ({(c.Chapter != null ? c.Chapter.City.Name : "None")})"
+						DisplayText = $"{c.NameFormatted} ({c.Chapter?.City?.Name ?? "None"})"
 					});
 				}
 			}

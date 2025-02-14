@@ -328,16 +328,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public void PopulateDropDownLists(Chapter? chapter = null)
 		{
-			ViewData["CityID"] = CitySelectList(chapter?.CityID, true);
+			ViewData["CityID"] = CitySelectList(chapter?.CityID, Status.Active);
 		}
-
-		// For adding Cities
-		//private SelectList CitySelectList(int? selectedId)
-		//{
-		//	return new SelectList(_context
-		//		.Cities
-		//		.OrderBy(c => c.Name), "ID", "Name", selectedId);
-		//}
 
 		public PartialViewResult ListOfDirectorsDetails(int id)
 		{

@@ -358,20 +358,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-		// For Adding Chapters
-		private SelectList ChapterSelectList(int? selectedId)
-		{
-			return new SelectList(_context
-				.Cities
-				.OrderBy(c => c.Name), "ID", "Name", selectedId);
-			//.Chapters
-			//.OrderBy(c => c.City.Name), "ID", "ID", selectedId);
-			//.OrderBy(c => c.City.Name), "ID", "Name", selectedId);
-		}
-
 		public void PopulateDropDownLists(Director? director = null)
 		{
-			ViewData["ChapterID"] = ChapterSelectList(director?.ChapterID);
+			ViewData["ChapterID"] = CitySelectList(director?.ChapterID);
 		}
 
 		//Partial View for Directors Rehearsal View
