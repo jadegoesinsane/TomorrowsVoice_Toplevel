@@ -361,8 +361,8 @@ namespace TomorrowsVoice_Toplevel.Data
 								Rehearsal rehearsal = new Rehearsal
 								{
 									RehearsalDate = date.AddDays(i * 7),
-									StartTime = start,
-									EndTime = end,
+									StartAt = start,
+									EndAt = end,
 									DirectorID = d.ID,
 									Director = d,
 									ChapterID = d.ChapterID,

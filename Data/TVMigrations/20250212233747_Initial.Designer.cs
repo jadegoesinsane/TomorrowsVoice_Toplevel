@@ -186,7 +186,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("DirectorID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime>("EndAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Note")
@@ -201,7 +201,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("BLOB");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime>("StartAt")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")

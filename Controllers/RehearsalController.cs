@@ -205,7 +205,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("RehearsalDate,StartTime,EndTime,Note,DirectorID,ChapterID")] string[] selectedOptions, Rehearsal rehearsal, int? chapterSelect)
+		public async Task<IActionResult> Create([Bind("RehearsalDate,StartAt,EndAt,Note,DirectorID,ChapterID")] string[] selectedOptions, Rehearsal rehearsal, int? chapterSelect)
 		{
 			try
 			{
@@ -275,7 +275,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, Byte[] RowVersion, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartTime,EndTime,Note,ChapterID"
+		public async Task<IActionResult> Edit(int id, Byte[] RowVersion, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartAt,EndAt,Note,ChapterID"
 		{
 			var rehearsalToUpdate = await _context.Rehearsals
 				.Include(r => r.Director)
@@ -299,8 +299,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				if (await TryUpdateModelAsync(rehearsalToUpdate,
 					"",
 					r => r.RehearsalDate,
-					r => r.StartTime,
-					r => r.EndTime,
+					r => r.StartAt,
+					r => r.EndAt,
 					r => r.Note,
 					r => r.DirectorID,
 					r => r.ChapterID))
@@ -547,8 +547,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					id = r.ID,
 					groupId = r.ChapterID,
 					title = r.Chapter.City.Name,
-					start = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.StartTime.ToString("THH:mm:ss")}",
-					end = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.EndTime.ToString("THH:mm:ss")}",
+					start = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.StartAt.ToString("THH:mm:ss")}",
+					end = $"{r.RehearsalDate.ToString("yyyy-MM-dd")}{r.EndAt.ToString("THH:mm:ss")}",
 					textColor = "white",
 					borderColor =
 					r.ChapterID == 1 ? "#bc3700" : // light red
@@ -842,8 +842,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			var data = new Rehearsal
 			{
-				StartTime = DateTime.Now.Add(new TimeSpan(4, 30, 0)),
-				EndTime = DateTime.Now.Add(new TimeSpan(5, 45, 0)),
+				StartAt = DateTime.Now.Add(new TimeSpan(4, 30, 0)),
+				EndAt = DateTime.Now.Add(new TimeSpan(5, 45, 0)),
 				Note = "We had 2 guardians call to inform us their child wouldn't be able to attend today",
 				ChapterID = 7,
 				DirectorID = 7,

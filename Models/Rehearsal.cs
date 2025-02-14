@@ -11,7 +11,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		{
 			get
 			{
-				return $"{RehearsalDate:MMMM dd, yyyy} at {StartTime:hh:mm tt}";
+				return $"{RehearsalDate:MMMM dd, yyyy} at {StartAt:hh:mm tt}";
 			}
 		}
 
@@ -19,7 +19,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		{
 			get
 			{
-				return $"{StartTime:hh:mm} to {EndTime:hh:mm tt}";
+				return $"{StartAt:hh:mm} to {EndAt:hh:mm tt}";
 			}
 		}
 
@@ -32,12 +32,12 @@ namespace TomorrowsVoice_Toplevel.Models
 		[Required(ErrorMessage = "Please select a start time for this rehearsal")]
 		[Display(Name = "Start Time")]
 		[DataType(DataType.Time)]
-		public DateTime StartTime { get; set; }
+		public DateTime StartAt { get; set; }
 
 		[Required(ErrorMessage = "Please select a end time for this rehearsal")]
 		[Display(Name = "End Time")]
 		[DataType(DataType.Time)]
-		public DateTime EndTime { get; set; }
+		public DateTime EndAt { get; set; }
 
 		[Display(Name = "Notes")]
 		[StringLength(255)]
@@ -66,9 +66,9 @@ namespace TomorrowsVoice_Toplevel.Models
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
-			if (StartTime >= EndTime)
+			if (StartAt >= EndAt)
 			{
-				yield return new ValidationResult("Start time must be earlier than end time.", ["StartTime"]);
+				yield return new ValidationResult("Start time must be earlier than end time.", ["StartAt"]);
 			}
 			/*if (RehearsalDate > DateTime.Today)
             {
