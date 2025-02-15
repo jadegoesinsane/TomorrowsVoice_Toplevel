@@ -95,6 +95,30 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CityEvents",
+                columns: table => new
+                {
+                    CityID = table.Column<int>(type: "INTEGER", nullable: false),
+                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CityEvents", x => new { x.CityID, x.EventID });
+                    table.ForeignKey(
+                        name: "FK_CityEvents_Cities_CityID",
+                        column: x => x.CityID,
+                        principalTable: "Cities",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CityEvents_Events_EventID",
+                        column: x => x.EventID,
+                        principalTable: "Events",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Shifts",
                 columns: table => new
                 {
@@ -134,30 +158,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         name: "FK_VolunteerAvatars_Volunteers_VolunteerID",
                         column: x => x.VolunteerID,
                         principalTable: "Volunteers",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ChapterEvents",
-                columns: table => new
-                {
-                    ChapterID = table.Column<int>(type: "INTEGER", nullable: false),
-                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChapterEvents", x => new { x.ChapterID, x.EventID });
-                    table.ForeignKey(
-                        name: "FK_ChapterEvents_Chapters_ChapterID",
-                        column: x => x.ChapterID,
-                        principalTable: "Chapters",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ChapterEvents_Events_EventID",
-                        column: x => x.EventID,
-                        principalTable: "Events",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -399,11 +399,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChapterEvents_EventID",
-                table: "ChapterEvents",
-                column: "EventID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Chapters_CityID",
                 table: "Chapters",
                 column: "CityID");
@@ -413,6 +408,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 table: "Cities",
                 columns: new[] { "Province", "Name" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CityEvents_EventID",
+                table: "CityEvents",
+                column: "EventID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DirectorAvatars_DirectorID",
@@ -500,7 +500,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ChapterEvents");
+                name: "CityEvents");
 
             migrationBuilder.DropTable(
                 name: "DirectorAvatars");

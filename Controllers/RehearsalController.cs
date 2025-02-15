@@ -215,6 +215,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(rehearsal);
 					await _context.SaveChangesAsync();
+					AddSuccessToast("Rehearsal on " + rehearsal.TimeSummary);
 					return RedirectToAction(nameof(Index));
 				}
 			}
@@ -308,6 +309,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					try
 					{
 						await _context.SaveChangesAsync();
+						AddSuccessToast("Rehearsal on " + rehearsalToUpdate.TimeSummary);
 						return RedirectToAction("Details", new { rehearsalToUpdate.ID });
 					}
 					catch (RetryLimitExceededException)
@@ -382,6 +384,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					// Archive a rehearsal instead of deleting it
 					rehearsal.Status = Status.Archived;
 					await _context.SaveChangesAsync();
+					AddSuccessToast("Rehearsal on " + rehearsal.TimeSummary);
 					return RedirectToAction(nameof(Index));
 				}
 			}

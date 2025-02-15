@@ -16,6 +16,15 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		[DataType(DataType.DateTime)]
 		public DateTime EndAt { get; set; }
 
+		[Display(Name = "Shift Duration")]
+		public TimeSpan ShiftDuration
+		{
+			get
+			{
+				return EndAt - StartAt;
+			}
+		}
+
 		public int VolunteersNeeded { get; set; }
 		public int VolunteersSignedUp { get; set; } = 0;
 

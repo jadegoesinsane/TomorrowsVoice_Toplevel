@@ -399,19 +399,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.ChapterEvent", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.CityEvent", b =>
                 {
-                    b.Property<int>("ChapterID")
+                    b.Property<int>("CityID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("EventID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ChapterID", "EventID");
+                    b.HasKey("CityID", "EventID");
 
                     b.HasIndex("EventID");
 
-                    b.ToTable("ChapterEvents");
+                    b.ToTable("CityEvents");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Event", b =>
@@ -689,21 +689,21 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasForeignKey("VolunteerID");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.ChapterEvent", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.CityEvent", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
-                        .WithMany("ChapterEvents")
-                        .HasForeignKey("ChapterID")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.City", "City")
+                        .WithMany("CityEvents")
+                        .HasForeignKey("CityID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Event", "Event")
-                        .WithMany("ChapterEvents")
+                        .WithMany("CityEvents")
                         .HasForeignKey("EventID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Chapter");
+                    b.Navigation("City");
 
                     b.Navigation("Event");
                 });
@@ -762,13 +762,16 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
-                    b.Navigation("ChapterEvents");
-
                     b.Navigation("Directors");
 
                     b.Navigation("Rehearsals");
 
                     b.Navigation("Singers");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.City", b =>
+                {
+                    b.Navigation("CityEvents");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
@@ -799,7 +802,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Event", b =>
                 {
-                    b.Navigation("ChapterEvents");
+                    b.Navigation("CityEvents");
 
                     b.Navigation("Shifts");
                 });

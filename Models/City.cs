@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Models
 {
@@ -14,5 +15,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		[Display(Name = "Province")]
 		[Required(ErrorMessage = "Please select a province.")]
 		public Province Province { get; set; }
+
+		public virtual ICollection<CityEvent> CityEvents { get; set; } = new HashSet<CityEvent>();
 	}
 }

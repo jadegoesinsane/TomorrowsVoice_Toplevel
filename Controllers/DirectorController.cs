@@ -193,6 +193,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					await AddDocumentsAsync(director, theFiles);
 					_context.Add(director);
 					await _context.SaveChangesAsync();
+					AddSuccessToast(director.NameFormatted);
 					return RedirectToAction("Details", new { director.ID });
 				}
 			}
@@ -338,6 +339,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 
 				await _context.SaveChangesAsync();
+				AddSuccessToast(director.NameFormatted);
 				var returnUrl = ViewData["returnUrl"]?.ToString();
 				if (string.IsNullOrEmpty(returnUrl))
 				{

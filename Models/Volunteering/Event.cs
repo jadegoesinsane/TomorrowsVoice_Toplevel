@@ -26,7 +26,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		[Display(Name = "Status")]
 		public Status Status { get; set; } = Status.Active;
 
-		public virtual ICollection<ChapterEvent> ChapterEvents { get; set; } = new HashSet<ChapterEvent>();
+		public virtual ICollection<CityEvent> CityEvents { get; set; } = new HashSet<CityEvent>();
 		public ICollection<Shift> Shifts { get; set; } = new HashSet<Shift>();
 	}
 }

@@ -156,6 +156,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(chapter);
 					await _context.SaveChangesAsync();
+					AddSuccessToast(chapter.City.Name);
 					return RedirectToAction("Details", new { chapter.ID });
 				}
 			}
@@ -223,6 +224,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				try
 				{
 					await _context.SaveChangesAsync();
+					AddSuccessToast(chapterToUpdate.City.Name);
 					//return RedirectToAction(nameof(Index));
 					//Instead of going back to the Index, why not show the revised
 					//version in full detail?
@@ -300,6 +302,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 
 				await _context.SaveChangesAsync();
+				AddSuccessToast(chapter.City.Name);
 				var returnUrl = ViewData["returnURL"]?.ToString();
 				if (string.IsNullOrEmpty(returnUrl))
 				{

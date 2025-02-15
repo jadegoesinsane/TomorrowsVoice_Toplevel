@@ -463,7 +463,7 @@ namespace TomorrowsVoice_Toplevel.Data
 						var chapter = context.Chapters.FirstOrDefault(c => c.City.Name == "St. Catharines");
 						context.Events.Add(wrappingEvent);
 						context.SaveChanges();
-						context.ChapterEvents.Add(new ChapterEvent { EventID = wrappingEvent.ID, ChapterID = chapter.ID });
+						context.CityEvents.Add(new CityEvent { EventID = wrappingEvent.ID, CityID = chapter.ID });
 						context.SaveChanges();
 					}
 
