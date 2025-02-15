@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="Data\TVMigrations\" />
+    <Folder Include="Models\Messaging\" />
   </ItemGroup>
 
 </Project>

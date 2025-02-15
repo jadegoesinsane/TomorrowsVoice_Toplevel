@@ -261,6 +261,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					await AddDocumentsAsync(directorToUpdate, theFiles);
 					await _context.SaveChangesAsync();
+					AddSuccessToast(directorToUpdate.NameFormatted);
 					return RedirectToAction("Details", new { directorToUpdate.ID });
 				}
 				catch (RetryLimitExceededException)

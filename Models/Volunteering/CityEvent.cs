@@ -1,10 +1,10 @@
 ﻿namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
-	public class ChapterEvent
+	public class CityEvent
 	{
-		public int ChapterID { get; set; }
+		public int CityID { get; set; }
 
-		public Chapter? Chapter { get; set; }
+		public City? City { get; set; }
 
 		public int EventID { get; set; }
 		public Event? Event { get; set; }

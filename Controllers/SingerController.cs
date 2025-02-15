@@ -256,8 +256,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			// Try updating with posted values
 			if (await TryUpdateModelAsync<Singer>(singerToUpdate, "",
-				r => r.FirstName, r => r.MiddleName, r => r.LastName, r => r.Email, r => r.Phone,
-				r => r.Note, r => r.ContactName, r => r.ChapterID, r => r.Status))
+				r => r.ContactName, r => r.Note, r => r.Email, r => r.Phone, r => r.FirstName, r => r.MiddleName, r => r.LastName,
+				r => r.Status, r => r.ChapterID))
 			{
 				try
 				{

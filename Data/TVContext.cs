@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Users;
+using TomorrowsVoice_Toplevel.Models.Users.Account;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
@@ -41,9 +43,15 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		#region DbSets
 
+		// Accounts
+		public DbSet<Role> Roles { get; set; }
+
+		// Chapters
+		public DbSet<Director> Directors { get; set; }
+
 		public DbSet<City> Cities { get; set; }
 		public DbSet<Chapter> Chapters { get; set; }
-		public DbSet<Director> Directors { get; set; }
+		public DbSet<DirectorAvatar> DirectorAvatars { get; set; }
 		public DbSet<DirectorDocument> DirectorDocuments { get; set; }
 		public DbSet<UploadedFile> UploadedFiles { get; set; }
 		public DbSet<Singer> Singers { get; set; }
@@ -53,10 +61,11 @@ namespace TomorrowsVoice_Toplevel.Data
 		// Volunteer DbSets
 		public DbSet<Event> Events { get; set; }
 
-		public DbSet<ChapterEvent> ChapterEvents { get; set; }
+		public DbSet<CityEvent> CityEvents { get; set; }
 		public DbSet<Shift> Shifts { get; set; }
 		public DbSet<Volunteer> Volunteers { get; set; }
 		public DbSet<VolunteerShift> VolunteerShifts { get; set; }
+		public DbSet<VolunteerAvatar> VolunteerAvatars { get; set; }
 
 		#endregion DbSets
 
@@ -118,8 +127,8 @@ namespace TomorrowsVoice_Toplevel.Data
 			.IsUnique();
 
 			// Many to Many Chapter Event PK
-			modelBuilder.Entity<ChapterEvent>()
-				.HasKey(ce => new { ce.ChapterID, ce.EventID });
+			modelBuilder.Entity<CityEvent>()
+				.HasKey(ce => new { ce.CityID, ce.EventID });
 
 			// Many to Many Volunteer Shift PK
 			modelBuilder.Entity<VolunteerShift>()

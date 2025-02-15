@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250212233747_Initial")]
+    [Migration("20250215183707_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -124,6 +124,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Nickname")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -152,6 +155,30 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsUnique();
 
                     b.ToTable("Directors");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorAvatar", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.Property<int>("DirectorID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("DirectorID")
+                        .IsUnique();
+
+                    b.ToTable("DirectorAvatars");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.FileContent", b =>
@@ -350,6 +377,31 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.Role", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DirectorID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("VolunteerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("DirectorID");
+
+                    b.HasIndex("VolunteerID");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.ChapterEvent", b =>
                 {
                     b.Property<int>("ChapterID")
@@ -457,6 +509,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Nickname")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -480,6 +535,30 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasKey("ID");
 
                     b.ToTable("Volunteers");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("VolunteerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("VolunteerID")
+                        .IsUnique();
+
+                    b.ToTable("VolunteerAvatars");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerShift", b =>
@@ -529,6 +608,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired();
 
                     b.Navigation("Chapter");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorAvatar", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
+                        .WithOne("Avatar")
+                        .HasForeignKey("TomorrowsVoice_Toplevel.Models.DirectorAvatar", "DirectorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Director");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.FileContent", b =>
@@ -591,6 +681,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Chapter");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.Role", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("DirectorID");
+
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("VolunteerID");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.ChapterEvent", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
@@ -619,6 +720,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired();
 
                     b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", "Volunteer")
+                        .WithOne("Avatar")
+                        .HasForeignKey("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", "VolunteerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Volunteer");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerShift", b =>
@@ -664,7 +776,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
                 {
+                    b.Navigation("Avatar");
+
                     b.Navigation("Rehearsals");
+
+                    b.Navigation("Roles");
 
                     b.Navigation("VulnerableSectorChecks");
                 });
@@ -698,6 +814,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>
                 {
+                    b.Navigation("Avatar");
+
+                    b.Navigation("Roles");
+
                     b.Navigation("VolunteerShifts");
                 });
 #pragma warning restore 612, 618
