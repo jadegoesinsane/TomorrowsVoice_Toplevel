@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Messaging;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
@@ -513,6 +514,8 @@ namespace TomorrowsVoice_Toplevel.Data
 											VolunteersNeeded = 5
 										};
 										context.Shifts.Add(shift);
+										context.SaveChanges();
+										shift.AddDiscussion(context);
 									}
 								}
 							}
@@ -524,9 +527,8 @@ namespace TomorrowsVoice_Toplevel.Data
 					{
 						foreach (Shift shift in context.Shifts)
 						{
-							List<Volunteer> volunteers = context.Volunteers
-								.OrderBy(v => Guid.NewGuid())
-								.Take(rnd.Next(6))
+							var volunteers = context.Volunteers
+								.Take(rnd.Next(7))
 								.ToList();
 
 							foreach (Volunteer volunteer in volunteers)
@@ -547,6 +549,23 @@ namespace TomorrowsVoice_Toplevel.Data
 								{
 									context.VolunteerShifts.Remove(volunteerShift);
 								}
+								Discussion discussion = context.Discussions.FirstOrDefault(d => d.ShiftID == shift.ID);
+								DiscussionVolunteer discussionVolunteer = new DiscussionVolunteer
+								{
+									VolunteerID = volunteer.ID,
+									DiscussionID = discussion.ID
+								};
+								try
+								{
+									context.DiscussionVolunteers.Add(discussionVolunteer);
+									context.SaveChanges();
+								}
+								catch (Exception)
+								{
+									context.DiscussionVolunteers.Remove(discussionVolunteer);
+								}
+								discussion.AddMessage(context, volunteer, "My message!");
+								//context.SaveChanges();
 							}
 						}
 					}

@@ -127,7 +127,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     VolunteersNeeded = table.Column<int>(type: "INTEGER", nullable: false),
-                    VolunteersSignedUp = table.Column<int>(type: "INTEGER", nullable: false),
                     EventID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -223,6 +222,26 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         principalTable: "Chapters",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Discussions",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ShiftID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Discussions", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Discussions_Shifts_ShiftID",
+                        column: x => x.ShiftID,
+                        principalTable: "Shifts",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -355,6 +374,52 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DiscussionVolunteers",
+                columns: table => new
+                {
+                    DiscussionID = table.Column<int>(type: "INTEGER", nullable: false),
+                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DiscussionVolunteers", x => new { x.DiscussionID, x.VolunteerID });
+                    table.ForeignKey(
+                        name: "FK_DiscussionVolunteers_Discussions_DiscussionID",
+                        column: x => x.DiscussionID,
+                        principalTable: "Discussions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Content = table.Column<string>(type: "TEXT", nullable: true),
+                    DiscussionID = table.Column<int>(type: "INTEGER", nullable: false),
+                    FromAccountID = table.Column<int>(type: "INTEGER", nullable: false),
+                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Messages_Discussions_DiscussionID",
+                        column: x => x.DiscussionID,
+                        principalTable: "Discussions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_Volunteers_VolunteerID",
+                        column: x => x.VolunteerID,
+                        principalTable: "Volunteers",
+                        principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RehearsalAttendances",
                 columns: table => new
                 {
@@ -432,6 +497,21 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Discussions_ShiftID",
+                table: "Discussions",
+                column: "ShiftID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_DiscussionID",
+                table: "Messages",
+                column: "DiscussionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_VolunteerID",
+                table: "Messages",
+                column: "VolunteerID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RehearsalAttendances_RehearsalID",
                 table: "RehearsalAttendances",
                 column: "RehearsalID");
@@ -506,7 +586,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "DirectorAvatars");
 
             migrationBuilder.DropTable(
+                name: "DiscussionVolunteers");
+
+            migrationBuilder.DropTable(
                 name: "FileContent");
+
+            migrationBuilder.DropTable(
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "RehearsalAttendances");
@@ -524,16 +610,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "UploadedFiles");
 
             migrationBuilder.DropTable(
+                name: "Discussions");
+
+            migrationBuilder.DropTable(
                 name: "Rehearsals");
 
             migrationBuilder.DropTable(
                 name: "Singers");
 
             migrationBuilder.DropTable(
-                name: "Shifts");
+                name: "Volunteers");
 
             migrationBuilder.DropTable(
-                name: "Volunteers");
+                name: "Shifts");
 
             migrationBuilder.DropTable(
                 name: "Directors");
