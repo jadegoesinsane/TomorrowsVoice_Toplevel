@@ -5,8 +5,9 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
 	public class Volunteer : User
 	{
-		public int ID { get; set; }
+		//public int ID { get; set; }
 		public VolunteerAvatar? Avatar { get; set; }
+
 		public int HoursVolunteered = 0;
 
 		public string CurrentYearVolunteerTotal

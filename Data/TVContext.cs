@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Messaging;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Users.Account;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
@@ -44,6 +45,7 @@ namespace TomorrowsVoice_Toplevel.Data
 		#region DbSets
 
 		// Accounts
+
 		public DbSet<Role> Roles { get; set; }
 
 		// Chapters
@@ -67,10 +69,18 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<VolunteerShift> VolunteerShifts { get; set; }
 		public DbSet<VolunteerAvatar> VolunteerAvatars { get; set; }
 
+		// Messaging DbSets
+		public DbSet<Discussion> Discussions { get; set; }
+
+		public DbSet<DiscussionVolunteer> DiscussionVolunteers { get; set; }
+		public DbSet<Message> Messages { get; set; }
+
 		#endregion DbSets
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			// Make Director & Volunteer get their IDs from a shared user table which only stores ID
+
 			modelBuilder.Entity<City>()
 				.HasIndex(c => new { c.Province, c.Name })
 				.IsUnique();
@@ -133,6 +143,10 @@ namespace TomorrowsVoice_Toplevel.Data
 			// Many to Many Volunteer Shift PK
 			modelBuilder.Entity<VolunteerShift>()
 				.HasKey(vs => new { vs.VolunteerID, vs.ShiftID });
+
+			// Many to Many Discussion Volunteer PK
+			modelBuilder.Entity<DiscussionVolunteer>()
+				.HasKey(dv => new { dv.DiscussionID, dv.VolunteerID });
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)

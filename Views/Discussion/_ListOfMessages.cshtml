@@ -1,0 +1,42 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Messaging.Message>
+<br />
+<div>
+	<div class="panel-heading">
+		<h4 class="panel-title">List of Messages</h4>
+	</div>
+	<div class="panel-body scrollable-panel">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th aria-label="User">
+						User
+					</th>
+					<th aria-label="Content">
+						Content
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (Model.Count() == 0)
+				{
+					<tr>
+						<td>
+							No messages.
+						</td>
+					</tr>
+				}
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							@Html.DisplayFor(modelItem => item.Volunteer.NameFormatted)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Content)
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
