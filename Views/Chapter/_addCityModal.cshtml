@@ -1,0 +1,17 @@
+﻿<!-- Modal-->
+<div class="modal fade" id="addCityModal" tabindex="-1" role="dialog" aria-labelledby="CityModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="CityModalLabel">Add New City</h4>
+				<button type="button" class="btn btn-close close" data-bs-dismiss="modal" aria-label="Close">@* <span aria-hidden="true">&times;</span> *@</button>
+			</div>
+			<div class="modal-body">
+				@{
+					var c = new TomorrowsVoice_Toplevel.Models.City();
+					<partial name="_CityCreate" model="c" />
+				}
+			</div>
+		</div>
+	</div>
+</div>

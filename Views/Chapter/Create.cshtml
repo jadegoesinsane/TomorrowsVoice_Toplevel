@@ -2,6 +2,7 @@
 
 <div style="display: grid; place-content: center;">
 	<partial name="_ViewHeading" />
+	<partial name="_addCityModal" />
 	<form asp-action="Create" class="form-container">
 		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 		<input type="hidden" asp-for="ID" />
@@ -27,6 +28,13 @@
 					<label asp-for="CityID" class="control-label"></label>
 					<span asp-validation-for="CityID" class="text-danger"></span>
 				</div>
+			</div>
+			<div class="col-md-4">
+				<button class="btn btn-sm btn-outline-secondary" id="nowAddCity"
+						data-bs-toggle="modal" data-bs-target="#addCityModal"
+						type="button">
+					<strong>Add City</strong>
+				</button>
 			</div>
 			<div class="w-100"></div>
 			<div class="col-md-4">
@@ -64,6 +72,73 @@
 					document.getElementById('PostalCode').value = "L3C 7L3";
 				}
 			})
+		}
+	</script>
+	<script type="text/javascript">
+		$('#submitCityCreate').click(function (event) {
+			event.preventDefault();
+			ClearErrors();
+			var form = $('#createCityForm');
+			if (form.valid()) {
+				$.ajax({
+					type: "POST",
+					url: form.attr('action'),
+					data: form.serialize(),
+					success: function () {
+						$('#addCityModal').modal('hide');
+					},
+					error: function (xhr) { //Note: xhr is the XMLHttpRequest
+						var errorMessages = [];
+						switch (xhr.status) {
+							case 401:
+								errorMessages.push("You must be logged in first.");
+								break;
+							case 403:
+								errorMessages.push("You are not authorized for this action.");
+								break;
+							default:
+								//Messages coming from the Model State Errors
+								//We split on the | delimeter and the .slice removes the last one
+								errorMessages = xhr.responseText.split("|").slice(0, -1);
+						}
+						//This checks if there are any elements with some content
+						//and if not then it provides a default feedback message.
+						if (!errorMessages.some((str) => str !== "")) {
+							errorMessages.push("Error: Unable to complete operation");
+						}
+						//Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
+						var ul = document.getElementById("ErrorList");
+						for (var i = 0; i < errorMessages.length; i++) {
+							var errorMessage = errorMessages[i];
+							var li = document.createElement("li");
+							li.innerHTML = errorMessage;
+							ul.appendChild(li);
+						}
+					}
+				});
+			}
+			return false;
+		});
+		$('#addCityModal').on('hide.bs.modal', function () {
+			document.getElementById("createCityForm").reset();//to clear the data in the popup form
+			// ClearErrors();
+			// //This will create a delimited list of the keys of the selected options and
+			// //we will pass it as a QueryString parameter when we get the new data
+			// var qstring = "";
+			// //Get the collection of currently selected options
+			// var skipData = $("#selectedOptions option");
+			// $.each(skipData, function () {
+			// 	qstring += $(this).val() + "|";
+			// });
+			// var URI = "/Doctor/GetSpecialties?skip=" + qstring.slice(0, -1);
+			// refreshDDL("availOptions", URI, true, "No Data Available", false, null, false);
+		});
+		function ClearErrors() {
+			//Empty out the list of validation errors if there are any
+			var ul = document.getElementById("ErrorList");
+			while (ul.firstChild) {
+				ul.removeChild(ul.firstChild);
+			}
 		}
 	</script>
 }
