@@ -38,8 +38,8 @@
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
                 <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
