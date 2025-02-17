@@ -3,7 +3,7 @@ using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Models.Messaging
 {
-	public class Discussion
+	public class Chat
 	{
 		public int ID { get; set; }
 		public int ShiftID { get; set; }
@@ -11,7 +11,7 @@ namespace TomorrowsVoice_Toplevel.Models.Messaging
 
 		public string Title { get; set; } = "Unknown";
 
-		public ICollection<DiscussionVolunteer> DiscussionVolunteers { get; set; } = new HashSet<DiscussionVolunteer>();
+		public ICollection<ChatVolunteer> ChatVolunteers { get; set; } = new HashSet<ChatVolunteer>();
 		public ICollection<Message> Messages { get; set; } = new HashSet<Message>();
 
 		public void AddMessage(TVContext context, Volunteer volunteer, string content)
@@ -20,9 +20,8 @@ namespace TomorrowsVoice_Toplevel.Models.Messaging
 			{
 				FromAccountID = volunteer.ID,
 				Volunteer = volunteer,
-				DiscussionID = this.ID,
-				Content = content,
-				CreatedOn = DateTime.Now
+				ChatID = this.ID,
+				Content = content
 			};
 			context.Messages.Add(message);
 			context.SaveChanges();

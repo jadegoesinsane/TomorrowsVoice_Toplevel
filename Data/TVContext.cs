@@ -70,9 +70,9 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<VolunteerAvatar> VolunteerAvatars { get; set; }
 
 		// Messaging DbSets
-		public DbSet<Discussion> Discussions { get; set; }
+		public DbSet<Chat> Chats { get; set; }
 
-		public DbSet<DiscussionVolunteer> DiscussionVolunteers { get; set; }
+		public DbSet<ChatVolunteer> DiscussionVolunteers { get; set; }
 		public DbSet<Message> Messages { get; set; }
 
 		#endregion DbSets
@@ -144,9 +144,9 @@ namespace TomorrowsVoice_Toplevel.Data
 			modelBuilder.Entity<VolunteerShift>()
 				.HasKey(vs => new { vs.VolunteerID, vs.ShiftID });
 
-			// Many to Many Discussion Volunteer PK
-			modelBuilder.Entity<DiscussionVolunteer>()
-				.HasKey(dv => new { dv.DiscussionID, dv.VolunteerID });
+			// Many to Many Chat Volunteer PK
+			modelBuilder.Entity<ChatVolunteer>()
+				.HasKey(dv => new { dv.ChatID, dv.VolunteerID });
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)

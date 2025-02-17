@@ -5,24 +5,68 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using TomorrowsVoice_Toplevel.Data;
+using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Messaging;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 {
-	public class DiscussionController : Controller
+	public class ChatController : Controller
 	{
 		private readonly TVContext _context;
 
-		public DiscussionController(TVContext context)
+		public ChatController(TVContext context)
 		{
 			_context = context;
+		}
+		public PartialViewResult GetMessages(int id)
+		{
+			var chat = _context.Chats.FirstOrDefault(c => c.ShiftID == id);
+			var messages = _context.Messages
+				.Where(m => m.ChatID == chat.ID)
+				.OrderBy(m => m.CreatedOn)
+				.Select(m => new MessageVM
+				{
+					Content = m.Content,
+					CreatedOn = m.CreatedOn,
+					VolunteerName = m.Volunteer.NameFormatted,
+					VolunteerAvatar = m.Volunteer.Avatar
+				})
+				.ToList();
+			return PartialView("_GetMessages", messages);
+		}
+
+		public IActionResult SendMessage(int shiftID, int volunteerID, string content)
+		{
+			var chat = _context.Chats.FirstOrDefault(c => c.ShiftID == shiftID);
+			if (chat == null)
+			{
+				chat = new Chat { ShiftID = shiftID };
+				_context.Chats.Add(chat);
+				_context.SaveChanges();
+			}
+			Volunteer volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == volunteerID);
+			var message = new Message
+			{
+				ChatID = chat.ID,
+				FromAccountID = volunteerID,
+				Content = content,
+				Volunteer = volunteer
+			};
+
+			_context.Messages.Add(message);
+			_context.SaveChanges();
+
+			return RedirectToAction("Details", new { id = shiftID });
 		}
 
 		// GET: Discussion
 		public async Task<IActionResult> Index()
 		{
-			var tVContext = _context.Discussions.Include(d => d.Shift);
+			var tVContext = _context.Chats.Include(d => d.Shift);
 			return View(await tVContext.ToListAsync());
 		}
 
@@ -34,7 +78,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 				return NotFound();
 			}
 
-			var discussion = await _context.Discussions
+			var discussion = await _context.Chats
 				.Include(d => d.Shift)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (discussion == null)
@@ -57,7 +101,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,ShiftID,Title")] Discussion discussion)
+		public async Task<IActionResult> Create([Bind("ID,ShiftID,Title")] Chat discussion)
 		{
 			if (ModelState.IsValid)
 			{
@@ -77,7 +121,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 				return NotFound();
 			}
 
-			var discussion = await _context.Discussions.FindAsync(id);
+			var discussion = await _context.Chats.FindAsync(id);
 			if (discussion == null)
 			{
 				return NotFound();
@@ -91,7 +135,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, [Bind("ID,ShiftID,Title")] Discussion discussion)
+		public async Task<IActionResult> Edit(int id, [Bind("ID,ShiftID,Title")] Chat discussion)
 		{
 			if (id != discussion.ID)
 			{
@@ -130,7 +174,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 				return NotFound();
 			}
 
-			var discussion = await _context.Discussions
+			var discussion = await _context.Chats
 				.Include(d => d.Shift)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (discussion == null)
@@ -146,28 +190,19 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
-			var discussion = await _context.Discussions.FindAsync(id);
+			var discussion = await _context.Chats.FindAsync(id);
 			if (discussion != null)
 			{
-				_context.Discussions.Remove(discussion);
+				_context.Chats.Remove(discussion);
 			}
 
 			await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
 		}
 
-		public PartialViewResult ListOfMessages(int id)
-		{
-			var messages = _context.Messages
-				.Include(r => r.Volunteer)
-				.Where(r => r.DiscussionID == id)
-				.ToList();
-			return PartialView("_ListOfMessages", messages);
-		}
-
 		private bool DiscussionExists(int id)
 		{
-			return _context.Discussions.Any(e => e.ID == id);
+			return _context.Chats.Any(e => e.ID == id);
 		}
 	}
 }

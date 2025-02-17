@@ -191,7 +191,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("FileContent");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Discussion", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Chat", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -208,18 +208,18 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasIndex("ShiftID");
 
-                    b.ToTable("Discussions");
+                    b.ToTable("Chats");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.DiscussionVolunteer", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.ChatVolunteer", b =>
                 {
-                    b.Property<int>("DiscussionID")
+                    b.Property<int>("ChatID")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("VolunteerID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("DiscussionID", "VolunteerID");
+                    b.HasKey("ChatID", "VolunteerID");
 
                     b.ToTable("DiscussionVolunteers");
                 });
@@ -230,14 +230,14 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("ChatID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Content")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("DiscussionID")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("FromAccountID")
                         .HasColumnType("INTEGER");
@@ -247,7 +247,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("DiscussionID");
+                    b.HasIndex("ChatID");
 
                     b.HasIndex("VolunteerID");
 
@@ -689,7 +689,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("UploadedFile");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Discussion", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Chat", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Shift", "Shift")
                         .WithMany()
@@ -700,20 +700,20 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Shift");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.DiscussionVolunteer", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.ChatVolunteer", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Messaging.Discussion", null)
-                        .WithMany("DiscussionVolunteers")
-                        .HasForeignKey("DiscussionID")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Messaging.Chat", null)
+                        .WithMany("ChatVolunteers")
+                        .HasForeignKey("ChatID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Message", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Messaging.Discussion", null)
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Messaging.Chat", null)
                         .WithMany("Messages")
-                        .HasForeignKey("DiscussionID")
+                        .HasForeignKey("ChatID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -880,9 +880,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("VulnerableSectorChecks");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Discussion", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Chat", b =>
                 {
-                    b.Navigation("DiscussionVolunteers");
+                    b.Navigation("ChatVolunteers");
 
                     b.Navigation("Messages");
                 });

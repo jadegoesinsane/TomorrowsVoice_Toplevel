@@ -47,15 +47,15 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public void AddDiscussion(TVContext context)
 		{
-			if (!context.Discussions.Any(d => d.ShiftID == ID))
+			if (!context.Chats.Any(d => d.ShiftID == ID))
 			{
-				Discussion discussion = new Discussion
+				Chat chat = new Chat
 				{
 					ShiftID = ID,
 					Shift = this,
 					Title = $"Shift {ID}"
 				};
-				context.Discussions.Add(discussion);
+				context.Chats.Add(chat);
 				context.SaveChanges();
 			}
 		}

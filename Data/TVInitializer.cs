@@ -549,22 +549,22 @@ namespace TomorrowsVoice_Toplevel.Data
 								{
 									context.VolunteerShifts.Remove(volunteerShift);
 								}
-								Discussion discussion = context.Discussions.FirstOrDefault(d => d.ShiftID == shift.ID);
-								DiscussionVolunteer discussionVolunteer = new DiscussionVolunteer
+								Chat chat = context.Chats.FirstOrDefault(d => d.ShiftID == shift.ID);
+								ChatVolunteer chatVolunteer = new ChatVolunteer
 								{
 									VolunteerID = volunteer.ID,
-									DiscussionID = discussion.ID
+									ChatID = chat.ID
 								};
 								try
 								{
-									context.DiscussionVolunteers.Add(discussionVolunteer);
+									context.DiscussionVolunteers.Add(chatVolunteer);
 									context.SaveChanges();
 								}
 								catch (Exception)
 								{
-									context.DiscussionVolunteers.Remove(discussionVolunteer);
+									context.DiscussionVolunteers.Remove(chatVolunteer);
 								}
-								discussion.AddMessage(context, volunteer, "My message!");
+								chat.AddMessage(context, volunteer, "My message!");
 								//context.SaveChanges();
 							}
 						}

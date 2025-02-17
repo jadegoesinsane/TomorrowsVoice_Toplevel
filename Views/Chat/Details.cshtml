@@ -1,0 +1,66 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Messaging.Chat
+
+<h2>Chat for Shift @Model.ShiftID</h2>
+<div>
+	<div class="w-50">
+		<div class="ml-3" style="max-height: 250px;overflow-y: scroll;overflow-x: clip;" id="chat"></div>
+		<form asp-action="SendMessage" method="post">
+			<input type="hidden" name="shiftID" value="@Model.ShiftID" />
+			@* <input type="hidden" name="volunteerID" value="20" /> *@
+			<div class="row">
+				<div class="form-group col-4">
+					<label for="content">Message</label>
+					<input type="text" class="form-control" id="content" name="content" required />
+				</div>
+				<div class="form-group col-4">
+					<label for="volunteerID">From Volunteer ID:</label>
+					<input type="number" class="form-control" id="volunteerID" name="volunteerID" />
+				</div>
+				<div class="col-4 align-self-end"><button type="submit" class="btn btn-primary mt-2">Send</button></div>
+			</div>
+		</form>
+	</div>
+	
+</div>
+@section Scripts {
+	<script type="text/javascript">
+		$('#chat').load('/Chat/GetMessages/@Model.ID');
+	</script>
+}
+@* @{
+	ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+	<h4>Discussion</h4>
+	<hr />
+	<dl class="row">
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.Shift)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Shift.ID)
+		</dd>
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.Title)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Title)
+		</dd>
+	</dl>
+	<div class="ml-3" id="chat">
+		<br />
+	</div>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		$('#chat').load('/Chat/GetMessages/@Model.ID');
+	</script>
+} *@

@@ -1,8 +1,8 @@
 ﻿namespace TomorrowsVoice_Toplevel.Models.Messaging
 {
-	public class DiscussionVolunteer
+	public class ChatVolunteer
 	{
-		public int DiscussionID { get; set; }
+		public int ChatID { get; set; }
 		public int VolunteerID { get; set; }
 	}
 }
