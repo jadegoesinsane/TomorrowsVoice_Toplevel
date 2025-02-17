@@ -1,0 +1,41 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Shift>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<partial name="_ViewHeading" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Date
+            </th>
+            <th>
+                Shifts Available
+            </th>
+
+        </tr>
+    </thead>
+    
+    <tbody>
+        @{
+            List<String> DateList = new List<String>();
+
+            foreach (var item in Model)
+            {
+                string dateString = item.StartAt.ToLongDateString();
+                if (!DateList.Contains(dateString))
+                {
+                    DateList.Add(dateString);
+                    <tr>
+                        <td>@dateString</td>
+                        <td>@Model.Where(s=>s.StartAt.ToLongDateString() == dateString).Count()</td>
+                    </tr>
+                }
+            }
+        }
+
+    </tbody>
+</table>
