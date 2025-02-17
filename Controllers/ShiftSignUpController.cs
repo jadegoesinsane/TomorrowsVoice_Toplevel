@@ -9,6 +9,8 @@ using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using NToastNotify;
+using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -22,10 +24,112 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: ShiftSignUp
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string? SearchString, 
+            int? CityID, 
+            string? actionButton, 
+            int? page, 
+            int? pageSizeID, 
+            DateTime StartDate, 
+            DateTime EndDate,
+            string sortDirection = "asc",
+            string sortField = "Date"
+           )
         {
-            var tVContext = _context.Shifts.Include(s => s.Event);
-            return View(await tVContext.ToListAsync());
+            if (EndDate == DateTime.MinValue)
+            {
+                int dayInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
+                StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                EndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dayInMonth);
+            }
+            //Check the order of the dates and swap them if required
+            if (EndDate < StartDate)
+            {
+                DateTime temp = EndDate;
+                EndDate = StartDate;
+                StartDate = temp;
+            }
+            //Save to View Data
+            ViewData["StartDate"] = StartDate.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = EndDate.ToString("yyyy-MM-dd");
+
+            // Sort Options
+            string[] sortOpts = new[] { "Date" };
+
+            // Counts number of filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numFilters = 0;
+
+            populateLists();
+
+            var shifts = _context.Shifts
+                .Include(s=>s.Event)
+                .ThenInclude(e=>e.CityEvents)
+                .ThenInclude(e=>e.City)
+                .Where(a => a.StartAt >= StartDate && a.StartAt <= EndDate)
+                .AsNoTracking();
+
+            // Filters
+            if (CityID.HasValue)
+            {
+                //shifts = shifts.Where(s=>s.Event.CityEvents == CityID);
+                numFilters++;
+            }
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                shifts = shifts.Where(r => r.Event.Name.ToUpper().Contains(SearchString.ToUpper()));
+                numFilters++;
+            }
+
+            ViewData["AptCount"] = shifts.Count();
+
+            // Show how many filters are applied
+            if (numFilters != 0)
+            {
+                ViewData["Filtering"] = " btn-danger";
+                ViewData["numberFilters"] = "(" + numFilters.ToString()
+                    + " Filter" + (numFilters > 1 ? "s" : "") + " Applied)";
+                @ViewData["ShowFilter"] = " show";
+            }
+
+            // Check for sorting change
+            if (!String.IsNullOrEmpty(actionButton))
+            {
+                page = 1;
+                if (sortOpts.Contains(actionButton))
+                {
+                    sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                }
+                sortField = actionButton;
+            }
+
+            // Sorting
+            if (sortField == "Date")
+            {
+                if (sortDirection == "asc")
+                {
+                    shifts = shifts
+                        .OrderByDescending(r => r.StartAt)
+                        .ThenByDescending(r => r.StartAt);
+                }
+                else
+                {
+                    shifts = shifts
+                        .OrderBy(r => r.StartAt)
+                        .ThenBy(r => r.StartAt);
+                }
+            }
+
+            // View data for next sort
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            // Paging
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
 
         // GET: ShiftSignUp/Details/5
