@@ -11,6 +11,7 @@ using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -50,18 +51,26 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Event/Create
 		public IActionResult Create()
 		{
-			return View();
-		}
+
+            Event abc = new Event();
+            PopulateAssignedEnrollmentData(abc);
+
+
+          
+            return View();
+        }
 
 		// POST: Event/Create
 		// To protect from overposting attacks, enable the specific properties you want to bind to.
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,StartDate,EndDate,Descripion,Location,Status")] Event @event)
+		public async Task<IActionResult> Create([Bind("ID,Name,StartDate,EndDate,Descripion,Location,Status")] Event @event,string[] selectedOptions)
 		{
             try
             {
+
+                UpdateEnrollments(selectedOptions, @event);
                 if (ModelState.IsValid)
                 {
                     _context.Add(@event);
@@ -85,7 +94,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 }
             }
 
-
+            PopulateAssignedEnrollmentData(@event);
             return View(@event);
 
            
@@ -99,12 +108,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 
-			var @event = await _context.Events.FindAsync(id);
-			if (@event == null)
+			
+
+            var @event = await _context.Events
+              .Include(g => g.CityEvents).ThenInclude(e => e.City)
+              .FirstOrDefaultAsync(m => m.ID == id);
+            if (@event == null)
 			{
 				return NotFound();
 			}
-			return View(@event);
+
+            PopulateAssignedEnrollmentData(@event);
+            return View(@event);
 		}
 
 		// POST: Event/Edit/5
@@ -112,17 +127,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id)
-		{
-            var @eventToUpdate = await _context.Events
+		public async Task<IActionResult> Edit(int id, string[] selectedOptions)
+        {
 
-               .FirstOrDefaultAsync(m => m.ID == id);
+            var @eventToUpdate = await _context.Events
+              .Include(g => g.CityEvents).ThenInclude(e => e.City)
+              .FirstOrDefaultAsync(m => m.ID == id);
 
             if (@eventToUpdate == null)
             {
                 return NotFound();
             }
-
+            UpdateEnrollments(selectedOptions, @eventToUpdate);
             // Try updating with posted values
             if (await TryUpdateModelAsync<Event>(@eventToUpdate,
                     "",
@@ -157,7 +173,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     }
                 }
             }
-
+            PopulateAssignedEnrollmentData(@eventToUpdate);
 
             return View(@eventToUpdate);
         }
@@ -209,8 +225,75 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             return View(@event);
         }
+        private void PopulateAssignedEnrollmentData(Event abc)
+        {
+            //For this to work, you must have Included the child collection in the parent object
+            var allOptions = _context.Cities;
+            var currentOptionsHS = new HashSet<int>(abc.CityEvents.Select(b => b.CityID));
+            //Instead of one list with a boolean, we will make two lists
+            var selected = new List<ListOptionVM>();
+            var available = new List<ListOptionVM>();
+            foreach (var c in allOptions)
+            {
+                if (currentOptionsHS.Contains(c.ID))
+                {
+                    selected.Add(new ListOptionVM
+                    {
+                        ID = c.ID,
+                        DisplayText = c.Name
+                    });
+                }
+                else
+                {
+                    available.Add(new ListOptionVM
+                    {
+                        ID = c.ID,
+                        DisplayText = c.Name
+                    });
+                }
+            }
 
-		private bool EventExists(int id)
+            ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+            ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+        }
+        private void UpdateEnrollments(string[] selectedOptions, Event abcToUpdate)
+        {
+            if (selectedOptions == null)
+            {
+                abcToUpdate.CityEvents = new List<CityEvent>();
+                return;
+            }
+
+            var selectedOptionsHS = new HashSet<string>(selectedOptions);
+            var currentOptionsHS = new HashSet<int>(abcToUpdate.CityEvents.Select(b => b.CityID));
+            foreach (var c in _context.Volunteers)
+            {
+                if (selectedOptionsHS.Contains(c.ID.ToString()))//it is selected
+                {
+                    if (!currentOptionsHS.Contains(c.ID))//but not currently in the GroupClass's collection - Add it!
+                    {
+                        abcToUpdate.CityEvents.Add(new CityEvent
+                        {
+                            CityID = c.ID,
+                            EventID = abcToUpdate.ID
+                        });
+                    }
+                }
+                else //not selected
+                {
+                    if (currentOptionsHS.Contains(c.ID))//but is currently in the GroupClass's collection - Remove it!
+                    {
+                        CityEvent? enrollmentToRemove = abcToUpdate.CityEvents
+                            .FirstOrDefault(d => d.CityID == c.ID);
+                        if (enrollmentToRemove != null)
+                        {
+                            _context.Remove(enrollmentToRemove);
+                        }
+                    }
+                }
+            }
+        }
+            private bool EventExists(int id)
 		{
 			return _context.Events.Any(e => e.ID == id);
 		}
