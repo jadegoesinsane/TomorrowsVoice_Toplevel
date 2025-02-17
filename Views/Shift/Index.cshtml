@@ -1,0 +1,53 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Shift>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StartAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VolunteersNeeded)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Event)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VolunteersNeeded)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Event.ID)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
