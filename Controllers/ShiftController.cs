@@ -11,6 +11,7 @@ using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -52,7 +53,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // GET: Shift/Create
         public IActionResult Create()
         {
-            ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name");
+
+			Shift shift = new Shift();
+			PopulateAssignedEnrollmentData(shift);
+			
+			
+			ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name");
             return View();
         }
 
@@ -61,11 +67,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift)
-        {
+        public async Task<IActionResult> Create([Bind("ID,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, string[] selectedOptions)
+		{
 
 			try
 			{
+
+				UpdateEnrollments(selectedOptions, shift);
 				if (ModelState.IsValid)
 				{
 					_context.Add(shift);
@@ -88,8 +96,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 				}
 			}
-
-
+			PopulateAssignedEnrollmentData(shift);
+			ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name");
 			return View(shift);
 
 
@@ -104,11 +112,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            var shift = await _context.Shifts.FindAsync(id);
+           
+
+            var shift = await _context.Shifts
+               .Include(g => g.VolunteerShifts).ThenInclude(e => e.Volunteer)
+               .FirstOrDefaultAsync(m => m.ID == id);
             if (shift == null)
             {
                 return NotFound();
             }
+            PopulateAssignedEnrollmentData(shift);
             ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name", shift.EventID);
             return View(shift);
         }
@@ -118,19 +131,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift)
+        public async Task<IActionResult> Edit(int id,string[] selectedOptions)
         {
-			var shiftToUpdate = await _context.Shifts
 
-			   .FirstOrDefaultAsync(m => m.ID == id);
+            var shiftToUpdate = await _context.Shifts
+               .Include(g => g.VolunteerShifts).ThenInclude(e => e.Volunteer)
+               .FirstOrDefaultAsync(m => m.ID == id);
 
-			if (shiftToUpdate == null)
+            if (shiftToUpdate == null)
 			{
 				return NotFound();
 			}
-
-			// Try updating with posted values
-			if (await TryUpdateModelAsync<Shift>(shiftToUpdate,
+            UpdateEnrollments(selectedOptions, shiftToUpdate);
+            // Try updating with posted values
+            if (await TryUpdateModelAsync<Shift>(shiftToUpdate,
 					"",
 					r => r.StartAt,
 					r => r.EndAt,
@@ -162,9 +176,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					}
 				}
 			}
-
-
-			return View(shiftToUpdate);
+            PopulateAssignedEnrollmentData(shiftToUpdate);
+            ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name", shiftToUpdate.EventID);
+            return View(shiftToUpdate);
 
 
 
@@ -224,7 +238,77 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
         }
 
-        private bool ShiftExists(int id)
+
+		private void PopulateAssignedEnrollmentData(Shift shift)
+		{
+			//For this to work, you must have Included the child collection in the parent object
+			var allOptions = _context.Volunteers ;
+			var currentOptionsHS = new HashSet<int>(shift.VolunteerShifts.Select(b => b.VolunteerID));
+			//Instead of one list with a boolean, we will make two lists
+			var selected = new List<ListOptionVM>();
+			var available = new List<ListOptionVM>();
+			foreach (var c in allOptions)
+			{
+				if (currentOptionsHS.Contains(c.ID))
+				{
+					selected.Add(new ListOptionVM
+					{
+						ID = c.ID,
+						DisplayText = c.NameFormatted
+					});
+				}
+				else
+				{
+					available.Add(new ListOptionVM
+					{
+						ID = c.ID,
+						DisplayText = c.NameFormatted
+					});
+				}
+			}
+
+			ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+			ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+		}
+		private void UpdateEnrollments(string[] selectedOptions, Shift shiftToUpdate)
+		{
+			if (selectedOptions == null)
+			{
+				shiftToUpdate.VolunteerShifts = new List<VolunteerShift>();
+				return;
+			}
+
+			var selectedOptionsHS = new HashSet<string>(selectedOptions);
+			var currentOptionsHS = new HashSet<int>(shiftToUpdate.VolunteerShifts.Select(b => b.VolunteerID));
+			foreach (var c in _context.Volunteers)
+			{
+				if (selectedOptionsHS.Contains(c.ID.ToString()))//it is selected
+				{
+					if (!currentOptionsHS.Contains(c.ID))//but not currently in the GroupClass's collection - Add it!
+					{
+						shiftToUpdate.VolunteerShifts.Add(new VolunteerShift
+						{
+							VolunteerID = c.ID,
+							ShiftID = shiftToUpdate.ID
+						});
+					}
+				}
+				else //not selected
+				{
+					if (currentOptionsHS.Contains(c.ID))//but is currently in the GroupClass's collection - Remove it!
+					{
+						VolunteerShift? enrollmentToRemove = shiftToUpdate.VolunteerShifts
+							.FirstOrDefault(d => d.VolunteerID == c.ID);
+						if (enrollmentToRemove != null)
+						{
+							_context.Remove(enrollmentToRemove);
+						}
+					}
+				}
+			}
+		}
+
+		private bool ShiftExists(int id)
         {
             return _context.Shifts.Any(e => e.ID == id);
         }
