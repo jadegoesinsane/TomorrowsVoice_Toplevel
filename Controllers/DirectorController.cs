@@ -183,15 +183,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director,
+		public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director,
 			List<IFormFile> theFiles)
 		{
 			try
 			{
 				if (ModelState.IsValid)
 				{
-					await AddDocumentsAsync(director, theFiles);
+					director.ID = _context.GetNextID();
 					_context.Add(director);
+					await AddDocumentsAsync(director, theFiles);
 					await _context.SaveChangesAsync();
 					AddSuccessToast(director.NameFormatted);
 					return RedirectToAction("Details", new { director.ID });

@@ -45,6 +45,7 @@ namespace TomorrowsVoice_Toplevel.Data
 		#region DbSets
 
 		// Accounts
+		public DbSet<UserID> UserIDs { get; set; }
 
 		public DbSet<Role> Roles { get; set; }
 
@@ -66,20 +67,23 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<CityEvent> CityEvents { get; set; }
 		public DbSet<Shift> Shifts { get; set; }
 		public DbSet<Volunteer> Volunteers { get; set; }
-		public DbSet<VolunteerShift> VolunteerShifts { get; set; }
+		public DbSet<UserShift> UserShifts { get; set; }
 		public DbSet<VolunteerAvatar> VolunteerAvatars { get; set; }
 
 		// Messaging DbSets
 		public DbSet<Chat> Chats { get; set; }
 
-		public DbSet<ChatVolunteer> DiscussionVolunteers { get; set; }
+		public DbSet<ChatUser> ChatUsers { get; set; }
 		public DbSet<Message> Messages { get; set; }
 
 		#endregion DbSets
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			// Make Director & Volunteer get their IDs from a shared user table which only stores ID
+			modelBuilder.Entity<Message>()
+				.Ignore(m => m.User);
+			// Ensure Director & Volunteer have a sequential ID
+			modelBuilder.Entity<UserID>().HasData(new UserID { ID = 1, NextID = 0 });
 
 			modelBuilder.Entity<City>()
 				.HasIndex(c => new { c.Province, c.Name })
@@ -140,13 +144,13 @@ namespace TomorrowsVoice_Toplevel.Data
 			modelBuilder.Entity<CityEvent>()
 				.HasKey(ce => new { ce.CityID, ce.EventID });
 
-			// Many to Many Volunteer Shift PK
-			modelBuilder.Entity<VolunteerShift>()
-				.HasKey(vs => new { vs.VolunteerID, vs.ShiftID });
+			// Many to Many User Shift PK
+			modelBuilder.Entity<UserShift>()
+				.HasKey(us => new { us.UserID, us.ShiftID });
 
-			// Many to Many Chat Volunteer PK
-			modelBuilder.Entity<ChatVolunteer>()
-				.HasKey(dv => new { dv.ChatID, dv.VolunteerID });
+			// Many to Many Chat User PK
+			modelBuilder.Entity<ChatUser>()
+				.HasKey(cu => new { cu.ChatID, cu.UserID });
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -185,6 +189,14 @@ namespace TomorrowsVoice_Toplevel.Data
 					}
 				}
 			}
+		}
+
+		public int GetNextID()
+		{
+			var userID = UserIDs.First();
+			userID.NextID++;
+			SaveChanges();
+			return userID.NextID;
 		}
 	}
 }

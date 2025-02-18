@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,29 +23,57 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 		{
 			_context = context;
 		}
+
 		public PartialViewResult GetMessages(int id)
 		{
-			var chat = _context.Chats.FirstOrDefault(c => c.ShiftID == id);
+			var chat = _context.Chats.FirstOrDefault(c => c.ID == id);
 			var messages = _context.Messages
 				.Where(m => m.ChatID == chat.ID)
 				.OrderBy(m => m.CreatedOn)
-				.Select(m => new MessageVM
-				{
-					Content = m.Content,
-					CreatedOn = m.CreatedOn,
-					VolunteerName = m.Volunteer.NameFormatted,
-					VolunteerAvatar = m.Volunteer.Avatar
-				})
 				.ToList();
-			return PartialView("_GetMessages", messages);
+			//.Select(m => new MessageVM
+			//{
+			//	Content = m.Content,
+			//	CreatedOn = m.CreatedOn,
+			//	Name = m.User.NameFormatted,
+			//	//Avatar = m.Volunteer.Avatar
+			//})
+			var messageVMs = new List<MessageVM>();
+			foreach (var message in messages)
+			{
+				string name = "Unknown";
+
+				var volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == message.FromAccountID);
+				if (volunteer != null)
+				{
+					name = !string.IsNullOrEmpty(volunteer.Nickname) ? volunteer.Nickname : volunteer.NameFormatted;
+				}
+				else
+				{
+					var director = _context.Directors.FirstOrDefault(d => d.ID == message.FromAccountID);
+					if (director != null)
+					{
+						name = !string.IsNullOrEmpty(director.Nickname) ? director.Nickname : director.NameFormatted;
+					}
+				}
+
+				messageVMs.Add(new MessageVM
+				{
+					Content = message.Content,
+					CreatedOn = message.CreatedOn,
+					Name = name,
+					// Avatar = volunteer?.Avatar
+				});
+			}
+			return PartialView("_GetMessages", messageVMs);
 		}
 
 		public IActionResult SendMessage(int shiftID, int volunteerID, string content)
 		{
-			var chat = _context.Chats.FirstOrDefault(c => c.ShiftID == shiftID);
+			var chat = _context.Chats.FirstOrDefault(c => c.ID == shiftID);
 			if (chat == null)
 			{
-				chat = new Chat { ShiftID = shiftID };
+				chat = new Chat { ID = shiftID };
 				_context.Chats.Add(chat);
 				_context.SaveChanges();
 			}
@@ -54,7 +83,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 				ChatID = chat.ID,
 				FromAccountID = volunteerID,
 				Content = content,
-				Volunteer = volunteer
+				User = volunteer
 			};
 
 			_context.Messages.Add(message);
@@ -92,7 +121,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 		// GET: Discussion/Create
 		public IActionResult Create()
 		{
-			ViewData["ShiftID"] = new SelectList(_context.Shifts, "ID", "ID");
+			ViewData["ID"] = new SelectList(_context.Shifts, "ID", "ID");
 			return View();
 		}
 
@@ -101,7 +130,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,ShiftID,Title")] Chat discussion)
+		public async Task<IActionResult> Create([Bind("ID,ID,Title")] Chat discussion)
 		{
 			if (ModelState.IsValid)
 			{
@@ -109,7 +138,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 				await _context.SaveChangesAsync();
 				return RedirectToAction(nameof(Index));
 			}
-			ViewData["ShiftID"] = new SelectList(_context.Shifts, "ID", "ID", discussion.ShiftID);
+			ViewData["ID"] = new SelectList(_context.Shifts, "ID", "ID", discussion.ID);
 			return View(discussion);
 		}
 
@@ -126,7 +155,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 			{
 				return NotFound();
 			}
-			ViewData["ShiftID"] = new SelectList(_context.Shifts, "ID", "ID", discussion.ShiftID);
+			ViewData["ID"] = new SelectList(_context.Shifts, "ID", "ID", discussion.ID);
 			return View(discussion);
 		}
 
@@ -135,7 +164,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, [Bind("ID,ShiftID,Title")] Chat discussion)
+		public async Task<IActionResult> Edit(int id, [Bind("ID,ID,Title")] Chat discussion)
 		{
 			if (id != discussion.ID)
 			{
@@ -162,7 +191,7 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 				}
 				return RedirectToAction(nameof(Index));
 			}
-			ViewData["ShiftID"] = new SelectList(_context.Shifts, "ID", "ID", discussion.ShiftID);
+			ViewData["ID"] = new SelectList(_context.Shifts, "ID", "ID", discussion.ID);
 			return View(discussion);
 		}
 

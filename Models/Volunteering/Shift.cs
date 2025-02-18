@@ -43,15 +43,15 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public int EventID { get; set; }
 		public Event? Event { get; set; }
-		public virtual ICollection<VolunteerShift> VolunteerShifts { get; set; } = new HashSet<VolunteerShift>();
+		public virtual ICollection<UserShift> VolunteerShifts { get; set; } = new HashSet<UserShift>();
 
-		public void AddDiscussion(TVContext context)
+		public void AddChat(TVContext context)
 		{
-			if (!context.Chats.Any(d => d.ShiftID == ID))
+			if (!context.Chats.Any(d => d.ID == ID))
 			{
 				Chat chat = new Chat
 				{
-					ShiftID = ID,
+					ID = ID,
 					Shift = this,
 					Title = $"Shift {ID}"
 				};

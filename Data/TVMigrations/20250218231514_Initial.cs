@@ -44,6 +44,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserIDs",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    NextID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserIDs", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Volunteers",
                 columns: table => new
                 {
@@ -228,42 +241,16 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "Chats",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ShiftID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ID = table.Column<int>(type: "INTEGER", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Chats", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Chats_Shifts_ShiftID",
-                        column: x => x.ShiftID,
+                        name: "FK_Chats_Shifts_ID",
+                        column: x => x.ID,
                         principalTable: "Shifts",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VolunteerShifts",
-                columns: table => new
-                {
-                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: false),
-                    ShiftID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VolunteerShifts", x => new { x.VolunteerID, x.ShiftID });
-                    table.ForeignKey(
-                        name: "FK_VolunteerShifts_Shifts_ShiftID",
-                        column: x => x.ShiftID,
-                        principalTable: "Shifts",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VolunteerShifts_Volunteers_VolunteerID",
-                        column: x => x.VolunteerID,
-                        principalTable: "Volunteers",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -374,17 +361,47 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DiscussionVolunteers",
+                name: "UserShifts",
                 columns: table => new
                 {
-                    ChatID = table.Column<int>(type: "INTEGER", nullable: false),
-                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: false)
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ShiftID = table.Column<int>(type: "INTEGER", nullable: false),
+                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: true),
+                    DirectorID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DiscussionVolunteers", x => new { x.ChatID, x.VolunteerID });
+                    table.PrimaryKey("PK_UserShifts", x => new { x.UserID, x.ShiftID });
                     table.ForeignKey(
-                        name: "FK_DiscussionVolunteers_Chats_ChatID",
+                        name: "FK_UserShifts_Directors_DirectorID",
+                        column: x => x.DirectorID,
+                        principalTable: "Directors",
+                        principalColumn: "ID");
+                    table.ForeignKey(
+                        name: "FK_UserShifts_Shifts_ShiftID",
+                        column: x => x.ShiftID,
+                        principalTable: "Shifts",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserShifts_Volunteers_VolunteerID",
+                        column: x => x.VolunteerID,
+                        principalTable: "Volunteers",
+                        principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChatUsers",
+                columns: table => new
+                {
+                    ChatID = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatUsers", x => new { x.ChatID, x.UserID });
+                    table.ForeignKey(
+                        name: "FK_ChatUsers_Chats_ChatID",
                         column: x => x.ChatID,
                         principalTable: "Chats",
                         principalColumn: "ID",
@@ -400,7 +417,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     Content = table.Column<string>(type: "TEXT", nullable: true),
                     ChatID = table.Column<int>(type: "INTEGER", nullable: false),
                     FromAccountID = table.Column<int>(type: "INTEGER", nullable: false),
-                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -412,11 +428,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         principalTable: "Chats",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Messages_Volunteers_VolunteerID",
-                        column: x => x.VolunteerID,
-                        principalTable: "Volunteers",
-                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -463,15 +474,15 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "UserIDs",
+                columns: new[] { "ID", "NextID" },
+                values: new object[] { 1, 0 });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Chapters_CityID",
                 table: "Chapters",
                 column: "CityID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Chats_ShiftID",
-                table: "Chats",
-                column: "ShiftID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cities_Province_Name",
@@ -505,11 +516,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "IX_Messages_ChatID",
                 table: "Messages",
                 column: "ChatID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_VolunteerID",
-                table: "Messages",
-                column: "VolunteerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RehearsalAttendances_RehearsalID",
@@ -565,28 +571,38 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "DirectorID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserShifts_DirectorID",
+                table: "UserShifts",
+                column: "DirectorID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserShifts_ShiftID",
+                table: "UserShifts",
+                column: "ShiftID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserShifts_VolunteerID",
+                table: "UserShifts",
+                column: "VolunteerID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VolunteerAvatars_VolunteerID",
                 table: "VolunteerAvatars",
                 column: "VolunteerID",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VolunteerShifts_ShiftID",
-                table: "VolunteerShifts",
-                column: "ShiftID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ChatUsers");
+
+            migrationBuilder.DropTable(
                 name: "CityEvents");
 
             migrationBuilder.DropTable(
                 name: "DirectorAvatars");
-
-            migrationBuilder.DropTable(
-                name: "DiscussionVolunteers");
 
             migrationBuilder.DropTable(
                 name: "FileContent");
@@ -601,10 +617,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "VolunteerAvatars");
+                name: "UserIDs");
 
             migrationBuilder.DropTable(
-                name: "VolunteerShifts");
+                name: "UserShifts");
+
+            migrationBuilder.DropTable(
+                name: "VolunteerAvatars");
 
             migrationBuilder.DropTable(
                 name: "UploadedFiles");

@@ -243,7 +243,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			//For this to work, you must have Included the child collection in the parent object
 			var allOptions = _context.Volunteers ;
-			var currentOptionsHS = new HashSet<int>(shift.VolunteerShifts.Select(b => b.VolunteerID));
+			var currentOptionsHS = new HashSet<int>(shift.VolunteerShifts.Select(b => b.UserID));
 			//Instead of one list with a boolean, we will make two lists
 			var selected = new List<ListOptionVM>();
 			var available = new List<ListOptionVM>();
@@ -274,21 +274,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			if (selectedOptions == null)
 			{
-				shiftToUpdate.VolunteerShifts = new List<VolunteerShift>();
+				shiftToUpdate.VolunteerShifts = new List<UserShift>();
 				return;
 			}
 
 			var selectedOptionsHS = new HashSet<string>(selectedOptions);
-			var currentOptionsHS = new HashSet<int>(shiftToUpdate.VolunteerShifts.Select(b => b.VolunteerID));
+			var currentOptionsHS = new HashSet<int>(shiftToUpdate.VolunteerShifts.Select(b => b.UserID));
 			foreach (var c in _context.Volunteers)
 			{
 				if (selectedOptionsHS.Contains(c.ID.ToString()))//it is selected
 				{
 					if (!currentOptionsHS.Contains(c.ID))//but not currently in the GroupClass's collection - Add it!
 					{
-						shiftToUpdate.VolunteerShifts.Add(new VolunteerShift
+						shiftToUpdate.VolunteerShifts.Add(new UserShift
 						{
-							VolunteerID = c.ID,
+							UserID = c.ID,
 							ShiftID = shiftToUpdate.ID
 						});
 					}
@@ -297,8 +297,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					if (currentOptionsHS.Contains(c.ID))//but is currently in the GroupClass's collection - Remove it!
 					{
-						VolunteerShift? enrollmentToRemove = shiftToUpdate.VolunteerShifts
-							.FirstOrDefault(d => d.VolunteerID == c.ID);
+						UserShift? enrollmentToRemove = shiftToUpdate.VolunteerShifts
+							.FirstOrDefault(d => d.UserID == c.ID);
 						if (enrollmentToRemove != null)
 						{
 							_context.Remove(enrollmentToRemove);

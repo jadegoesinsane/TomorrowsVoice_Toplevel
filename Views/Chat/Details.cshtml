@@ -1,11 +1,11 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Messaging.Chat
 
-<h2>Chat for Shift @Model.ShiftID</h2>
+<h2>Chat for Shift @Model.ID</h2>
 <div>
 	<div class="w-50">
 		<div class="ml-3" style="max-height: 250px;overflow-y: scroll;overflow-x: clip;" id="chat"></div>
 		<form asp-action="SendMessage" method="post">
-			<input type="hidden" name="shiftID" value="@Model.ShiftID" />
+			<input type="hidden" name="shiftID" value="@Model.ID" />
 			@* <input type="hidden" name="volunteerID" value="20" /> *@
 			<div class="row">
 				<div class="form-group col-4">

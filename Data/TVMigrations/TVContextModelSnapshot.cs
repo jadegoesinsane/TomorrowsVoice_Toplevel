@@ -194,10 +194,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Chat", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ShiftID")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
@@ -206,22 +202,20 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ShiftID");
-
                     b.ToTable("Chats");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.ChatVolunteer", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.ChatUser", b =>
                 {
                     b.Property<int>("ChatID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("VolunteerID")
+                    b.Property<int>("UserID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ChatID", "VolunteerID");
+                    b.HasKey("ChatID", "UserID");
 
-                    b.ToTable("DiscussionVolunteers");
+                    b.ToTable("ChatUsers");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Message", b =>
@@ -242,14 +236,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("FromAccountID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("VolunteerID")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("ID");
 
                     b.HasIndex("ChatID");
-
-                    b.HasIndex("VolunteerID");
 
                     b.ToTable("Messages");
                 });
@@ -462,6 +451,27 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.UserID", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("NextID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("UserIDs");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            NextID = 0
+                        });
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.CityEvent", b =>
                 {
                     b.Property<int>("CityID")
@@ -532,6 +542,31 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasIndex("EventID");
 
                     b.ToTable("Shifts");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.UserShift", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ShiftID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("DirectorID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("VolunteerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserID", "ShiftID");
+
+                    b.HasIndex("DirectorID");
+
+                    b.HasIndex("ShiftID");
+
+                    b.HasIndex("VolunteerID");
+
+                    b.ToTable("UserShifts");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>
@@ -618,21 +653,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("VolunteerAvatars");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerShift", b =>
-                {
-                    b.Property<int>("VolunteerID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ShiftID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("VolunteerID", "ShiftID");
-
-                    b.HasIndex("ShiftID");
-
-                    b.ToTable("VolunteerShifts");
-                });
-
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorDocument", b =>
                 {
                     b.HasBaseType("TomorrowsVoice_Toplevel.Models.UploadedFile");
@@ -693,17 +713,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Shift", "Shift")
                         .WithMany()
-                        .HasForeignKey("ShiftID")
+                        .HasForeignKey("ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Shift");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.ChatVolunteer", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.ChatUser", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Messaging.Chat", null)
-                        .WithMany("ChatVolunteers")
+                        .WithMany("ChatUsers")
                         .HasForeignKey("ChatID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -716,12 +736,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasForeignKey("ChatID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", "Volunteer")
-                        .WithMany()
-                        .HasForeignKey("VolunteerID");
-
-                    b.Navigation("Volunteer");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
@@ -814,19 +828,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.UserShift", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", "Volunteer")
-                        .WithOne("Avatar")
-                        .HasForeignKey("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", "VolunteerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
+                        .WithMany("UserShifts")
+                        .HasForeignKey("DirectorID");
 
-                    b.Navigation("Volunteer");
-                });
-
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerShift", b =>
-                {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Shift", "Shift")
                         .WithMany("VolunteerShifts")
                         .HasForeignKey("ShiftID")
@@ -834,12 +841,23 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired();
 
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", "Volunteer")
-                        .WithMany("VolunteerShifts")
-                        .HasForeignKey("VolunteerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("UserShifts")
+                        .HasForeignKey("VolunteerID");
+
+                    b.Navigation("Director");
 
                     b.Navigation("Shift");
+
+                    b.Navigation("Volunteer");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", "Volunteer")
+                        .WithOne("Avatar")
+                        .HasForeignKey("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", "VolunteerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Volunteer");
                 });
@@ -877,12 +895,14 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Navigation("Roles");
 
+                    b.Navigation("UserShifts");
+
                     b.Navigation("VulnerableSectorChecks");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Chat", b =>
                 {
-                    b.Navigation("ChatVolunteers");
+                    b.Navigation("ChatUsers");
 
                     b.Navigation("Messages");
                 });
@@ -920,7 +940,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Navigation("Roles");
 
-                    b.Navigation("VolunteerShifts");
+                    b.Navigation("UserShifts");
                 });
 #pragma warning restore 612, 618
         }

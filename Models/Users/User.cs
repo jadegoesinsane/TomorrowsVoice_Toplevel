@@ -1,11 +1,9 @@
-﻿using TomorrowsVoice_Toplevel.Models.Users.Account;
-
-namespace TomorrowsVoice_Toplevel.Models.Users
+﻿namespace TomorrowsVoice_Toplevel.Models.Users
 {
-	public class User : Person
+	public class User : Person, IUser
 	{
 		public int ID { get; set; }
-		public ICollection<Role> Roles { get; set; } = new HashSet<Role>();
 		public string? Nickname { get; set; }
+		public ICollection<Role> Roles { get; set; } = new List<Role>();
 	}
 }

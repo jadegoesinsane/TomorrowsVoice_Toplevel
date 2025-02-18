@@ -3,67 +3,67 @@
 <partial name="_ViewHeading" />
 <form asp-action="Create" class="form-container">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-	<input type="hidden" asp-for="ID" />
+	@* <input type="hidden" asp-for="ID" /> *@
 	<div class="form-area">
-	<div class="row g-4 my-3">
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="FirstName" class="form-control" placeholder="First Name" />
-				<label asp-for="FirstName" class="control-label"></label>
-				<span asp-validation-for="FirstName" class="text-danger"></span>
+		<div class="row g-4 my-3">
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="FirstName" class="form-control" placeholder="First Name" />
+					<label asp-for="FirstName" class="control-label"></label>
+					<span asp-validation-for="FirstName" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating optional">
+					<input asp-for="MiddleName" class="form-control" placeholder="Middle Name (optional)" />
+					<label asp-for="MiddleName" class="control-label"></label>
+					<span asp-validation-for="MiddleName" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="LastName" class="form-control" placeholder="Last Name" />
+					<label asp-for="LastName" class="control-label"></label>
+					<span asp-validation-for="LastName" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="Email" class="form-control" placeholder="Email" />
+					<label asp-for="Email" class="control-label"></label>
+					<span asp-validation-for="Email" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="Phone" class="form-control" placeholder="Emergency Contact Number" />
+					<label asp-for="Phone" class="control-label"></label>
+					<span asp-validation-for="Phone" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					@Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as IEnumerable<SelectListItem>, "Select a City", new { @class = "form-control" })
+					<label asp-for="ChapterID" class="control-label"></label>
+					<span asp-validation-for="ChapterID" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="form-group col-md-4 required">
+				<div class="form-floating required">
+					<select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
+					<label asp-for="Status" class="control-label"></label>
+					<span asp-validation-for="Status" class="text-danger"></span>
+				</div>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<div class="form-floating optional">
-				<input asp-for="MiddleName" class="form-control" placeholder="Middle Name (optional)" />
-				<label asp-for="MiddleName" class="control-label"></label>
-				<span asp-validation-for="MiddleName" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="LastName" class="form-control" placeholder="Last Name" />
-				<label asp-for="LastName" class="control-label"></label>
-				<span asp-validation-for="LastName" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="Email" class="form-control" placeholder="Email" />
-				<label asp-for="Email" class="control-label"></label>
-				<span asp-validation-for="Email" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-				<input asp-for="Phone" class="form-control" placeholder="Emergency Contact Number" />
-				<label asp-for="Phone" class="control-label"></label>
-				<span asp-validation-for="Phone" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
-                @Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as IEnumerable<SelectListItem>, "Select a City", new { @class = "form-control" })
-				<label asp-for="ChapterID" class="control-label"></label>
-				<span asp-validation-for="ChapterID" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="form-group col-md-4 required">
-			<div class="form-floating required">
-				<select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
-				<label asp-for="Status" class="control-label"></label>
-				<span asp-validation-for="Status" class="text-danger"></span>
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group col-md-4">
+		<div class="row">
+			<div class="form-group col-md-4">
 				<label class="control-label custom-file-label">Upload Vulnerable Sector Check:</label>
-			<div class="input-group mb-3">
-				<input type="file" class="form-control" name="theFiles" multiple="multiple">
+				<div class="input-group mb-3">
+					<input type="file" class="form-control" name="theFiles" multiple="multiple">
+				</div>
 			</div>
 		</div>
-	</div>
 	</div>
 	<partial name="_FormFooter" />
 

@@ -1,4 +1,5 @@
-﻿using TomorrowsVoice_Toplevel.Models.Volunteering;
+﻿using TomorrowsVoice_Toplevel.Models.Users;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Models.Messaging
 {
@@ -8,7 +9,10 @@ namespace TomorrowsVoice_Toplevel.Models.Messaging
 		public string? Content { get; set; }
 		public int ChatID { get; set; }
 		public int FromAccountID { get; set; }
-		public Volunteer? Volunteer { get; set; }
+		public IUser? User { get; set; }
+
+		//public Volunteer? Volunteer { get; set; }
+		//public Director? Director { get; set; }
 		public DateTime CreatedOn { get; set; } = DateTime.Now;
 	}
 }

@@ -241,42 +241,48 @@ namespace TomorrowsVoice_Toplevel.Data
 								LastName = "Hoekstra",
 								Email = "mHoekstra@sample.com",
 								Phone = "0000000000",
-								ChapterID = 1
+								ChapterID = 1,
+								ID = context.GetNextID()
 							}, new Director
 							{
 								FirstName = "Melissa",
 								LastName = "Dutch",
 								Email = "mDutch@sample.com",
 								Phone = "1111111111",
-								ChapterID = 2
+								ChapterID = 2,
+								ID = context.GetNextID()
 							}, new Director
 							{
 								FirstName = "Anais",
 								LastName = "Kelsey-Verdecchia",
 								Email = "aKelsey-Verdecchia@sample.com",
 								Phone = "2222222222",
-								ChapterID = 3
+								ChapterID = 3,
+								ID = context.GetNextID()
 							}, new Director
 							{
 								FirstName = "Brian",
 								LastName = "Paul D.G.",
 								Email = "bPaulDG@sample.com",
 								Phone = "3333333333",
-								ChapterID = 4
+								ChapterID = 4,
+								ID = context.GetNextID()
 							}, new Director
 							{
 								FirstName = "Monique",
 								LastName = "Hoekstra",
 								Email = "mHoeskra1@sample.com",
 								Phone = "4444444444",
-								ChapterID = 5
+								ChapterID = 5,
+								ID = context.GetNextID()
 							}, new Director
 							{
 								FirstName = "Frances",
 								LastName = "Olson",
 								Email = "fOlson@sample.com",
 								Phone = "5555555555",
-								ChapterID = 6
+								ChapterID = 6,
+								ID = context.GetNextID()
 							});
 						context.SaveChanges();
 					}
@@ -434,6 +440,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								Phone = $"{rnd.Next(100, 1000)}{rnd.Next(100, 1000)}{rnd.Next(1000, 10000)}",
 								FirstName = first,
 								LastName = last,
+								ID = context.GetNextID()
 							};
 							if (i % 2 == 0)
 								volunteer.MiddleName = lastNames[rnd.Next(lastNameCount)][1].ToString().ToUpper();
@@ -515,7 +522,7 @@ namespace TomorrowsVoice_Toplevel.Data
 										};
 										context.Shifts.Add(shift);
 										context.SaveChanges();
-										shift.AddDiscussion(context);
+										shift.AddChat(context);
 									}
 								}
 							}
@@ -523,48 +530,89 @@ namespace TomorrowsVoice_Toplevel.Data
 						context.SaveChanges();
 					}
 
-					if (!context.VolunteerShifts.Any())
+					if (!context.UserShifts.Any())
 					{
 						foreach (Shift shift in context.Shifts)
 						{
 							var volunteers = context.Volunteers
 								.Take(rnd.Next(7))
 								.ToList();
+							var directors = context.Directors
+								.Take(rnd.Next(3))
+								.ToList();
 
+							// Test Messaging with Seed Data
 							foreach (Volunteer volunteer in volunteers)
 							{
-								VolunteerShift volunteerShift = new VolunteerShift
+								UserShift volunteerShift = new UserShift
 								{
-									VolunteerID = volunteer.ID,
+									UserID = volunteer.ID,
 									ShiftID = shift.ID,
 									Shift = shift,
 									Volunteer = volunteer
 								};
 								try
 								{
-									context.VolunteerShifts.Add(volunteerShift);
+									context.UserShifts.Add(volunteerShift);
 									context.SaveChanges();
 								}
 								catch (Exception)
 								{
-									context.VolunteerShifts.Remove(volunteerShift);
+									context.UserShifts.Remove(volunteerShift);
 								}
-								Chat chat = context.Chats.FirstOrDefault(d => d.ShiftID == shift.ID);
-								ChatVolunteer chatVolunteer = new ChatVolunteer
+								Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
+								ChatUser chatUser = new ChatUser
 								{
-									VolunteerID = volunteer.ID,
+									UserID = volunteer.ID,
 									ChatID = chat.ID
 								};
 								try
 								{
-									context.DiscussionVolunteers.Add(chatVolunteer);
+									context.ChatUsers.Add(chatUser);
 									context.SaveChanges();
 								}
 								catch (Exception)
 								{
-									context.DiscussionVolunteers.Remove(chatVolunteer);
+									context.ChatUsers.Remove(chatUser);
 								}
 								chat.AddMessage(context, volunteer, "My message!");
+								//context.SaveChanges();
+							}
+							// Test Messaging with Seed Data
+							foreach (Director director in directors)
+							{
+								UserShift directorShift = new UserShift
+								{
+									UserID = director.ID,
+									ShiftID = shift.ID,
+									Shift = shift,
+									Director = director
+								};
+								try
+								{
+									context.UserShifts.Add(directorShift);
+									context.SaveChanges();
+								}
+								catch (Exception)
+								{
+									context.UserShifts.Remove(directorShift);
+								}
+								Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
+								ChatUser chatUser = new ChatUser
+								{
+									UserID = director.ID,
+									ChatID = chat.ID
+								};
+								try
+								{
+									context.ChatUsers.Add(chatUser);
+									context.SaveChanges();
+								}
+								catch (Exception)
+								{
+									context.ChatUsers.Remove(chatUser);
+								}
+								chat.AddMessage(context, director, "I'm a Director!");
 								//context.SaveChanges();
 							}
 						}

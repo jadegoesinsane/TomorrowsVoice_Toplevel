@@ -1,12 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http.Connections;
 using System.ComponentModel.DataAnnotations;
+using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Users.Account;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Models
 {
 	public class Director : User
 	{
+		public Director()
+		{ }
+
+		//public Director(TVContext context)
+		//{
+		//	ID = context.GetNextID();
+		//}
+
 		//#region Summary Properties
 
 		//[Display(Name = "Phone Number")]
@@ -28,5 +38,7 @@ namespace TomorrowsVoice_Toplevel.Models
 
 		[Display(Name = "Vulnerable Sector Checks")]
 		public ICollection<DirectorDocument> VulnerableSectorChecks { get; set; } = new HashSet<DirectorDocument>();
+
+		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
 	}
 }
