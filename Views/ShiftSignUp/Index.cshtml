@@ -45,6 +45,12 @@
 				</div>
 			</div>
 		</div>
+	<div id="shiftModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<partial name="_DateShift"/>
+		</div>
+	</div>
     <table class="table table-hover">
     <thead>
         <tr>
@@ -54,13 +60,14 @@
             <th>
                 Shifts Available
             </th>
-
+			<th></th>
         </tr>
     </thead>
     
     <tbody>
         @{
             List<String> DateList = new List<String>();
+			int count = 0;
 
             foreach (var item in Model)
             {
@@ -69,13 +76,13 @@
                 {
                     DateList.Add(dateString);
                     
-					<tr action="showShifts(dateString)">
-						<td>@dateString</td>
-						<td>@Model.Where(s=>s.StartAt.ToLongDateString() == dateString).Count()</td>
-                    </tr>
-					
-					
+							<tr>
+								<td>@dateString</td>
+								<td>@Model.Where(s=>s.StartAt.ToLongDateString() == dateString).Count()</td>
+								<td><button id="btnShift" type="button" value="@dateString">Show Shifts</button></td>
+							</tr>
                 }
+				count++;
             }
         }
 
@@ -83,7 +90,35 @@
 </table>
 <partial name="_PagingNavBar" />
 </form>
-@* @section Scripts{
-	showShifts
-} *@
+@section Scripts{
+	<script>
+		var modal = document.getElementById("shiftModal");
+
+		// Get the button that opens the modal
+		document.querySelectorAll("#btnShift").forEach(function (element) {
+			element.onclick = function () {
+				modal.style.display = "block";
+				ViewData["Date"] = ;
+			}
+		});
+
+
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName("close")[0];
+
+		// When the user clicks on the button, open the modal
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function () {
+			modal.style.display = "none";
+		}
+
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function (event) {
+			if (event.target == modal) {
+				modal.style.display = "none";
+			}
+		}
+	</script>
+}
 
