@@ -291,8 +291,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var chapter = await _context.Chapters
-				.Include(c => c.Directors).Include(c => c.City).Include(c => c.Singers)
-                .FirstOrDefaultAsync(c => c.ID == id);
+				.Include(c => c.Directors).Include(c => c.City).Include(c => c.Singers).Include(c => c.Rehearsals)
+				.FirstOrDefaultAsync(c => c.ID == id);
 			try
 			{
 				if (chapter != null)
@@ -304,6 +304,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
                         throw new InvalidOperationException("");
                     }
                     chapter.Status = Status.Archived;
+
+					foreach (var rehearsal in chapter.Rehearsals)
+					{
+						rehearsal.Status = Status.Archived;
+					}
+
+					
+					
 				}
 
 				await _context.SaveChangesAsync();
