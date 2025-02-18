@@ -156,7 +156,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(chapter);
 					await _context.SaveChangesAsync();
-					AddSuccessToast(chapter.City.Name);
+                    var city = await _context.Cities.FirstOrDefaultAsync(c => c.ID == chapter.CityID);
+                    AddSuccessToast(city.Name);
 					return RedirectToAction("Details", new { chapter.ID });
 				}
 			}
@@ -290,15 +291,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var chapter = await _context.Chapters
-				.Include(c => c.Directors)
-				.FirstOrDefaultAsync(c => c.ID == id);
+				.Include(c => c.Directors).Include(c => c.City).Include(c => c.Singers)
+                .FirstOrDefaultAsync(c => c.ID == id);
 			try
 			{
 				if (chapter != null)
 				{
-					//_context.Chapters.Remove(chapter);
-					// Archive a chatper instead of deleting it
-					chapter.Status = Status.Archived;
+                    //_context.Chapters.Remove(chapter);
+                    // Archive a chatper instead of deleting it
+                    if (chapter.Directors.Any(d => d.Status == Status.Active)|| chapter.Singers.Any(d => d.Status == Status.Active))
+                    {
+                        throw new InvalidOperationException("");
+                    }
+                    chapter.Status = Status.Archived;
 				}
 
 				await _context.SaveChangesAsync();
@@ -323,7 +328,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			catch (InvalidOperationException)
 			{
-				ModelState.AddModelError("", $"Unable to delete a chapter that has a director associated with it.");
+				ModelState.AddModelError("", $"Unable to delete a chapter that has active director or avtive singers associated with it.");
 			}
 
 			return View(chapter);

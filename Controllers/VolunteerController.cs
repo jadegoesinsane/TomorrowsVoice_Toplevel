@@ -11,6 +11,7 @@ using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -105,12 +106,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 
-			var volunteer = await _context.Volunteers.FindAsync(id);
-			if (volunteer == null)
+			var volunteer = await _context.Volunteers.Include(g => g.VolunteerShifts).ThenInclude(e => e.Shift)
+               .FirstOrDefaultAsync(m => m.ID == id);
+            if (volunteer == null)
 			{
 				return NotFound();
 			}
-			return View(volunteer);
+            PopulateAssignedEnrollmentData(volunteer);
+            return View(volunteer);
 		}
 
 		// POST: Volunteer/Edit/5
@@ -118,20 +121,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id)
-		{
+		public async Task<IActionResult> Edit(int id, string[] selectedOptions)
+        {
 
-			var volunteerToUpdate = await _context.Volunteers
-			   
-			   .FirstOrDefaultAsync(m => m.ID == id);
+            var volunteerToUpdate = await _context.Volunteers.Include(g => g.VolunteerShifts).ThenInclude(e => e.Shift)
+               .FirstOrDefaultAsync(m => m.ID == id);
 
-			if (volunteerToUpdate == null)
+            if (volunteerToUpdate == null)
 			{
 				return NotFound();
 			}
-
-			// Try updating with posted values
-			if (await TryUpdateModelAsync<Volunteer>(volunteerToUpdate,
+            UpdateEnrollments(selectedOptions, volunteerToUpdate);
+            // Try updating with posted values
+            if (await TryUpdateModelAsync<Volunteer>(volunteerToUpdate,
 					"",
 					r => r.FirstName,
 					r => r.LastName,
@@ -165,8 +167,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 
-		
-			return View(volunteerToUpdate);
+            PopulateAssignedEnrollmentData(volunteerToUpdate);
+            return View(volunteerToUpdate);
 
 
 			
@@ -223,8 +225,75 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			
 		}
+        private void PopulateAssignedEnrollmentData(Volunteer volunteer)
+        {
+            //For this to work, you must have Included the child collection in the parent object
+            var allOptions = _context.Shifts;
+            var currentOptionsHS = new HashSet<int>(volunteer.VolunteerShifts.Select(b => b.ShiftID));
+            //Instead of one list with a boolean, we will make two lists
+            var selected = new List<ListOptionVM>();
+            var available = new List<ListOptionVM>();
+            foreach (var c in allOptions)
+            {
+                if (currentOptionsHS.Contains(c.ID))
+                {
+                    selected.Add(new ListOptionVM
+                    {
+                        ID = c.ID,
+                        DisplayText = c.EndAt.ToString()
+                    });
+                }
+                else
+                {
+                    available.Add(new ListOptionVM
+                    {
+                        ID = c.ID,
+                        DisplayText = c.EndAt.ToString()
+                    });
+                }
+            }
 
-		private bool VolunteerExists(int id)
+            ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+            ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+        }
+        private void UpdateEnrollments(string[] selectedOptions, Volunteer volunteerToUpdate)
+        {
+            if (selectedOptions == null)
+            {
+                volunteerToUpdate.VolunteerShifts = new List<VolunteerShift>();
+                return;
+            }
+
+            var selectedOptionsHS = new HashSet<string>(selectedOptions);
+            var currentOptionsHS = new HashSet<int>(volunteerToUpdate.VolunteerShifts.Select(b => b.ShiftID));
+            foreach (var c in _context.Shifts)
+            {
+                if (selectedOptionsHS.Contains(c.ID.ToString()))//it is selected
+                {
+                    if (!currentOptionsHS.Contains(c.ID))//but not currently in the GroupClass's collection - Add it!
+                    {
+                        volunteerToUpdate.VolunteerShifts.Add(new VolunteerShift
+                        {
+                            ShiftID = c.ID,
+                            VolunteerID = volunteerToUpdate.ID
+                        });
+                    }
+                }
+                else //not selected
+                {
+                    if (currentOptionsHS.Contains(c.ID))//but is currently in the GroupClass's collection - Remove it!
+                    {
+                        VolunteerShift? enrollmentToRemove = volunteerToUpdate.VolunteerShifts
+                            .FirstOrDefault(d => d.ShiftID == c.ID);
+                        if (enrollmentToRemove != null)
+                        {
+                            _context.Remove(enrollmentToRemove);
+                        }
+                    }
+                }
+            }
+        }
+        private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
 		}

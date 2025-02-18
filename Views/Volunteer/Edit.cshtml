@@ -45,8 +45,22 @@
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
             </div>
+
+            <div class="form-group col-md-6">
+                <label class="control-label">  Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+                    <strong>-</strong>
+                </button>
+                @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="control-label"> Choose </label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+                    <strong>+</strong>
+                </button>
+                @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
+            </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" id="btnSubmit" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -58,4 +72,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/js/multiselect.js"></script>
 }

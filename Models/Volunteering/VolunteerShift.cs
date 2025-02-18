@@ -6,5 +6,7 @@
 		public Volunteer? Volunteer { get; set; }
 		public int ShiftID { get; set; }
 		public Shift? Shift { get; set; }
+
+		
 	}
 }
