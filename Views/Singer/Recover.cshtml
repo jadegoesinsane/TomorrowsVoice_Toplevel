@@ -1,0 +1,105 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Singer
+
+<partial name="_ViewHeading" />
+
+<div>
+	<h4>@Model.NameFormatted</h4>
+	<hr />
+</div>
+<div>
+	<!-- Nav tabs -->
+	<nav>
+		<div class="nav nav-pills" id="myTabs" role="tablist">
+			<button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
+					type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
+				Basic Details
+			</button>
+			<button class="nav-link" id="Rehearsals-Tab" data-bs-toggle="tab" data-bs-target="#RehearsalsPanel"
+					type="button" role="tab" aria-controls="RehearsalsPanel" aria-selected="false">
+				Rehearsals
+			</button>
+		</div>
+	</nav>
+
+	<!-- Tab panes -->
+	<div class="tab-content" id="nav-tabContent">
+		<div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
+			<br />
+			<dl class="row">
+				<div class="col-md-2">
+					<dt>
+						@Html.DisplayNameFor(model => model.NameFormatted)
+					</dt>
+					<dd>@Html.DisplayFor(model => model.NameFormatted)</dd>
+				</div>
+				<div class="col-md-2">
+					<dt>
+						@Html.DisplayNameFor(model => model.Email)
+					</dt>
+					<dd>@Html.DisplayFor(model => model.Email)</dd>
+				</div>
+				<div class="col-md-8">
+					<dt>
+						@Html.DisplayNameFor(model => model.EmergencySummary)
+					</dt>
+					<dd>
+						@Html.DisplayFor(model => model.ContactName)
+						@Html.DisplayFor(model => model.PhoneFormatted)
+					</dd>
+				</div>
+			</dl>
+			<dl class="row">
+				<div class="col-md-2">
+					<dt>
+						@Html.DisplayNameFor(model => model.Chapter)
+					</dt>
+					<dd>
+						@Html.DisplayFor(model => model.Chapter.City.Name)
+					</dd>
+				</div>
+				<div class="col-md-2">
+					<dt>
+						@Html.DisplayNameFor(model => model.Status)
+					</dt>
+					<dd>
+						@Html.DisplayFor(model => model.Status)
+					</dd>
+				</div>
+			</dl>
+			<dl class="row">
+				<div class="col-md-8">
+					<dt>
+						@Html.DisplayNameFor(model => model.Note)
+					</dt>
+					<dd>
+						@Html.DisplayFor(model => model.Note)
+					</dd>
+				</div>
+			</dl>
+		</div>
+		<div class="tab-pane fade ml-3" role="tabpanel" id="RehearsalsPanel" aria-labelledby="Rehearsals-tab">
+			<br />
+		</div>
+	</div>
+</div>
+<hr />
+<br />
+<div>
+	<form asp-action="Recover">
+		<input type="hidden" asp-for="ID" />
+		<input type="submit" value="Recover" class="btn btn-danger" /> |
+		<partial name="_BackToList" />
+	</form>
+</div>
+@section Scripts {
+	<script type="text/javascript">
+		$('.nav-link').click(function () {
+			var activeTab = $(this).attr("id");
+			switch (activeTab) {
+				case 'Rehearsals-Tab': $('#RehearsalsPanel').load('/Singer/ListOfRehearsalDetails/@Model.ID');
+					break;
+				default: break;
+			};
+		})
+	</script>
+}

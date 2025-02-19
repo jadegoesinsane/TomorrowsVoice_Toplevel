@@ -400,6 +400,57 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(singer);
 		}
 
+
+		public async Task<IActionResult> Recover(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var singer = await _context.Singers
+				.Include(s => s.Chapter).ThenInclude(c => c.City)
+				.Include(s => s.RehearsalAttendances).ThenInclude(ra => ra.Rehearsal)
+				.AsNoTracking()
+				.FirstOrDefaultAsync(s => s.ID == id);
+			if (singer == null)
+			{
+				return NotFound();
+			}
+
+			return View(singer);
+		}
+
+		// POST: Singer/Delete/5
+		[HttpPost, ActionName("Recover")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RecoverConfirmed(int id)
+		{
+			var singer = await _context.Singers
+			   .Include(r => r.RehearsalAttendances).ThenInclude(r => r.Rehearsal)
+			   .FirstOrDefaultAsync(m => m.ID == id);
+
+			try
+			{
+				if (singer != null)
+				{
+					//_context.Singers.Remove(singer);
+
+					// Here we are archiving a singer instead of deleting them
+					singer.Status = Status.Active;
+					await _context.SaveChangesAsync();
+					AddSuccessToast(singer.NameFormatted);
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException)
+			{
+				ModelState.AddModelError("", "Unable to delete record. Please try again.");
+			}
+
+			return View(singer);
+		}
+
 		// GET: Singer/Upload/
 		public async Task<IActionResult> Upload()
 		{

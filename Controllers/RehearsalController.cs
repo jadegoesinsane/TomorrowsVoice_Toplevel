@@ -51,10 +51,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			int? page,
 			int? pageSizeID,
 			DateTime StartDate,
-			DateTime EndDate,
+			DateTime EndDate, string? StatusFilter,
 			string sortDirection = "asc",
 			string sortField = "Date")
 		{
+			if (Enum.TryParse(StatusFilter, out Status selectedStatus))
+			{
+				ViewBag.StatusSelectList = Status.Active.ToSelectList(selectedStatus);
+			}
+			else
+			{
+				ViewBag.StatusSelectList = Status.Active.ToSelectList(null);
+			}
 			if (EndDate == DateTime.MinValue)
 			{
 				int dayInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
@@ -85,10 +93,25 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
 				.Include(r => r.Director)
 				.Include(d => d.Chapter).ThenInclude(c => c.City)
-				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate && a.Status != Status.Archived)
+				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate )
 				.AsNoTracking();
 
 			// Filters
+			if (!String.IsNullOrEmpty(StatusFilter))
+			{
+				rehearsals = rehearsals.Where(p => p.Status == selectedStatus);
+
+				// filter out archived singers if the user does not specifically select "archived"
+				if (selectedStatus != Status.Archived)
+				{
+					rehearsals = rehearsals.Where(d => d.Status != Status.Archived);
+				}
+				numFilters++;
+			}
+			else
+			{
+				rehearsals = rehearsals.Where(d => d.Status != Status.Archived);
+			}
 			if (DirectorID.HasValue)
 			{
 				rehearsals = rehearsals.Where(r => r.DirectorID == DirectorID);
@@ -303,6 +326,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					r => r.StartAt,
 					r => r.EndAt,
 					r => r.Note,
+					r => r.Status,
 					r => r.DirectorID,
 					r => r.ChapterID))
 				{
@@ -394,7 +418,55 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			return View(rehearsal);
 		}
+		public async Task<IActionResult> Recover(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
+			var rehearsal = await _context.Rehearsals
+				.Include(r => r.Director)
+				.Include(d => d.Chapter).ThenInclude(c => c.City)
+				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (rehearsal == null)
+			{
+				return NotFound();
+			}
+
+			return View(rehearsal);
+		}
+
+		// POST: Rehearsal/Delete/5
+		[HttpPost, ActionName("Recover")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RecoverConfirmed(int id)
+		{
+			var rehearsal = await _context.Rehearsals
+				.Include(r => r.Director)
+				.Include(d => d.Chapter)
+				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Singer)
+				.FirstOrDefaultAsync(m => m.ID == id);
+
+			try
+			{
+				if (rehearsal != null)
+				{
+					//_context.Rehearsals.Remove(rehearsal);
+					// Archive a rehearsal instead of deleting it
+					rehearsal.Status = Status.Active;
+					await _context.SaveChangesAsync();
+					AddSuccessToast("Rehearsal on " + rehearsal.TimeSummary);
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException)
+			{
+				ModelState.AddModelError("", "Unable to delete record. Please try again.");
+			}
+			return View(rehearsal);
+		}
 		//private SelectList DirectorSelectList(int? id)
 		//{
 		//	return new SelectList(_context.Directors

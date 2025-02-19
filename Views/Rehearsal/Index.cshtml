@@ -42,6 +42,15 @@
 							<label class="control-label" for="EndDate">End Date:</label>
 
 						</div>
+							<div class="col-md-2">
+								<div class="form-floating">
+									@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
+																		"All Status", htmlAttributes: new { @class = "form-control" })
+									<label class="control-label" for="StatusFilter">Select by Status:</label>
+
+								</div>
+
+							</div>
 						<div class="col-md-3 d-flex justify-content-evenly">
 							<input type="submit" name="actionButton" value="Filter"
 								   class="btn btn-outline-primary" />
@@ -64,6 +73,7 @@
 					<th aria-label="Chapter">Chapter</th>
 					<th aria-label="Attendances Rate">Attendances Rate</th>
 					<th class="d-none d-sm-table-cell" aria-label="Attendances">Attendances</th>
+					<th aria-label="Status">Status</th>
 					<th aria-label="Actions"></th>
 				</tr>
 			</thead>
@@ -124,7 +134,17 @@
 							}
 						</td>
 						<td>
-							<partial name="_CrudIcons" model="@item.ID" />
+							@Html.DisplayFor(modelItem => item.Status)
+						</td>
+						<td>
+							@if (item.Status != Status.Archived)
+							{
+									<partial name="_CrudIcons" model="@item.ID" />
+							}
+							else
+							{
+									<partial name="_CrudIconsRecover" model="@item.ID" />
+							}
 						</td>
 					</tr>
 				}

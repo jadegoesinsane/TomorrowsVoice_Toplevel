@@ -76,7 +76,14 @@
 						<a href="tel:@item.PhoneFormatted">@item.PhoneFormatted</a>
 					</td>
 					<td>
-						<partial name="_CrudIcons" model="@item.ID" />
+						@if (item.Status != Status.Archived)
+						{
+							<partial name="_CrudIcons" model="@item.ID" />
+						}
+						else
+						{
+							<partial name="_CrudIconsRecover" model="@item.ID" />
+						}
 					</td>
 				</tr>
 			}

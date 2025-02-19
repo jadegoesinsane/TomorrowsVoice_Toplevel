@@ -362,6 +362,68 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
+		public async Task<IActionResult> Recover(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var director = await _context.Directors
+				.Include(d => d.Chapter)
+					.ThenInclude(c => c.City)
+				.Include(d => d.Rehearsals)
+				.Include(d => d.VulnerableSectorChecks)
+				.AsNoTracking()
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (director == null)
+			{
+				return NotFound();
+			}
+			return View(director);
+		}
+
+		// POST: Director/Recover/5
+		[HttpPost, ActionName("Recover")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RecoverConfirmed(int id)
+		{
+			var director = await _context.Directors
+				.Include(d => d.VulnerableSectorChecks)
+				.FirstOrDefaultAsync(d => d.ID == id);
+			try
+			{
+				if (director != null)
+				{
+					//_context.Directors.Remove(director);
+
+					// Archive a director instead of deleting them
+					director.Status = Status.Active;
+				}
+
+				await _context.SaveChangesAsync();
+				AddSuccessToast(director.NameFormatted);
+				var returnUrl = ViewData["returnUrl"]?.ToString();
+				if (string.IsNullOrEmpty(returnUrl))
+				{
+					return RedirectToAction(nameof(Index));
+				}
+				return Redirect(returnUrl);
+			}
+			catch (DbUpdateException dex)
+			{
+				if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
+				{
+					ModelState.AddModelError("", "Unable to Delete Director. Remember, you cannot delete a Director that has rehearsals.");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+				}
+			}
+			return View(director);
+		}
+
 		public void PopulateDropDownLists(Director? director = null)
 		{
 			ViewData["ChapterID"] = CitySelectList(director?.ChapterID);
