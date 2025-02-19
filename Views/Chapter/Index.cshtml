@@ -90,7 +90,6 @@
 							<i class="bi bi-pencil-square"></i>
 						</a>
 
-						<!-- Conditionally render the delete/recover button based on the status -->
 						@if (item.Status == Status.Active)
 						{
 							<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
