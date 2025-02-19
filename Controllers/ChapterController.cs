@@ -28,7 +28,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: Chapter
-		public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID, string? ProvinceFilter,
+		public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID, string? StatusFilter, string? ProvinceFilter,
 
 			string? actionButton, string sortDirection = "asc", string sortField = "Chapter")
 		{
@@ -37,6 +37,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			//Count the number of filters applied - start by assuming no filters
 			ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
+
+			if (Enum.TryParse(StatusFilter, out Status selectedStatus))
+			{
+				ViewBag.StatusSelectList = Status.Active.ToSelectList(selectedStatus);
+			}
+			else
+			{
+				ViewBag.StatusSelectList = Status.Active.ToSelectList(null);
+			}
 			if (Enum.TryParse(ProvinceFilter, out Province selectedDOW))
 			{
 				ViewBag.DOWSelectList = Province.Ontario.ToSelectList(selectedDOW);
@@ -50,9 +59,24 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(c => c.Singers)
 				.Include(c => c.Directors)
 				.Include(c => c.City)
-				.Where(c => c.Status != Status.Archived)
+				
 				.AsNoTracking();
+			if (!String.IsNullOrEmpty(StatusFilter))
+			{
+				chapters = chapters.Where(p => p.Status == selectedStatus);
 
+				// filter out archived singers if the user does not specifically select "archived"
+				if (selectedStatus != Status.Archived)
+				{
+					chapters = chapters.Where(d => d.Status != Status.Archived);
+				}
+				numberFilters++;
+			}
+			// filter out singers even if status filter has not been set
+			else
+			{
+				chapters = chapters.Where(d => d.Status != Status.Archived);
+			}
 			if (!String.IsNullOrEmpty(ProvinceFilter))
 			{
 				chapters = chapters.Where(c => c.City.Province == selectedDOW);
@@ -264,8 +288,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(chapterToUpdate);
 		}
 
-		// GET: Chapter/Delete/5
-		public async Task<IActionResult> Delete(int? id)
+        // GET: Chapter/Delete/5
+     
+        public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -281,7 +306,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-			PopulateDropDownLists(chapter);
+			
 			return View(chapter);
 		}
 
@@ -297,21 +322,107 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (chapter != null)
 				{
-                    //_context.Chapters.Remove(chapter);
-                    // Archive a chatper instead of deleting it
-                    if (chapter.Directors.Any(d => d.Status == Status.Active)|| chapter.Singers.Any(d => d.Status == Status.Active))
-                    {
-                        throw new InvalidOperationException("");
-                    }
-                    chapter.Status = Status.Archived;
+					//_context.Chapters.Remove(chapter);
+					// Archive a chatper instead of deleting it
+					
+					chapter.Status = Status.Archived;
 
+					
 					foreach (var rehearsal in chapter.Rehearsals)
 					{
 						rehearsal.Status = Status.Archived;
 					}
+					foreach (var a in chapter.Directors)
+					{
+						a.Status = Status.Archived;
+					}
+					foreach (var a in chapter.Singers)
+					{
+						a.Status = Status.Archived;
+					}
 
+
+				}
+
+				await _context.SaveChangesAsync();
+				AddSuccessToast(chapter.City.Name);
+				var returnUrl = ViewData["returnURL"]?.ToString();
+				if (string.IsNullOrEmpty(returnUrl))
+				{
+					return RedirectToAction(nameof(Index));
+				}
+				return Redirect(returnUrl);
+			}
+			catch (DbUpdateException dex)
+			{
+				if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
+				{
+					ModelState.AddModelError("", "Unable to Delete Chapter. Remember, you cannot delete a Chapter.");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+				}
+			}
+			catch (InvalidOperationException)
+			{
+				ModelState.AddModelError("", $"Unable to delete a chapter that has active director or avtive singers associated with it.");
+			}
+
+			return View(chapter);
+		}
+
+		
+		public async Task<IActionResult> Recover(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var chapter = await _context.Chapters
+				.Include(c => c.Directors)
+				.Include(c => c.City)
+				.AsNoTracking()
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (chapter == null)
+			{
+				return NotFound();
+			}
+
+			return View(chapter);
+		}
+
+		// POST: Chapter/Delete/5
+		[HttpPost, ActionName("Recover")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RecoverConfirmed(int id)
+		{
+			var chapter = await _context.Chapters
+				.Include(c => c.Directors).Include(c => c.City).Include(c => c.Singers).Include(c => c.Rehearsals)
+				.FirstOrDefaultAsync(c => c.ID == id);
+			try
+			{
+				if (chapter != null)
+				{
+					//_context.Chapters.Remove(chapter);
+					// Archive a chatper instead of deleting it
 					
-					
+					chapter.Status = Status.Active;
+
+					foreach (var rehearsal in chapter.Rehearsals)
+					{
+						rehearsal.Status = Status.Active;
+					}
+					foreach (var a in chapter.Directors)
+					{
+						a.Status = Status.Active;
+					}
+					foreach (var a in chapter.Singers)
+					{
+						a.Status = Status.Active;
+					}
+
 				}
 
 				await _context.SaveChangesAsync();

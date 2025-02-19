@@ -29,6 +29,16 @@
 						<label class="control-label" for="SearchString">Search Name:</label>
 					</div>
 
+					<div class="col-md-2">
+						<div class="form-floating">
+							@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
+																"All Status", htmlAttributes: new { @class = "form-control" })
+							<label class="control-label" for="StatusFilter">Select by Status:</label>
+
+						</div>
+
+					</div>
+
 					<div class="col-md-2 d-flex justify-content-evenly">
 						<input type="submit" name="actionButton" value="Filter"
 							   class="btn btn-outline-primary" />
@@ -71,7 +81,30 @@
 						@item.Singers.Where(s => s.Status == Status.Active).Count()
 					</td>
 					<td>
-						<partial name="_CrudIcons" model="@item.ID" />
+						<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
+						   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+							<i class="bi bi-search"></i>
+						</a>
+						<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
+						   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+							<i class="bi bi-pencil-square"></i>
+						</a>
+
+						<!-- Conditionally render the delete/recover button based on the status -->
+						@if (item.Status == Status.Active)
+						{
+							<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+							   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+								<i class="bi bi-x-lg"></i>
+							</a>
+						}
+						else
+						{
+							<a asp-action="Recover" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+							   role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
+								<i class="bi bi-arrow-clockwise"></i>
+							</a>
+						}
 					</td>
 				</tr>
 			}
