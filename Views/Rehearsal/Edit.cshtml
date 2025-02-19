@@ -30,21 +30,27 @@
 			</div>
 			<div class="w-100" style="margin:0px;"></div>
 
-			<div class="col-md-3">
-				<div class="form-floating required my-4">
+			<div class="col-md-2">
+				<div class="form-floating required ">
 					<select asp-for="ChapterID" class="form-control" id="Filter" onchange="filterByCity()" asp-items="ViewBag.ChapterID"></select>
 					@*                 @Html.DropDownList("chapterSelect", ViewBag.Chapters as SelectList, "Select a Chapter",
 					new { @class = "form-control", @id = "Filter", @onchange = "filterByCity()"}) *@
 					<label asp-for="ChapterID" class="control-label"></label>
 				</div>
 			</div>
-			<div class="col-md-3">
-				<div class="form-floating required my-4">
+			<div class="col-md-2">
+				<div class="form-floating required">
 					<select asp-for="DirectorID" class="form-control" asp-items="ViewBag.DirectorID"></select>
 					<label asp-for="DirectorID" class="control-label"></label>
 				</div>
 			</div>
-
+			<div class="col-md-2">
+				<div class="form-floating required ">
+					<select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
+					<label asp-for="Status" class="control-label"></label>
+					<span asp-validation-for="Status" class="text-danger"></span>
+				</div>
+			</div>
 			<div class="w-100" style="margin:0px;"></div>
 			<div class="col-md-6">
 				<div class="row">
@@ -62,6 +68,7 @@
 					</div>
 				</div>
 			</div>
+			
 
 			<div class="w-100" style="margin:0px;"></div>
 			<div class="col-md-6">

@@ -81,28 +81,15 @@
 						@item.Singers.Where(s => s.Status == Status.Active).Count()
 					</td>
 					<td>
-						<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
-						   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-							<i class="bi bi-search"></i>
-						</a>
-						<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
-						   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-							<i class="bi bi-pencil-square"></i>
-						</a>
+					
 
-						@if (item.Status == Status.Active)
+						@if (item.Status != Status.Archived)
 						{
-							<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-							   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-								<i class="bi bi-x-lg"></i>
-							</a>
+							<partial name="_CrudIcons" model="@item.ID" />
 						}
 						else
 						{
-							<a asp-action="Recover" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-							   role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
-								<i class="bi bi-arrow-clockwise"></i>
-							</a>
+							<partial name="_CrudIconsRecover" model="@item.ID" />
 						}
 					</td>
 				</tr>

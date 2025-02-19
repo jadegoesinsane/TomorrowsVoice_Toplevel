@@ -50,7 +50,7 @@
 			</div>
 			<div class="form-group col-md-4 required">
 				<div class="form-floating required">
-					<select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
+					<select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
 					<label asp-for="Status" class="control-label"></label>
 					<span asp-validation-for="Status" class="text-danger"></span>
 				</div>

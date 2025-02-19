@@ -4,6 +4,8 @@
 	{
 		Active,
 		Inactive,
-		Archived
+		Archived,
+		Canceled
+
 	}
 }

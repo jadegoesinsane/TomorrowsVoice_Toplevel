@@ -577,6 +577,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private void PopulateDropDownLists(Singer? singer = null)
 		{
 			ViewData["ChapterID"] = CitySelectList(singer?.ChapterID, Status.Active);
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active || s == Status.Inactive)
+						 .ToList();
+
+
+			ViewBag.StatusList = new SelectList(statusList);
 		}
 
 		private bool SingerExists(int id)

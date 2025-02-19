@@ -416,6 +416,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			ViewData["DirectorID"] = DirectorSelectList(rehearsal?.DirectorID, Status.Active);
 			ViewData["ChapterID"] = CitySelectList(rehearsal?.ChapterID, Status.Active);
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active || s == Status.Canceled)
+						 .ToList();
+
+
+			ViewBag.StatusList = new SelectList(statusList);
 		}
 
 		private void PopulateAttendance(int? chapterSelect, Rehearsal rehearsal)

@@ -365,6 +365,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public void PopulateDropDownLists(Director? director = null)
 		{
 			ViewData["ChapterID"] = CitySelectList(director?.ChapterID);
+
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active|| s== Status.Inactive)
+						 .ToList();
+
+		
+			ViewBag.StatusList = new SelectList(statusList);
 		}
 
 		//Partial View for Directors Rehearsal View
