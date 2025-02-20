@@ -37,6 +37,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			Enum.TryParse(StatusFilter, out Status selectedDOW);
 			
 			PopulateDropDownLists();
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active || s == Status.Inactive || s == Status.Archived)
+						 .ToList();
+
+
+			ViewBag.StatusList = new SelectList(statusList);
 
 			var singers = _context.Singers
 				.Include(s => s.Chapter).ThenInclude(c => c.City)
@@ -574,7 +581,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
-						 .Where(s => s == Status.Active || s == Status.Inactive || s == Status.Archived)
+						 .Where(s => s == Status.Active || s == Status.Inactive )
 						 .ToList();
 
 
