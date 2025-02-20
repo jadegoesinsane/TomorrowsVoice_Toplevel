@@ -55,14 +55,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			string sortDirection = "asc",
 			string sortField = "Date")
 		{
-			if (Enum.TryParse(StatusFilter, out Status selectedStatus))
-			{
-				ViewBag.StatusSelectList = Status.Active.ToSelectList(selectedStatus);
-			}
-			else
-			{
-				ViewBag.StatusSelectList = Status.Active.ToSelectList(null);
-			}
+			Enum.TryParse(StatusFilter, out Status selectedStatus);
+
+
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						  .Where(s => s == Status.Active || s == Status.Canceled || s == Status.Archived)
+						 .ToList();
+
+			ViewBag.StatusSelectList = new SelectList(statusList);
 			if (EndDate == DateTime.MinValue)
 			{
 				int dayInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);

@@ -37,14 +37,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			int numberFilters = 0;
 
 			// Select list for statuses
-			if (Enum.TryParse(StatusFilter, out Status selectedStatus))
-			{
-				ViewBag.StatusSelectList = Status.Active.ToSelectList(selectedStatus);
-			}
-			else
-			{
-				ViewBag.StatusSelectList = Status.Active.ToSelectList(null);
-			}
+			Enum.TryParse(StatusFilter, out Status selectedStatus);
+
+
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						  .Where(s => s == Status.Active || s == Status.Inactive || s == Status.Archived)
+						 .ToList();
+
+			ViewBag.StatusSelectList = new SelectList(statusList);
 
 			var directors = _context.Directors
 				.Include(d => d.Chapter)

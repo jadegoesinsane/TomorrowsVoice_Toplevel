@@ -38,14 +38,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
 
-			if (Enum.TryParse(StatusFilter, out Status selectedStatus))
-			{
-				ViewBag.StatusSelectList = Status.Active.ToSelectList(selectedStatus);
-			}
-			else
-			{
-				ViewBag.StatusSelectList = Status.Active.ToSelectList(null);
-			}
+			Enum.TryParse(StatusFilter, out Status selectedStatus);
+			
+
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active || s == Status.Archived)
+						 .ToList();
+
+			ViewBag.StatusSelectList = new SelectList(statusList);
 			if (Enum.TryParse(ProvinceFilter, out Province selectedDOW))
 			{
 				ViewBag.DOWSelectList = Province.Ontario.ToSelectList(selectedDOW);
