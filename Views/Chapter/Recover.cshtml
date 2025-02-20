@@ -32,7 +32,8 @@
 			@Html.DisplayFor(model => model.City.Name)
 		</dd>
 	</dl>
-
+	<p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
+		Note: Note: Recovering a chapter will recover all related directors, singers, and rehearsals.
 	<form asp-action="Recover">
 		<input type="hidden" asp-for="ID" />
 		<input type="submit" value="Recover" class="btn btn-danger" /> |
