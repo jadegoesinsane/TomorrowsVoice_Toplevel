@@ -459,77 +459,226 @@ namespace TomorrowsVoice_Toplevel.Data
 					// Events
 					if (!context.Events.Any())
 					{
-						Event wrappingEvent = new Event
+						var events = new List<Event>
 						{
-							Name = "Gift Wrapping",
-							StartDate = new DateTime(2024, 11, 29),
-							EndDate = new DateTime(2024, 12, 22),
-							Descripion = "Join us to help wrap gifts for those in need!",
-							Location = "Pen Center, St. Catharines",
-							Status = Status.Active
+							new Event
+							{
+								Name = "Gift Wrapping - 2024",
+								StartDate = new DateTime(2024, 11, 29),
+								EndDate = new DateTime(2024, 12, 22),
+								Descripion = "Join us to help wrap gifts for those in need!",
+								Location = "Pen Center, St. Catharines",
+								Status = Status.Active
+							},                          
+							new Event
+							{
+								Name = "Gift Wrapping - 2025",
+								StartDate = new DateTime(2025, 11, 30),
+								EndDate = new DateTime(2025, 12, 21),
+								Descripion = "Join us to help wrap gifts for those in need!",
+								Location = "Pen Center, St. Catharines",
+								Status = Status.Active
+							},
+							new Event
+							{
+								Name = "Bake Sale - 2025",
+								StartDate = new DateTime(2025, 03, 10),
+								EndDate = new DateTime(2025, 03, 15),
+								Descripion = "We will be selling homemade baked goods",
+								Location = "Eastgate Square, Hamilton",
+								Status = Status.Active
+							},
+							new Event
+							{
+								Name = "Bake Sale - 2025",
+								StartDate = new DateTime(2025, 7, 10),
+								EndDate = new DateTime(2025, 7, 15),
+								Descripion = "We will be selling homemade baked goods",
+								Location = "Eaton Centre, Toronto",
+								Status = Status.Active
+							}
 						};
-						var chapter = context.Chapters.FirstOrDefault(c => c.City.Name == "St. Catharines");
-						context.Events.Add(wrappingEvent);
+						context.Events.AddRange(events);
 						context.SaveChanges();
-						context.CityEvents.Add(new CityEvent { EventID = wrappingEvent.ID, CityID = chapter.ID });
+
+						//CityEvents
+						context.CityEvents.AddRange(new List<CityEvent>
+						{
+							new CityEvent { EventID = events[0].ID, CityID = context.Cities.FirstOrDefault(c => c.Name == "St. Catharines").ID },
+							new CityEvent { EventID = events[1].ID, CityID = context.Cities.FirstOrDefault(c => c.Name == "Toronto").ID },
+							new CityEvent { EventID = events[2].ID, CityID = context.Cities.FirstOrDefault(c => c.Name == "Hamilton").ID },
+							new CityEvent { EventID = events[3].ID, CityID = context.Cities.FirstOrDefault(c => c.Name == "St. Catharines").ID },
+						});
+
 						context.SaveChanges();
 					}
 
 					// Shifts
-					if (!context.Shifts.Any())
+					var shifts = new List<Shift>();
+					foreach (var @event in context.Events)
 					{
-						foreach (Event @event in context.Events)
+						if (@event.Name == "Gift Wrapping - 2024")
 						{
-							if (@event.Name == "Gift Wrapping")
+							List<DateTime> dates = new List<DateTime>
 							{
-								List<DateTime> dates = new List<DateTime>
-								{
-									new DateTime(2024, 11, 29),
-									new DateTime(2024, 12, 2),
-									new DateTime(2024, 12, 3),
-									new DateTime(2024, 12, 6),
-									new DateTime(2024, 12, 7),
-									new DateTime(2024, 12, 8),
-									new DateTime(2024, 12, 11),
-									new DateTime(2024, 12, 12),
-									new DateTime(2024, 12, 16),
-									new DateTime(2024, 12, 17),
-									new DateTime(2024, 12, 20),
-									new DateTime(2024, 12, 21),
-									new DateTime(2024, 12, 22)
-								};
+								new DateTime(2024, 11, 29),
+								new DateTime(2024, 12, 2),
+								new DateTime(2024, 12, 3),
+								new DateTime(2024, 12, 6),
+								new DateTime(2024, 12, 7),
+								new DateTime(2024, 12, 8),
+								new DateTime(2024, 12, 11),
+								new DateTime(2024, 12, 12),
+								new DateTime(2024, 12, 16),
+								new DateTime(2024, 12, 17),
+								new DateTime(2024, 12, 20),
+								new DateTime(2024, 12, 21),
+								new DateTime(2024, 12, 22)
+							};
 
-								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
-								{
-									(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
-									(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 2pm to 6pm
-									(new TimeSpan(18, 0, 0), new TimeSpan(21, 0, 0))   // 6pm to 9pm
-								};
+							List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+							{
+								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
+								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 2pm to 6pm
+								(new TimeSpan(18, 0, 0), new TimeSpan(21, 0, 0))   // 6pm to 9pm
+							};
 
-								foreach (var date in dates)
+							foreach (var date in dates)
+							{
+								foreach (var time in times)
 								{
-									foreach (var time in times)
+									if (date.DayOfWeek == DayOfWeek.Sunday && time.Start.Hours >= 18)
+										continue;
+
+									Shift shift = new Shift
 									{
-										if (date.DayOfWeek == DayOfWeek.Sunday && time.Start.Hours >= 18)
-											continue;
-
-										Shift shift = new Shift
-										{
-											EventID = @event.ID,
-											StartAt = date.Add(time.Start),
-											EndAt = date.Add(time.End),
-											VolunteersNeeded = 5
-										};
-										context.Shifts.Add(shift);
-										context.SaveChanges();
-										shift.AddChat(context);
-									}
+										EventID = @event.ID,
+										StartAt = date.Add(time.Start),
+										EndAt = date.Add(time.End),
+										VolunteersNeeded = 5
+									};
+									shifts.Add(shift);
 								}
 							}
 						}
-						context.SaveChanges();
-					}
+						else if (@event.Name == "Gift Wrapping - 2025")
+						{
+							List<DateTime> dates = new List<DateTime> 
+							{ 
+								new DateTime(2025, 11, 30),
+								new DateTime(2025, 12, 2),
+								new DateTime(2025, 12, 3),
+								new DateTime(2025, 12, 6),
+								new DateTime(2025, 12, 7),
+								new DateTime(2025, 12, 8),
+								new DateTime(2025, 12, 11),
+								new DateTime(2025, 12, 12),
+								new DateTime(2025, 12, 16),
+								new DateTime(2025, 12, 17),
+								new DateTime(2025, 12, 20),
+								new DateTime(2025, 12, 21),
+								new DateTime(2025, 12, 22)
+							};
 
+							List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+							{
+								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
+								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 2pm to 6pm
+								(new TimeSpan(18, 0, 0), new TimeSpan(21, 0, 0))   // 6pm to 9pm
+							};
+
+							foreach (var date in dates)
+							{
+								foreach (var time in times)
+								{
+									Shift shift = new Shift
+									{
+										EventID = @event.ID,
+										StartAt = date.Add(time.Start),
+										EndAt = date.Add(time.End),
+										VolunteersNeeded = 5
+									};
+									shifts.Add(shift);
+								}
+							}
+						}
+						else if (@event.ID == 3)
+						{
+							List<DateTime> dates = new List<DateTime>
+							{
+								new DateTime(2025, 03, 10),
+								new DateTime(2025, 03, 11),
+								new DateTime(2025, 03, 12),
+								new DateTime(2025, 03, 13),
+								new DateTime(2025, 03, 14),
+								new DateTime(2025, 03, 15),
+							};
+
+							List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+							{
+								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 8am to 12pm
+								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
+							};
+
+							foreach (var date in dates)
+							{
+								foreach (var time in times)
+								{
+									Shift shift = new Shift
+									{
+										EventID = @event.ID,
+										StartAt = date.Add(time.Start),
+										EndAt = date.Add(time.End),
+										VolunteersNeeded = 2
+									};
+									shifts.Add(shift);
+								}
+							}
+						}
+						else if (@event.ID == 3)
+						{
+							List<DateTime> dates = new List<DateTime>
+							{
+								new DateTime(2025, 07, 10),
+								new DateTime(2025, 07, 11),
+								new DateTime(2025, 07, 12),
+								new DateTime(2025, 07, 13),
+								new DateTime(2025, 07, 14),
+								new DateTime(2025, 07, 15),
+							};
+
+							List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+							{
+								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 8am to 12pm
+								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
+							};
+
+							foreach (var date in dates)
+							{
+								foreach (var time in times)
+								{
+									Shift shift = new Shift
+									{
+										EventID = @event.ID,
+										StartAt = date.Add(time.Start),
+										EndAt = date.Add(time.End),
+										VolunteersNeeded = 2
+									};
+									shifts.Add(shift);
+								}
+							}
+						}
+					}
+					context.Shifts.AddRange(shifts);
+					context.SaveChanges();
+
+					//Add Chat for Shifts
+					foreach (var shift in shifts)
+					{
+						shift.AddChat(context);
+					}
+					
+					//User Shifts 
 					if (!context.UserShifts.Any())
 					{
 						foreach (Shift shift in context.Shifts)
@@ -627,4 +776,4 @@ namespace TomorrowsVoice_Toplevel.Data
 			}
 		}
 	}
-}
+} 
