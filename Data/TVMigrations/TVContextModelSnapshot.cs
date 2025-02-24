@@ -555,6 +555,15 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int?>("DirectorID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<TimeSpan>("EndAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("ShowOrNot")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan>("StartAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("VolunteerID")
                         .HasColumnType("INTEGER");
 
@@ -835,7 +844,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasForeignKey("DirectorID");
 
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Shift", "Shift")
-                        .WithMany("VolunteerShifts")
+                        .WithMany("UserShifts")
                         .HasForeignKey("ShiftID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -931,7 +940,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Shift", b =>
                 {
-                    b.Navigation("VolunteerShifts");
+                    b.Navigation("UserShifts");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>

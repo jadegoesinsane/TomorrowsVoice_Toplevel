@@ -115,7 +115,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
            
 
             var shift = await _context.Shifts
-               .Include(g => g.VolunteerShifts).ThenInclude(e => e.Volunteer)
+               .Include(g => g.UserShifts).ThenInclude(e => e.Volunteer)
                .FirstOrDefaultAsync(m => m.ID == id);
             if (shift == null)
             {
@@ -135,7 +135,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
 
             var shiftToUpdate = await _context.Shifts
-               .Include(g => g.VolunteerShifts).ThenInclude(e => e.Volunteer)
+               .Include(g => g.UserShifts).ThenInclude(e => e.Volunteer)
                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (shiftToUpdate == null)
@@ -243,7 +243,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			//For this to work, you must have Included the child collection in the parent object
 			var allOptions = _context.Volunteers ;
-			var currentOptionsHS = new HashSet<int>(shift.VolunteerShifts.Select(b => b.UserID));
+			var currentOptionsHS = new HashSet<int>(shift.UserShifts.Select(b => b.UserID));
 			//Instead of one list with a boolean, we will make two lists
 			var selected = new List<ListOptionVM>();
 			var available = new List<ListOptionVM>();
@@ -274,19 +274,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			if (selectedOptions == null)
 			{
-				shiftToUpdate.VolunteerShifts = new List<UserShift>();
+				shiftToUpdate.UserShifts = new List<UserShift>();
 				return;
 			}
 
 			var selectedOptionsHS = new HashSet<string>(selectedOptions);
-			var currentOptionsHS = new HashSet<int>(shiftToUpdate.VolunteerShifts.Select(b => b.UserID));
+			var currentOptionsHS = new HashSet<int>(shiftToUpdate.UserShifts.Select(b => b.UserID));
 			foreach (var c in _context.Volunteers)
 			{
 				if (selectedOptionsHS.Contains(c.ID.ToString()))//it is selected
 				{
 					if (!currentOptionsHS.Contains(c.ID))//but not currently in the GroupClass's collection - Add it!
 					{
-						shiftToUpdate.VolunteerShifts.Add(new UserShift
+						shiftToUpdate.UserShifts.Add(new UserShift
 						{
 							UserID = c.ID,
 							ShiftID = shiftToUpdate.ID
@@ -297,8 +297,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					if (currentOptionsHS.Contains(c.ID))//but is currently in the GroupClass's collection - Remove it!
 					{
-						UserShift? enrollmentToRemove = shiftToUpdate.VolunteerShifts
-							.FirstOrDefault(d => d.UserID == c.ID);
+						UserShift? enrollmentToRemove = shiftToUpdate.UserShifts
+                            .FirstOrDefault(d => d.UserID == c.ID);
 						if (enrollmentToRemove != null)
 						{
 							_context.Remove(enrollmentToRemove);
@@ -307,8 +307,64 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 		}
+        public async Task<IActionResult> TrackPerformance(int id)
+        {
+            var groupClass = await _context.Shifts
+                .Include(g => g.UserShifts).ThenInclude(e => e.Volunteer)
+                .FirstOrDefaultAsync(m => m.ID == id);
 
-		private bool ShiftExists(int id)
+            if (groupClass == null)
+            {
+                return NotFound();
+            }
+
+            var enrollmentsVM = groupClass.UserShifts.Select(e => new EnrollmentVM
+            {
+                UserID = e.UserID,
+                Volunteer = e.Volunteer.NameFormatted ?? "Unknown",
+                ShowOrNot = e.ShowOrNot,
+                StartAt = e.StartAt,
+                EndAt = e.EndAt
+            }).ToList();
+
+            return PartialView("_TrackPerformance", enrollmentsVM);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
+        {
+            if (enrollments == null || enrollments.Count == 0)
+            {
+                return Json(new { success = false, message = "No data received." });
+            }
+
+            try
+            {
+                foreach (var enrollmentVM in enrollments)
+                {
+
+                    var enrollment = await _context.UserShifts
+                        .FirstOrDefaultAsync(e => e.UserID == enrollmentVM.UserID && e.ShiftID == enrollmentVM.ShiftID);
+
+                    if (enrollment != null)
+                    {
+                        enrollment.ShowOrNot = enrollmentVM.ShowOrNot;
+
+                        enrollment.StartAt = enrollmentVM.StartAt;
+                        enrollment.EndAt = enrollmentVM.EndAt;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Performance updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error updating performance: " + ex.Message });
+            }
+        }
+        private bool ShiftExists(int id)
         {
             return _context.Shifts.Any(e => e.ID == id);
         }

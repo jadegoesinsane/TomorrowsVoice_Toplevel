@@ -9,45 +9,151 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.StartAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VolunteersNeeded)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Event)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VolunteersNeeded)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Event.ID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
+<form asp-action="Index" method="get">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartAt)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EndAt)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.VolunteersNeeded)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Event)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartAt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndAt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VolunteersNeeded)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.ID)
+                    </td>
+
+                    <td>
+                        <button type="button" class="btn btn-sm btn-info trackPerformanceBtn"
+                                data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                            Track Performance
+                        </button>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+
+
+            }
+        </tbody>
+    </table>
+    <!-- Performance Tracking Modal -->
+    <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="performanceModalLabel">Track Performance</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="performanceModalContent">
+                        <p class="text-center text-muted">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+@section Scripts {
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $(document).on("click", ".trackPerformanceBtn", function () {
+                let shiftId = $(this).data("shiftid");
+                $("#performanceModalContent").html('<p class="text-center text-muted">Loading...</p>');
+
+                $.get(`/Shift/TrackPerformance/${shiftId}`, function (data) {
+                    $("#performanceModalContent").html(data);
+
+                    if ($("#performanceModalContent #ShiftID").length === 0) {
+                        $("#performanceModalContent").append(`<input type="hidden" id="ShiftID" value="${shiftId}" />`);
+                    } else {
+                        $("#performanceModalContent #ShiftID").val(shiftId);
+                    }
+
+                }).fail(function () {
+                    console.error("❌ Error loading performance data.");
+                    $("#performanceModalContent").html('<p class="text-danger">Error loading performance data. Please try again.</p>');
+                });
+            });
+
+
+
+            $(document).on("click", "#savePerformance", function () {
+                console.log("🔹 Save button clicked!");
+
+                let shiftId = $("#ShiftID").val();
+                if (!shiftId) {
+                    console.error("❌ ShiftID is missing!");
+                    alert("Error: ShiftID is missing.");
+                    return;
+                }
+
+                let enrollments = [];
+                $("#performanceTable tbody tr").each(function () {
+                    let row = $(this);
+                    let enrollment = {
+                        UserID: row.find("input[name='UserID']").val(),
+                        ShiftID: shiftId,
+                        ShowOrNot: row.find("input[name='ShowOrNot']").prop("checked"),
+                        StartAt: row.find("input[name='StartAt']").val()+":00",  
+                        EndAt: row.find("input[name='EndAt']").val() + ":00"     
+                    };
+
+
+                    enrollments.push(enrollment);
+                });
+
+
+                $.ajax({
+                    url: "/Shift/UpdatePerformance",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(enrollments),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Performance updated successfully.");
+                            location.reload();
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("❌ AJAX Error:", xhr.responseText);
+                        alert("An error occurred while updating performance.");
+                    }
+                });
+            });
+
+        });
+    </script>
 }
-    </tbody>
-</table>

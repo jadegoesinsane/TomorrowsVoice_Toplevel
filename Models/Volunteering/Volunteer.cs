@@ -19,7 +19,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public int HoursVolunteered = 0;
 
-		public string CurrentYearVolunteerTotal
+		/*public string CurrentYearVolunteerTotal
 		{
 			get
 			{
@@ -28,7 +28,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 					total.Add(item);
 				return string.Format("{0:D2}:{1:D2}", total.Hours, total.Minutes);
 			}
-		}
+		}*/
 
 		public int? YearlyVolunteerGoal;
 		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();

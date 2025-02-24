@@ -1,0 +1,41 @@
+﻿@model List<TomorrowsVoice_Toplevel.ViewModels.EnrollmentVM>
+
+<table class="table" id="performanceTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Show or not</th>
+            <th>Start</th>
+            <th>End</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td>
+                    @Model[i].Volunteer
+                    <input type="hidden" name="UserID" value="@Model[i].UserID" />
+                </td>
+                <td>
+                    
+                    <input type="checkbox" name="ShowOrNot" @(Model[i].ShowOrNot ? "checked" : "") />
+                </td>
+                <td>
+                   
+                    <input type="time" name="StartAt" class="form-control" value="@Model[i].StartAt.ToString("hh\\:mm")" />
+                </td>
+                <td>
+                    
+                    <input type="time" name="EndAt" class="form-control" value="@Model[i].EndAt.ToString("hh\\:mm")" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Hidden input to store GroupClassID -->
+<input type="hidden" id="ShiftID" value="@ViewData["ShiftID"]" />
+
+<button type="button" id="savePerformance" class="btn btn-primary">Save Changes</button>
+

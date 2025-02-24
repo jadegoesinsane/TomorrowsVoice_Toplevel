@@ -367,7 +367,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
                     ShiftID = table.Column<int>(type: "INTEGER", nullable: false),
                     VolunteerID = table.Column<int>(type: "INTEGER", nullable: true),
-                    DirectorID = table.Column<int>(type: "INTEGER", nullable: true)
+                    DirectorID = table.Column<int>(type: "INTEGER", nullable: true),
+                    ShowOrNot = table.Column<bool>(type: "INTEGER", nullable: false),
+                    StartAt = table.Column<TimeSpan>(type: "TEXT", nullable: false),
+                    EndAt = table.Column<TimeSpan>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

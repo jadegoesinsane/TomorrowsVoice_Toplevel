@@ -29,7 +29,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public int VolunteersNeeded { get; set; }
 
-		public int VolunteersSignedUp
+		/*public int VolunteersSignedUp
 		{
 			get
 			{
@@ -39,11 +39,11 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 				else
 					return 0;
 			}
-		}
+		}*/
 
 		public int EventID { get; set; }
 		public Event? Event { get; set; }
-		public virtual ICollection<UserShift> VolunteerShifts { get; set; } = new HashSet<UserShift>();
+		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
 
 		public void AddChat(TVContext context)
 		{
