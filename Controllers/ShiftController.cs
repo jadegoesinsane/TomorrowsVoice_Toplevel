@@ -318,7 +318,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            var enrollmentsVM = groupClass.UserShifts.Select(e => new EnrollmentVM
+            var enrollmentsVM = groupClass.UserShifts.Where(e => e.Volunteer != null).Select(e => new EnrollmentVM
             {
                 UserID = e.UserID,
                 Volunteer = e.Volunteer.NameFormatted ?? "Unknown",
