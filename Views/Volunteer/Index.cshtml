@@ -13,13 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.NameFormatted)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MiddleName)
+                @Html.DisplayNameFor(model => model.absences)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.ParticipationCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.totalWorkDuration)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
@@ -37,14 +40,17 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
+                    @Html.DisplayFor(modelItem => item.NameFormatted)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MiddleName)
+                @Html.DisplayFor(modelItem => item.absences)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LastName)
+                @Html.DisplayFor(modelItem => item.totalWorkDuration)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParticipationCount)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)
             </td>

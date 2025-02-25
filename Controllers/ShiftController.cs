@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NToastNotify;
+using NuGet.Protocol;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
@@ -343,16 +344,36 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 foreach (var enrollmentVM in enrollments)
                 {
+                    var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == enrollmentVM.UserID);
 
-                    var enrollment = await _context.UserShifts
+                    var userShifts = await _context.UserShifts.FirstOrDefaultAsync(e => e.ShiftID == enrollmentVM.ShiftID);
+
+
+
+                    var enrollment = await _context.UserShifts.Include(g => g.User)
                         .FirstOrDefaultAsync(e => e.UserID == enrollmentVM.UserID && e.ShiftID == enrollmentVM.ShiftID);
 
                     if (enrollment != null)
                     {
-                        enrollment.NoShow = enrollmentVM.ShowOrNot;
 
+                        if (enrollment.NoShow == true) volunteer.absences--;
+                        if (enrollment.EndAt > enrollment.StartAt)
+                        {
+                            volunteer. totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
+                            volunteer.ParticipationCount--;
+                        }
+
+                        enrollment.NoShow = enrollmentVM.ShowOrNot;
+                       
                         enrollment.StartAt = enrollmentVM.StartAt;
                         enrollment.EndAt = enrollmentVM.EndAt;
+
+                        if (enrollment.NoShow == true) volunteer.absences++;
+                        if (enrollment.EndAt > enrollment.StartAt)
+                        {
+                            volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
+                            volunteer.ParticipationCount++;
+                        }
                     }
                 }
 

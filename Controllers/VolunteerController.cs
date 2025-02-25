@@ -55,6 +55,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
             foreach (var userShift in userShifts)
             {
                 totalWorkDuration += userShift.EndAt - userShift.StartAt;
+
+				if (userShift.EndAt > userShift.StartAt) volunteer.ParticipationCount++;
             }
             volunteer.HoursVolunteered = (int)totalWorkDuration.TotalHours;
 			
