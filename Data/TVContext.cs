@@ -46,8 +46,8 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		// Accounts
 		public DbSet<UserID> UserIDs { get; set; }
-
-		public DbSet<Role> Roles { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
 		// Chapters
 		public DbSet<Director> Directors { get; set; }

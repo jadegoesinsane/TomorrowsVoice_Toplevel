@@ -162,7 +162,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
@@ -184,9 +184,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.ID);
+                    table.PrimaryKey("PK_Users", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_User_Chapters_ChapterID",
+                        name: "FK_Users_Chapters_ChapterID",
                         column: x => x.ChapterID,
                         principalTable: "Chapters",
                         principalColumn: "ID",
@@ -225,9 +225,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     table.PrimaryKey("PK_DirectorAvatars", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_DirectorAvatars_User_DirectorID",
+                        name: "FK_DirectorAvatars_Users_DirectorID",
                         column: x => x.DirectorID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -262,9 +262,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Rehearsals_User_DirectorID",
+                        name: "FK_Rehearsals_Users_DirectorID",
                         column: x => x.DirectorID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -282,9 +282,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     table.PrimaryKey("PK_Roles", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Roles_User_UserID",
+                        name: "FK_Roles_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "ID");
                 });
 
@@ -303,9 +303,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     table.PrimaryKey("PK_UploadedFiles", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_UploadedFiles_User_DirectorID",
+                        name: "FK_UploadedFiles_Users_DirectorID",
                         column: x => x.DirectorID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -332,20 +332,20 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserShifts_User_DirectorID",
+                        name: "FK_UserShifts_Users_DirectorID",
                         column: x => x.DirectorID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK_UserShifts_User_UserID",
+                        name: "FK_UserShifts_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserShifts_User_VolunteerID",
+                        name: "FK_UserShifts_Users_VolunteerID",
                         column: x => x.VolunteerID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "ID");
                 });
 
@@ -363,9 +363,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     table.PrimaryKey("PK_VolunteerAvatars", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_VolunteerAvatars_User_VolunteerID",
+                        name: "FK_VolunteerAvatars_Users_VolunteerID",
                         column: x => x.VolunteerID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -535,13 +535,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "DirectorID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_ChapterID",
-                table: "User",
+                name: "IX_Users_ChapterID",
+                table: "Users",
                 column: "ChapterID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_Email",
-                table: "User",
+                name: "IX_Users_Email",
+                table: "Users",
                 column: "Email",
                 unique: true);
 
@@ -616,7 +616,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "Shifts");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Events");

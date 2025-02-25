@@ -440,7 +440,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
 
                     b.HasDiscriminator().HasValue("User");
 

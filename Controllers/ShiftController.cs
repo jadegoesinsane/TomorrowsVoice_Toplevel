@@ -241,9 +241,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private void PopulateAssignedEnrollmentData(Shift shift)
 		{
-			//For this to work, you must have Included the child collection in the parent object
-			var allOptions = _context.Volunteers ;
-			var currentOptionsHS = new HashSet<int>(shift.UserShifts.Select(b => b.UserID));
+            //For this to work, you must have Included the child collection in the parent object
+            var allOptions = _context.Users;
+            var currentOptionsHS = new HashSet<int>(shift.UserShifts.Select(b => b.UserID));
 			//Instead of one list with a boolean, we will make two lists
 			var selected = new List<ListOptionVM>();
 			var available = new List<ListOptionVM>();
@@ -280,7 +280,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var selectedOptionsHS = new HashSet<string>(selectedOptions);
 			var currentOptionsHS = new HashSet<int>(shiftToUpdate.UserShifts.Select(b => b.UserID));
-			foreach (var c in _context.Volunteers)
+			foreach (var c in _context.Users)
 			{
 				if (selectedOptionsHS.Contains(c.ID.ToString()))//it is selected
 				{
