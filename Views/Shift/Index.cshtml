@@ -46,10 +46,27 @@
                     </td>
 
                     <td>
-                        <button type="button" class="btn btn-sm btn-info trackPerformanceBtn"
-                                data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-                            Track Performance
-                        </button>
+
+
+
+
+
+                        @if (item.EndAt < DateTime.Now)
+						{
+                                    <button type="button" class="btn btn-sm btn-info trackPerformanceBtn"
+                                        data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                                    Track Performance
+                                </button>
+						}
+						else
+						{
+                                       <button type="button" class="btn btn-sm btn-secondary trackPerformanceBtn" 
+                                    data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal" 
+                                    disabled>
+                                Track Performance
+                            </button>
+						}
+                   
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
