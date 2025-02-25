@@ -322,7 +322,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 UserID = e.UserID,
                 Volunteer = e.User.NameFormatted,
-                ShowOrNot = e.ShowOrNot,
+                ShowOrNot = e.NoShow,
                 StartAt = e.StartAt,
                 EndAt = e.EndAt
             }).ToList();
@@ -349,7 +349,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
                     if (enrollment != null)
                     {
-                        enrollment.ShowOrNot = enrollmentVM.ShowOrNot;
+                        enrollment.NoShow = enrollmentVM.ShowOrNot;
 
                         enrollment.StartAt = enrollmentVM.StartAt;
                         enrollment.EndAt = enrollmentVM.EndAt;

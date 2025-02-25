@@ -9,7 +9,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		
 		public int ShiftID { get; set; }
 		public Shift? Shift { get; set; }
-        public bool ShowOrNot { get; set; } = false;
+        public bool NoShow { get; set; } = false;
 
         public TimeSpan StartAt { get; set; }
         public TimeSpan EndAt { get; set; }

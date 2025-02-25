@@ -57,9 +57,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 totalWorkDuration += userShift.EndAt - userShift.StartAt;
             }
             volunteer.HoursVolunteered = (int)totalWorkDuration.TotalHours;
+			
+            foreach (var userShift in userShifts)
+            {
+                if(userShift.NoShow==true) volunteer.absences++;
+
+            }
             // You may want to include the total work duration in the ViewBag or directly in the View Model
-            
-          
+
+
             return View(volunteer);
 		}
 

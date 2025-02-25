@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250225124103_Initial")]
+    [Migration("20250225145127_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -557,7 +557,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<TimeSpan>("EndAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("ShowOrNot")
+                    b.Property<bool>("NoShow")
                         .HasColumnType("INTEGER");
 
                     b.Property<TimeSpan>("StartAt")

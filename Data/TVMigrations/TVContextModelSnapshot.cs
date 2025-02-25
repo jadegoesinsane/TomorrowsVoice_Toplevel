@@ -554,7 +554,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<TimeSpan>("EndAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("ShowOrNot")
+                    b.Property<bool>("NoShow")
                         .HasColumnType("INTEGER");
 
                     b.Property<TimeSpan>("StartAt")
