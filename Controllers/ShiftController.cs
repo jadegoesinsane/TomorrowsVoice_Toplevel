@@ -355,25 +355,32 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
                     if (enrollment != null)
                     {
-
-                        if (enrollment.NoShow == true) volunteer.absences--;
-                        if (enrollment.EndAt > enrollment.StartAt)
+                        if (volunteer != null)
                         {
-                            volunteer. totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
-                            volunteer.ParticipationCount--;
+                            if (enrollment.NoShow == true) volunteer.absences--;
+                            if (enrollment.EndAt > enrollment.StartAt)
+                            {
+                                volunteer.totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
+                                volunteer.ParticipationCount--;
+                            }
                         }
-
                         enrollment.NoShow = enrollmentVM.ShowOrNot;
                        
                         enrollment.StartAt = enrollmentVM.StartAt;
                         enrollment.EndAt = enrollmentVM.EndAt;
-
-                        if (enrollment.NoShow == true) volunteer.absences++;
-                        if (enrollment.EndAt > enrollment.StartAt)
+                        if (volunteer != null)
                         {
-                            volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
-                            volunteer.ParticipationCount++;
-                        }
+
+                            if (enrollment.NoShow == true) volunteer.absences++;
+                            if (enrollment.EndAt > enrollment.StartAt)
+                            {
+                                volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
+                                volunteer.ParticipationCount++;
+                            }
+                           
+                            
+                         }
+                       
                     }
                 }
 

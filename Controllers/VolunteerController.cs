@@ -46,7 +46,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 
-            var userShifts = await _context.UserShifts
+           /* var userShifts = await _context.UserShifts
 			  .Where(u => u.User != null && u.User.ID == id)
 			  .ToListAsync();
 
@@ -64,7 +64,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 if(userShift.NoShow==true) volunteer.absences++;
 
-            }
+            }*/
             // You may want to include the total work duration in the ViewBag or directly in the View Model
 
 

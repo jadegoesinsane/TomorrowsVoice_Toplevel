@@ -629,6 +629,21 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     b.HasBaseType("TomorrowsVoice_Toplevel.Models.Users.User");
 
+                    b.Property<int>("HoursVolunteered")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ParticipationCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("YearlyVolunteerGoal")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("absences")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<TimeSpan>("totalWorkDuration")
+                        .HasColumnType("TEXT");
+
                     b.HasDiscriminator().HasValue("Volunteer");
                 });
 

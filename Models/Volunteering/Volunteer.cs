@@ -17,11 +17,11 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		//public int ID { get; set; }
 		public VolunteerAvatar? Avatar { get; set; }
 
-		public int HoursVolunteered = 0;
+		public int HoursVolunteered { get; set; }=0;
 
-        public TimeSpan totalWorkDuration = TimeSpan.Zero;
+        public TimeSpan totalWorkDuration { get; set; }=TimeSpan.Zero;
 
-        public int ParticipationCount =0;
+        public int ParticipationCount { get; set; }=0;
 
         /*public string CurrentYearVolunteerTotal
 		{
@@ -33,8 +33,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 				return string.Format("{0:D2}:{1:D2}", total.Hours, total.Minutes);
 			}
 		}*/
-        public int absences = 0;
-        public int? YearlyVolunteerGoal;
+        public int absences { get; set; }=0;
+        public int? YearlyVolunteerGoal { get; set; }=0;
 		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
 	}
 }
