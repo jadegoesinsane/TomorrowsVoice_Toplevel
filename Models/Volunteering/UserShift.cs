@@ -11,12 +11,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public Shift? Shift { get; set; }
         public bool ShowOrNot { get; set; } = false;
 
-
-
         public TimeSpan StartAt { get; set; }
-
-
-
         public TimeSpan EndAt { get; set; }
     }
 }

@@ -45,7 +45,22 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 
-			return View(volunteer);
+
+            var userShifts = await _context.UserShifts
+			  .Where(u => u.User != null && u.User.ID == id)
+			  .ToListAsync();
+
+            // Calculate the total work duration for the volunteer
+            TimeSpan totalWorkDuration = TimeSpan.Zero;
+            foreach (var userShift in userShifts)
+            {
+                totalWorkDuration += userShift.EndAt - userShift.StartAt;
+            }
+            volunteer.HoursVolunteered = (int)totalWorkDuration.TotalHours;
+            // You may want to include the total work duration in the ViewBag or directly in the View Model
+            
+          
+            return View(volunteer);
 		}
 
 		// GET: Volunteer/Create
