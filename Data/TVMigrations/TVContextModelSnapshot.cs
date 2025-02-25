@@ -86,74 +86,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ChapterID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MiddleName")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Nickname")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("BLOB");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ChapterID");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Directors");
-                });
-
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorAvatar", b =>
                 {
                     b.Property<int>("ID")
@@ -432,23 +364,87 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("DirectorID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("VolunteerID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("DirectorID");
-
-                    b.HasIndex("VolunteerID");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.User", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MiddleName")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nickname")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("User");
+
+                    b.HasDiscriminator().HasValue("User");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.UserID", b =>
@@ -578,66 +574,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("UserShifts");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MiddleName")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Nickname")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("BLOB");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Volunteers");
-                });
-
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", b =>
                 {
                     b.Property<int>("ID")
@@ -674,6 +610,28 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasDiscriminator().HasValue("DirectorDocument");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
+                {
+                    b.HasBaseType("TomorrowsVoice_Toplevel.Models.Users.User");
+
+                    b.Property<int>("ChapterID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("ChapterID");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasDiscriminator().HasValue("Director");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>
+                {
+                    b.HasBaseType("TomorrowsVoice_Toplevel.Models.Users.User");
+
+                    b.HasDiscriminator().HasValue("Volunteer");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.City", "City")
@@ -683,17 +641,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired();
 
                     b.Navigation("City");
-                });
-
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
-                {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
-                        .WithMany("Directors")
-                        .HasForeignKey("ChapterID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Chapter");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorAvatar", b =>
@@ -798,13 +745,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.Role", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", null)
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Users.User", null)
                         .WithMany("Roles")
-                        .HasForeignKey("DirectorID");
-
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("VolunteerID");
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.CityEvent", b =>
@@ -839,7 +782,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.UserShift", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", null)
                         .WithMany("UserShifts")
                         .HasForeignKey("DirectorID");
 
@@ -849,15 +792,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", "Volunteer")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", null)
                         .WithMany("UserShifts")
                         .HasForeignKey("VolunteerID");
 
-                    b.Navigation("Director");
-
                     b.Navigation("Shift");
 
-                    b.Navigation("Volunteer");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerAvatar", b =>
@@ -882,6 +829,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Director");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
+                        .WithMany("Directors")
+                        .HasForeignKey("ChapterID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
                     b.Navigation("Directors");
@@ -894,19 +852,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.City", b =>
                 {
                     b.Navigation("CityEvents");
-                });
-
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
-                {
-                    b.Navigation("Avatar");
-
-                    b.Navigation("Rehearsals");
-
-                    b.Navigation("Roles");
-
-                    b.Navigation("UserShifts");
-
-                    b.Navigation("VulnerableSectorChecks");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Messaging.Chat", b =>
@@ -931,6 +876,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("FileContent");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.User", b =>
+                {
+                    b.Navigation("Roles");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Event", b =>
                 {
                     b.Navigation("CityEvents");
@@ -943,11 +893,20 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("UserShifts");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
                 {
                     b.Navigation("Avatar");
 
-                    b.Navigation("Roles");
+                    b.Navigation("Rehearsals");
+
+                    b.Navigation("UserShifts");
+
+                    b.Navigation("VulnerableSectorChecks");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>
+                {
+                    b.Navigation("Avatar");
 
                     b.Navigation("UserShifts");
                 });

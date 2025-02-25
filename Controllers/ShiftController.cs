@@ -115,7 +115,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
            
 
             var shift = await _context.Shifts
-               .Include(g => g.UserShifts).ThenInclude(e => e.Volunteer)
+               .Include(g => g.UserShifts).ThenInclude(e => e.User)
                .FirstOrDefaultAsync(m => m.ID == id);
             if (shift == null)
             {
@@ -135,7 +135,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
 
             var shiftToUpdate = await _context.Shifts
-               .Include(g => g.UserShifts).ThenInclude(e => e.Volunteer)
+               .Include(g => g.UserShifts).ThenInclude(e => e.User)
                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (shiftToUpdate == null)
@@ -310,7 +310,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         public async Task<IActionResult> TrackPerformance(int id)
         {
             var groupClass = await _context.Shifts
-                .Include(g => g.UserShifts).ThenInclude(e => e.Volunteer)
+                .Include(g => g.UserShifts).ThenInclude(e => e.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
             if (groupClass == null)
@@ -318,10 +318,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            var enrollmentsVM = groupClass.UserShifts.Where(e => e.Volunteer != null).Select(e => new EnrollmentVM
+            var enrollmentsVM = groupClass.UserShifts.Where(e => e.User != null).Select(e => new EnrollmentVM
             {
                 UserID = e.UserID,
-                Volunteer = e.Volunteer.NameFormatted ?? "Unknown",
+                Volunteer = e.User.NameFormatted,
                 ShowOrNot = e.ShowOrNot,
                 StartAt = e.StartAt,
                 EndAt = e.EndAt

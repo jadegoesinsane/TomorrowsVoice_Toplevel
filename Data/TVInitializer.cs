@@ -698,7 +698,7 @@ namespace TomorrowsVoice_Toplevel.Data
 									UserID = volunteer.ID,
 									ShiftID = shift.ID,
 									Shift = shift,
-									Volunteer = volunteer
+									User = volunteer
 								};
 								try
 								{
@@ -735,7 +735,7 @@ namespace TomorrowsVoice_Toplevel.Data
 									UserID = director.ID,
 									ShiftID = shift.ID,
 									Shift = shift,
-									Director = director
+									User = director
 								};
 								try
 								{

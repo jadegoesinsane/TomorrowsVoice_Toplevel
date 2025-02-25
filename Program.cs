@@ -101,9 +101,9 @@ using (var scope = app.Services.CreateScope())
 	var services = scope.ServiceProvider;
 
 	TVInitializer.Initialize(serviceProvider: services, DeleteDatabase: true,
-		UseMigrations: true, SeedSampleData: true);
+		UseMigrations: true, SeedSampleData: false);
 	ApplicationDbInitializer.Initialize(serviceProvider: services,
-		UseMigrations: true, SeedSampleData: true);
+		UseMigrations: true, SeedSampleData: false);
 }
 
 app.Run();
