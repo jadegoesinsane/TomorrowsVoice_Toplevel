@@ -15,6 +15,7 @@ using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.ViewModels;
+using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -28,10 +29,129 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: Volunteer
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(string? SearchString, int? page, int? pageSizeID, string? actionButton, string sortField = "Volunteer", string sortDirection = "asc")
 		{
-			return View(await _context.Volunteers.ToListAsync());
+            string[] sortOptions = new[] { "Volunteer","Hours Volunteered","Participation","Absences" };
+
+
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+			int numberFilters = 0;
+
+			var volunteers = _context.Volunteers.AsNoTracking();
+
+			if (!String.IsNullOrEmpty(SearchString))
+			{
+				volunteers = volunteers.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
+									   || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
+				numberFilters++;
+			}
+			//Give feedback about the state of the filters
+			if (numberFilters != 0)
+			{
+				//Toggle the Open/Closed state of the collapse depending on if we are filtering
+				ViewData["Filtering"] = " btn-danger";
+				//Show how many filters have been applied
+				ViewData["numberFilters"] = "(" + numberFilters.ToString()
+					+ " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+				//Keep the Bootstrap collapse open
+				@ViewData["ShowFilter"] = " show";
+			}
+			//Before we sort, see if we have called for a change of filtering or sorting
+			if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+			{
+				page = 1;//Reset page to start
+
+                if (sortOptions.Contains(actionButton))//Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton;//Sort by the button clicked
+                }
+            }
+			if (sortField == "Volunteer")
+            {
+                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+                ViewData["partiSort"] = "fa fa-solid fa-sort";
+                ViewData["absenceSort"] = "fa fa-solid fa-sort";
+                if (sortDirection == "asc")
+                {
+                    volunteers = volunteers
+						.OrderBy(v => v.LastName)
+						.ThenBy(v => v.FirstName);
+                    ViewData["volunteerSort"] = "fa fa-solid fa-sort-up";
+                }
+                else
+                {
+                    volunteers = volunteers
+						.OrderByDescending(v => v.LastName)
+						.ThenBy(v => v.FirstName);
+                    ViewData["volunteerSort"] = "fa fa-solid fa-sort-down";
+                }
+            }
+            else if (sortField == "Hours Volunteered")
+            {
+                ViewData["volunteerSort"] = "fa fa-solid fa-sort";
+                ViewData["partiSort"] = "fa fa-solid fa-sort";
+                ViewData["absenceSort"] = "fa fa-solid fa-sort";
+                if (sortDirection == "asc")
+                {
+                    volunteers = volunteers.OrderBy(v => v.HoursVolunteered);
+                    ViewData["hourVolSort"] = "fa fa-solid fa-sort-up";
+                }
+                else
+                {
+                    volunteers = volunteers.OrderByDescending(v => v.HoursVolunteered);
+                    ViewData["hourVolSort"] = "fa fa-solid fa-sort-down";
+                }
+            }
+            else if (sortField == "Participation")
+            {
+                ViewData["volunteerSort"] = "fa fa-solid fa-sort";
+                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+                ViewData["absenceSort"] = "fa fa-solid fa-sort";
+                if (sortDirection == "asc")
+                {
+                    volunteers = volunteers.OrderBy(v => v.ParticipationCount);
+                    ViewData["partiSort"] = "fa fa-solid fa-sort-up";
+                }
+                else
+                {
+                    volunteers = volunteers.OrderByDescending(v => v.ParticipationCount);
+                    ViewData["partiSort"] = "fa fa-solid fa-sort-down";
+                }
+            }
+            else if (sortField == "Absences")
+            {
+                ViewData["volunteersSort"] = "fa fa-solid fa-sort";
+                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+                if (sortDirection == "asc")
+                {
+                    volunteers = volunteers.OrderBy(v => v.absences);
+                    ViewData["absenceSort"] = "fa fa-solid fa-sort-up";
+                }
+                else
+                {
+                    volunteers = volunteers.OrderByDescending(v => v.absences);
+                    ViewData["absenceSort"] = "fa fa-solid fa-sort-down";
+                }
+            }
+
+
+            //Set sort for next time
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            //Handle Paging
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+			var pagedData = await PaginatedList<Volunteer>.CreateAsync(volunteers.AsNoTracking(), page ?? 1, pageSize);
+
+			return View(pagedData);
 		}
+	
 
 		// GET: Volunteer/Details/5
 		public async Task<IActionResult> Details(int? id)
@@ -73,7 +193,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					_context.Add(volunteer);
 					await _context.SaveChangesAsync();
 					AddSuccessToast(volunteer.NameFormatted);
-					//_toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
+					//_toastNotification.AddSuccessToastMessage($"{vounteer.NameFormatted} was successfully created.");
 					return RedirectToAction("Details", new { volunteer.ID });
 				}
 			}
@@ -197,9 +317,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (volunteer != null)
 				{
-					//_context.Singers.Remove(singer);
+					//_context.Volunteers.Remove(vounteer);
 
-					// Here we are archiving a singer instead of deleting them
+					// Here we are archiving a vounteer instead of deleting them
 					volunteer.Status = Status.Archived;
 					await _context.SaveChangesAsync();
 					AddSuccessToast(volunteer.NameFormatted);
@@ -401,7 +521,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
             return NotFound("No data.");
         }
-        private bool VolunteerExists(int id)
+
+	private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
 		}

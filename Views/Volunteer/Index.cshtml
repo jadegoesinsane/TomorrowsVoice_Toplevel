@@ -1,33 +1,56 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
-
-    <a asp-action="DownloadVolunteers" class="btn btn-primary" style="float: right;">Export to Excel</a>
-
+<form asp-action="Index" method="get">
+	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+	<div class="form-horizontal my-3">
+		<div class="row align-items-center">
+			<h1 class="col m-0">Volunteers</h1>
+			<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a>
+        </div>
+        <div>
+            <a asp-action="DownloadVolunteers" class="btn btn-primary col-auto h-100" style="float: right;">Export to Excel</a>
+        </div>
+	</div>
+	<button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+			data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+		<i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
+	</button>
+	<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+		<div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
+			<div class="p-2">
+				<strong><label class="control-label" for="SearchString">Singer Name</label></strong>
+				@Html.TextBox("SearchString", null, new { @class = "form-control" })
+			</div>
+			<div class="p-2 ms-auto">
+				<button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
+					<i class=" bi bi-funnel-fill"></i>Apply
+				</button>
+			</div>
+			<div class="p-2">
+				<a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
+			</div>
+		</div>
+	</div>
 
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NameFormatted)
+            <tr>
+            <th aria-label="Volunteer">
+                <input type="submit" name="actionButton" value="Volunteer" class="btn btn-link" />
+                <i class="sort-icon @ViewData["volunteerSort"]" />
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.absences)
+            <th aria-label="Hours Volunteered">
+                <input type="submit" name="actionButton" value="Hours Volunteered" class="btn btn-link" />
+                <i class="sort-icon @ViewData["hourVolSort"]" />
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HoursVolunteered)
+            <th aria-label="Participation">
+                <input type="submit" name="actionButton" value="Participation" class="btn btn-link" />
+                <i class="sort-icon @ViewData["partiSort"]" />
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ParticipationCount)
+            <th aria-label="Absences">
+                <input type="submit" name="actionButton" value="Absences" class="btn btn-link" />
+                <i class="sort-icon @ViewData["absenceSort"]" />
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
@@ -45,17 +68,17 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                    @Html.DisplayFor(modelItem => item.NameFormatted)
+                @Html.DisplayFor(modelItem => item.NameFormatted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HoursVolunteered)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParticipationCount)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.absences)
             </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.HoursVolunteered)
-            </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ParticipationCount)
-                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
@@ -74,3 +97,6 @@
 }
     </tbody>
 </table>
+
+	<partial name="_PagingNavBar" />
+</form>
