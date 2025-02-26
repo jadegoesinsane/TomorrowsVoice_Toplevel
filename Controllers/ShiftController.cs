@@ -71,33 +71,61 @@ namespace TomorrowsVoice_Toplevel.Controllers
         public async Task<IActionResult> Create([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, string[] selectedOptions)
 		{
 
-			try
-			{
+            try
+            {
+                UpdateEnrollments(selectedOptions, shift);
+                if (ModelState.IsValid)
+                {
+                    var sameshifts = _context.Shifts
+                        .Where(r => r.ShiftDate == shift.ShiftDate);
 
-				UpdateEnrollments(selectedOptions, shift);
-				if (ModelState.IsValid)
-				{
-					_context.Add(shift);
-					await _context.SaveChangesAsync();
-					AddSuccessToast(shift.ShiftDuration.ToString());
-					//_toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
-					return RedirectToAction("Details", new { shift.ID });
-				}
-			}
-			catch (DbUpdateException dex)
-			{
-				string message = dex.GetBaseException().Message;
-				if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
-				{
-					ModelState.AddModelError("", "Unable to save changes. Remember, " +
-						"you cannot have duplicate Name and Email.");
-				}
-				else
-				{
-					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-				}
-			}
-			PopulateAssignedEnrollmentData(shift);
+                    if (sameshifts.Count() != 0)
+                    {
+                        foreach (var ABC in sameshifts)
+                        {
+                            if (ABC.ID != shift.ID) // Don't compare it to itself!
+                            {
+                                // Check if it Overlaps
+                                if (shift.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.StartAt > ABC.StartAt)
+                                {
+                                    // Throwing exception when overlap condition is met
+                                    throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+                                }
+                                else if (shift.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.EndAt > ABC.StartAt)
+                                {
+                                    // Throwing exception when overlap condition is met
+                                    throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+                                }
+                            }
+                        }
+                    }
+
+                    _context.Add(shift);
+                    await _context.SaveChangesAsync();
+                    AddSuccessToast(shift.ShiftDuration.ToString());
+                    // _toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
+                    return RedirectToAction("Details", new { shift.ID });
+                }
+            }
+            catch (DbUpdateException dex)
+            {
+                string message = dex.GetBaseException().Message;
+                if (message.Contains("overlapping shifts"))
+                {
+                    // Handling the custom exception
+                    ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
+                }
+                else if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Remember, you cannot have duplicate Name and Email.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+            }
+
+            PopulateAssignedEnrollmentData(shift);
 			ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name");
 			return View(shift);
 
@@ -156,7 +184,31 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				try
 				{
-					await _context.SaveChangesAsync();
+
+                    var sameshifts = _context.Shifts
+                        .Where(r => r.ShiftDate == shiftToUpdate.ShiftDate);
+
+                    if (sameshifts.Count() != 0)
+                    {
+                        foreach (var ABC in sameshifts)
+                        {
+                            if (ABC.ID != shiftToUpdate.ID) // Don't compare it to itself!
+                            {
+                                // Check if it Overlaps
+                                if (shiftToUpdate.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.StartAt > ABC.StartAt)
+                                {
+                                    // Throwing exception when overlap condition is met
+                                    throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+                                }
+                                else if (shiftToUpdate.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.EndAt > ABC.StartAt)
+                                {
+                                    // Throwing exception when overlap condition is met
+                                    throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+                                }
+                            }
+                        }
+                    }
+                    await _context.SaveChangesAsync();
 					_toastNotification.AddSuccessToastMessage($"{shiftToUpdate.ShiftDuration} was successfully updated.");
 					return RedirectToAction("Details", new { shiftToUpdate.ID });
 				}
@@ -164,20 +216,24 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					ModelState.AddModelError("", "Unable to save changes after multiple attempts. Please Try Again.");
 				}
-				catch (DbUpdateException dex)
-				{
-					string message = dex.GetBaseException().Message;
-					if (message.Contains("UNIQUE") && message.Contains("Volunteers.Email"))
-					{
-						ModelState.AddModelError("", "Unable to save changes. Remember, " +
-							"you cannot have duplicate Name and Email.");
-					}
-					else
-					{
-						ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-					}
-				}
-			}
+                catch (DbUpdateException dex)
+                {
+                    string message = dex.GetBaseException().Message;
+                    if (message.Contains("overlapping shifts"))
+                    {
+                        // Handling the custom exception
+                        ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
+                    }
+                    else if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. Remember, you cannot have duplicate Name and Email.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                    }
+                }
+            }
             PopulateAssignedEnrollmentData(shiftToUpdate);
             ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name", shiftToUpdate.EventID);
             return View(shiftToUpdate);
