@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NToastNotify;
 using NuGet.Protocol;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
@@ -76,6 +77,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 UpdateEnrollments(selectedOptions, shift);
                 if (ModelState.IsValid)
                 {
+
+                    var sameshift = await _context.Shifts
+                         .Include(s => s.Event)
+                         .FirstOrDefaultAsync(m => m.ID == shift.EventID);
+                   
+
+                    if (shift.ShiftDate < sameshift.Event.StartDate || shift.ShiftDate > sameshift.Event.EndDate)
+                    {
+                        // Throwing exception when overlap condition is met
+                        throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
+                    }
                     var sameshifts = _context.Shifts
                         .Where(r => r.ShiftDate == shift.ShiftDate && r.EventID == shift.EventID);
 
@@ -86,12 +98,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
                             if (ABC.ID != shift.ID) // Don't compare it to itself!
                             {
                                 // Check if it Overlaps
-                                if (shift.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.StartAt > ABC.StartAt)
+                                if (shift.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.StartAt.TimeOfDay > ABC.StartAt.TimeOfDay)
                                 {
                                     // Throwing exception when overlap condition is met
                                     throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
                                 }
-                                else if (shift.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.EndAt > ABC.StartAt)
+                                else if (shift.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.EndAt.TimeOfDay > ABC.StartAt.TimeOfDay)
                                 {
                                     // Throwing exception when overlap condition is met
                                     throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
@@ -184,6 +196,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				try
 				{
+                    var sameshift = await _context.Shifts
+                         .Include(s => s.Event)
+                         .FirstOrDefaultAsync(m => m.ID == shiftToUpdate.EventID);
+
+
+                    if (shiftToUpdate.ShiftDate < sameshift.Event.StartDate || shiftToUpdate.ShiftDate > sameshift.Event.EndDate)
+                    {
+                        // Throwing exception when overlap condition is met
+                        throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
+                    }
 
                     var sameshifts = _context.Shifts
                         .Where(r => r.ShiftDate == shiftToUpdate.ShiftDate &&  r.EventID == shiftToUpdate.EventID);
@@ -195,12 +217,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
                             if (ABC.ID != shiftToUpdate.ID) // Don't compare it to itself!
                             {
                                 // Check if it Overlaps
-                                if (shiftToUpdate.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.StartAt > ABC.StartAt)
+                                if (shiftToUpdate.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.StartAt.TimeOfDay > ABC.StartAt.TimeOfDay)
                                 {
                                     // Throwing exception when overlap condition is met
                                     throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
                                 }
-                                else if (shiftToUpdate.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.EndAt > ABC.StartAt)
+                                else if (shiftToUpdate.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.EndAt.TimeOfDay > ABC.StartAt.TimeOfDay)
                                 {
                                     // Throwing exception when overlap condition is met
                                     throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
