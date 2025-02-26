@@ -77,7 +77,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 if (ModelState.IsValid)
                 {
                     var sameshifts = _context.Shifts
-                        .Where(r => r.ShiftDate == shift.ShiftDate);
+                        .Where(r => r.ShiftDate == shift.ShiftDate && r.EventID == shift.EventID);
 
                     if (sameshifts.Count() != 0)
                     {
@@ -186,7 +186,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 
                     var sameshifts = _context.Shifts
-                        .Where(r => r.ShiftDate == shiftToUpdate.ShiftDate);
+                        .Where(r => r.ShiftDate == shiftToUpdate.ShiftDate &&  r.EventID == shiftToUpdate.EventID);
 
                     if (sameshifts.Count() != 0)
                     {
