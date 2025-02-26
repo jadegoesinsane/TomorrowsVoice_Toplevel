@@ -433,15 +433,19 @@ namespace TomorrowsVoice_Toplevel.Data
 						{
 							string first = firstNames[rnd.Next(firstNameCount)];
 							string last = lastNames[rnd.Next(lastNameCount)];
-
-							Volunteer volunteer = new Volunteer
+                            int hoursVolunteered = rnd.Next(50, 100);
+                            Volunteer volunteer = new Volunteer
 							{
 								Email = $"{first.Substring(0, 1).ToLower()}{last}@gmail.com",
 								Phone = $"{rnd.Next(100, 1000)}{rnd.Next(100, 1000)}{rnd.Next(1000, 10000)}",
 								FirstName = first,
 								LastName = last,
-								ID = context.GetNextID()
-							};
+                                HoursVolunteered = hoursVolunteered,
+                                ParticipationCount = rnd.Next(2, 10),
+                                absences = rnd.Next(0, 3),
+                                totalWorkDuration = TimeSpan.FromHours(hoursVolunteered), 
+                                ID = context.GetNextID()
+                            };
 							if (i % 2 == 0)
 								volunteer.MiddleName = lastNames[rnd.Next(lastNameCount)][1].ToString().ToUpper();
 							try
