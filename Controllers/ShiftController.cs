@@ -127,6 +127,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     // Handling the custom exception
                     ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
                 }
+                else if (message.Contains("Event range"))
+                {
+                    // Handling the custom exception
+                    ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range..");
+                }
                 else if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
                 {
                     ModelState.AddModelError("", "Unable to save changes. Remember, you cannot have duplicate Name and Email.");
@@ -245,6 +250,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     {
                         // Handling the custom exception
                         ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
+                    }
+                    else if (message.Contains("Event range"))
+                    {
+                        // Handling the custom exception
+                        ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range..");
                     }
                     else if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
                     {
