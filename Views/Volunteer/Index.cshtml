@@ -9,6 +9,11 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+
+    <a asp-action="DownloadVolunteers" class="btn btn-primary" style="float: right;">Export to Excel</a>
+
+
 <table class="table">
     <thead>
         <tr>
@@ -19,7 +24,7 @@
                 @Html.DisplayNameFor(model => model.absences)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.totalWorkDuration)
+                @Html.DisplayNameFor(model => model.HoursVolunteered)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ParticipationCount)
@@ -46,7 +51,7 @@
                 @Html.DisplayFor(modelItem => item.absences)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.totalWorkDuration)
+                    @Html.DisplayFor(modelItem => item.HoursVolunteered)
             </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ParticipationCount)

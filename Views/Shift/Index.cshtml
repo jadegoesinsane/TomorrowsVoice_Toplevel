@@ -25,6 +25,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Event)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Event)
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -42,12 +45,10 @@
                         @Html.DisplayFor(modelItem => item.VolunteersNeeded)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Event.ID)
+                        @Html.DisplayFor(modelItem => item.Event.Name)
                     </td>
 
                     <td>
-
-
 
 
 

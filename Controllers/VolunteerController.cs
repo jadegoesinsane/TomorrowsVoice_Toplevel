@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NToastNotify;
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
@@ -44,28 +47,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-
-
-           /* var userShifts = await _context.UserShifts
-			  .Where(u => u.User != null && u.User.ID == id)
-			  .ToListAsync();
-
-            // Calculate the total work duration for the volunteer
-            TimeSpan totalWorkDuration = TimeSpan.Zero;
-            foreach (var userShift in userShifts)
-            {
-                totalWorkDuration += userShift.EndAt - userShift.StartAt;
-
-				if (userShift.EndAt > userShift.StartAt) volunteer.ParticipationCount++;
-            }
-            volunteer.HoursVolunteered = (int)totalWorkDuration.TotalHours;
-			
-            foreach (var userShift in userShifts)
-            {
-                if(userShift.NoShow==true) volunteer.absences++;
-
-            }*/
-            // You may want to include the total work duration in the ViewBag or directly in the View Model
 
 
             return View(volunteer);
@@ -302,8 +283,125 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 		}
+        public IActionResult DownloadVolunteers()
+        {
+            //Get the appointments
+            var appts = from a in _context.Volunteers
+                        
+                        orderby a.HoursVolunteered descending
+                        select new
+                        {
+                            
+                            Name = a.NameFormatted,
+                            Hours = a.HoursVolunteered,
+                            Participation = a.ParticipationCount,
+                            Absences = a.absences,
+                            Phone = a.PhoneFormatted,
+                            Email = a.Email,
+                           
+                        };
+            //How many rows?
+            int numRows = appts.Count();
 
-		private bool VolunteerExists(int id)
+            if (numRows > 0) //We have data
+            {
+                //Create a new spreadsheet from scratch.
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+
+                    //Note: you can also pull a spreadsheet out of the database if you
+                    //have saved it in the normal way we do, as a Byte Array in a Model
+                    //such as the UploadedFile class.
+                    //
+                    // Suppose...
+                    //
+                    // var theSpreadsheet = _context.UploadedFiles.Include(f => f.FileContent).Where(f => f.ID == id).SingleOrDefault();
+                    //
+                    //    //Pass the Byte[] FileContent to a MemoryStream
+                    //
+                    // using (MemoryStream memStream = new MemoryStream(theSpreadsheet.FileContent.Content))
+                    // {
+                    //     ExcelPackage package = new ExcelPackage(memStream);
+                    // }
+
+                    var workSheet = excel.Workbook.Worksheets.Add("Appointments");
+
+                    //Note: Cells[row, column]
+                    workSheet.Cells[3, 1].LoadFromCollection(appts, true);
+
+                    //Style first column for dates
+                   
+
+                    //Style fee column for currency
+                   
+
+                    //Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
+                    //Make Date and Patient Bold
+                    workSheet.Cells[4, 1, numRows + 3, 2].Style.Font.Bold = true;
+
+                    //Note: these are fine if you are only 'doing' one thing to the range of cells.
+                    //Otherwise you should USE a range object for efficiency
+                   
+
+                    //Set Style and backgound colour of headings
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 7])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+                    ////Boy those notes are BIG!
+                    ////Lets put them in comments instead.
+                   
+
+                    //Autofit columns
+                    workSheet.Cells.AutoFitColumns();
+                    //Note: You can manually set width of columns as well
+                    //workSheet.Column(7).Width = 10;
+
+                    //Add a title and timestamp at the top of the report
+                    workSheet.Cells[1, 1].Value = "Volunteers Report";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 7])
+                    {
+                        Rng.Merge = true; //Merge columns start and end range
+                        Rng.Style.Font.Bold = true; //Font should be bold
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+                    //Since the time zone where the server is running can be different, adjust to 
+                    //Local for us.
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 7])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true; //Font should be bold
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    //Ok, time to download the Excel
+
+                    try
+                    {
+                        Byte[] theData = excel.GetAsByteArray();
+                        string filename = "Volunteers Report.xlsx";
+                        string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        return File(theData, mimeType, filename);
+                    }
+                    catch (Exception)
+                    {
+                        return BadRequest("Could not build and download the file.");
+                    }
+                }
+            }
+            return NotFound("No data.");
+        }
+        private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
 		}
