@@ -113,6 +113,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    ShiftDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     VolunteersNeeded = table.Column<int>(type: "INTEGER", nullable: false),

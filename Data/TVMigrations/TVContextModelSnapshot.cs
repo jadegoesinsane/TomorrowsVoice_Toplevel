@@ -527,6 +527,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("EventID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("ShiftDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("StartAt")
                         .HasColumnType("TEXT");
 

@@ -8,14 +8,20 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 	{
 		public int ID { get; set; }
 
-		[Required(ErrorMessage = "Shift requires a start time.")]
+        [Display(Name = "Date")]
+        [Required(ErrorMessage = "Please select a date for this Shift")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime ShiftDate { get; set; }
+
+        [Required(ErrorMessage = "Shift requires a start time.")]
 		[Display(Name = "Start Time")]
-		[DataType(DataType.DateTime)]
+		[DataType(DataType.Time)]
 		public DateTime StartAt { get; set; }
 
 		[Required(ErrorMessage = "Shift requires an end time.")]
 		[Display(Name = "End Time")]
-		[DataType(DataType.DateTime)]
+		[DataType(DataType.Time)]
 		public DateTime EndAt { get; set; }
 
 		[Display(Name = "Shift Duration")]

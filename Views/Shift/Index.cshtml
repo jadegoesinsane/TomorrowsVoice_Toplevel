@@ -14,6 +14,9 @@
         <thead>
             <tr>
                 <th>
+                    @Html.DisplayNameFor(model => model.ShiftDate)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.StartAt)
                 </th>
                 <th>
@@ -35,6 +38,9 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ShiftDate)
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.StartAt)
                     </td>

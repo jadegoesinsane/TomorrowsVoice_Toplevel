@@ -68,7 +68,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, string[] selectedOptions)
+        public async Task<IActionResult> Create([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, string[] selectedOptions)
 		{
 
 			try
@@ -147,7 +147,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
             // Try updating with posted values
             if (await TryUpdateModelAsync<Shift>(shiftToUpdate,
 					"",
-					r => r.StartAt,
+                    r => r.ShiftDate,
+                    r => r.StartAt,
 					r => r.EndAt,
 				   r => r.VolunteersNeeded,
 				   r => r.EventID

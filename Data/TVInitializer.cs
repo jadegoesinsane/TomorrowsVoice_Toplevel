@@ -556,6 +556,7 @@ namespace TomorrowsVoice_Toplevel.Data
 
 									Shift shift = new Shift
 									{
+										ShiftDate = date,
 										EventID = @event.ID,
 										StartAt = date.Add(time.Start),
 										EndAt = date.Add(time.End),
@@ -597,6 +598,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								{
 									Shift shift = new Shift
 									{
+										ShiftDate = date,
 										EventID = @event.ID,
 										StartAt = date.Add(time.Start),
 										EndAt = date.Add(time.End),
@@ -630,6 +632,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								{
 									Shift shift = new Shift
 									{
+										ShiftDate = date,	
 										EventID = @event.ID,
 										StartAt = date.Add(time.Start),
 										EndAt = date.Add(time.End),
@@ -663,6 +666,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								{
 									Shift shift = new Shift
 									{
+										ShiftDate = date,
 										EventID = @event.ID,
 										StartAt = date.Add(time.Start),
 										EndAt = date.Add(time.End),
