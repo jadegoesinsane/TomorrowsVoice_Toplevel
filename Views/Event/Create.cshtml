@@ -8,61 +8,76 @@
 
 <h4>Event</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descripion" class="control-label"></label>
-                <input asp-for="Descripion" class="form-control" />
-                <span asp-validation-for="Descripion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<Status>()"></select>
-                <label asp-for="Status" class="control-label"></label>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
+
+<form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
+		<div class="col-md-3">
+			<div class="form-floating required">
+				<input asp-for="StartDate" max="9999-12-12" class="form-control" />
+				<label asp-for="StartDate" class="control-label"></label>
+				<span asp-validation-for="StartDate" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-floating required">
+				<input asp-for="EndDate" class="form-control" />
+				<label asp-for="EndDate" class="control-label"></label>
+				<span asp-validation-for="EndDate" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="w-100" style="margin:10px;"></div>
+		<div class="col-md-3">
+			<div class="form-floating required">
+				<input asp-for="Name" class="form-control" />
+				<label asp-for="Name" class="control-label"></label>
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-floating required">
+				<input asp-for="Location" class="form-control" />
+				<label asp-for="Location" class="control-label"></label>
+				<span asp-validation-for="Location" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="w-100" style="margin:0px;"></div>
+
+	
+
+		<div class="w-100" style="margin:0px;"></div>
+		<div class="col-md-6">
+			<div class="row">
+				<div class="form-group col-md">
+					<label class="control-label"> City Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+						<strong>-</strong>
+					</button>
+					@Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
+				</div>
+				<div class="form-group col-md">
+					<label class="control-label"> Choose City</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+						<strong>+</strong>
+					</button>
+					@Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
+				</div>
+			</div>
+		</div>
+
+		<div class="w-100" style="margin:0px;"></div>
+		<div class="col-md-6">
+			<div class="form-floating my-4">
+				<textarea asp-for="Descripion" class="form-control" style="height: 100px" placeholder="Notes"></textarea>
+				<label asp-for="Descripion" class="control-label"></label>
+				<span asp-validation-for="Descripion" class="text-danger"></span>
+			</div>
+		</div>
+		@* Input for total number of active singers per chapter *@
+
+	</div>
+	<partial name="_FormFooter" />
+</form>
 
 
-            <div class="form-group col-md-6">
-                <label class="control-label"> Clients Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
-                    <strong>-</strong>
-                </button>
-                @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
-            </div>
-
-            <div class="form-group col-md-6">
-                <label class="control-label"> Choose Clients</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
-                    <strong>+</strong>
-                </button>
-                @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
 <div>
     <a asp-action="Index">Back to List</a>
