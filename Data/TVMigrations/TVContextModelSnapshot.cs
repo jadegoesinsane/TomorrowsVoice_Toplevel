@@ -533,6 +533,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<DateTime>("StartAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("VolunteersNeeded")
                         .HasColumnType("INTEGER");
 

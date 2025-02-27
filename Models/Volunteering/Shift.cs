@@ -32,8 +32,9 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 				return EndAt - StartAt;
 			}
 		}
-
-		public int VolunteersNeeded { get; set; }
+        [Display(Name = "Status")]
+        public Status Status { get; set; } = Status.Active;
+        public int VolunteersNeeded { get; set; }
 
 		/*public int VolunteersSignedUp
 		{

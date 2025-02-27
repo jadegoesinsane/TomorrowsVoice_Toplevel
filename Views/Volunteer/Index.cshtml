@@ -88,11 +88,16 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
+                    <td>
+                        @if (item.Status != Status.Archived)
+                        {
+                            <partial name="_CrudIcons" model="@item.ID" />
+                        }
+                        else
+                        {
+                            <partial name="_CrudIconsRecover" model="@item.ID" />
+                        }
+                    </td>
         </tr>
 }
     </tbody>
