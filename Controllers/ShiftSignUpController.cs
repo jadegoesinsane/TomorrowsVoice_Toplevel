@@ -62,31 +62,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             populateLists();
 
-            //var shifts = _context.Shifts
-            //    .Include(s => s.Event)
-            //    .ThenInclude(e => e.CityEvents)
-            //    .ThenInclude(e => e.City)
-            //    .Where(a => a.StartAt >= StartDate && a.StartAt <= EndDate)
-            //    .GroupBy(s => s.ShiftDate)
-            //    .Select(g => g.OrderBy(s => s.ID).First())
-            //    ;
-
-            //var shifts = _context.Shifts
-            //    .GroupBy(s => s.ShiftDate)
-            //    .Select(g => g.OrderBy(s => s.ID).FirstOrDefault())
-            //    ;
             var shifts = _context.Shifts
-                .FromSql(
-                    $@"SELECT 
-                        s.*
-                    FROM Shifts AS s
-                    WHERE 
-                        s.StartAt >= @StartDate 
-                        AND s.StartAt <= @EndDate
-                    GROUP BY 
-                        s.ShiftDate
-                    HAVING 
-                        s.ID = MIN(s.ID)");
+                .Include(s => s.Event)
+                .ThenInclude(e => e.CityEvents)
+                .ThenInclude(e => e.City)
+                .Where(a => a.StartAt >= StartDate && a.StartAt <= EndDate)
+                .AsNoTracking();
+                //.GroupBy(s => s.ShiftDate)
+                //.Select(g => g.OrderBy(s => s.ID).First())
+                
 
             // Filters
             if (CityID.HasValue)
@@ -171,20 +155,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             return View(shift);
         }
-
-        //private async Task<IActionResult> DateShift(DateTime date, int? page, int? pageSizeID)
-        //{
-        //    var shifts = _context.Shifts
-        //        .Include(s => s.Event)
-        //        .Where(s=>s.StartAt.ToLongDateString() == date.ToLongDateString());
-
-        //    // Paging
-        //    int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-        //    ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-        //    var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
-
-        //    return View(pagedData);
-        //}
 
         public async Task <IActionResult> DateShift(DateTime date, int? page, int? pageSizeID)
         {
