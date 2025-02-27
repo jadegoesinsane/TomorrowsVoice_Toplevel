@@ -115,26 +115,37 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			return new SelectList(singers, "ID", "NameFormatted", id);
 		}
 
-		// Get Chapters
+        // Get Chapters
 
-		//internal SelectList ChapterSelectList(int? id, Status? status = null)
-		//{
-		//	var chapters = _context.Chapters
-		//		.OrderBy(c => c.City.Name);
+        //internal SelectList ChapterSelectList(int? id, Status? status = null)
+        //{
+        //	var chapters = _context.Chapters
+        //		.OrderBy(c => c.City.Name);
 
-		//	if (status.HasValue)
-		//		chapters = chapters
-		//			.Where(c => c.Status == status)
-		//			.OrderBy(c => c.City.Name);
+        //	if (status.HasValue)
+        //		chapters = chapters
+        //			.Where(c => c.Status == status)
+        //			.OrderBy(c => c.City.Name);
 
-		//	return new SelectList(chapters, "ID", "Name", id);
-		//}
+        //	return new SelectList(chapters, "ID", "Name", id);
+        //}
 
-		#endregion Select Lists
+        // Get Event Locations
+        internal IEnumerable<string> EventLocationSelectList()
+        {
+            var locations = _context.Events
+                .OrderBy(e => e.Location)
+                .AsNoTracking()
+                .Select(e => e.Location)
+                .Distinct(); 
 
-		// Toasty Notifications
-		// Success
-		protected void AddSuccessToast(string name)
+            return locations.ToList();
+        }
+        #endregion Select Lists
+
+        // Toasty Notifications
+        // Success
+        protected void AddSuccessToast(string name)
 		{
 			string action = ViewData["ActionName"]?.ToString().ToLower();
 			if (action.EndsWith('e'))

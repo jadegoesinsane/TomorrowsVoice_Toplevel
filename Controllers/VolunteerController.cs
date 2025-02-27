@@ -33,7 +33,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
             string[] sortOptions = new[] { "Volunteer","Hours Volunteered","Participation","Absences" };
 
-
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
