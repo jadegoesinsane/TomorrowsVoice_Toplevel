@@ -8,59 +8,71 @@
 
 <h4>Shift</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            
-                <div class="form-floating required">
-                    <input asp-for="ShiftDate" max="9999-12-12" class="form-control" />
-                    <label asp-for="ShiftDate" class="control-label"></label>
-                    <span asp-validation-for="ShiftDate" class="text-danger"></span>
-                </div>
-            
-            <div class="form-group">
-                <label asp-for="StartAt" class="control-label"></label>
-                <input asp-for="StartAt" class="form-control" />
-                <span asp-validation-for="StartAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndAt" class="control-label"></label>
-                <input asp-for="EndAt" class="form-control" />
-                <span asp-validation-for="EndAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VolunteersNeeded" class="control-label"></label>
-                <input asp-for="VolunteersNeeded" class="form-control" />
-                <span asp-validation-for="VolunteersNeeded" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EventID" class="control-label"></label>
-                <select asp-for="EventID" class="form-control" asp-items="ViewBag.EventID"></select>
-                <span asp-validation-for="EventID" class="text-danger"></span>
-            </div>
+<form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
+		<div class="col-md-2">
+			<div class="form-floating required">
+				<input asp-for="ShiftDate" max="9999-12-12" class="form-control" />
+				<label asp-for="ShiftDate" class="control-label"></label>
+				<span asp-validation-for="ShiftDate" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-floating required">
+				<input asp-for="StartAt" class="form-control" />
+				<label asp-for="StartAt" class="control-label"></label>
+				<span asp-validation-for="StartAt" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-floating required">
+				<input asp-for="EndAt" class="form-control" />
+				<label asp-for="EndAt" class="control-label"></label>
+				<span asp-validation-for="EndAt" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="w-100" style="margin:0px;"></div>
 
+		<div class="col-md-3">
+			<div class="form-floating required my-4">
+				<label asp-for="VolunteersNeeded" class="control-label"></label>
+				<input asp-for="VolunteersNeeded" class="form-control" />
+				<span asp-validation-for="VolunteersNeeded" class="text-danger"></span>
+			</div>
+		
 
-            <div class="form-group col-md-6">
-                <label class="control-label">  Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
-                    <strong>-</strong>
-                </button>
-                @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
-            </div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-floating required my-4">
+				<select asp-for="EventID" class="form-control" asp-items="ViewBag.DirectorID"></select>
+				<label asp-for="EventID" class="control-label"></label>
+			</div>
+		</div>
 
-            <div class="form-group col-md-6">
-                <label class="control-label"> Choose </label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
-                    <strong>+</strong>
-                </button>
-                @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" id="btnSubmit" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+		<div class="w-100" style="margin:0px;"></div>
+		<div class="col-md-6">
+			<div class="row">
+				<div class="form-group col-md">
+					<label class="control-label">  Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+						<strong>-</strong>
+					</button>
+					@Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
+				</div>
+				<div class="form-group col-md">
+					<label class="control-label"> Choose </label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+						<strong>+</strong>
+					</button>
+					@Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
+				</div>
+			</div>
+		</div>
+
+		@* Input for total number of active singers per chapter *@
+
+	</div>
+	<partial name="_FormFooter" />
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>
