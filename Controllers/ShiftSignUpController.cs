@@ -151,13 +151,23 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(shift);
         }
 
-        private async Task<IActionResult> DateShift(/*DateTime date*/)
+        private async Task<IActionResult> DateShift(/*DateTime date, int? page, int? pageSizeID*/)
         {
-            var shifts = _context.Shifts
-                .Include(s => s.Event);
-                //.Where(s=>s.StartAt.ToLongDateString() == date.ToLongDateString());
+            //var shifts = _context.Shifts
+            //    .Include(s => s.Event);            ////.Where(s=>s.StartAt.ToLongDateString() == date.ToLongDateString());
 
-            return View(shifts);
+            //// Paging
+            //int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            //ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            //var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
+
+            //return View(pagedData);
+            return View();
+        }
+
+        private ActionResult test1()
+        {
+            return View();
         }
 
         private SelectList CitySelectList()

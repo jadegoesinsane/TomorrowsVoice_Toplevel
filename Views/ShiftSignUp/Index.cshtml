@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Index";
 }
+<a asp-action="test1">Click to Test</a>
 
 <partial name="_ViewHeading" />
 <form asp-action="Index" method="get">
@@ -73,7 +74,7 @@
 							<tr>
 								<td>@dateString</td>
 								<td>@Model.Where(s=>s.StartAt.ToLongDateString() == dateString).Count()</td>
-								<td><a asp-action="DateShift" asp-route-id=@Model>View Shifts</a></td>
+								<td><a asp-action="DateShift">View Shifts</a></td>
 							</tr>
                 }
 				count++;
