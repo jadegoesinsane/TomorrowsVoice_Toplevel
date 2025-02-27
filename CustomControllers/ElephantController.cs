@@ -87,9 +87,20 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			return new SelectList(cities, "ID", "Name", id);
 		}
 
-		// Get Directors
+        // Get Directors
+        internal SelectList EventSelectList(int? id, Status? status = null)
+        {
+            var events = _context.Events
+                    .OrderBy(s => s.Name);
 
-		internal SelectList DirectorSelectList(int? id, Status? status = null)
+            if (status.HasValue)
+                events = events.Where(d => d.Status == status)
+                    .OrderBy(s => s.Name);
+
+            return new SelectList(events, "ID", "Name", id);
+        }
+
+        internal SelectList DirectorSelectList(int? id, Status? status = null)
 		{
 			var directors = _context.Directors
 					.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);

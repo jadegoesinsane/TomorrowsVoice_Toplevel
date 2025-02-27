@@ -26,6 +26,9 @@
                     @Html.DisplayNameFor(model => model.VolunteersNeeded)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Event)
                 </th>
                 <th>
@@ -49,6 +52,9 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.VolunteersNeeded)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Event.Name)
