@@ -173,6 +173,29 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(pagedData);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignUp(int volID, int shiftID)
+        {
+            var userShift = new UserShift
+            {
+                UserID = volID,
+                ShiftID = shiftID
+            };
+
+            try
+            {
+                _context.Add(userShift);
+                await _context.SaveChangesAsync();
+                AddSuccessToast("Sucessfully signed up for shift on " + userShift.Shift.StartAt.ToLongDateString());
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
+            }
+            return View();
+        }
+
 
         private SelectList CitySelectList()
         {

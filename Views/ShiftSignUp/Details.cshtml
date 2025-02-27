@@ -6,7 +6,7 @@
 
 <div>
     <hr />
-    
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-md-2">
             <label class="control-label" for="VolunteerID">Select a Volunteer:</label>
@@ -24,6 +24,7 @@
         <strong>@Html.DisplayFor(model => model.EndAt)</strong>
         ?
     </div>
+    <a asp-action="SignUp" asp-route-volID="" asp-route-id="@Model.ID">Sign Up</a>
     
     
     
@@ -64,3 +65,9 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script>
+    document.getElementById("SignUp").addEventListener("click", function (e)
+        {
+
+        });
+</script>
