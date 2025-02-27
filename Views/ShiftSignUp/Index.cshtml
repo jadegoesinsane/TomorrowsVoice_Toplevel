@@ -74,7 +74,7 @@
 							<tr>
 								<td>@dateString</td>
 								<td>@Model.Where(s=>s.StartAt.ToLongDateString() == dateString).Count()</td>
-								<td><a asp-action="DateShift">View Shifts</a></td>
+								<td><a asp-action="DateShift" asp-route-date="@item.ShiftDate" >View Shifts</a></td>
 							</tr>
                 }
 				count++;

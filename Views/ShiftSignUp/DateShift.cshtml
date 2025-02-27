@@ -19,9 +19,6 @@
                     @Html.DisplayNameFor(model => model.EndAt)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Status)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.VolunteersNeeded)
                 </th>
                 <th>
@@ -43,13 +40,13 @@
                     @Html.DisplayFor(modelItem => item.EndAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.VolunteersNeeded)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Event.Name)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id=@item.ID>Sign Up</a>
                 </td>
             </tr>
     }
