@@ -8,7 +8,7 @@
 
 <h4>Shift</h4>
 <hr />
-<form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
+<form asp-action="Edit" class="form-container" method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
 		<div class="col-md-2">
@@ -45,8 +45,15 @@
 		</div>
 		<div class="col-md-3">
 			<div class="form-floating required my-4">
-				<select asp-for="EventID" class="form-control" asp-items="ViewBag.DirectorID"></select>
+				<select asp-for="EventID" class="form-control" asp-items="ViewBag.EventID"></select>
 				<label asp-for="EventID" class="control-label"></label>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-floating required ">
+				<select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
+				<label asp-for="Status" class="control-label"></label>
+				<span asp-validation-for="Status" class="text-danger"></span>
 			</div>
 		</div>
 
@@ -71,7 +78,9 @@
 		@* Input for total number of active singers per chapter *@
 
 	</div>
-	<partial name="_FormFooter" />
+	<div class="form-group">
+		<input type="submit" value="Save" id="btnSubmit" class="btn btn-primary" />
+	</div>
 </form>
 
 

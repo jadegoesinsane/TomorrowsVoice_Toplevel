@@ -333,6 +333,54 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(volunteer);
 		}
 
+
+
+		public async Task<IActionResult> Recover(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var volunteer = await _context.Volunteers
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (volunteer == null)
+			{
+				return NotFound();
+			}
+
+			return View(volunteer);
+		}
+
+		// POST: Volunteer/Recover/5
+		[HttpPost, ActionName("Recover")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RecoverConfirmed(int id)
+		{
+			var volunteer = await _context.Volunteers
+
+			   .FirstOrDefaultAsync(m => m.ID == id);
+
+			try
+			{
+				if (volunteer != null)
+				{
+					//_context.Volunteers.Remove(vounteer);
+
+					// Here we are archiving a vounteer instead of deleting them
+					volunteer.Status = Status.Active;
+					await _context.SaveChangesAsync();
+					AddSuccessToast(volunteer.NameFormatted);
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException)
+			{
+				ModelState.AddModelError("", "Unable to delete record. Please try again.");
+			}
+
+			return View(volunteer);
+		}
 		private void PopulateAssignedEnrollmentData(Volunteer volunteer)
 		{
 			//For this to work, you must have Included the child collection in the parent object

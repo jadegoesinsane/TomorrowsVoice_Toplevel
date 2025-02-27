@@ -6,11 +6,14 @@
 	<div class="form-horizontal my-3">
 		<div class="row align-items-center">
 			<h1 class="col m-0">Volunteers</h1>
-			<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a>
+			
         </div>
-        <div>
+
+        <div class="col-md-3 ms-auto d-flex justify-content-between">
+            <a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a>
             <a asp-action="DownloadVolunteers" class="btn btn-primary col-auto h-100" style="float: right;">Export to Excel</a>
         </div>
+       
 	</div>
 	<button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
 			data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">

@@ -58,9 +58,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			Shift shift = new Shift();
 			PopulateAssignedEnrollmentData(shift);
-			
-			
-			ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name");
+
+            PopulateDropDown(shift);
+            
             return View();
         }
 
@@ -141,9 +141,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
             }
-
+            PopulateDropDown(shift);
             PopulateAssignedEnrollmentData(shift);
-			ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name");
+			
 			return View(shift);
 
 
@@ -168,8 +168,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
             PopulateAssignedEnrollmentData(shift);
-            ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name", shift.EventID);
-            return View(shift);
+			PopulateDropDown(shift);
+			return View(shift);
         }
 
         // POST: Shift/Edit/5
@@ -194,8 +194,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					"",
                     r => r.ShiftDate,
                     r => r.StartAt,
-					r => r.EndAt,
-				   r => r.VolunteersNeeded,
+					r => r.EndAt, r => r.Status,
+                   r => r.VolunteersNeeded,
 				   r => r.EventID
 					))
 			{
@@ -267,8 +267,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 }
             }
             PopulateAssignedEnrollmentData(shiftToUpdate);
-            ViewData["EventID"] = new SelectList(_context.Events, "ID", "Name", shiftToUpdate.EventID);
-            return View(shiftToUpdate);
+			PopulateDropDown(shiftToUpdate);
+			return View(shiftToUpdate);
 
 
 
@@ -322,8 +322,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			return View(shift);
-
-
 
 
         }
@@ -482,6 +480,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 return Json(new { success = false, message = "Error updating performance: " + ex.Message });
             }
+        }
+
+
+        private void PopulateDropDown(Shift? shift = null)
+        {
+            ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
+           
+            var statusList = Enum.GetValues(typeof(Status))
+                         .Cast<Status>()
+                         .Where(s => s == Status.Active || s == Status.Canceled)
+                         .ToList();
+
+
+            ViewBag.StatusList = new SelectList(statusList);
         }
         private bool ShiftExists(int id)
         {

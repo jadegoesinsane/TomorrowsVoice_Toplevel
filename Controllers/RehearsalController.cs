@@ -300,7 +300,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, Byte[] RowVersion, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartAt,EndAt,Note,ChapterID"
+		public async Task<IActionResult> Edit(int id, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartAt,EndAt,Note,ChapterID"
 		{
 			var rehearsalToUpdate = await _context.Rehearsals
 				.Include(r => r.Director)
@@ -314,7 +314,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			//Put the original RowVersion value in the OriginalValues collection for the entity
-			_context.Entry(rehearsalToUpdate).Property("RowVersion").OriginalValue = RowVersion;
+			//_context.Entry(rehearsalToUpdate).Property("RowVersion").OriginalValue = RowVersion;
 
 			try
 			{
@@ -439,7 +439,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(rehearsal);
 		}
 
-		// POST: Rehearsal/Delete/5
+		// POST: Rehearsal/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> RecoverConfirmed(int id)
