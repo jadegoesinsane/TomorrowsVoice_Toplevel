@@ -439,7 +439,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(rehearsal);
 		}
 
-		// POST: Rehearsal/Delete/5
+		// POST: Rehearsal/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> RecoverConfirmed(int id)
