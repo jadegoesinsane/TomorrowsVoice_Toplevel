@@ -45,12 +45,6 @@
 				</div>
 			</div>
 		</div>
-	<div id="shiftModal" class="modal">
-		<div class="modal-content">
-			<span class="close">&times;</span>
-			<partial name="_DateShift"/>
-		</div>
-	</div>
     <table class="table table-hover">
     <thead>
         <tr>
@@ -79,7 +73,7 @@
 							<tr>
 								<td>@dateString</td>
 								<td>@Model.Where(s=>s.StartAt.ToLongDateString() == dateString).Count()</td>
-								<td><button id="btnShift" type="button" value="@dateString">Show Shifts</button></td>
+								<td><a asp-action="DateShift" asp-route-id=@Model>View Shifts</a></td>
 							</tr>
                 }
 				count++;
@@ -91,7 +85,7 @@
 <partial name="_PagingNavBar" />
 </form>
 @section Scripts{
-	<script>
+@* 	<script>
 		var modal = document.getElementById("shiftModal");
 
 		// Get the button that opens the modal
@@ -119,6 +113,6 @@
 				modal.style.display = "none";
 			}
 		}
-	</script>
+	</script> *@
 }
 

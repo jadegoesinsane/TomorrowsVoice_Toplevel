@@ -151,6 +151,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(shift);
         }
 
+        private async Task<IActionResult> DateShift(/*DateTime date*/)
+        {
+            var shifts = _context.Shifts
+                .Include(s => s.Event);
+                //.Where(s=>s.StartAt.ToLongDateString() == date.ToLongDateString());
+
+            return View(shifts);
+        }
+
         private SelectList CitySelectList()
         {
             return new SelectList(_context
