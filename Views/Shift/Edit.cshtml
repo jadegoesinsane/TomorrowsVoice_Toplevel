@@ -32,10 +32,10 @@
 				<span asp-validation-for="EndAt" class="text-danger"></span>
 			</div>
 		</div>
-		<div class="w-100" style="margin:0px;"></div>
+		<div class="w-100" style="margin:10px;"></div>
 
-		<div class="col-md-3">
-			<div class="form-floating required my-4">
+		<div class="col-md-2">
+			<div class="form-floating required ">
 				<label asp-for="VolunteersNeeded" class="control-label"></label>
 				<input asp-for="VolunteersNeeded" class="form-control" />
 				<span asp-validation-for="VolunteersNeeded" class="text-danger"></span>
@@ -43,8 +43,8 @@
 		
 
 		</div>
-		<div class="col-md-3">
-			<div class="form-floating required my-4">
+		<div class="col-md-2">
+			<div class="form-floating required ">
 				<select asp-for="EventID" class="form-control" asp-items="ViewBag.EventID"></select>
 				<label asp-for="EventID" class="control-label"></label>
 			</div>
