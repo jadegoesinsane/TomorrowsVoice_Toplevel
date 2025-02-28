@@ -34,6 +34,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		}
         [Display(Name = "Status")]
         public Status Status { get; set; } = Status.Active;
+
+		[Display(Name="Volunteers Needed")]
         public int VolunteersNeeded { get; set; }
 
 		/*public int VolunteersSignedUp

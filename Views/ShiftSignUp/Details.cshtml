@@ -24,14 +24,12 @@
         <strong>@Html.DisplayFor(model => model.EndAt)</strong>
         ?
     </div>
-    <p id="test">wowow</p>
     <form asp-action="VolunteerShifts" asp-route-shiftID="@Model.ID" asp-route-volID="VALUE_OF_VOLID" method="post">
         @Html.AntiForgeryToken()
         <input type="hidden" name="shiftID" value="@Model.ID" />
         <input type="hidden" name="volID" value="" id="volInput"/>
         <button type="submit">Sign Up</button>
     </form>
-    @*<a asp-action="Test" asp-route-volID="" asp-route-id="@Model.ID" id="SignUp" onclick="setRouteParameter()">Sign Up</a>*@
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
