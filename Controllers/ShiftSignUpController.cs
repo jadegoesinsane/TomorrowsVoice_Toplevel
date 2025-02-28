@@ -199,6 +199,33 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(shift);
         }
 
+        private async Task<IActionResult> test(int shiftID, int volID)
+        {
+            var userShift = new UserShift
+            {
+                UserID = volID,
+                ShiftID = shiftID
+            };
+
+            try
+            {
+                _context.Add(userShift);
+                await _context.SaveChangesAsync();
+                AddSuccessToast("Sucessfully signed up for shift on " + userShift.Shift.StartAt.ToLongDateString());
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
+            }
+            var shifts = _context.UserShifts
+                .Include(s=>s.Shift)
+                .Where(s => s.UserID == volID);
+
+
+
+            return View(shifts);
+        }
+
 
         private SelectList CitySelectList()
         {
