@@ -16,17 +16,23 @@ using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.ViewModels;
 using TomorrowsVoice_Toplevel.Utilities;
+using static TomorrowsVoice_Toplevel.Utilities.EmailService;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Numeric;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
 	public class VolunteerController : ElephantController
 	{
 		private readonly TVContext _context;
-
-		public VolunteerController(TVContext context, IToastNotification toastNotification) : base(context, toastNotification)
+		private readonly IMyEmailSender _emailSender;
+		public VolunteerController(TVContext context, IMyEmailSender emailSender, IToastNotification toastNotification) : base(context, toastNotification)
 		{
 			_context = context;
+
+			_emailSender = emailSender;
 		}
+
+		
 
 		// GET: Volunteer
 		public async Task<IActionResult> Index(string? SearchString, int? page, int? pageSizeID, string? actionButton, string sortField = "Volunteer", string sortDirection = "asc")
@@ -569,7 +575,146 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return NotFound("No data.");
         }
 
-	private bool VolunteerExists(int id)
+
+
+
+
+
+		public async Task<IActionResult> Email(string[] selectedOptions, string Subject, string emailContent)
+		{
+
+
+			var allOptions = _context.Volunteers;
+			var currentOptionsHS = new HashSet<int>();
+			//Instead of one list with a boolean, we will make two lists
+			var selected = new List<ListOptionVM>();
+			var available = new List<ListOptionVM>();
+
+			var select1 = new List<Volunteer>();
+			foreach (var c in allOptions)
+			{
+				if (currentOptionsHS.Contains(c.ID))
+				{
+					selected.Add(new ListOptionVM
+					{
+						ID = c.ID,
+						DisplayText = c.NameFormatted,
+
+					});
+
+				}
+				else
+				{
+					available.Add(new ListOptionVM
+					{
+						ID = c.ID,
+						DisplayText = c.NameFormatted
+					});
+
+				}
+			}
+
+			ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+			ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+
+
+
+
+			var selectedOptionsHS = new HashSet<string>(selectedOptions);
+			var currentOptions = new HashSet<int>(select1.Select(b => b.ID));
+			foreach (var c in _context.Volunteers)
+			{
+				if (selectedOptionsHS.Contains(c.ID.ToString()))//it is selected
+				{
+					if (!currentOptions.Contains(c.ID))//but not currently in the GroupClass's collection - Add it!
+					{
+						select1.Add(new Volunteer
+						{
+							ID = c.ID,
+							Email = c.Email,
+
+						});
+
+					}
+				}
+				else //not selected
+				{
+					if (currentOptions.Contains(c.ID))//but is currently in the GroupClass's collection - Remove it!
+					{
+						Volunteer? enrollmentToRemove = select1
+							.FirstOrDefault(d => d.ID == c.ID);
+						if (enrollmentToRemove != null)
+						{
+
+							select1.Remove(new Volunteer
+							{
+								ID = c.ID,
+								Email = c.Email,
+
+							});
+
+						}
+					}
+				}
+
+			}
+
+
+
+
+			if (string.IsNullOrEmpty(Subject) || string.IsNullOrEmpty(emailContent))
+			{
+				ViewData["Message"] = "You must enter both a Subject and some message Content before" +
+					" sending the message.";
+			}
+			else
+			{
+				int folksCount = 0;
+				try
+				{
+					//Send a Notice.
+					List<EmailAddress> folks = (from p in select1
+
+												where p.Email != null
+												select new EmailAddress
+												{
+													Name = p.NameFormatted,
+													Address = p.Email
+												}).ToList();
+					folksCount = folks.Count;
+					if (folksCount > 0)
+					{
+						var msg = new EmailMessage()
+						{
+							ToAddresses = folks,
+							Subject = Subject,
+							Content = "<p>" + emailContent + "</p><p>Please access the <strong>Niagara College</strong> web site to review.</p>"
+
+						};
+						await _emailSender.SendToManyAsync(msg);
+						ViewData["Message"] = "Message sent to " + folksCount + " Client"
+							+ ((folksCount == 1) ? "." : "s.");
+					}
+					else
+					{
+						ViewData["Message"] = "Message NOT sent!  No Client.";
+					}
+				}
+				catch (Exception ex)
+				{
+					string errMsg = ex.GetBaseException().Message;
+					ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
+						+ ((folksCount == 1) ? "" : "s") + " in the list.";
+				}
+			}
+			return View();
+
+
+
+
+		}
+
+		private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
 		}

@@ -1,0 +1,97 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer
+
+<partial name="_ViewHeading" />
+<form asp-action="Email">
+    <div class="form-group col-md-6">
+        <label class="control-label"> Clients Choosed</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+            <strong>-</strong>
+        </button>
+        @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
+    </div>
+
+    <div class="form-group col-md-6">
+        <label class="control-label"> Choose Clients</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+            <strong>+</strong>
+        </button>
+        @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
+    </div>
+
+    <div class="text-danger">@ViewData["Message"]</div>
+
+
+    <div class="form-group">
+        <label for="Subject" class="control-label">Email Subject</label>
+        <input type="text" id="Subject" name="Subject" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="emailContent" class="control-label">Message Content</label>
+        <textarea id="emailContent" name="emailContent" rows="5" cols="40" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <input type="submit" id="btnSubmit" value="Send" class="btn btn-primary" />
+    </div>
+
+
+
+
+
+</form>
+
+
+
+
+
+<div>
+    <partial name="_BackToList" />
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/multiselect.js"></script>
+
+
+}
+
+
+
+
+
+
+@*
+
+<div class="card mb-sm-3" style="min-width: 18rem;">
+    <h4 class="card-header" id="MedicalTrial">Medical Trials</h4>
+    <div class="card-body">
+        @Html.DropDownList("MembershipTypeID", null, htmlAttributes: new { @size = 6, @class = "form-control" })
+    </div>
+    <div class="card-footer">
+
+        <a asp-controller="Client" asp-action="Notification" class="linkClick">Send Email Notification</a>
+    </div>
+</div>
+
+
+
+
+<div class="card mb-sm-3" id="nav-tabContent"  style="min-width: 18rem;">
+    <h4 class="card-header" id="MedicalTrial">Medical Trials</h4>
+    <div class="card-body">
+        @Html.DropDownList("MembershipTypeID", null, htmlAttributes: new { @size = 6, @class = "form-control" })
+    </div>
+    <div class="card-footer">
+
+        <a asp-controller="Client" asp-action="Email" class="linkClick">Send Email Notification</a>
+    </div>
+</div>
+
+
+
+
+
+
+            ViewData["MembershipTypeID"] = new
+              SelectList(_context.Clients
+            .OrderBy(a => a.ID), "ID", "Summary");
+*@

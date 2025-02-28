@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.Data;
+using TomorrowsVoice_Toplevel.Utilities;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +58,14 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSingleton<IEmailConfiguration>(builder.Configuration
+	.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+
+//Email with methods for production use.
+builder.Services.AddTransient<IMyEmailSender, MyEmailSender>();
+
+
 
 //To give access to IHttpContextAccessor for Audit Data with IAuditable
 builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
