@@ -4,10 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Shift</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+
+    <a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add @ViewData["ControllerFriendlyName"]</a>
+   
 </p>
 <form asp-action="Index" method="get">
     <table class="table">
@@ -66,14 +68,14 @@
 
                         @if (item.EndAt < DateTime.Now)
 						{
-                                    <button type="button" class="btn btn-sm btn-info trackPerformanceBtn"
+                            <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
                                         data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
                                     Track Performance
                                 </button>
 						}
 						else
 						{
-                                       <button type="button" class="btn btn-sm btn-secondary trackPerformanceBtn" 
+                            <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
                                     data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal" 
                                     disabled>
                                 Track Performance
