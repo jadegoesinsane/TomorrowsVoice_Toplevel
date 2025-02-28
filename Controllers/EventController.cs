@@ -277,7 +277,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
-            var @event = await _context.Events
+            var @event = await _context.Events.Include(c => c.Shifts)
 
                .FirstOrDefaultAsync(m => m.ID == id);
 
@@ -286,9 +286,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 if (@event != null)
                 {
                     //_context.Events.Remove(event);
-
+                    foreach (var a in @event.Shifts)
+                    {
+                        a.Status = Status.Archived;
+                    }
                     // Here we are archiving a event instead of deleting them
                     @event.Status = Status.Archived;
+
+
                     await _context.SaveChangesAsync();
                     AddSuccessToast(@event.Name);
                     return RedirectToAction(nameof(Index));
@@ -301,7 +306,58 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             return View(@event);
         }
-        private void PopulateAssignedEnrollmentData(Event abc)
+
+
+		public async Task<IActionResult> Recover(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var @event = await _context.Events
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (@event == null)
+			{
+				return NotFound();
+			}
+
+			return View(@event);
+		}
+
+		// POST: Event/Recover/5
+		[HttpPost, ActionName("Recover")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RecoverConfirmed(int id)
+		{
+            var @event = await _context.Events.Include(c => c.Shifts)
+
+             .FirstOrDefaultAsync(m => m.ID == id);
+
+            try
+            {
+                if (@event != null)
+                {
+                    //_context.Events.Remove(event);
+                    foreach (var a in @event.Shifts)
+                    {
+                        a.Status = Status.Active;
+                    }
+                    // Here we are archiving a event instead of deleting them
+                    @event.Status = Status.Active;
+					await _context.SaveChangesAsync();
+					AddSuccessToast(@event.Name);
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException)
+			{
+				ModelState.AddModelError("", "Unable to delete record. Please try again.");
+			}
+
+			return View(@event);
+		}
+		private void PopulateAssignedEnrollmentData(Event abc)
         {
             //For this to work, you must have Included the child collection in the parent object
             var allOptions = _context.Cities;

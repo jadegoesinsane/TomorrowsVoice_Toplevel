@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -307,11 +308,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (shift != null)
 				{
-					//_context.Singers.Remove(singer);
-
-					// Here we are archiving a singer instead of deleting them
-					_context.Shifts.Remove(shift);
-					await _context.SaveChangesAsync();
+                    //_context.Singers.Remove(singer);
+                    shift.Status = Status.Archived;
+                    // Here we are archiving a singer instead of deleting them
+                    //_context.Shifts.Remove(shift);
+                    await _context.SaveChangesAsync();
 					AddSuccessToast(shift.ShiftDuration.ToString());
 					return RedirectToAction(nameof(Index));
 				}
@@ -326,8 +327,56 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
         }
 
+        public async Task<IActionResult> Recover(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-		private void PopulateAssignedEnrollmentData(Shift shift)
+            var shift = await _context.Shifts
+                .Include(s => s.Event)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (shift == null)
+            {
+                return NotFound();
+            }
+
+            return View(shift);
+        }
+
+        // POST: Shift/Delete/5
+        [HttpPost, ActionName("Recover")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RecoverConfirmed(int id)
+        {
+            var shift = await _context.Shifts
+
+               .FirstOrDefaultAsync(m => m.ID == id);
+
+            try
+            {
+                if (shift != null)
+                {
+                    //_context.Singers.Remove(singer);
+                    shift.Status = Status.Active;
+                    // Here we are archiving a singer instead of deleting them
+                    //_context.Shifts.Remove(shift);
+                    await _context.SaveChangesAsync();
+                    AddSuccessToast(shift.ShiftDuration.ToString());
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to delete record. Please try again.");
+            }
+
+            return View(shift);
+
+
+        }
+        private void PopulateAssignedEnrollmentData(Shift shift)
 		{
             //For this to work, you must have Included the child collection in the parent object
             var allOptions = _context.Users;
