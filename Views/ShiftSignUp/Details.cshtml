@@ -12,7 +12,7 @@
             <label class="control-label" for="VolunteerID">Select a Volunteer:</label>
         </div>
         <div class="col-md-4">
-            @Html.DropDownList("VolunteerID", null, htmlAttributes: new { @class = "form-control", id = "VolunteerID" })
+            @Html.DropDownList("VolunteerID", null, "- Select a Volunteer", htmlAttributes: new { @class = "form-control", id = "VolunteerID" })
         </div>
     </div>
     <div>
@@ -24,50 +24,28 @@
         <strong>@Html.DisplayFor(model => model.EndAt)</strong>
         ?
     </div>
-    <a asp-action="SignUp" asp-route-volID="" asp-route-id="@Model.ID">Sign Up</a>
-    
-    
-    
-    
-@*     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ShiftDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ShiftDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VolunteersNeeded)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VolunteersNeeded)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Event)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Event.Name)
-        </dd>
-    </dl> *@
+    <p id="test">wowow</p>
+    <a asp-action="SignUp" asp-route-volID="" asp-route-id="@Model.ID" id="SignUp" onclick="setRouteParameter()">Sign Up</a>
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 <script>
-    document.getElementById("SignUp").addEventListener("click", function (e)
+    var dropDown = document.getElementById("VolunteerID");
+    var signUpLink = document.getElementById("SignUp");
+    var dropValue;
+    dropDown.addEventListener("change", 
+        () =>
         {
-
+            dropValue = dropDown.value;
+            
+            //signUpLink.setAttribute(asp-route-volID, dropValue);
+            document.getElementById("test").innerHTML = dropValue;
+            
         });
+
+    function setRouteParameter() {
+        var newhref = $("#SignUp").attr('href') + '/' + dropValue;
+        $("#SignUp").attr("href", newhref);
+    }
 </script>

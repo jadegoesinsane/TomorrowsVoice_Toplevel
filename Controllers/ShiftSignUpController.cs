@@ -175,7 +175,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignUp(int volID, int shiftID)
+        public async Task<IActionResult> SignUp(int shiftID, int volID)
         {
             var userShift = new UserShift
             {
