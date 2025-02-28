@@ -253,8 +253,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					r => r.LastName,
 				   r => r.MiddleName,
 				   r => r.Email,
-					r => r.Phone,
-					r => r.Status))
+					r => r.Phone
+			))
 			{
 				try
 				{
