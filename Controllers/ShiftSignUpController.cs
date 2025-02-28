@@ -199,7 +199,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(shift);
         }
 
-        private async Task<IActionResult> test(int shiftID, int volID)
+        [HttpPost]
+        [Route("ShiftSignUp/Test/{shiftID}/{volID}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VolunteerShifts(int shiftID, int volID)
         {
             var userShift = new UserShift
             {
@@ -207,21 +210,25 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 ShiftID = shiftID
             };
 
+            var shift = _context.Shifts.Where(s=>s.ID == shiftID).FirstOrDefaultAsync();
+
             try
             {
                 _context.Add(userShift);
                 await _context.SaveChangesAsync();
-                AddSuccessToast("Sucessfully signed up for shift on " + userShift.Shift.StartAt.ToLongDateString());
+                //AddSuccessToast("Sucessfully signed up for shift on " + shift.StartAt.ToLongDateString());
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
             }
             var shifts = _context.UserShifts
-                .Include(s=>s.Shift)
+                .Include(s => s.Shift)
+                .ThenInclude(s=>s.Event)
                 .Where(s => s.UserID == volID);
 
-
+            string name = _context.Volunteers.Where(v => v.ID == volID).Select(v => v.NameFormatted).FirstOrDefault();
+            ViewData["VolunteerName"] = name;
 
             return View(shifts);
         }

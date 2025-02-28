@@ -1,0 +1,46 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.UserShift>
+
+@{
+    ViewData["Title"] = "test";
+}
+
+<h1>@ViewData["VolunteerName"]</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Shift.ShiftDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Shift.StartAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Shift.EndAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Shift.Event)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shift.ShiftDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shift.StartAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shift.EndAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shift.Event.ID)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

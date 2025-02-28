@@ -66,5 +66,10 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 				context.SaveChanges();
 			}
 		}
-	}
+
+        public static explicit operator Shift(Task<Shift?> v)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
