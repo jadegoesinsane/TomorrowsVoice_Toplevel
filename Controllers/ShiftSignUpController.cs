@@ -174,8 +174,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         [HttpPost]
+        [Route("ShiftSignUp/Details/{shiftID}/{volID}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignUp(int shiftID, int volID)
+        public async Task<IActionResult> Details(int shiftID, int volID)
         {
             var userShift = new UserShift
             {
@@ -193,7 +194,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
             {
                 ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
             }
-            return View();
+            var shift = _context.Shifts.Where(s => s.ID == shiftID);
+
+            return View(shift);
         }
 
 
