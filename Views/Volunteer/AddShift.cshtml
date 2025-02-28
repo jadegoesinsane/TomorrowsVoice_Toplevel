@@ -37,7 +37,29 @@
         </dd>
     </dl>
 
+    
+
+
     <form asp-action="AddShift">
-        
+        <input type="hidden" name="volunteerId" value="@ViewData["volunteerId"]" />
+        <input type="hidden" name="shiftId" value="@Model.ID" />
+        <input type="submit" value="Confirm" class="btn btn-danger" /> |
+       
     </form>
+   
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

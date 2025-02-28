@@ -158,24 +158,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 	
 
-		// GET: Volunteer/Details/5
-		public async Task<IActionResult> Details(int? id)
-		{
-			if (id == null)
-			{
-				return NotFound();
-			}
-
-			var volunteer = await _context.Volunteers
-				.FirstOrDefaultAsync(m => m.ID == id);
-			if (volunteer == null)
-			{
-				return NotFound();
-			}
-
-
-            return View(volunteer);
-		}
+		
 
 		// GET: Volunteer/Create
 		public IActionResult Create()
@@ -715,7 +698,24 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 
+        // GET: Volunteer/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var volunteer = await _context.Volunteers
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (volunteer == null)
+            {
+                return NotFound();
+            }
+
+
+            return View(volunteer);
+        }
 
         public async Task<IActionResult> ShiftIndex(int id)
         {
@@ -746,41 +746,42 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 
         // GET: Shift/AddShift/5
-        public async Task<IActionResult> AddShift(int? id,int id2)
+        public async Task<IActionResult> AddShift(int volunteerId, int shiftId)
         {
-            if (id2 == null)
+            if (shiftId == null)
             {
                 return NotFound();
             }
 
             var shift = await _context.Shifts
                 .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.ID == id2);
+                .FirstOrDefaultAsync(m => m.ID == shiftId);
             if (shift == null)
             {
                 return NotFound();
             }
-
+            ViewData["volunteerId"] = volunteerId;
             return View(shift);
         }
 
         // POST: Shift/Delete/5
         [HttpPost, ActionName("AddShift")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddShiftConfirmed(int? id, int id2)
+        public async Task<IActionResult> AddShiftConfirmed(int volunteerId, int shiftId)
         {
             var shift = await _context.Shifts
 
-               .FirstOrDefaultAsync(m => m.ID == id2);
+               .FirstOrDefaultAsync(m => m.ID == shiftId);
 
             try
             {
                 if (shift != null)
                 {
-                    //_context.Singers.Remove(singer);
-                    shift.Status = Status.Archived;
-                    // Here we are archiving a singer instead of deleting them
-                    //_context.Shifts.Remove(shift);
+                    shift.UserShifts.Add(new UserShift
+                    {
+                        UserID = volunteerId,
+                        ShiftID = shiftId
+                    });
                     await _context.SaveChangesAsync();
                     AddSuccessToast(shift.ShiftDuration.ToString());
                     return RedirectToAction(nameof(Index));
