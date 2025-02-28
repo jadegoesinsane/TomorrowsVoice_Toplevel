@@ -81,7 +81,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
                     var sameshift = await _context.Shifts
                          .Include(s => s.Event)
-                         .FirstOrDefaultAsync(m => m.ID == shift.EventID);
+                         .FirstOrDefaultAsync(m => m.EventID == shift.EventID);
                    
 
                     if (shift.ShiftDate < sameshift.Event.StartDate || shift.ShiftDate > sameshift.Event.EndDate)
@@ -204,7 +204,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
                     var sameshift = await _context.Shifts
                          .Include(s => s.Event)
-                         .FirstOrDefaultAsync(m => m.ID == shiftToUpdate.EventID);
+                         .FirstOrDefaultAsync(m => m.EventID == shiftToUpdate.EventID);
 
 
                     if (shiftToUpdate.ShiftDate < sameshift.Event.StartDate || shiftToUpdate.ShiftDate > sameshift.Event.EndDate)

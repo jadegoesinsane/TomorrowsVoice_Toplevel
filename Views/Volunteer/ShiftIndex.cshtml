@@ -1,0 +1,105 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Shift>
+@{
+    var volunteer = ViewData["Volunteer"] as TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer;
+
+    var volunteerShifts = ViewData["VolunteerShifts"] as List<int>;
+    ViewData["Title"] = "Shift";
+}
+
+<h1>Shift</h1>
+
+
+<form asp-action="ShiftIndex" method="get">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ShiftDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartAt)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EndAt)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.VolunteersNeeded)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Event)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Event)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                if( item.ShiftDate > DateTime.Today)
+                {
+
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ShiftDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartAt)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EndAt)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.VolunteersNeeded)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Event.Name)
+                        </td>
+
+                        <td>
+
+
+                          
+                            @if (volunteerShifts.Contains(item.ID))
+                            {
+                               
+                               
+
+                            }
+                            else
+                            {
+                                
+
+                             
+
+                                <a class="btn btn-primary add"
+                                   asp-controller="Volunteer"
+                                   asp-action="AddShift"
+                                   asp-route-volunteerId="@volunteer?.ID"
+                                   asp-route-shiftId="@item.ID">
+                                    Add
+                                </a>
+                            }
+
+                        </td>
+                       
+                    </tr>
+
+                }
+               
+
+
+            }
+        </tbody>
+    </table>
+
+
+</form>

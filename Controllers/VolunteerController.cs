@@ -714,7 +714,94 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		}
 
-		private bool VolunteerExists(int id)
+
+
+
+        public async Task<IActionResult> ShiftIndex(int id)
+        {
+
+
+            var volunteer = _context.Volunteers
+                            .FirstOrDefault(v => v.ID == id);
+
+            if (volunteer == null)
+            {
+                return NotFound();
+            }
+            ViewData["Volunteer"] = volunteer;
+
+            var volunteerShifts = _context.UserShifts
+                                   .Where(vs => vs.UserID == volunteer.ID)
+                                   .Select(vs => vs.ShiftID)
+                                   .ToList();
+
+            ViewData["VolunteerShifts"] = volunteerShifts;
+
+            var tVContext = _context.Shifts.Include(s => s.Event);
+            return View(await tVContext.ToListAsync());
+
+
+        }
+
+
+
+        // GET: Shift/AddShift/5
+        public async Task<IActionResult> AddShift(int? id,int id2)
+        {
+            if (id2 == null)
+            {
+                return NotFound();
+            }
+
+            var shift = await _context.Shifts
+                .Include(s => s.Event)
+                .FirstOrDefaultAsync(m => m.ID == id2);
+            if (shift == null)
+            {
+                return NotFound();
+            }
+
+            return View(shift);
+        }
+
+        // POST: Shift/Delete/5
+        [HttpPost, ActionName("AddShift")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddShiftConfirmed(int? id, int id2)
+        {
+            var shift = await _context.Shifts
+
+               .FirstOrDefaultAsync(m => m.ID == id2);
+
+            try
+            {
+                if (shift != null)
+                {
+                    //_context.Singers.Remove(singer);
+                    shift.Status = Status.Archived;
+                    // Here we are archiving a singer instead of deleting them
+                    //_context.Shifts.Remove(shift);
+                    await _context.SaveChangesAsync();
+                    AddSuccessToast(shift.ShiftDuration.ToString());
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to delete record. Please try again.");
+            }
+
+            return View(shift);
+
+
+        }
+
+
+
+
+
+
+        private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
 		}

@@ -1,0 +1,43 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
+
+@{
+    ViewData["Title"] = "ADD";
+}
+
+<h1>ADD</h1>
+
+<h3>Are you sure you want to ADD this?</h3>
+<div>
+    <h4>Shift</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartAt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndAt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.VolunteersNeeded)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.VolunteersNeeded)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Event)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Event.ID)
+        </dd>
+    </dl>
+
+    <form asp-action="AddShift">
+        
+    </form>
+</div>

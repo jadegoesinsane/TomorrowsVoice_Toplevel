@@ -67,6 +67,18 @@
     </dl>
 </div>
 <div>
+    
+
+    <a asp-action="ShiftIndex" asp-route-id="@Model?.ID">Shift</a> |
+
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
+
+
+    <a class="btn btn-primary add"
+      
+       asp-action="AddShift"
+       >
+        Add
+    </a>
 </div>
