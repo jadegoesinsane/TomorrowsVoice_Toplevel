@@ -3,14 +3,14 @@
 <partial name="_ViewHeading" />
 <form asp-action="Email">
     <div class="form-group col-md-6">
-        <label class="control-label"> Clients Choosed</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+        <label class="control-label"> Volunteer Choosed</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
             <strong>-</strong>
         </button>
         @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
     </div>
 
     <div class="form-group col-md-6">
-        <label class="control-label"> Choose Clients</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+        <label class="control-label"> Choose Volunteer</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
             <strong>+</strong>
         </button>
         @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
