@@ -596,6 +596,9 @@ namespace TomorrowsVoice_Toplevel.Data
 							{
 								foreach (var time in times)
 								{
+									if (@event.Shifts.Any(s => s.StartAt == date.Add(time.Start)))
+										continue;
+
 									Shift shift = new Shift
 									{
 										ShiftDate = date,

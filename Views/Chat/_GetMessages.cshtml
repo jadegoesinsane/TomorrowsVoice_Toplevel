@@ -3,11 +3,18 @@
 <div class="chat" @* style="display: flex;flex-direction: column-reverse;" *@>
 	@foreach (var message in Model)
 	{
-		<div class="shadow-sm p-3 mb-3 bg-body rounded">
-			<img src="@message.Avatar" alt="Avatar" class="avatar">
+		<div class="shadow-sm p-3 mb-2 bg-body rounded">
+			@if (message.Avatar == null)
+			{
+				<i class="bi bi-person-circle" alt="Avatar" class="avatar"></i>
+			}
+			else
+			{
+				<img src="@message.Avatar" alt="Avatar" class="avatar">
+			}
 			<span class="fw-bold ms-2">@message.Name</span>
 			<span class="timestamp">@message.CreatedOn.ToString("g")</span>
-			<p>@message.Content</p>
+			<p class="mb-0">@message.Content</p>
 		</div>
 	}
 </div>

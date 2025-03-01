@@ -43,7 +43,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             ViewBag.StatusList = new SelectList(statusList);
 
-            var events = _context.Events.AsNoTracking();
+            var events = _context.Events
+                .Include(e => e.Shifts)
+                .ThenInclude(s => s.UserShifts)
+                .AsNoTracking();
 
             if (!String.IsNullOrEmpty(StatusFilter))
             {

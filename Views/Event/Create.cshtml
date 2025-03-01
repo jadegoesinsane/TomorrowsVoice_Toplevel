@@ -1,14 +1,6 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Event
 
-@{
-    ViewData["Title"] = "Create";
-}
-
-<h1>Create</h1>
-
-<h4>Event</h4>
-<hr />
-
+<partial name="_ViewHeading" />
 <form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
@@ -43,8 +35,6 @@
 		</div>
 		<div class="w-100" style="margin:0px;"></div>
 
-	
-
 		<div class="w-100" style="margin:0px;"></div>
 		<div class="col-md-6">
 			<div class="row">
@@ -77,12 +67,10 @@
 	<partial name="_FormFooter" />
 </form>
 
-
-
-
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 
-    <script src="~/js/multiselect.js"></script>
+	<script src="~/js/multiselect.js"></script>
 }
