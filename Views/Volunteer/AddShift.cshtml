@@ -1,12 +1,12 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
 
 @{
-    ViewData["Title"] = "ADD";
+    ViewData["Title"] = "Sign off";
 }
 
-<h1>Join</h1>
+<h1>Sign off</h1>
 
-<h3>Are you sure you want to join this shift?</h3>
+<h3>Are you sure you want to sign off this shift?</h3>
 <div>
     <h4>Shift</h4>
     <hr />
@@ -24,16 +24,16 @@
             @Html.DisplayFor(model => model.EndAt)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.VolunteersNeeded)
+            @Html.DisplayNameFor(model => model.ShiftDate)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.VolunteersNeeded)
+            @Html.DisplayFor(model => model.ShiftDate)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Event)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Event.ID)
+            @Html.DisplayFor(model => model.Event.Name)
         </dd>
     </dl>
 
@@ -44,7 +44,7 @@
         <input type="hidden" name="volunteerId" value="@ViewData["volunteerId"]" />
         <input type="hidden" name="shiftId" value="@Model.ID" />
         <input type="submit" value="Confirm" class="btn btn-danger" /> |
-       
+        <partial name="_BackToList" />
     </form>
    
 </div>

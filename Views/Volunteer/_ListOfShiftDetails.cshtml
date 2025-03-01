@@ -1,10 +1,16 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Shift>
+@{
+    var volunteer = ViewData["Volunteer"] as TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer;
 
+}
 <br />
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <h4 class="panel-title">List of Shifts</h4>
+        <h4 class="panel-title">Future Shifts</h4>
     </div>
+    <p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
+        Note: You can only cancel your schedule up to seven days in advance. If you need to cancel within seven days, please contact the administrator.
+    </p>
     <div class="panel-body scrollable-panel">
         <table class="table table-striped">
             <thead>
@@ -19,13 +25,20 @@
                         @Html.DisplayNameFor(model => model.EndAt)
                     </th>
                     <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>
                         @Html.DisplayNameFor(model => model.Event)
+                    </th>
+                    <th>
+                       Action
                     </th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
-                {
+                {  @if (item.ShiftDate >= DateTime.Today)
+                    {
                     <tr>
                         <td>
                             
@@ -39,10 +52,38 @@
                             @Html.DisplayFor(modelItem => item.EndAt)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Event)
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Event.Name)
+                        </td>
+                        <td>
+
+
+
+                            @if (item.ShiftDate <DateTime.Today.AddMinutes(7))
+                            {
+
+
+
+                            }
+                            else
+                            {
+
+
+                                <a class="btn btn-primary add"
+                                   asp-controller="Volunteer"
+                                   asp-action="AddShift"
+                                   asp-route-volunteerId="@volunteer?.ID"
+                                   asp-route-volunteerId=""
+                                   asp-route-shiftId="@item.ID">
+                                    Sign off
+                                </a>
+                            }
+
                         </td>
                     </tr>
-                }
+                }}
             </tbody>
         </table>
     </div>
