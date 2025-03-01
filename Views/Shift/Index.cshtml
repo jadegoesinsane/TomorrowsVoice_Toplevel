@@ -84,7 +84,7 @@
 
 
 
-                        @if (item.EndAt < DateTime.Now)
+                        @if (item.ShiftDate <= DateTime.Today)
 						{
                             <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
                                         data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">

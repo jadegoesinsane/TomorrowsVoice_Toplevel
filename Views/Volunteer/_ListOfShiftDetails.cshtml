@@ -61,25 +61,22 @@
 
 
 
-                            @if (item.ShiftDate <DateTime.Today.AddMinutes(7))
-                            {
-
-
-
-                            }
-                            else
-                            {
-
-
-                                <a class="btn btn-primary add"
-                                   asp-controller="Volunteer"
-                                   asp-action="AddShift"
-                                   asp-route-volunteerId="@volunteer?.ID"
-                                   asp-route-volunteerId=""
-                                   asp-route-shiftId="@item.ID">
-                                    Sign off
-                                </a>
-                            }
+                                @if (item.ShiftDate < DateTime.Today.AddDays(7))
+                                {
+                                   
+                                    
+                                }
+                                else
+                                {
+                                    <!-- Otherwise, render the active button -->
+                                    <a class="btn btn-primary add"
+                                       asp-controller="Volunteer"
+                                       asp-action="AddShift"
+                                       asp-route-volunteerId="@volunteer?.ID"
+                                       asp-route-shiftId="@item.ID">
+                                        Sign off
+                                    </a>
+                                }
 
                         </td>
                     </tr>
