@@ -4,7 +4,7 @@
     ViewData["Title"] = "VolunteerShifts";
 }
 
-<h1>@ViewData["VolunteerName"]</h1>
+<h1>Shifts - @ViewData["VolunteerName"]</h1>
 
 <table class="table">
     <thead>
@@ -38,9 +38,10 @@
                     @Html.DisplayFor(modelItem => item.Shift.EndAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Shift.Event.ID)
+                    @Html.DisplayFor(modelItem => item.Shift.Event.Name)
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<a asp-action="Index">Back to List</a>
