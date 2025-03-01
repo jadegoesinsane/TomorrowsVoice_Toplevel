@@ -719,9 +719,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
         public PartialViewResult ListOfShiftDetails(int id)
 
         {
-
+            var volunteer = _context.Volunteers
+                            .FirstOrDefault(v => v.ID == id);
+			 ViewData["Volunteer"] = volunteer;
             var shifts = _context.Shifts
-				  .Include(a => a.UserShifts)
+				  .Include(a => a.UserShifts).Include(c=>c.Event)
 				  .Where(r => r.UserShifts.Any(ra => ra.UserID == id)) 
 				  .OrderBy(r => r.ShiftDate)
 				  .ToList();
@@ -780,21 +782,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddShiftConfirmed(int volunteerId, int shiftId)
         {
-            var shift = await _context.Shifts
+            var userShift = await _context.UserShifts
+                                   .FirstOrDefaultAsync(us => us.UserID == volunteerId && us.ShiftID == shiftId);
 
-               .FirstOrDefaultAsync(m => m.ID == shiftId);
+            var volunteer = _context.Volunteers
+                            .FirstOrDefault(v => v.ID == volunteerId);
 
+            var Shift =  _context.Shifts
+                                  .FirstOrDefault(v => v.ID == shiftId);
             try
             {
-                if (shift != null)
+                if (userShift != null)
                 {
-                    shift.UserShifts.Add(new UserShift
-                    {
-                        UserID = volunteerId,
-                        ShiftID = shiftId
-                    });
+                    _context.UserShifts.Remove(userShift);
                     await _context.SaveChangesAsync();
-                    AddSuccessToast(shift.ShiftDuration.ToString());
+                    AddSuccessToast($"Shift {Shift.ShiftDate} successfully removed for volunteer {volunteer.NameFormatted}.");
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -803,7 +805,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 ModelState.AddModelError("", "Unable to delete record. Please try again.");
             }
 
-            return View(shift);
+            return View(userShift);
 
 
         }
