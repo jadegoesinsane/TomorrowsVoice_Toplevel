@@ -4,44 +4,27 @@
 
 <div>
 	<dl class="row">
-        <div class="col-auto">
-			@Model.TimeSummary
-        </div>
-	</dl>
-	<dl class="row">
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.ShiftDate)
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.ShiftDate)
-		</dd>
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.StartAt)
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.StartAt)
-		</dd>
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.EndAt)
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.EndAt)
-		</dd>
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.VolunteersNeeded)
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.VolunteersNeeded)
-		</dd>
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.Event)
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.Event.Name)
-		</dd>
+		<div class="col-auto">
+			<strong>@Model.TimeSummary</strong>
+			<hr />
+			<p>Volunteers: @Model.UserShifts.Count()/@Model.VolunteersNeeded</p>
+			@foreach(var v in Model.UserShifts)
+			{
+				<p>
+					@v.User.NameFormatted
+					@if (v.User is Director)
+					{
+						<span> - Director</span>
+					}
+				</p>
+			}
+		</div>
+		<div class="col-6" style="max-height:350px;">
+			<div class="ml-3" style="max-height: 100%;overflow-y: scroll;overflow-x: clip;" id="chatbox"></div>
+		</div>
 	</dl>
 </div>
-<div class="ml-3" style="max-height: 250px;overflow-y: scroll;overflow-x: clip;" id="chatbox"></div>
+
 @* <partial name="_GetMessages" for="@Model.ID"/>  *@
 <div>
 	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |

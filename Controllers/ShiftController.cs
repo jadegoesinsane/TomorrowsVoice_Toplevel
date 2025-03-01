@@ -120,6 +120,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var shift = await _context.Shifts
 				.Include(s => s.Event)
+				.Include(s => s.UserShifts)
+					.ThenInclude(us => us.User)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (shift == null)
 			{
