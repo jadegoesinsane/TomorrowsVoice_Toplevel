@@ -154,13 +154,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					var sameshift = await _context.Shifts
 						 .Include(s => s.Event)
 						 .FirstOrDefaultAsync(m => m.EventID == shift.EventID);
-
+					if(sameshift != null) 
+					
+					{ 
 					if (shift.ShiftDate < sameshift.Event.StartDate || shift.ShiftDate > sameshift.Event.EndDate)
 					{
 						// Throwing exception when overlap condition is met
 						throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
 					}
-					var sameshifts = _context.Shifts
+                    
+                    var sameshifts = _context.Shifts
 						.Where(r => r.ShiftDate == shift.ShiftDate && r.EventID == shift.EventID);
 
 					if (sameshifts.Count() != 0)
@@ -183,8 +186,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							}
 						}
 					}
-
-					_context.Add(shift);
+                    }
+                    _context.Add(shift);
 					await _context.SaveChangesAsync();
 					AddSuccessToast(shift.ShiftDuration.ToString());
 					// _toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
