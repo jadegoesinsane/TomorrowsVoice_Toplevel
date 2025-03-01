@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using System.ComponentModel.DataAnnotations;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Messaging;
 
@@ -7,8 +8,14 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
     public class Shift
     {
         public int ID { get; set; }
+		public String TimeFormat =>
+			StartAt.ToString("tt") == EndAt.ToString("tt")
+				? $"{StartAt:h:mm} - {EndAt:h:mm}{EndAt:tt}".ToLower()
+				: $"{StartAt:h:mm}{StartAt:tt} - {EndAt:h:mm}{EndAt:tt}".ToLower();
+		public String DateFormat => ShiftDate.ToString("dddd, MMMM d");
+        public String TimeSummary => $"{DateFormat} ⋅ {TimeFormat}";
 
-        [Display(Name = "Date")]
+		[Display(Name = "Date")]
         [Required(ErrorMessage = "Please select a date for this Shift")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
