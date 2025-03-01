@@ -88,4 +88,23 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script src="~/js/multiselect.js"></script>
+
+	<script>
+
+		$("form").submit(function (event) {
+
+			var startAt = $("#StartAt").val();
+			var endAt = $("#EndAt").val();
+
+
+			if (startAt > endAt) {
+
+				event.preventDefault();
+
+
+				alert("Start time cannot be later than End time.");
+			}
+
+		});
+	</script>
 }
