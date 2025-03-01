@@ -433,19 +433,19 @@ namespace TomorrowsVoice_Toplevel.Data
 						{
 							string first = firstNames[rnd.Next(firstNameCount)];
 							string last = lastNames[rnd.Next(lastNameCount)];
-                            int hoursVolunteered = rnd.Next(50, 100);
-                            Volunteer volunteer = new Volunteer
+							int hoursVolunteered = rnd.Next(50, 100);
+							Volunteer volunteer = new Volunteer
 							{
 								Email = $"{first.Substring(0, 1).ToLower()}{last}@gmail.com",
 								Phone = $"{rnd.Next(100, 1000)}{rnd.Next(100, 1000)}{rnd.Next(1000, 10000)}",
 								FirstName = first,
 								LastName = last,
-                                HoursVolunteered = hoursVolunteered,
-                                ParticipationCount = rnd.Next(2, 10),
-                                absences = rnd.Next(0, 3),
-                                totalWorkDuration = TimeSpan.FromHours(hoursVolunteered), 
-                                ID = context.GetNextID()
-                            };
+								HoursVolunteered = hoursVolunteered,
+								ParticipationCount = rnd.Next(2, 10),
+								absences = rnd.Next(0, 3),
+								totalWorkDuration = TimeSpan.FromHours(hoursVolunteered),
+								ID = context.GetNextID()
+							};
 							if (i % 2 == 0)
 								volunteer.MiddleName = lastNames[rnd.Next(lastNameCount)][1].ToString().ToUpper();
 							try
@@ -473,7 +473,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								Descripion = "Join us to help wrap gifts for those in need!",
 								Location = "Pen Center, St. Catharines",
 								Status = Status.Active
-							},                          
+							},
 							new Event
 							{
 								Name = "Gift Wrapping - 2025",
@@ -518,12 +518,14 @@ namespace TomorrowsVoice_Toplevel.Data
 					}
 
 					// Shifts
-					var shifts = new List<Shift>();
-					foreach (var @event in context.Events)
+					if (!context.Shifts.Any())
 					{
-						if (@event.Name == "Gift Wrapping - 2024")
+						var shifts = new List<Shift>();
+						foreach (var @event in context.Events)
 						{
-							List<DateTime> dates = new List<DateTime>
+							if (@event.Name == "Gift Wrapping - 2024")
+							{
+								List<DateTime> dates = new List<DateTime>
 							{
 								new DateTime(2024, 11, 29),
 								new DateTime(2024, 12, 2),
@@ -540,36 +542,36 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2024, 12, 22)
 							};
 
-							List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
 							{
 								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
 								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 2pm to 6pm
 								(new TimeSpan(18, 0, 0), new TimeSpan(21, 0, 0))   // 6pm to 9pm
 							};
 
-							foreach (var date in dates)
-							{
-								foreach (var time in times)
+								foreach (var date in dates)
 								{
-									if (date.DayOfWeek == DayOfWeek.Sunday && time.Start.Hours >= 18)
-										continue;
-
-									Shift shift = new Shift
+									foreach (var time in times)
 									{
-										ShiftDate = date,
-										EventID = @event.ID,
-										StartAt = date.Add(time.Start),
-										EndAt = date.Add(time.End),
-										VolunteersNeeded = 5
-									};
-									shifts.Add(shift);
+										if (date.DayOfWeek == DayOfWeek.Sunday && time.Start.Hours >= 18)
+											continue;
+
+										Shift shift = new Shift
+										{
+											ShiftDate = date,
+											EventID = @event.ID,
+											StartAt = date.Add(time.Start),
+											EndAt = date.Add(time.End),
+											VolunteersNeeded = 5
+										};
+										shifts.Add(shift);
+									}
 								}
 							}
-						}
-						else if (@event.Name == "Gift Wrapping - 2025")
-						{
-							List<DateTime> dates = new List<DateTime> 
-							{ 
+							else if (@event.Name == "Gift Wrapping - 2025")
+							{
+								List<DateTime> dates = new List<DateTime>
+							{
 								new DateTime(2025, 11, 30),
 								new DateTime(2025, 12, 2),
 								new DateTime(2025, 12, 3),
@@ -585,35 +587,35 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2025, 12, 22)
 							};
 
-							List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
 							{
 								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
 								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 2pm to 6pm
 								(new TimeSpan(18, 0, 0), new TimeSpan(21, 0, 0))   // 6pm to 9pm
 							};
 
-							foreach (var date in dates)
-							{
-								foreach (var time in times)
+								foreach (var date in dates)
 								{
-									if (@event.Shifts.Any(s => s.StartAt == date.Add(time.Start)))
-										continue;
-
-									Shift shift = new Shift
+									foreach (var time in times)
 									{
-										ShiftDate = date,
-										EventID = @event.ID,
-										StartAt = date.Add(time.Start),
-										EndAt = date.Add(time.End),
-										VolunteersNeeded = 5
-									};
-									shifts.Add(shift);
+										if (@event.Shifts.Any(s => s.StartAt == date.Add(time.Start)))
+											continue;
+
+										Shift shift = new Shift
+										{
+											ShiftDate = date,
+											EventID = @event.ID,
+											StartAt = date.Add(time.Start),
+											EndAt = date.Add(time.End),
+											VolunteersNeeded = 5
+										};
+										shifts.Add(shift);
+									}
 								}
 							}
-						}
-						else if (@event.ID == 3)
-						{
-							List<DateTime> dates = new List<DateTime>
+							else if (@event.ID == 3)
+							{
+								List<DateTime> dates = new List<DateTime>
 							{
 								new DateTime(2025, 03, 10),
 								new DateTime(2025, 03, 11),
@@ -623,31 +625,31 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2025, 03, 15),
 							};
 
-							List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
 							{
 								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 8am to 12pm
 								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
 							};
 
-							foreach (var date in dates)
-							{
-								foreach (var time in times)
+								foreach (var date in dates)
 								{
-									Shift shift = new Shift
+									foreach (var time in times)
 									{
-										ShiftDate = date,	
-										EventID = @event.ID,
-										StartAt = date.Add(time.Start),
-										EndAt = date.Add(time.End),
-										VolunteersNeeded = 2
-									};
-									shifts.Add(shift);
+										Shift shift = new Shift
+										{
+											ShiftDate = date,
+											EventID = @event.ID,
+											StartAt = date.Add(time.Start),
+											EndAt = date.Add(time.End),
+											VolunteersNeeded = 2
+										};
+										shifts.Add(shift);
+									}
 								}
 							}
-						}
-						else if (@event.ID == 3)
-						{
-							List<DateTime> dates = new List<DateTime>
+							else if (@event.ID == 3)
+							{
+								List<DateTime> dates = new List<DateTime>
 							{
 								new DateTime(2025, 07, 10),
 								new DateTime(2025, 07, 11),
@@ -657,123 +659,125 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2025, 07, 15),
 							};
 
-							List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
 							{
 								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 8am to 12pm
 								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
 							};
 
-							foreach (var date in dates)
-							{
-								foreach (var time in times)
+								foreach (var date in dates)
 								{
-									Shift shift = new Shift
+									foreach (var time in times)
 									{
-										ShiftDate = date,
-										EventID = @event.ID,
-										StartAt = date.Add(time.Start),
-										EndAt = date.Add(time.End),
-										VolunteersNeeded = 2
-									};
-									shifts.Add(shift);
+										Shift shift = new Shift
+										{
+											ShiftDate = date,
+											EventID = @event.ID,
+											StartAt = date.Add(time.Start),
+											EndAt = date.Add(time.End),
+											VolunteersNeeded = 2
+										};
+										shifts.Add(shift);
+									}
 								}
 							}
 						}
-					}
-					context.Shifts.AddRange(shifts);
-					context.SaveChanges();
 
-					//Add Chat for Shifts
-					foreach (var shift in shifts)
-					{
-						shift.AddChat(context);
-					}
-					
-					//User Shifts 
-					if (!context.UserShifts.Any())
-					{
-						foreach (Shift shift in context.Shifts)
+						context.Shifts.AddRange(shifts);
+						context.SaveChanges();
+
+						//Add Chat for Shifts
+						foreach (var shift in shifts)
 						{
-							var volunteers = context.Volunteers
-								.Take(rnd.Next(7))
-								.ToList();
-							var directors = context.Directors
-								.Take(rnd.Next(3))
-								.ToList();
+							shift.AddChat(context);
+						}
 
-							// Test Messaging with Seed Data
-							foreach (Volunteer volunteer in volunteers)
+						//User Shifts
+						if (!context.UserShifts.Any())
+						{
+							foreach (Shift shift in context.Shifts)
 							{
-								UserShift volunteerShift = new UserShift
+								var volunteers = context.Volunteers
+									.Take(rnd.Next(7))
+									.ToList();
+								var directors = context.Directors
+									.Take(rnd.Next(3))
+									.ToList();
+
+								// Test Messaging with Seed Data
+								foreach (Volunteer volunteer in volunteers)
 								{
-									UserID = volunteer.ID,
-									ShiftID = shift.ID,
-									Shift = shift,
-									User = volunteer
-								};
-								try
-								{
-									context.UserShifts.Add(volunteerShift);
-									context.SaveChanges();
+									UserShift volunteerShift = new UserShift
+									{
+										UserID = volunteer.ID,
+										ShiftID = shift.ID,
+										Shift = shift,
+										User = volunteer
+									};
+									try
+									{
+										context.UserShifts.Add(volunteerShift);
+										context.SaveChanges();
+									}
+									catch (Exception)
+									{
+										context.UserShifts.Remove(volunteerShift);
+									}
+									Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
+									ChatUser chatUser = new ChatUser
+									{
+										UserID = volunteer.ID,
+										ChatID = chat.ID
+									};
+									try
+									{
+										context.ChatUsers.Add(chatUser);
+										context.SaveChanges();
+									}
+									catch (Exception)
+									{
+										context.ChatUsers.Remove(chatUser);
+									}
+									chat.AddMessage(context, volunteer, "My message!");
+									//context.SaveChanges();
 								}
-								catch (Exception)
+								// Test Messaging with Seed Data
+								foreach (Director director in directors)
 								{
-									context.UserShifts.Remove(volunteerShift);
+									UserShift directorShift = new UserShift
+									{
+										UserID = director.ID,
+										ShiftID = shift.ID,
+										Shift = shift,
+										User = director
+									};
+									try
+									{
+										context.UserShifts.Add(directorShift);
+										context.SaveChanges();
+									}
+									catch (Exception)
+									{
+										context.UserShifts.Remove(directorShift);
+									}
+									Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
+									ChatUser chatUser = new ChatUser
+									{
+										UserID = director.ID,
+										ChatID = chat.ID
+									};
+									try
+									{
+										context.ChatUsers.Add(chatUser);
+										context.SaveChanges();
+									}
+									catch (Exception)
+									{
+										context.ChatUsers.Remove(chatUser);
+									}
+									chat.AddMessage(context, director, "I'm a Director!");
+									//context.SaveChanges();
 								}
-								Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
-								ChatUser chatUser = new ChatUser
-								{
-									UserID = volunteer.ID,
-									ChatID = chat.ID
-								};
-								try
-								{
-									context.ChatUsers.Add(chatUser);
-									context.SaveChanges();
-								}
-								catch (Exception)
-								{
-									context.ChatUsers.Remove(chatUser);
-								}
-								chat.AddMessage(context, volunteer, "My message!");
-								//context.SaveChanges();
-							}
-							// Test Messaging with Seed Data
-							foreach (Director director in directors)
-							{
-								UserShift directorShift = new UserShift
-								{
-									UserID = director.ID,
-									ShiftID = shift.ID,
-									Shift = shift,
-									User = director
-								};
-								try
-								{
-									context.UserShifts.Add(directorShift);
-									context.SaveChanges();
-								}
-								catch (Exception)
-								{
-									context.UserShifts.Remove(directorShift);
-								}
-								Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
-								ChatUser chatUser = new ChatUser
-								{
-									UserID = director.ID,
-									ChatID = chat.ID
-								};
-								try
-								{
-									context.ChatUsers.Add(chatUser);
-									context.SaveChanges();
-								}
-								catch (Exception)
-								{
-									context.ChatUsers.Remove(chatUser);
-								}
-								chat.AddMessage(context, director, "I'm a Director!");
-								//context.SaveChanges();
 							}
 						}
 					}
@@ -787,4 +791,4 @@ namespace TomorrowsVoice_Toplevel.Data
 			}
 		}
 	}
-} 
+}
