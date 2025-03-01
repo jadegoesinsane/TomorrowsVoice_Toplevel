@@ -6,6 +6,18 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 	{
 		public int ID { get; set; }
 		public string Name { get; set; }
+		public string DateSummary
+		{
+			get
+			{
+				if (StartDate.Month == EndDate.Month & StartDate.Year == EndDate.Year)
+					return $"{StartDate.ToString("MMMM d")} - {EndDate.ToString("d, yyyy")}";
+				else if (StartDate.Month != EndDate.Month & StartDate.Year == EndDate.Year)
+					return $"{StartDate.ToString("MMMM d")} - {EndDate.ToString("MMMM d, yyyy")}";
+				else
+					return $"{StartDate.ToString("MMMM d, yyyy")} - {EndDate.ToString("MMMM d, yyyy")}";
+			}
+		}
 
 		[Display(Name = "Start")]
 		[Required(ErrorMessage = "Event requires a start date.")]
