@@ -14,14 +14,14 @@
 	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
 		<div class="col-md-3">
 			<div class="form-floating required">
-				<input asp-for="StartDate" max="9999-12-12" class="form-control" />
+				<input asp-for="StartDate" max="9999-12-12" class="form-control" id="startDate" />
 				<label asp-for="StartDate" class="control-label"></label>
 				<span asp-validation-for="StartDate" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="form-floating required">
-				<input asp-for="EndDate" class="form-control" />
+				<input asp-for="EndDate" id="endDate" class="form-control" max="9999-12-12" />
 				<label asp-for="EndDate" class="control-label"></label>
 				<span asp-validation-for="EndDate" class="text-danger"></span>
 			</div>
@@ -82,4 +82,23 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script src="~/js/multiselect.js"></script>
+
+	<script>
+
+		$("form").submit(function (event) {
+
+			var startDate = $("#startDate").val();
+			var endDate = $("#endDate").val();
+
+			var startDateObj = new Date(startDate);
+			var endDateObj = new Date(endDate);
+
+			if (startDateObj > endDateObj) {
+
+				event.preventDefault();
+
+				alert("Start Date cannot be greater than End Date.");
+			}
+		});
+	</script>
 }
