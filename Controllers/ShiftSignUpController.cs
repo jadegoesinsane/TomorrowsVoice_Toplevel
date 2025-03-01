@@ -165,6 +165,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 .Include(s => s.Event)
                 .Where(s=>s.ShiftDate == date && s.Status == Status.Active);
 
+            ViewData["Date"] = date.ToLongDateString();
+
             // Paging
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);

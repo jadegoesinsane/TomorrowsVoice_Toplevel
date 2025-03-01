@@ -4,7 +4,7 @@
     ViewData["Title"] = "DateShift";
 }
 
-<h1>Shifts</h1>
+<h1>Shifts on @ViewData["Date"]</h1>
 <form asp-action="DateShift" method="get">
     <table class="table">
         <thead>
@@ -52,5 +52,6 @@
     }
         </tbody>
     </table>
+    <a asp-action="Index">Back to List</a>
 <partial name="_PagingNavBar" />
 </form>
