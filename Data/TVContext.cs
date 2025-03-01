@@ -80,8 +80,16 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			//modelBuilder.Entity<Message>()
+			//	.Ignore(m => m.User);
 			modelBuilder.Entity<Message>()
-				.Ignore(m => m.User);
+				.HasOne(m => m.User)
+				.WithMany()
+				.HasForeignKey(m => m.FromAccountID);
+			modelBuilder.Entity<User>()
+				.HasDiscriminator<string>("UserType")
+				.HasValue<Volunteer>("Volunteer")
+				.HasValue<Director>("Director");
 			// Ensure Director & Volunteer have a sequential ID
 			modelBuilder.Entity<UserID>().HasData(new UserID { ID = 1, NextID = 0 });
 

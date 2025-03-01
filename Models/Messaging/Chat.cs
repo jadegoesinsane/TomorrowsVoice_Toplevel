@@ -19,7 +19,7 @@ namespace TomorrowsVoice_Toplevel.Models.Messaging
 		public ICollection<ChatUser> ChatUsers { get; set; } = new HashSet<ChatUser>();
 		public ICollection<Message> Messages { get; set; } = new HashSet<Message>();
 
-		public void AddMessage(TVContext context, IUser user, string content)
+		public void AddMessage(TVContext context, User user, string content)
 		{
 			Message message = new Message
 			{

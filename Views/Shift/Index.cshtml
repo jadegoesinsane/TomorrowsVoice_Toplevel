@@ -49,10 +49,7 @@
                     @Html.DisplayNameFor(model => model.ShiftDate)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.StartAt)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.EndAt)
+                    Duration
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.VolunteersNeeded)
@@ -77,10 +74,7 @@
                         @Html.DisplayFor(modelItem => item.ShiftDate)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.StartAt)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EndAt)
+                        @Html.DisplayFor(modelItem => item.StartAt) - @Html.DisplayFor(modelItem => item.EndAt)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.VolunteersLeft)

@@ -170,7 +170,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Nickname = table.Column<string>(type: "TEXT", nullable: true),
-                    Discriminator = table.Column<string>(type: "TEXT", maxLength: 13, nullable: false),
+                    UserType = table.Column<string>(type: "TEXT", maxLength: 13, nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: true),
                     HoursVolunteered = table.Column<int>(type: "INTEGER", nullable: true),
                     totalWorkDuration = table.Column<TimeSpan>(type: "TEXT", nullable: true),
@@ -415,6 +415,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         principalTable: "Chats",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_Users_FromAccountID",
+                        column: x => x.FromAccountID,
+                        principalTable: "Users",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -492,6 +498,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "IX_Messages_ChatID",
                 table: "Messages",
                 column: "ChatID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_FromAccountID",
+                table: "Messages",
+                column: "FromAccountID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RehearsalAttendances_RehearsalID",

@@ -692,41 +692,68 @@ namespace TomorrowsVoice_Toplevel.Data
 							shift.AddChat(context);
 						}
 
+						string[] msgString = new string[] {
+						"I can't wait!",
+						"I'll bring timbits!",
+						"I hope the weathers nice.",
+						"How is everyone doing?",
+						"I see some familiar faces ;)",
+						"I'm only doing this for my highschool volunteer hours...",
+						"LOL!",
+						"omg I totally signed up for the wrong shift but i'll make it work",
+						"where do we meet?",
+						"the event organizers really outdid themselves with this one",
+						"Dear friends, my car is currently in the shop and I require assistance in navigating to the location. Yours truly, me.",
+						"XDDDD",
+						"thats what im sayin!",
+						"Wow we should sign up for more shifts together guys we work so well together",
+						"hello?",
+						"hi!",
+						"why arent my messages sending",
+						"Is anyone allergic to peanuts here?",
+						"Is it okay if my partner comes to hangout and help????",
+						"I'm not feeling too well :( I may have to cancel...",
+						"Wow this website is amazing!",
+						"Anyone else here from Niagara College??",
+						"my password is just a lot of exclamation points, those are impossible to hack!!!!"
+					};
+
 						//User Shifts
 						if (!context.UserShifts.Any())
 						{
+							var volunteers = context.Volunteers.ToList();
+							var directors = context.Directors.ToList();
+							var users = volunteers.Cast<User>().Concat(directors.Cast<User>()).ToArray();
+
 							foreach (Shift shift in context.Shifts)
 							{
-								var volunteers = context.Volunteers
-									.Take(rnd.Next(7))
-									.ToList();
-								var directors = context.Directors
-									.Take(rnd.Next(3))
-									.ToList();
+								rnd.Shuffle<User>(users);
 
 								// Test Messaging with Seed Data
-								foreach (Volunteer volunteer in volunteers)
+								foreach (User user in users.Take(rnd.Next(shift.VolunteersNeeded + 1)))
 								{
-									UserShift volunteerShift = new UserShift
+									if (shift.VolunteersLeft <= 0)
+										continue;
+									UserShift userShift = new UserShift
 									{
-										UserID = volunteer.ID,
+										UserID = user.ID,
 										ShiftID = shift.ID,
 										Shift = shift,
-										User = volunteer
+										User = user
 									};
 									try
 									{
-										context.UserShifts.Add(volunteerShift);
+										context.UserShifts.Add(userShift);
 										context.SaveChanges();
 									}
 									catch (Exception)
 									{
-										context.UserShifts.Remove(volunteerShift);
+										context.UserShifts.Remove(userShift);
 									}
 									Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
 									ChatUser chatUser = new ChatUser
 									{
-										UserID = volunteer.ID,
+										UserID = user.ID,
 										ChatID = chat.ID
 									};
 									try
@@ -738,45 +765,7 @@ namespace TomorrowsVoice_Toplevel.Data
 									{
 										context.ChatUsers.Remove(chatUser);
 									}
-									chat.AddMessage(context, volunteer, "My message!");
-									//context.SaveChanges();
-								}
-								// Test Messaging with Seed Data
-								foreach (Director director in directors)
-								{
-									UserShift directorShift = new UserShift
-									{
-										UserID = director.ID,
-										ShiftID = shift.ID,
-										Shift = shift,
-										User = director
-									};
-									try
-									{
-										context.UserShifts.Add(directorShift);
-										context.SaveChanges();
-									}
-									catch (Exception)
-									{
-										context.UserShifts.Remove(directorShift);
-									}
-									Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
-									ChatUser chatUser = new ChatUser
-									{
-										UserID = director.ID,
-										ChatID = chat.ID
-									};
-									try
-									{
-										context.ChatUsers.Add(chatUser);
-										context.SaveChanges();
-									}
-									catch (Exception)
-									{
-										context.ChatUsers.Remove(chatUser);
-									}
-									chat.AddMessage(context, director, "I'm a Director!");
-									//context.SaveChanges();
+									chat.AddMessage(context, user, msgString[rnd.Next(msgString.Length)]);
 								}
 							}
 						}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,307 +10,297 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using NToastNotify;
+using NToastNotify.Helpers;
 using NuGet.Protocol;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using SQLitePCL;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Messaging;
+using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Utilities;
 using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class ShiftController : ElephantController
+	public class ShiftController : ElephantController
 	{
-        private readonly TVContext _context;
-        
-        public ShiftController(TVContext context, IToastNotification toastNotification) : base(context, toastNotification)
+		private readonly TVContext _context;
+
+		public ShiftController(TVContext context, IToastNotification toastNotification) : base(context, toastNotification)
 		{
-            _context = context;
-        }
+			_context = context;
+		}
 
-        // GET: Shift
-        public async Task<IActionResult> Index(int? EventID, string? Location, DateTime FilterStartDate,
-            DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
+		// GET: Shift
+		public async Task<IActionResult> Index(int? EventID, string? Location, DateTime FilterStartDate,
+			DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
 
-        {
-            //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
-            int numberFilters = 0;
-            Enum.TryParse(StatusFilter, out Status selectedStatus);
-
-           
-            PopulateDropDown();
-          
-
-
-            var shifts = _context.Shifts.Include(s => s.Event).AsNoTracking();
-
-            if (!String.IsNullOrEmpty(StatusFilter))
-            {
-                shifts = shifts.Where(p => p.Status == selectedStatus);
-
-                // filter out archived events if the user does not specifically select "archived"
-                if (selectedStatus != Status.Archived)
-                {
-                    shifts = shifts.Where(s => s.Status != Status.Archived);
-                }
-                numberFilters++;
-            }
-            // filter out events even if status filter has not been set
-            else
-            {
-                shifts = shifts.Where(s => s.Status != Status.Archived);
-            }
-            //Filter For Start and End times
-            if (FilterStartDate != default(DateTime) || FilterEndDate != default(DateTime))
-            {
-                if (FilterStartDate != default(DateTime))
-                {
-                    ViewData["StartDate"] = FilterStartDate.ToString("yyyy-MM-dd");
-                }
-                if (FilterEndDate != default(DateTime))
-                {
-                    ViewData["EndDate"] = FilterEndDate.ToString("yyyy-MM-dd");
-                }
-                shifts = shifts.Where(e => e.ShiftDate >= FilterStartDate && e.ShiftDate <= FilterEndDate);
-            }
-
-            if (EventID.HasValue)
-            {
-                shifts = shifts.Where(r => r.EventID == EventID);
-                
-            }
-            //Give feedback about the state of the filters
-            if (numberFilters != 0)
-            {
-                //Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
-                //Show how many filters have been applied
-                ViewData["numberFilters"] = "(" + numberFilters.ToString()
-                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
-                //Keep the Bootstrap collapse open
-                @ViewData["ShowFilter"] = " show";
-            }
-            //Before we sort, see if we have called for a change of filtering or sorting
-            if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
-            {
-                page = 1;//Reset page to start
-
-            }
-
-            //Handle Paging
-            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-            var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
-
-            return View(pagedData);
-        }
-
-        // GET: Shift/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var shift = await _context.Shifts
-                .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-
-            return View(shift);
-        }
-
-        // GET: Shift/Create
-        public IActionResult Create()
-        {
-
-			Shift shift = new Shift();
-			PopulateAssignedEnrollmentData(shift);
-
-            PopulateDropDown(shift);
-            
-            return View();
-        }
-
-        // POST: Shift/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, string[] selectedOptions)
 		{
+			//Count the number of filters applied - start by assuming no filters
+			ViewData["Filtering"] = "btn-outline-secondary";
+			int numberFilters = 0;
+			Enum.TryParse(StatusFilter, out Status selectedStatus);
 
-            try
-            {
-                UpdateEnrollments(selectedOptions, shift);
-                if (ModelState.IsValid)
-                {
+			PopulateDropDown();
 
-                    var sameshift = await _context.Shifts
-                         .Include(s => s.Event)
-                         .FirstOrDefaultAsync(m => m.EventID == shift.EventID);
-                   
+			var shifts = _context.Shifts
+				.Include(s => s.Event)
+				.Include(s => s.UserShifts)
+				.AsNoTracking();
 
-                    if (shift.ShiftDate < sameshift.Event.StartDate || shift.ShiftDate > sameshift.Event.EndDate)
-                    {
-                        // Throwing exception when overlap condition is met
-                        throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
-                    }
-                    var sameshifts = _context.Shifts
-                        .Where(r => r.ShiftDate == shift.ShiftDate && r.EventID == shift.EventID);
+			if (!String.IsNullOrEmpty(StatusFilter))
+			{
+				shifts = shifts.Where(p => p.Status == selectedStatus);
 
-                    if (sameshifts.Count() != 0)
-                    {
-                        foreach (var ABC in sameshifts)
-                        {
-                            if (ABC.ID != shift.ID) // Don't compare it to itself!
-                            {
-                                // Check if it Overlaps
-                                if (shift.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.StartAt.TimeOfDay > ABC.StartAt.TimeOfDay)
-                                {
-                                    // Throwing exception when overlap condition is met
-                                    throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
-                                }
-                                else if (shift.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.EndAt.TimeOfDay > ABC.StartAt.TimeOfDay)
-                                {
-                                    // Throwing exception when overlap condition is met
-                                    throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
-                                }
-                            }
-                        }
-                    }
+				// filter out archived events if the user does not specifically select "archived"
+				if (selectedStatus != Status.Archived)
+				{
+					shifts = shifts.Where(s => s.Status != Status.Archived);
+				}
+				numberFilters++;
+			}
+			// filter out events even if status filter has not been set
+			else
+			{
+				shifts = shifts.Where(s => s.Status != Status.Archived);
+			}
+			//Filter For Start and End times
+			if (FilterStartDate != default(DateTime) || FilterEndDate != default(DateTime))
+			{
+				if (FilterStartDate != default(DateTime))
+				{
+					ViewData["StartDate"] = FilterStartDate.ToString("yyyy-MM-dd");
+				}
+				if (FilterEndDate != default(DateTime))
+				{
+					ViewData["EndDate"] = FilterEndDate.ToString("yyyy-MM-dd");
+				}
+				shifts = shifts.Where(e => e.ShiftDate >= FilterStartDate && e.ShiftDate <= FilterEndDate);
+			}
 
-                    _context.Add(shift);
-                    await _context.SaveChangesAsync();
-                    AddSuccessToast(shift.ShiftDuration.ToString());
-                    // _toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
-                    return RedirectToAction("Details", new { shift.ID });
-                }
-            }
-            catch (DbUpdateException dex)
-            {
-                string message = dex.GetBaseException().Message;
-                if (message.Contains("overlapping shifts"))
-                {
-                    // Handling the custom exception
-                    ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
-                }
-                else if (message.Contains("Event range"))
-                {
-                    // Handling the custom exception
-                    ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range..");
-                }
-                else if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
-                {
-                    ModelState.AddModelError("", "Unable to save changes. Remember, you cannot have duplicate Name and Email.");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                }
-            }
-            PopulateDropDown(shift);
-            PopulateAssignedEnrollmentData(shift);
-			
-			return View(shift);
+			if (EventID.HasValue)
+			{
+				shifts = shifts.Where(r => r.EventID == EventID);
+			}
+			//Give feedback about the state of the filters
+			if (numberFilters != 0)
+			{
+				//Toggle the Open/Closed state of the collapse depending on if we are filtering
+				ViewData["Filtering"] = " btn-danger";
+				//Show how many filters have been applied
+				ViewData["numberFilters"] = "(" + numberFilters.ToString()
+					+ " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+				//Keep the Bootstrap collapse open
+				@ViewData["ShowFilter"] = " show";
+			}
+			//Before we sort, see if we have called for a change of filtering or sorting
+			if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+			{
+				page = 1;//Reset page to start
+			}
 
+			//Handle Paging
+			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+			var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
 
-			
-        }
+			return View(pagedData);
+		}
 
-        // GET: Shift/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-           
-
-            var shift = await _context.Shifts
-               .Include(g => g.UserShifts).ThenInclude(e => e.User)
-               .FirstOrDefaultAsync(m => m.ID == id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-            PopulateAssignedEnrollmentData(shift);
-			PopulateDropDown(shift);
-			return View(shift);
-        }
-
-        // POST: Shift/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,string[] selectedOptions)
-        {
-
-            var shiftToUpdate = await _context.Shifts
-               .Include(g => g.UserShifts).ThenInclude(e => e.User)
-               .FirstOrDefaultAsync(m => m.ID == id);
-
-            if (shiftToUpdate == null)
+		// GET: Shift/Details/5
+		public async Task<IActionResult> Details(int? id)
+		{
+			if (id == null)
 			{
 				return NotFound();
 			}
-            UpdateEnrollments(selectedOptions, shiftToUpdate);
-            // Try updating with posted values
-            if (await TryUpdateModelAsync<Shift>(shiftToUpdate,
+
+			var shift = await _context.Shifts
+				.Include(s => s.Event)
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (shift == null)
+			{
+				return NotFound();
+			}
+			return View(shift);
+		}
+
+		// GET: Shift/Create
+		public IActionResult Create()
+		{
+			Shift shift = new Shift();
+			PopulateAssignedEnrollmentData(shift);
+
+			PopulateDropDown(shift);
+
+			return View();
+		}
+
+		// POST: Shift/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, string[] selectedOptions)
+		{
+			try
+			{
+				UpdateEnrollments(selectedOptions, shift);
+				if (ModelState.IsValid)
+				{
+					var sameshift = await _context.Shifts
+						 .Include(s => s.Event)
+						 .FirstOrDefaultAsync(m => m.EventID == shift.EventID);
+
+					if (shift.ShiftDate < sameshift.Event.StartDate || shift.ShiftDate > sameshift.Event.EndDate)
+					{
+						// Throwing exception when overlap condition is met
+						throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
+					}
+					var sameshifts = _context.Shifts
+						.Where(r => r.ShiftDate == shift.ShiftDate && r.EventID == shift.EventID);
+
+					if (sameshifts.Count() != 0)
+					{
+						foreach (var ABC in sameshifts)
+						{
+							if (ABC.ID != shift.ID) // Don't compare it to itself!
+							{
+								// Check if it Overlaps
+								if (shift.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.StartAt.TimeOfDay > ABC.StartAt.TimeOfDay)
+								{
+									// Throwing exception when overlap condition is met
+									throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+								}
+								else if (shift.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.EndAt.TimeOfDay > ABC.StartAt.TimeOfDay)
+								{
+									// Throwing exception when overlap condition is met
+									throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+								}
+							}
+						}
+					}
+
+					_context.Add(shift);
+					await _context.SaveChangesAsync();
+					AddSuccessToast(shift.ShiftDuration.ToString());
+					// _toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
+					return RedirectToAction("Details", new { shift.ID });
+				}
+			}
+			catch (DbUpdateException dex)
+			{
+				string message = dex.GetBaseException().Message;
+				if (message.Contains("overlapping shifts"))
+				{
+					// Handling the custom exception
+					ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
+				}
+				else if (message.Contains("Event range"))
+				{
+					// Handling the custom exception
+					ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range..");
+				}
+				else if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
+				{
+					ModelState.AddModelError("", "Unable to save changes. Remember, you cannot have duplicate Name and Email.");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+				}
+			}
+			PopulateDropDown(shift);
+			PopulateAssignedEnrollmentData(shift);
+
+			return View(shift);
+		}
+
+		// GET: Shift/Edit/5
+		public async Task<IActionResult> Edit(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var shift = await _context.Shifts
+			   .Include(g => g.UserShifts).ThenInclude(e => e.User)
+			   .FirstOrDefaultAsync(m => m.ID == id);
+			if (shift == null)
+			{
+				return NotFound();
+			}
+			PopulateAssignedEnrollmentData(shift);
+			PopulateDropDown(shift);
+			return View(shift);
+		}
+
+		// POST: Shift/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(int id, string[] selectedOptions)
+		{
+			var shiftToUpdate = await _context.Shifts
+			   .Include(g => g.UserShifts).ThenInclude(e => e.User)
+			   .FirstOrDefaultAsync(m => m.ID == id);
+
+			if (shiftToUpdate == null)
+			{
+				return NotFound();
+			}
+			UpdateEnrollments(selectedOptions, shiftToUpdate);
+			// Try updating with posted values
+			if (await TryUpdateModelAsync<Shift>(shiftToUpdate,
 					"",
-                    r => r.ShiftDate,
-                    r => r.StartAt,
+					r => r.ShiftDate,
+					r => r.StartAt,
 					r => r.EndAt, r => r.Status,
-                   r => r.VolunteersNeeded,
+				   r => r.VolunteersNeeded,
 				   r => r.EventID
 					))
 			{
 				try
 				{
-                    var sameshift = await _context.Shifts
-                         .Include(s => s.Event)
-                         .FirstOrDefaultAsync(m => m.EventID == shiftToUpdate.EventID);
+					var sameshift = await _context.Shifts
+						 .Include(s => s.Event)
+						 .FirstOrDefaultAsync(m => m.EventID == shiftToUpdate.EventID);
 
+					if (shiftToUpdate.ShiftDate < sameshift.Event.StartDate || shiftToUpdate.ShiftDate > sameshift.Event.EndDate)
+					{
+						// Throwing exception when overlap condition is met
+						throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
+					}
 
-                    if (shiftToUpdate.ShiftDate < sameshift.Event.StartDate || shiftToUpdate.ShiftDate > sameshift.Event.EndDate)
-                    {
-                        // Throwing exception when overlap condition is met
-                        throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
-                    }
+					var sameshifts = _context.Shifts
+						.Where(r => r.ShiftDate == shiftToUpdate.ShiftDate && r.EventID == shiftToUpdate.EventID);
 
-                    var sameshifts = _context.Shifts
-                        .Where(r => r.ShiftDate == shiftToUpdate.ShiftDate &&  r.EventID == shiftToUpdate.EventID);
-
-                    if (sameshifts.Count() != 0)
-                    {
-                        foreach (var ABC in sameshifts)
-                        {
-                            if (ABC.ID != shiftToUpdate.ID) // Don't compare it to itself!
-                            {
-                                // Check if it Overlaps
-                                if (shiftToUpdate.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.StartAt.TimeOfDay > ABC.StartAt.TimeOfDay)
-                                {
-                                    // Throwing exception when overlap condition is met
-                                    throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
-                                }
-                                else if (shiftToUpdate.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.EndAt.TimeOfDay > ABC.StartAt.TimeOfDay)
-                                {
-                                    // Throwing exception when overlap condition is met
-                                    throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
-                                }
-                            }
-                        }
-                    }
-                    await _context.SaveChangesAsync();
+					if (sameshifts.Count() != 0)
+					{
+						foreach (var ABC in sameshifts)
+						{
+							if (ABC.ID != shiftToUpdate.ID) // Don't compare it to itself!
+							{
+								// Check if it Overlaps
+								if (shiftToUpdate.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.StartAt.TimeOfDay > ABC.StartAt.TimeOfDay)
+								{
+									// Throwing exception when overlap condition is met
+									throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+								}
+								else if (shiftToUpdate.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shiftToUpdate.EndAt.TimeOfDay > ABC.StartAt.TimeOfDay)
+								{
+									// Throwing exception when overlap condition is met
+									throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+								}
+							}
+						}
+					}
+					await _context.SaveChangesAsync();
 					_toastNotification.AddSuccessToastMessage($"{shiftToUpdate.ShiftDuration} was successfully updated.");
 					return RedirectToAction("Details", new { shiftToUpdate.ID });
 				}
@@ -317,62 +308,58 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					ModelState.AddModelError("", "Unable to save changes after multiple attempts. Please Try Again.");
 				}
-                catch (DbUpdateException dex)
-                {
-                    string message = dex.GetBaseException().Message;
-                    if (message.Contains("overlapping shifts"))
-                    {
-                        // Handling the custom exception
-                        ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
-                    }
-                    else if (message.Contains("Event range"))
-                    {
-                        // Handling the custom exception
-                        ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range..");
-                    }
-                    else if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
-                    {
-                        ModelState.AddModelError("", "Unable to save changes. Remember, you cannot have duplicate Name and Email.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                    }
-                }
-            }
-            PopulateAssignedEnrollmentData(shiftToUpdate);
+				catch (DbUpdateException dex)
+				{
+					string message = dex.GetBaseException().Message;
+					if (message.Contains("overlapping shifts"))
+					{
+						// Handling the custom exception
+						ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
+					}
+					else if (message.Contains("Event range"))
+					{
+						// Handling the custom exception
+						ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range..");
+					}
+					else if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
+					{
+						ModelState.AddModelError("", "Unable to save changes. Remember, you cannot have duplicate Name and Email.");
+					}
+					else
+					{
+						ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+					}
+				}
+			}
+			PopulateAssignedEnrollmentData(shiftToUpdate);
 			PopulateDropDown(shiftToUpdate);
 			return View(shiftToUpdate);
+		}
 
+		// GET: Shift/Delete/5
+		public async Task<IActionResult> Delete(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
+			var shift = await _context.Shifts
+				.Include(s => s.Event)
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (shift == null)
+			{
+				return NotFound();
+			}
 
-			
-        }
+			return View(shift);
+		}
 
-        // GET: Shift/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var shift = await _context.Shifts
-                .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-
-            return View(shift);
-        }
-
-        // POST: Shift/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+		// POST: Shift/Delete/5
+		[HttpPost, ActionName("Delete")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteConfirmed(int id)
+		{
 			var shift = await _context.Shifts
 
 			   .FirstOrDefaultAsync(m => m.ID == id);
@@ -381,11 +368,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (shift != null)
 				{
-                    //_context.Singers.Remove(singer);
-                    shift.Status = Status.Archived;
-                    // Here we are archiving a singer instead of deleting them
-                    //_context.Shifts.Remove(shift);
-                    await _context.SaveChangesAsync();
+					//_context.Singers.Remove(singer);
+					shift.Status = Status.Archived;
+					// Here we are archiving a singer instead of deleting them
+					//_context.Shifts.Remove(shift);
+					await _context.SaveChangesAsync();
 					AddSuccessToast(shift.ShiftDuration.ToString());
 					return RedirectToAction(nameof(Index));
 				}
@@ -396,64 +383,61 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			return View(shift);
+		}
 
-
-        }
-
-        public async Task<IActionResult> Recover(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var shift = await _context.Shifts
-                .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-
-            return View(shift);
-        }
-
-        // POST: Shift/Delete/5
-        [HttpPost, ActionName("Recover")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RecoverConfirmed(int id)
-        {
-            var shift = await _context.Shifts
-
-               .FirstOrDefaultAsync(m => m.ID == id);
-
-            try
-            {
-                if (shift != null)
-                {
-                    //_context.Singers.Remove(singer);
-                    shift.Status = Status.Active;
-                    // Here we are archiving a singer instead of deleting them
-                    //_context.Shifts.Remove(shift);
-                    await _context.SaveChangesAsync();
-                    AddSuccessToast(shift.ShiftDuration.ToString());
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Unable to delete record. Please try again.");
-            }
-
-            return View(shift);
-
-
-        }
-        private void PopulateAssignedEnrollmentData(Shift shift)
+		public async Task<IActionResult> Recover(int? id)
 		{
-            //For this to work, you must have Included the child collection in the parent object
-            var allOptions = _context.Users;
-            var currentOptionsHS = new HashSet<int>(shift.UserShifts.Select(b => b.UserID));
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var shift = await _context.Shifts
+				.Include(s => s.Event)
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (shift == null)
+			{
+				return NotFound();
+			}
+
+			return View(shift);
+		}
+
+		// POST: Shift/Delete/5
+		[HttpPost, ActionName("Recover")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> RecoverConfirmed(int id)
+		{
+			var shift = await _context.Shifts
+
+			   .FirstOrDefaultAsync(m => m.ID == id);
+
+			try
+			{
+				if (shift != null)
+				{
+					//_context.Singers.Remove(singer);
+					shift.Status = Status.Active;
+					// Here we are archiving a singer instead of deleting them
+					//_context.Shifts.Remove(shift);
+					await _context.SaveChangesAsync();
+					AddSuccessToast(shift.ShiftDuration.ToString());
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException)
+			{
+				ModelState.AddModelError("", "Unable to delete record. Please try again.");
+			}
+
+			return View(shift);
+		}
+
+		private void PopulateAssignedEnrollmentData(Shift shift)
+		{
+			//For this to work, you must have Included the child collection in the parent object
+			var allOptions = _context.Users;
+			var currentOptionsHS = new HashSet<int>(shift.UserShifts.Select(b => b.UserID));
 			//Instead of one list with a boolean, we will make two lists
 			var selected = new List<ListOptionVM>();
 			var available = new List<ListOptionVM>();
@@ -480,6 +464,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
 			ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
 		}
+
 		private void UpdateEnrollments(string[] selectedOptions, Shift shiftToUpdate)
 		{
 			if (selectedOptions == null)
@@ -508,7 +493,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					if (currentOptionsHS.Contains(c.ID))//but is currently in the GroupClass's collection - Remove it!
 					{
 						UserShift? enrollmentToRemove = shiftToUpdate.UserShifts
-                            .FirstOrDefault(d => d.UserID == c.ID);
+							.FirstOrDefault(d => d.UserID == c.ID);
 						if (enrollmentToRemove != null)
 						{
 							_context.Remove(enrollmentToRemove);
@@ -517,109 +502,176 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 		}
-        public async Task<IActionResult> TrackPerformance(int id)
-        {
-            var groupClass = await _context.Shifts
-                .Include(g => g.UserShifts).ThenInclude(e => e.User)
-                .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (groupClass == null)
-            {
-                return NotFound();
-            }
+		public async Task<IActionResult> TrackPerformance(int id)
+		{
+			var groupClass = await _context.Shifts
+				.Include(g => g.UserShifts).ThenInclude(e => e.User)
+				.FirstOrDefaultAsync(m => m.ID == id);
 
-            var enrollmentsVM = groupClass.UserShifts.Where(e => e.User != null).Select(e => new EnrollmentVM
-            {
-                UserID = e.UserID,
-                Volunteer = e.User.NameFormatted,
-                ShowOrNot = e.NoShow,
-                StartAt = e.StartAt,
-                EndAt = e.EndAt
-            }).ToList();
+			if (groupClass == null)
+			{
+				return NotFound();
+			}
 
-            return PartialView("_TrackPerformance", enrollmentsVM);
-        }
+			var enrollmentsVM = groupClass.UserShifts.Where(e => e.User != null).Select(e => new EnrollmentVM
+			{
+				UserID = e.UserID,
+				Volunteer = e.User.NameFormatted,
+				ShowOrNot = e.NoShow,
+				StartAt = e.StartAt,
+				EndAt = e.EndAt
+			}).ToList();
 
+			return PartialView("_TrackPerformance", enrollmentsVM);
+		}
 
-        [HttpPost]
-        public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
-        {
-            if (enrollments == null || enrollments.Count == 0)
-            {
-                return Json(new { success = false, message = "No data received." });
-            }
+		[HttpPost]
+		public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
+		{
+			if (enrollments == null || enrollments.Count == 0)
+			{
+				return Json(new { success = false, message = "No data received." });
+			}
 
-            try
-            {
-                foreach (var enrollmentVM in enrollments)
-                {
-                    var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == enrollmentVM.UserID);
+			try
+			{
+				foreach (var enrollmentVM in enrollments)
+				{
+					var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == enrollmentVM.UserID);
 
-                    var userShifts = await _context.UserShifts.FirstOrDefaultAsync(e => e.ShiftID == enrollmentVM.ShiftID);
+					var userShifts = await _context.UserShifts.FirstOrDefaultAsync(e => e.ShiftID == enrollmentVM.ShiftID);
 
+					var enrollment = await _context.UserShifts.Include(g => g.User)
+						.FirstOrDefaultAsync(e => e.UserID == enrollmentVM.UserID && e.ShiftID == enrollmentVM.ShiftID);
 
+					if (enrollment != null)
+					{
+						if (volunteer != null)
+						{
+							if (enrollment.NoShow == true) volunteer.absences--;
+							if (enrollment.EndAt > enrollment.StartAt)
+							{
+								volunteer.totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
+								volunteer.ParticipationCount--;
+								volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
+							}
+						}
+						enrollment.NoShow = enrollmentVM.ShowOrNot;
 
-                    var enrollment = await _context.UserShifts.Include(g => g.User)
-                        .FirstOrDefaultAsync(e => e.UserID == enrollmentVM.UserID && e.ShiftID == enrollmentVM.ShiftID);
+						enrollment.StartAt = enrollmentVM.StartAt;
+						enrollment.EndAt = enrollmentVM.EndAt;
+						if (volunteer != null)
+						{
+							if (enrollment.NoShow == true) volunteer.absences++;
+							if (enrollment.EndAt > enrollment.StartAt)
+							{
+								volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
+								volunteer.ParticipationCount++;
+								volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
+							}
+						}
+					}
+				}
 
-                    if (enrollment != null)
-                    {
-                        if (volunteer != null)
-                        {
-                            if (enrollment.NoShow == true) volunteer.absences--;
-                            if (enrollment.EndAt > enrollment.StartAt)
-                            {
-                                volunteer.totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
-                                volunteer.ParticipationCount--;
-                                volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
-                            }
-                        }
-                        enrollment.NoShow = enrollmentVM.ShowOrNot;
-                       
-                        enrollment.StartAt = enrollmentVM.StartAt;
-                        enrollment.EndAt = enrollmentVM.EndAt;
-                        if (volunteer != null)
-                        {
+				await _context.SaveChangesAsync();
+				return Json(new { success = true, message = "Performance updated successfully." });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = "Error updating performance: " + ex.Message });
+			}
+		}
 
-                            if (enrollment.NoShow == true) volunteer.absences++;
-                            if (enrollment.EndAt > enrollment.StartAt)
-                            {
-                                volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
-                                volunteer.ParticipationCount++;
-                                volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
-                            }
-                           
-                            
-                         }
-                       
-                    }
-                }
+		private void PopulateDropDown(Shift? shift = null)
+		{
+			ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
 
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Performance updated successfully." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error updating performance: " + ex.Message });
-            }
-        }
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active || s == Status.Canceled)
+						 .ToList();
 
+			ViewBag.StatusList = new SelectList(statusList);
+		}
 
-        private void PopulateDropDown(Shift? shift = null)
-        {
-            ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
-           
-            var statusList = Enum.GetValues(typeof(Status))
-                         .Cast<Status>()
-                         .Where(s => s == Status.Active || s == Status.Canceled)
-                         .ToList();
+		public PartialViewResult GetMessages(int id)
+		{
+			ViewBag.ShiftID = id;
+			var messages = _context.Messages
+				.Where(m => m.ChatID == id)
+				.Include(m => m.User)
+				.Select(m => new MessageVM
+				{
+					Name = !string.IsNullOrEmpty(m.User.Nickname) ? m.User.Nickname : m.User.NameFormatted,
+					CreatedOn = m.CreatedOn,
+					Content = m.Content ?? string.Empty
+				})
+				.ToList();
 
+			return PartialView("_GetMessages", messages);
+			//var chat = _context.Chats.FirstOrDefault(c => c.ID == id);
+			//var messages = _context.Messages
+			//	.Where(m => m.ChatID == chat.ID)
+			//	.OrderBy(m => m.CreatedOn)
+			//	.ToList();
+			//var messageVMs = new List<MessageVM>();
+			//foreach (var message in messages)
+			//{
+			//	string name = "Unknown";
 
-            ViewBag.StatusList = new SelectList(statusList);
-        }
-        private bool ShiftExists(int id)
-        {
-            return _context.Shifts.Any(e => e.ID == id);
-        }
-    }
+			//	var volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == message.FromAccountID);
+			//	if (volunteer != null)
+			//	{
+			//		name = !string.IsNullOrEmpty(volunteer.Nickname) ? volunteer.Nickname : volunteer.NameFormatted;
+			//	}
+			//	else
+			//	{
+			//		var director = _context.Directors.FirstOrDefault(d => d.ID == message.FromAccountID);
+			//		if (director != null)
+			//		{
+			//			name = !string.IsNullOrEmpty(director.Nickname) ? director.Nickname : director.NameFormatted;
+			//		}
+			//	}
+
+			//	messageVMs.Add(new MessageVM
+			//	{
+			//		Content = message.Content,
+			//		CreatedOn = message.CreatedOn,
+			//		Name = name,
+			//		// Avatar = volunteer?.Avatar
+			//	});
+			//}
+			//return PartialView("_GetMessages", messageVMs);
+		}
+
+		public IActionResult SendMessage(int shiftID, int volunteerID, string content)
+		{
+			var chat = _context.Chats.FirstOrDefault(c => c.ID == shiftID);
+			if (chat == null)
+			{
+				chat = new Chat { ID = shiftID };
+				_context.Chats.Add(chat);
+				_context.SaveChanges();
+			}
+			Volunteer volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == volunteerID);
+			var message = new Message
+			{
+				ChatID = chat.ID,
+				FromAccountID = volunteerID,
+				Content = content,
+				User = volunteer
+			};
+
+			_context.Messages.Add(message);
+			_context.SaveChanges();
+
+			return RedirectToAction("Details", new { id = shiftID });
+		}
+
+		private bool ShiftExists(int id)
+		{
+			return _context.Shifts.Any(e => e.ID == id);
+		}
+	}
 }

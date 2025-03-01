@@ -80,7 +80,6 @@ namespace TomorrowsVoice_Toplevel.Controllers.Messaging
 			Volunteer volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == volunteerID);
 			var message = new Message
 			{
-				ChatID = chat.ID,
 				FromAccountID = volunteerID,
 				Content = content,
 				User = volunteer
