@@ -28,7 +28,7 @@
             @Html.AntiForgeryToken()
             <input type="hidden" name="shiftID" value="@Model.ID" />
             <input type="hidden" name="volID" value="" id="volInput" />
-            <button type="submit" class="btn btn-primary">Sign Up</button>
+            <button type="submit" class="btn btn-primary" disabled id="btnSubmit">Sign Up</button>
             |
             <a asp-action="Index">Back to List</a>
         </div>
@@ -36,22 +36,23 @@
 </div>
 
 <script>
+    // get elements
     var dropDown = document.getElementById("VolunteerID");
     var signUpLink = document.getElementById("SignUp");
+    var submitButton = document.getElementById("btnSubmit");
     var dropValue;
+    // set values when dropdown changed
     dropDown.addEventListener("change", 
         () =>
         {
             dropValue = dropDown.value;
-            
-            //signUpLink.setAttribute(asp-route-volID, dropValue);
+            console.log(dropValue);
             document.getElementById("volInput").value = dropValue;
-            document.getElementById("test").innerHTML = dropValue;
-            
+            if (dropValue !== ""){
+                submitButton.disabled = false;
+            }
+            else{
+                submitButton.disabled = true;
+            }
         });
-
-    // function setRouteParameter() {
-    //     var newhref = $("#SignUp").attr('href') + '/' + dropValue;
-    //     $("#SignUp").attr("href", newhref);
-    // }
 </script>
