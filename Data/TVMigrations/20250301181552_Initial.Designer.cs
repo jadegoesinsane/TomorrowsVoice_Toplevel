@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250301145913_Initial")]
+    [Migration("20250301181552_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -174,6 +174,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasKey("ID");
 
                     b.HasIndex("ChatID");
+
+                    b.HasIndex("FromAccountID");
 
                     b.ToTable("Messages");
                 });
@@ -394,11 +396,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -441,11 +438,16 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("ID");
 
                     b.ToTable("Users");
 
-                    b.HasDiscriminator().HasValue("User");
+                    b.HasDiscriminator<string>("UserType").HasValue("User");
 
                     b.UseTphMappingStrategy();
                 });
@@ -716,6 +718,14 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasForeignKey("ChatID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("FromAccountID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
