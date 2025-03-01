@@ -7,71 +7,115 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Volunteer</h4>
+    <h4>@Model.NameFormatted</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MiddleName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MiddleName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HoursVolunteered)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HoursVolunteered)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ParticipationCount)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ParticipationCount)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.absences)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.absences)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.totalWorkDuration)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.totalWorkDuration)
-        </dd>
-    </dl>
 </div>
-<div>
-    
 
-    <a asp-action="ShiftIndex" asp-route-id="@Model?.ID">Shift</a> |
+
+
+<div>
+    <nav>
+        <div class="nav nav-pills" id="myTabs" role="tablist">
+            <button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
+                    type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
+                Basic Details
+            </button>
+            <button class="nav-link" id="Shifts-Tab" data-bs-toggle="tab" data-bs-target="#ShiftsPanel"
+                    type="button" role="tab" aria-controls="ShiftsPanel" aria-selected="false">
+                Shifts
+            </button>
+        </div>
+    </nav>
+
+
+
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
+            <br />
+                <dl class="row">
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.FirstName)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.FirstName)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.MiddleName)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.MiddleName)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.LastName)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.LastName)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.Phone)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.Phone)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.HoursVolunteered)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.HoursVolunteered)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.ParticipationCount)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.ParticipationCount)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.absences)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.absences)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.totalWorkDuration)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.totalWorkDuration)
+                    </dd>
+                </dl>
+
+    
+        </div>
+        <div class="tab-pane fade ml-3" role="tabpanel" id="ShiftsPanel" aria-labelledby="Shifts-tab">
+            <br />
+        </div>
+    <div>
+
+            <div>
+
+
+ <div>
+
+      <a asp-action="ShiftIndex" asp-route-id="@Model?.ID">Shift</a> |
 
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 
 </div>
+@section Scripts {
+    <script type="text/javascript">
+        $('.nav-link').click(function () {
+            var activeTab = $(this).attr("id");
+            switch (activeTab) {
+                case 'Shifts-Tab': $('#ShiftsPanel').load('/Volunteer/ListOfShiftDetails/@Model.ID');
+                    break;
+                default: break;
+            };
+        })
+    </script>
+}

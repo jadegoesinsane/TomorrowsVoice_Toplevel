@@ -1,0 +1,49 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Shift>
+
+<br />
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h4 class="panel-title">List of Shifts</h4>
+    </div>
+    <div class="panel-body scrollable-panel">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ShiftDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.StartAt)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EndAt)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Event)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            
+                           @Html.DisplayFor(modelItem => item.ShiftDate)
+                            
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartAt)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EndAt)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Event)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

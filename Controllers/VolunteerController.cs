@@ -716,7 +716,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             return View(volunteer);
         }
+        public PartialViewResult ListOfShiftDetails(int id)
 
+        {
+
+            var shifts = _context.Shifts
+				  .Include(a => a.UserShifts)
+				  .Where(r => r.UserShifts.Any(ra => ra.UserID == id)) 
+				  .OrderBy(r => r.ShiftDate)
+				  .ToList();
+
+            return PartialView("_ListOfShiftDetails", shifts);
+        }
         public async Task<IActionResult> ShiftIndex(int id)
         {
 
