@@ -1,17 +1,47 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Shift>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Shift</h1>
-
-<p>
-
-    <a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add @ViewData["ControllerFriendlyName"]</a>
-   
-</p>
 <form asp-action="Index" method="get">
+    <div class="form-horizontal my-3">
+        <div class="row align-items-center">
+            <h1 class="col m-0">Shifts</h1>
+            <a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add @ViewData["ControllerFriendlyName"]</a>
+        </div>
+    </div>
+    <button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+            data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+        <i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
+    </button>
+    <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+        <div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
+          
+            <div class="p-2">
+                <label class="control-label" for="FilterStartDate">Start Date:</label>
+                <input class="form-control" type="date" id="FilterStartDate" name="FilterStartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
+            </div>
+            <div class="p-2">
+                <label class="control-label" for="FilterEndDate">End Date:</label>
+                <input class="form-control" type="date" id="FilterEndDate" name="FilterEndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
+            </div>
+           <div class="p-2">
+               <label class="control-label" for="DirectorID">Select by Event:</label>
+							@Html.DropDownList("EventID", null, "All Event", htmlAttributes: new { @class = "form-control", id = "EventID" })
+							
+						</div>
+            <div class="p-2">
+                <strong><label class="control-label" for="StatusFilter">Status</label></strong>
+                @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
+                         "Any", htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="p-2 ms-auto">
+                <button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
+                    <i class=" bi bi-funnel-fill"></i>Apply
+                </button>
+            </div>
+            <div class="p-2">
+                <a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
+            </div>
+        </div>
+    </div>
+
     <table class="table">
         <thead>
             <tr>
@@ -99,6 +129,7 @@
             }
         </tbody>
     </table>
+     <partial name="_PagingNavBar" />
     <!-- Performance Tracking Modal -->
     <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

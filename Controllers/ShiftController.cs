@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 using NToastNotify;
 using NuGet.Protocol;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
@@ -14,6 +15,7 @@ using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
+using TomorrowsVoice_Toplevel.Utilities;
 using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
@@ -28,10 +30,81 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: Shift
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? EventID, string? Location, DateTime FilterStartDate,
+            DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
+
         {
-            var tVContext = _context.Shifts.Include(s => s.Event);
-            return View(await tVContext.ToListAsync());
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+            Enum.TryParse(StatusFilter, out Status selectedStatus);
+
+           
+            PopulateDropDown();
+          
+
+
+            var shifts = _context.Shifts.Include(s => s.Event).AsNoTracking();
+
+            if (!String.IsNullOrEmpty(StatusFilter))
+            {
+                shifts = shifts.Where(p => p.Status == selectedStatus);
+
+                // filter out archived events if the user does not specifically select "archived"
+                if (selectedStatus != Status.Archived)
+                {
+                    shifts = shifts.Where(s => s.Status != Status.Archived);
+                }
+                numberFilters++;
+            }
+            // filter out events even if status filter has not been set
+            else
+            {
+                shifts = shifts.Where(s => s.Status != Status.Archived);
+            }
+            //Filter For Start and End times
+            if (FilterStartDate != default(DateTime) || FilterEndDate != default(DateTime))
+            {
+                if (FilterStartDate != default(DateTime))
+                {
+                    ViewData["StartDate"] = FilterStartDate.ToString("yyyy-MM-dd");
+                }
+                if (FilterEndDate != default(DateTime))
+                {
+                    ViewData["EndDate"] = FilterEndDate.ToString("yyyy-MM-dd");
+                }
+                shifts = shifts.Where(e => e.ShiftDate >= FilterStartDate && e.ShiftDate <= FilterEndDate);
+            }
+
+            if (EventID.HasValue)
+            {
+                shifts = shifts.Where(r => r.EventID == EventID);
+                
+            }
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                //Keep the Bootstrap collapse open
+                @ViewData["ShowFilter"] = " show";
+            }
+            //Before we sort, see if we have called for a change of filtering or sorting
+            if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+
+            }
+
+            //Handle Paging
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
 
         // GET: Shift/Details/5
