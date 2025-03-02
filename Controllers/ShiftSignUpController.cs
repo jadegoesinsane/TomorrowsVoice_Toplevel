@@ -66,6 +66,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 .Include(s => s.Event)
                 .ThenInclude(e => e.CityEvents)
                 .ThenInclude(e => e.City)
+                 .Where(vs => vs.Status != Status.Archived)
                 .Where(a => a.StartAt >= StartDate && a.StartAt <= EndDate)
                 .AsNoTracking();
                 //.GroupBy(s => s.ShiftDate)

@@ -724,7 +724,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			 ViewData["Volunteer"] = volunteer;
             var shifts = _context.Shifts
 				  .Include(a => a.UserShifts).Include(c=>c.Event)
-				  .Where(r => r.UserShifts.Any(ra => ra.UserID == id)) 
+                  .Where(vs => vs.Status != Status.Archived)
+                  .Where(r => r.UserShifts.Any(ra => ra.UserID == id)) 
 				  .OrderBy(r => r.ShiftDate)
 				  .ToList();
 
@@ -743,8 +744,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
             ViewData["Volunteer"] = volunteer;
 
-            var volunteerShifts = _context.UserShifts
-                                   .Where(vs => vs.UserID == volunteer.ID)
+            var volunteerShifts = _context.UserShifts.Include(a=>a.Shift)
+                                   .Where(vs => vs.UserID == volunteer.ID).Where(vs => vs.Shift.Status != Status.Archived)
                                    .Select(vs => vs.ShiftID)
                                    .ToList();
 
