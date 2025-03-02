@@ -15,7 +15,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		[Display(Name = "Province")]
 		[Required(ErrorMessage = "Please select a province.")]
 		public Province Province { get; set; }
-
-		public virtual ICollection<CityEvent> CityEvents { get; set; } = new HashSet<CityEvent>();
+        public virtual ICollection<Chapter> Chapters { get; set; } = new HashSet<Chapter>();
+        public virtual ICollection<CityEvent> CityEvents { get; set; } = new HashSet<CityEvent>();
 	}
 }

@@ -163,7 +163,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             //var date = shift.ShiftDate;
 
             var shifts = _context.Shifts
-                .Include(s => s.Event)
+                .Include(s => s.Event).Include(s => s.UserShifts)
                 .Where(s=>s.ShiftDate == date && s.Status == Status.Active);
 
             ViewData["Date"] = date.ToLongDateString();

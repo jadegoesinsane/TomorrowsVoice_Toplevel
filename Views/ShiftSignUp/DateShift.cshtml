@@ -40,13 +40,17 @@
                     @Html.DisplayFor(modelItem => item.EndAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.VolunteersNeeded)
+                    @Html.DisplayFor(modelItem => item.VolunteersLeft)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Event.Name)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id=@item.ID>Sign Up</a>
+                        @if(item.VolunteersLeft>0){<a asp-action="Details" asp-route-id=@item.ID>Sign Up</a>
+                        }
+                        else {}
+
+                    
                 </td>
             </tr>
     }

@@ -1,0 +1,48 @@
+﻿@model TomorrowsVoice_Toplevel.Models.City
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>City</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating required">
+                        <input asp-for="Name" class="form-control" placeholder="Name" />
+                        <label asp-for="Name" class="control-label"></label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating required">
+                        <select asp-for="Province" class="form-control" asp-items="Html.GetEnumSelectList<Province>()"></select>
+                        <label asp-for="Province" class="control-label"></label>
+                        <span asp-validation-for="Province" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
