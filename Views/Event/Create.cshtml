@@ -92,4 +92,21 @@
 			}
 		});
 	</script>
+
+	<script type="text/javascript">
+		function fillFields() {
+			$.ajax({
+				url: '@Url.Action("GetEventData", "Event")',
+				type: 'GET',
+				success: function (data) {
+					document.getElementById('startDate').value = "2025-11-30"
+					document.getElementById('endDate').value = "2025-12-22";
+					document.getElementById('Name').value = "Sas Gift Wrapping - 2025";
+					document.getElementById('Location').value = "Midtown, Saskatoon";
+					document.getElementById('availOptions').value = 4;
+				}
+			})
+		}
+	</script>
+
 }

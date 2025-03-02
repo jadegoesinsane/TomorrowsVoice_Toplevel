@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NToastNotify;
+using System.IO;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Utilities;
@@ -126,37 +127,38 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			return new SelectList(singers, "ID", "NameFormatted", id);
 		}
 
-        // Get Chapters
+		// Get Chapters
 
-        //internal SelectList ChapterSelectList(int? id, Status? status = null)
-        //{
-        //	var chapters = _context.Chapters
-        //		.OrderBy(c => c.City.Name);
+		//internal SelectList ChapterSelectList(int? id, Status? status = null)
+		//{
+		//	var chapters = _context.Chapters
+		//		.OrderBy(c => c.City.Name);
 
-        //	if (status.HasValue)
-        //		chapters = chapters
-        //			.Where(c => c.Status == status)
-        //			.OrderBy(c => c.City.Name);
+		//	if (status.HasValue)
+		//		chapters = chapters
+		//			.Where(c => c.Status == status)
+		//			.OrderBy(c => c.City.Name);
 
-        //	return new SelectList(chapters, "ID", "Name", id);
-        //}
+		//	return new SelectList(chapters, "ID", "Name", id);
+		//}
 
-        // Get Event Locations
-        internal IEnumerable<string> EventLocationSelectList()
-        {
-            var locations = _context.Events
-                .OrderBy(e => e.Location)
-                .AsNoTracking()
-                .Select(e => e.Location)
-                .Distinct(); 
+		// Get Event 
+		internal IEnumerable<string> EventLocationSelectList()
+		{
+			var locations = _context.Events
+				.OrderBy(e => e.Location)
+				.AsNoTracking()
+				.Select(e => e.Location)
+				.Distinct();
 
-            return locations.ToList();
-        }
-        #endregion Select Lists
+			return locations.ToList();
+		}
 
-        // Toasty Notifications
-        // Success
-        protected void AddSuccessToast(string name)
+		#endregion Select Lists
+
+		// Toasty Notifications
+		// Success
+		protected void AddSuccessToast(string name)
 		{
 			string action = ViewData["ActionName"]?.ToString().ToLower();
 			if (action.EndsWith('e'))

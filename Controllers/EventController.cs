@@ -5,8 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Mono.TextTemplating;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -526,9 +528,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private void PopulateDropDownLists(Event? events = null)
 		{
-			var locations = EventLocationSelectList();
+			var location = EventLocationSelectList();
 
-			ViewData["Location"] = new SelectList(locations, events?.Location);
+			ViewData["Location"] = new SelectList(location, events?.Location);
 
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
@@ -536,6 +538,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						 .ToList();
 
 			ViewBag.StatusList = new SelectList(statusList);
+		}
+
+		public JsonResult GetEventData()
+		{
+			var data = new Event
+			{
+				Name = "Sas Gift Wrapping - 2025",
+				StartDate = new DateTime(2025, 11, 30),
+				EndDate = new DateTime(2025, 12, 22),
+				Location = "Midtown, Saskatoon"
+			};
+			return Json(data);
 		}
 
 		private bool EventExists(int id)

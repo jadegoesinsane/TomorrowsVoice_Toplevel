@@ -4,8 +4,9 @@
 		@:
 		<div class="row form-footer">
 			<div class="form-group col-md-6">
-				<input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" /> 
-				@if (@ViewData["ControllerFriendlyName"].ToString() == "Director" || @ViewData["ControllerFriendlyName"].ToString() == "Chapter" || @ViewData["ControllerFriendlyName"].ToString() == "Rehearsal")
+				<input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
+				@if (@ViewData["ControllerFriendlyName"].ToString() == "Director" || @ViewData["ControllerFriendlyName"].ToString() == "Chapter" || @ViewData["ControllerFriendlyName"].ToString() == "Rehearsal" ||
+					@ViewData["ControllerFriendlyName"].ToString() == "Event" || @ViewData["ControllerFriendlyName"].ToString() == "Volunteer" || @ViewData["ControllerFriendlyName"].ToString() == "Shift")
 				{
 					@: |
 					 <partial name="_FillFields" />

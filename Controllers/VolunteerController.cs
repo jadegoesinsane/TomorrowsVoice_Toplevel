@@ -810,13 +810,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 
         }
+		public JsonResult GetVolunteerData()
+		{
+			var data = new Volunteer
+			{
+				FirstName = "Grace",
+				LastName = "Hill",
+				Email = "Grace_Hill@gmail.com",
+				Phone = "9051231231",
+			};
+			return Json(data);
+		}
 
-
-
-
-
-
-        private bool VolunteerExists(int id)
+		private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
 		}

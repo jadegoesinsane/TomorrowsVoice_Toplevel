@@ -686,6 +686,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return RedirectToAction("Details", new { id = shiftID });
 		}
 
+		public JsonResult GetShiftData()
+		{
+			var date = new DateTime(2025, 11, 30);
+
+			var data = new Shift
+			{
+				ShiftDate = date,
+				StartAt = date.AddHours(10),
+				EndAt = date.AddHours(14),
+				EventID = 5
+			};
+			return Json(data);
+		}
+
+
 		private bool ShiftExists(int id)
 		{
 			return _context.Shifts.Any(e => e.ID == id);

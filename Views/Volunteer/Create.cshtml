@@ -51,4 +51,20 @@
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
+
+	<script type="text/javascript">
+		function fillFields() {
+			$.ajax({
+				url: '@Url.Action("GetVolunteerData", "Volunteer")',
+				type: 'GET',
+				success: function (data) {
+					document.getElementById('FirstName').value = "Grace";
+					document.getElementById('LastName').value = "Hill";
+					document.getElementById('Email').value = "Grace_Hill@gmail.com";
+					document.getElementById('Phone').value = "9051231231";
+				}
+			})
+		}
+	</script>
+
 }

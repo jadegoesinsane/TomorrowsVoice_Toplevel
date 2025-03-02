@@ -89,4 +89,21 @@
 			
 		});
 	</script>
+
+	<script type="text/javascript">
+		function fillFields() {
+			$.ajax({
+				url: '@Url.Action("GetShiftData", "Shift")',
+				type: 'GET',
+				success: function (data) {
+					document.getElementById('ShiftDate').value = "2025-11-30"
+					document.getElementById('StartAt').value = "10:00";
+					document.getElementById('EndAt').value = "14:00";
+					document.getElementById('VolunteersNeeded').value = 5;
+					document.getElementById('EventID').value = 5;
+				}
+			})
+		}
+	</script>
+
 }

@@ -467,7 +467,7 @@ namespace TomorrowsVoice_Toplevel.Data
 						{
 							new Event
 							{
-								Name = "Gift Wrapping - 2024",
+								Name = "St.C Gift Wrapping - 2024",
 								StartDate = new DateTime(2024, 11, 29),
 								EndDate = new DateTime(2024, 12, 22),
 								Descripion = "Join us to help wrap gifts for those in need!",
@@ -476,7 +476,7 @@ namespace TomorrowsVoice_Toplevel.Data
 							},
 							new Event
 							{
-								Name = "Gift Wrapping - 2025",
+								Name = "St.C Gift Wrapping - 2025",
 								StartDate = new DateTime(2025, 11, 30),
 								EndDate = new DateTime(2025, 12, 21),
 								Descripion = "Join us to help wrap gifts for those in need!",
@@ -485,7 +485,7 @@ namespace TomorrowsVoice_Toplevel.Data
 							},
 							new Event
 							{
-								Name = "Bake Sale - 2025",
+								Name = "Ham Bake Sale - 2025",
 								StartDate = new DateTime(2025, 03, 10),
 								EndDate = new DateTime(2025, 03, 15),
 								Descripion = "We will be selling homemade baked goods",
@@ -494,7 +494,7 @@ namespace TomorrowsVoice_Toplevel.Data
 							},
 							new Event
 							{
-								Name = "Bake Sale - 2025",
+								Name = "Tor Bake Sale - 2025",
 								StartDate = new DateTime(2025, 7, 10),
 								EndDate = new DateTime(2025, 7, 15),
 								Descripion = "We will be selling homemade baked goods",
@@ -681,6 +681,41 @@ namespace TomorrowsVoice_Toplevel.Data
 									}
 								}
 							}
+							else if (@event.ID == 4)
+							{
+								List<DateTime> dates = new List<DateTime>
+							{
+								new DateTime(2025, 07, 10),
+								new DateTime(2025, 07, 11),
+								new DateTime(2025, 07, 12),
+								new DateTime(2025, 07, 13),
+								new DateTime(2025, 07, 14),
+								new DateTime(2025, 07, 15),
+							};
+
+								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
+							{
+								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 8am to 12pm
+								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
+							};
+
+								foreach (var date in dates)
+								{
+									foreach (var time in times)
+									{
+										Shift shift = new Shift
+										{
+											ShiftDate = date,
+											EventID = @event.ID,
+											StartAt = date.Add(time.Start),
+											EndAt = date.Add(time.End),
+											VolunteersNeeded = 2
+										};
+										shifts.Add(shift);
+									}
+								}
+							}
+
 						}
 
 						context.Shifts.AddRange(shifts);
