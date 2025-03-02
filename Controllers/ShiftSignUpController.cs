@@ -75,8 +75,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
             // Filters
             if (CityID.HasValue)
             {
-                //shifts = shifts.Where(s=>s.Event.CityEvents == CityID);
-                numFilters++;
+				shifts = shifts.Where(s => s.Event.CityEvents.Any(ce => ce.CityID == CityID));
+				numFilters++;
             }
             if (!String.IsNullOrEmpty(SearchString))
             {
