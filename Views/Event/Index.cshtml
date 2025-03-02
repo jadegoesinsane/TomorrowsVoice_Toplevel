@@ -11,6 +11,7 @@
 			data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
 		<i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
 	</button>
+    <br />
 	<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
 		<div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
 			<div class="p-2">
@@ -44,7 +45,7 @@
 			</div>
 		</div>
 	</div>
-
+    <br />
     <div class="row">
         @foreach (var item in Model)
         {
