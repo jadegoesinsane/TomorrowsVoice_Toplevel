@@ -7,5 +7,14 @@
 		public int DirectorCount { get; set; }
 		public int ChapterCount { get; set; }
 
+		public int ShiftCount { get; set; }
+
+		public int VolunteerCount { get; set; }
+
+		public int EventCount { get; set; }
+
+		public int CityCount { get; set; }
+
+
 	}
 }
