@@ -35,17 +35,40 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		
 
 		// GET: Volunteer
-		public async Task<IActionResult> Index(string? SearchString, int? page, int? pageSizeID, string? actionButton, string sortField = "Volunteer", string sortDirection = "asc")
+		public async Task<IActionResult> Index(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
 		{
             string[] sortOptions = new[] { "Volunteer","Hours Volunteered","Participation","Absences" };
 
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
+            Enum.TryParse(StatusFilter, out Status selectedDOW);
 
-			var volunteers = _context.Volunteers.AsNoTracking();
+           
+            var statusList = Enum.GetValues(typeof(Status))
+                         .Cast<Status>()
+                         .Where(s => s == Status.Active || s == Status.Archived)
+                         .ToList();
 
-			if (!String.IsNullOrEmpty(SearchString))
+
+            ViewBag.StatusList = new SelectList(statusList);
+            var volunteers = _context.Volunteers.AsNoTracking();
+            if (!String.IsNullOrEmpty(StatusFilter))
+            {
+                volunteers = volunteers.Where(p => p.Status == selectedDOW);
+
+                // filter out archived singers if the user does not specifically select "archived"
+                if (selectedDOW != Status.Archived)
+                {
+                    volunteers = volunteers.Where(s => s.Status != Status.Archived);
+                }
+                numberFilters++;
+            }
+            else
+            {
+                volunteers = volunteers.Where(s => s.Status != Status.Archived);
+            }
+            if (!String.IsNullOrEmpty(SearchString))
 			{
 				volunteers = volunteers.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
 									   || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));

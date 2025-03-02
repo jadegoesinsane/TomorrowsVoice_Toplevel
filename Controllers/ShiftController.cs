@@ -44,7 +44,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			int numberFilters = 0;
 			Enum.TryParse(StatusFilter, out Status selectedStatus);
 
-			PopulateDropDown();
+			PopulateDropDown2();
 
 			var shifts = _context.Shifts
 				.Include(s => s.Event)
@@ -612,6 +612,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewBag.StatusList = new SelectList(statusList);
 		}
 
+
+		private void PopulateDropDown2(Shift? shift = null)
+		{
+			ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
+
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active || s == Status.Canceled || s == Status.Archived)
+						 .ToList();
+
+			ViewBag.StatusList = new SelectList(statusList);
+		}
 		public PartialViewResult GetMessages(int id)
 		{
 			ViewBag.ShiftID = id;

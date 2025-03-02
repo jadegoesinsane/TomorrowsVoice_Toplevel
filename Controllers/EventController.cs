@@ -40,7 +40,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDownLists();
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
-						 .Where(s => s == Status.Active || s == Status.Inactive || s == Status.Archived)
+						 .Where(s => s == Status.Active  || s == Status.Archived)
 						 .ToList();
 
 			ViewBag.StatusList = new SelectList(statusList);

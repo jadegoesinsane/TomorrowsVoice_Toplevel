@@ -25,6 +25,11 @@
 				<strong><label class="control-label" for="SearchString">Volunteer Name</label></strong>
 				@Html.TextBox("SearchString", null, new { @class = "form-control" })
 			</div>
+            <div class="p-2">
+                <strong><label class="control-label" for="StatusFilter">Status</label></strong>
+                @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
+                         "Any", htmlAttributes: new { @class = "form-control" })
+            </div>
 			<div class="p-2 ms-auto">
 				<button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
 					<i class=" bi bi-funnel-fill"></i>Apply
