@@ -240,7 +240,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, Byte[] RowVersion)
+		public async Task<IActionResult> Edit(int id)
 		{
 			var singerToUpdate = await _context.Singers
 			   .Include(r => r.Chapter).ThenInclude(c => c.City)
@@ -253,7 +253,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			//Put the original RowVersion value in the OriginalValues collection for the entity
-			_context.Entry(singerToUpdate).Property("RowVersion").OriginalValue = RowVersion;
+			//_context.Entry(singerToUpdate).Property("RowVersion").OriginalValue = RowVersion;
 
 			// Try updating with posted values
 			if (await TryUpdateModelAsync<Singer>(singerToUpdate, "",

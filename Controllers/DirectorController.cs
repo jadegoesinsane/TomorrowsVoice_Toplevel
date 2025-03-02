@@ -241,7 +241,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, Byte[] RowVersion, List<IFormFile> theFiles)
+		public async Task<IActionResult> Edit(int id,  List<IFormFile> theFiles)
 		{
 			var directorToUpdate = await _context.Directors
 				.Include(d => d.Chapter)
@@ -255,7 +255,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			//Put the original RowVersion value in the OriginalValues collection for the entity
-			_context.Entry(directorToUpdate).Property("RowVersion").OriginalValue = RowVersion;
+			//_context.Entry(directorToUpdate).Property("RowVersion").OriginalValue = RowVersion;
 
 			if (await TryUpdateModelAsync<Director>(directorToUpdate, "",
 				d => d.FirstName, d => d.MiddleName, d => d.LastName, d => d.Email, d => d.Phone, r => r.Status, r => r.ChapterID))
