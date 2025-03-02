@@ -550,7 +550,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					var enrollment = await _context.UserShifts.Include(g => g.User)
 						.FirstOrDefaultAsync(e => e.UserID == enrollmentVM.UserID && e.ShiftID == enrollmentVM.ShiftID);
 
-					if (enrollment != null)
+                    
+                    if (enrollmentVM.ShowOrNot == true && enrollmentVM.StartAt - enrollmentVM.EndAt != TimeSpan.Zero)
+                    {
+                        throw new InvalidOperationException("Cannot have work hours when marked as a No Show.");
+                    }
+
+                    if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
+                    {
+                        throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
+                    }
+
+
+                    if (enrollment != null)
 					{
 						if (volunteer != null)
 						{
