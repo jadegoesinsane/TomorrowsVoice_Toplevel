@@ -169,6 +169,13 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			_toastNotification.AddSuccessToastMessage(message);
 		}
 
+		// Custom Notification for Signing up for shift
+		protected void AddSignUpToast(string date, string name, string event_)
+		{
+			string message = $"{name} successfully signed up for {event_} shift on {date}";
+			_toastNotification.AddSuccessToastMessage(message);
+		}
+
 		// Error
 		protected void AddErrorToast(string message)
 		{

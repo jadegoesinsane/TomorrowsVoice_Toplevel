@@ -38,9 +38,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
             if (EndDate == DateTime.MinValue)
             {
-                int dayInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
-                StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-                EndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dayInMonth);
+                //int dayInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
+                StartDate = new DateTime(DateTime.Now.Year, 1, 1);
+                EndDate = new DateTime(DateTime.Now.Year, 12, 31);
             }
             //Check the order of the dates and swap them if required
             if (EndDate < StartDate)
@@ -66,7 +66,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 .Include(s => s.Event)
                 .ThenInclude(e => e.CityEvents)
                 .ThenInclude(e => e.City)
-                 .Where(vs => vs.Status != Status.Archived)
+                .Where(s => s.Status != Status.Archived && s.VolunteersNeeded > s.UserShifts.Count())
                 .Where(a => a.StartAt >= StartDate && a.StartAt <= EndDate)
                 .AsNoTracking();
                 //.GroupBy(s => s.ShiftDate)
@@ -129,11 +129,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
             ViewData["sortDirection"] = sortDirection;
 
             // Paging
-            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-            var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
+            //int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            //ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            //var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
 
-            return View(pagedData);
+            return View(shifts);
         }
 
         // GET: ShiftSignUp/Details/5
@@ -164,7 +164,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var shifts = _context.Shifts
                 .Include(s => s.Event).Include(s => s.UserShifts)
-                .Where(s=>s.ShiftDate == date && s.Status == Status.Active);
+                .Where(s=>s.ShiftDate == date && s.Status == Status.Active && s.VolunteersNeeded > s.UserShifts.Count());
 
             ViewData["Date"] = date.ToLongDateString();
 
@@ -199,7 +199,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
             var shift = _context.Shifts.Where(s => s.ID == shiftID);
 
-            return RedirectToAction("Details", "VolunteerController");
+            return View(shift);
         }
 
         [HttpPost]
@@ -207,33 +207,34 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VolunteerShifts(int shiftID, int volID)
         {
+            // create new volunteer signup
             var userShift = new UserShift
             {
                 UserID = volID,
                 ShiftID = shiftID
             };
 
-            var shift = _context.Shifts.Where(s=>s.ID == shiftID).FirstOrDefaultAsync();
+            // get date for success toast
+            string date = _context.Shifts.Where(s=>s.ID == shiftID).Select(s => s.StartAt.ToLongDateString()).FirstOrDefault();
+            // get name for success toast
+            string name = _context.Volunteers.Where(v => v.ID == volID).Select(v => v.NameFormatted).FirstOrDefault();
+            // get event for success toast
+            int eventID = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.EventID).FirstOrDefault();
+            string event_ = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault() ;
+
 
             try
             {
                 _context.Add(userShift);
                 await _context.SaveChangesAsync();
-                //AddSuccessToast("Sucessfully signed up for shift on " + shift.StartAt.ToLongDateString());
+                AddSignUpToast(date, name, event_);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
             }
-            var shifts = _context.UserShifts
-                .Include(s => s.Shift)
-                .ThenInclude(s=>s.Event)
-                .Where(s => s.UserID == volID);
 
-            string name = _context.Volunteers.Where(v => v.ID == volID).Select(v => v.NameFormatted).FirstOrDefault();
-            ViewData["VolunteerName"] = name;
-
-            return View(shifts);
+            return RedirectToAction($"Details", "Volunteer", new { id = volID });
         }
 
 

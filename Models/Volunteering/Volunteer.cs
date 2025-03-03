@@ -1,4 +1,5 @@
-﻿using TomorrowsVoice_Toplevel.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Users.Account;
 
@@ -17,10 +18,13 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		//public int ID { get; set; }
 		public VolunteerAvatar? Avatar { get; set; }
 
+		[Display(Name ="Hours Volunteered")]
 		public int HoursVolunteered { get; set; }=0;
 
+        [Display(Name = "Total Work Duration")]
         public TimeSpan totalWorkDuration { get; set; }=TimeSpan.Zero;
 
+        [Display(Name = "Shifts Attended")]
         public int ParticipationCount { get; set; }=0;
 
         /*public string CurrentYearVolunteerTotal
@@ -33,7 +37,11 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 				return string.Format("{0:D2}:{1:D2}", total.Hours, total.Minutes);
 			}
 		}*/
+
+        [Display(Name = "Absences")]
         public int absences { get; set; }=0;
+
+        [Display(Name = "Yearly Volunteering Goal")]
         public int? YearlyVolunteerGoal { get; set; }=0;
 		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
 	}
