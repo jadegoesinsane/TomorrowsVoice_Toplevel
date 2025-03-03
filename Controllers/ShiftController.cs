@@ -153,13 +153,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				UpdateEnrollments(selectedOptions, shift);
 				if (ModelState.IsValid)
 				{
-					var sameshift = await _context.Shifts
-						 .Include(s => s.Event)
-						 .FirstOrDefaultAsync(m => m.EventID == shift.EventID);
-					if(sameshift != null) 
-					
-					{ 
-					if (shift.ShiftDate < sameshift.Event.StartDate || shift.ShiftDate > sameshift.Event.EndDate)
+					 
+
+
+                    var eventRecord = _context.Events
+									.FirstOrDefault(e => e.ID == shift.EventID);
+                    if (shift.ShiftDate < eventRecord.StartDate || shift.ShiftDate > eventRecord.EndDate)
 					{
 						// Throwing exception when overlap condition is met
 						throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
@@ -188,7 +187,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							}
 						}
 					}
-                    }
+                    
                     _context.Add(shift);
 					await _context.SaveChangesAsync();
 					AddSuccessToast(shift.ShiftDuration.ToString());
