@@ -199,7 +199,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             }
             var shift = _context.Shifts.Where(s => s.ID == shiftID);
 
-            return View(shift);
+            return RedirectToAction("Details", "VolunteerController");
         }
 
         [HttpPost]
