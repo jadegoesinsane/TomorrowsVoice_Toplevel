@@ -1,0 +1,116 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer>
+@{
+
+    Layout = "~/Views/Shared/_EventVolunteerLayout.cshtml";
+
+}
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal my-3">
+        <div class="row align-items-center">
+            <h1 class="col m-0">Volunteers</h1>
+
+        </div>
+
+
+    </div>
+    <button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+            data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+        <i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
+    </button>
+    <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+        <div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
+            <div class="p-2">
+                <strong><label class="control-label" for="SearchString">Volunteer Name</label></strong>
+                @Html.TextBox("SearchString", null, new { @class = "form-control" })
+            </div>
+            <div class="p-2">
+                <strong><label class="control-label" for="StatusFilter">Status</label></strong>
+                @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
+                         "Any", htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="p-2 ms-auto">
+                <button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
+                    <i class=" bi bi-funnel-fill"></i>Apply
+                </button>
+            </div>
+            <div class="p-2">
+                <a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
+            </div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th aria-label="Volunteer">
+                    <input type="submit" name="actionButton" value="Volunteer" class="btn btn-link" />
+                    <i class="sort-icon @ViewData["volunteerSort"]" />
+                </th>
+                <th aria-label="Hours Volunteered">
+                    <input type="submit" name="actionButton" value="Hours Volunteered" class="btn btn-link" />
+                    <i class="sort-icon @ViewData["hourVolSort"]" />
+                </th>
+                <th aria-label="Participation">
+                    <input type="submit" name="actionButton" value="Participation" class="btn btn-link" />
+                    <i class="sort-icon @ViewData["partiSort"]" />
+                </th>
+                <th aria-label="Absences">
+                    <input type="submit" name="actionButton" value="Absences" class="btn btn-link" />
+                    <i class="sort-icon @ViewData["absenceSort"]" />
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NameFormatted)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HoursVolunteered)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ParticipationCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.absences)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Phone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
+                           role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            <i class="bi bi-search"></i>
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
+                           role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <partial name="_PagingNavBar" />
+</form>

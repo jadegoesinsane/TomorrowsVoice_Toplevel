@@ -1,4 +1,9 @@
 @model TomorrowsVoice_Toplevel.Models.Rehearsal
+@{
+
+	Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
+
+}
 <div style="display: grid; place-content: center;">
 	<partial name="_ViewHeading" />
 	<form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">

@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.ViewModels.AttendanceSummaryVM>
+@{
 
+    Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
+
+}
 @{
     ViewData["Title"] = "Summary";
     var selectedStartDate = ViewData["StartDate"] = ((DateTime)ViewData["StartDate"]).ToString("yyyy-MM-dd") ;

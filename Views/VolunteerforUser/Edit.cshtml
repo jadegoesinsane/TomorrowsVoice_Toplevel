@@ -1,11 +1,18 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer
 @{
 
-	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
+	Layout = "~/Views/Shared/_EventVolunteerLayout.cshtml";
 
 }
-<partial name="_ViewHeading" />
-<form asp-action="Create" class="form-container">
+@{
+	ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Volunteer</h4>
+<hr />
+<form asp-action="Edit" class="form-container">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	@* <input type="hidden" asp-for="ID" /> *@
 	<div class="form-area">
@@ -46,29 +53,21 @@
 				</div>
 			</div>
 
-	</div>
-	<partial name="_FormFooter" />
+
+		</div>
+		<partial name="_FormFooter" />
 
 </form>
+
+
+
+
+
 
 @section Scripts {
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
 
-	<script type="text/javascript">
-		function fillFields() {
-			$.ajax({
-				url: '@Url.Action("GetVolunteerData", "Volunteer")',
-				type: 'GET',
-				success: function (data) {
-					document.getElementById('FirstName').value = "Grace";
-					document.getElementById('LastName').value = "Hill";
-					document.getElementById('Email').value = "Grace_Hill@gmail.com";
-					document.getElementById('Phone').value = "9051231231";
-				}
-			})
-		}
-	</script>
-
+	<script src="~/js/multiselect.js"></script>
 }

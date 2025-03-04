@@ -3,7 +3,11 @@
 @{
     ViewData["Title"] = "Index";
 }
+@{
 
+	Layout = "~/Views/Shared/_EventVolunteerLayout.cshtml";
+
+}
 <partial name="_ViewHeading" />
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />

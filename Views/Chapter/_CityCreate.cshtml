@@ -1,4 +1,9 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.City
+@{
+
+	Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
+
+}
 <form asp-controller="City" asp-action="Create" method="post" id="createCityForm">
 	<div class="row g-2">
 		<div class="text-danger validation-summary-errors"><ul id="ErrorList"></ul></div>

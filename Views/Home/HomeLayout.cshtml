@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
@@ -29,30 +28,52 @@
 						<li class="nav-item">
 							<!--<a class="navbar-brand d-none d-md-flex" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" style="height: 80px;" /></a>-->
 							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-								<img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" class="navbar-brand d-none d-md-inline-block" style="height: 80px;" />Home(Login)
-							</a>
-							
-						</li>
-						<li class="nav-item">
-							<!--<a class="navbar-brand d-none d-md-flex" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" style="height: 80px;" /></a>-->
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="IndexForRehearsal">
-								Home(RehearsalDirector)
-							</a>
-							
-						</li>
-						<li class="nav-item">
-							<!--<a class="navbar-brand d-none d-md-flex" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" style="height: 80px;" /></a>-->
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="IndexForEvent">
-								Home(EventAdministrator)
+								<img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" class="navbar-brand d-none d-md-inline-block" style="height: 80px;" />Home
 							</a>
 						</li>
 						<li class="nav-item">
 							<!--<a class="navbar-brand d-none d-md-flex" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" style="height: 80px;" /></a>-->
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="IndexForVolunteer">
-								Home(EventVolunteer)
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home2" asp-action="Index">
+								Home(ForEvent)
 							</a>
 						</li>
-						
+						<li><a href="@Url.Action("Index", "Home")">首页</a></li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Chapter Menu
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" asp-area="" asp-controller="City" asp-action="Index">City</a></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Chapter" asp-action="Index">Chapters</a></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Director" asp-action="Index">Directors</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Index">Singers</a></li>
+								<li><hr class="dropdown-divider"></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Rehearsal" asp-action="Index">Rehearsals</a></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Rehearsal" asp-action="RehearsalsSummary">Rehearsal Summary</a></li>
+							</ul>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle text-dark" href="#" id="volunteerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Events Menu
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="volunteerDropdown">
+								<li><a class="dropdown-item" asp-area="" asp-controller="ShiftSignUp" asp-action="Index">Shift Sign-Up</a></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Index">Volunteers</a></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Index">Events</a></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="EventCalendar">Calendar</a></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Shift" asp-action="Index">Shift</a></li>
+								<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Email">Send Email Notification</a></li>
+							</ul>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								Admin Actions
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="adminDropdown">
+								<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Upload">Upload Singers</a></li>
+							</ul>
+						</li>
 					</ul>
 
 					<!--<partial name="_LoginPartial" />-->
