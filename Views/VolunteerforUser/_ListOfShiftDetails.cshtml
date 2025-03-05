@@ -40,11 +40,13 @@
                 {  @if (item.ShiftDate >= DateTime.Today)
                     {
                     <tr>
-                        <td>
-                            
-                           @Html.DisplayFor(modelItem => item.ShiftDate)
-                            
-                        </td>
+                            <td>
+                                <a asp-controller="VolunteerforUser"
+                                   asp-action="ShiftDetails"
+                                   asp-route-shiftId="@item.ID" asp-route-volunteerID="@volunteer.ID">
+                                    @Html.DisplayFor(modelItem => item.ShiftDate)
+                                </a>
+                            </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.StartAt)
                         </td>

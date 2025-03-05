@@ -1,0 +1,45 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
+@{
+
+	Layout = "~/Views/Shared/_EventVolunteerLayout.cshtml";
+
+}
+
+
+<partial name="_ViewHeading" />
+
+<div>
+	<dl class="row">
+		<div class="col-auto">
+			<strong>@Model.TimeSummary</strong>
+			<hr />
+			<p>Volunteers: @Model.UserShifts.Count()/@Model.VolunteersNeeded</p>
+			@foreach (var v in Model.UserShifts)
+			{
+				<p>
+					@v.User.NameFormatted
+					@if (v.User is Director)
+					{
+						<span> - Director</span>
+					}
+				</p>
+			}
+		</div>
+		<div class="col-6" style="max-height:350px;">
+			<div class="ml-3" style="max-height: 100%;overflow-y: scroll;overflow-x: clip;" id="chatbox"></div>
+		</div>
+	</dl>
+</div>
+
+@* <partial name="_GetMessages" for="@Model.ID"/>  *@
+<div>
+	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>
+<script type="text/javascript">
+	var shiftId = @Model.ID; // Using Model's ID
+	var volunteerID = '@ViewBag.volunteerID'; // Using ViewBag's volunteerID
+
+	// Now pass both shiftId and volunteerID to the chatbox load URL
+	$('#chatbox').load('/Shift/GetMessages/' + shiftId + '?volunteerID=' + volunteerID);
+</script>

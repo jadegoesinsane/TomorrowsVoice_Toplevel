@@ -9,8 +9,10 @@ using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Messaging;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Utilities;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -296,7 +298,112 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool VolunteerExists(int id)
+
+        public async Task<IActionResult> ShiftDetails(int? shiftId,int? volunteerID)
+        {
+
+            ViewBag.volunteerID = volunteerID;
+            if (shiftId == null)
+            {
+                return NotFound();
+            }
+
+            var shift = await _context.Shifts
+                .Include(s => s.Event)
+                .Include(s => s.UserShifts)
+                    .ThenInclude(us => us.User)
+                .FirstOrDefaultAsync(m => m.ID == shiftId);
+            if (shift == null)
+            {
+                return NotFound();
+            }
+            return View(shift);
+        }
+        public PartialViewResult ListOfShiftDetails(int id)
+
+        {
+            var volunteer = _context.Volunteers
+                            .FirstOrDefault(v => v.ID == id);
+            ViewData["Volunteer"] = volunteer;
+            var shifts = _context.Shifts
+                  .Include(a => a.UserShifts).Include(c => c.Event)
+                  .Where(vs => vs.Status != Status.Archived)
+                  .Where(r => r.UserShifts.Any(ra => ra.UserID == id))
+                  .OrderBy(r => r.ShiftDate)
+                  .ToList();
+
+            return PartialView("_ListOfShiftDetails", shifts);
+        }
+        public async Task<IActionResult> ShiftIndex(int id)
+        {
+
+
+            var volunteer = _context.Volunteers
+                            .FirstOrDefault(v => v.ID == id);
+
+            if (volunteer == null)
+            {
+                return NotFound();
+            }
+            ViewData["Volunteer"] = volunteer;
+
+            var volunteerShifts = _context.UserShifts.Include(a => a.Shift)
+                                   .Where(vs => vs.UserID == volunteer.ID).Where(vs => vs.Shift.Status != Status.Archived)
+                                   .Select(vs => vs.ShiftID)
+                                   .ToList();
+
+            ViewData["VolunteerShifts"] = volunteerShifts;
+
+            var tVContext = _context.Shifts.Include(s => s.Event);
+            return View(await tVContext.ToListAsync());
+
+
+        }
+
+		public PartialViewResult GetMessages(int id)
+		{
+			ViewBag.ShiftID = id;
+			var messages = _context.Messages
+				.Where(m => m.ChatID == id)
+				.Include(m => m.User)
+				.Select(m => new MessageVM
+				{
+					Name = !string.IsNullOrEmpty(m.User.Nickname) ? m.User.Nickname : m.User.NameFormatted,
+					CreatedOn = m.CreatedOn,
+					Content = m.Content ?? string.Empty
+				})
+				.ToList();
+
+			return PartialView("_GetMessages", messages);
+			
+		}
+
+		public IActionResult SendMessage(int shiftID, int volunteerID, string content)
+		{
+			var chat = _context.Chats.FirstOrDefault(c => c.ID == shiftID);
+			if (chat == null)
+			{
+				chat = new Chat { ID = shiftID };
+				_context.Chats.Add(chat);
+				_context.SaveChanges();
+			}
+			Volunteer volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == volunteerID);
+			var message = new Message
+			{
+				ChatID = chat.ID,
+				FromAccountID = volunteerID,
+				Content = content,
+				User = volunteer
+			};
+
+			_context.Messages.Add(message);
+			_context.SaveChanges();
+
+			return RedirectToAction("Details", new { id = shiftID });
+		}
+
+
+		private bool VolunteerExists(int id)
         {
             return _context.Volunteers.Any(e => e.ID == id);
         }

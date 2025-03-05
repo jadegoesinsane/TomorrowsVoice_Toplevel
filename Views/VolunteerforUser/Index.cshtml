@@ -61,10 +61,10 @@
                     <i class="sort-icon @ViewData["absenceSort"]" />
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Email)
+                    Add Shift
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Phone)
+                     My Shift
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Status)
@@ -89,10 +89,10 @@
                         @Html.DisplayFor(modelItem => item.absences)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Email)
+                        <button type="button" class="btn btn-primary" onclick="exportToExcel2()">Add Shift</button>
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Phone)
+                        <button type="button" class="btn btn-primary" onclick="exportToExcel2()"> My Shift</button>
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Status)

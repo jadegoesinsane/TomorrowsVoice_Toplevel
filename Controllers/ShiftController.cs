@@ -623,9 +623,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			ViewBag.StatusList = new SelectList(statusList);
 		}
-		public PartialViewResult GetMessages(int id)
+		public PartialViewResult GetMessages(int id,int volunteerID)
 		{
 			ViewBag.ShiftID = id;
+			if (volunteerID ==0) volunteerID = 2;
+			ViewBag.volunteerID = volunteerID;
 			var messages = _context.Messages
 				.Where(m => m.ChatID == id)
 				.Include(m => m.User)
@@ -675,6 +677,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public IActionResult SendMessage(int shiftID, int volunteerID, string content)
 		{
+
+			
 			var chat = _context.Chats.FirstOrDefault(c => c.ID == shiftID);
 			if (chat == null)
 			{
