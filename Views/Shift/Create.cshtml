@@ -8,43 +8,48 @@
 <form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
-		<div class="col-md-2">
-			<div class="form-floating required">
-				<input asp-for="ShiftDate" max="9999-12-12" class="form-control" />
-				<label asp-for="ShiftDate" class="control-label"></label>
-				<span asp-validation-for="ShiftDate" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-2">
-			<div class="form-floating required">
-				<input asp-for="StartAt" class="form-control" />
-				<label asp-for="StartAt" class="control-label"></label>
-				<span asp-validation-for="StartAt" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-2">
-			<div class="form-floating required">
-				<input asp-for="EndAt" class="form-control" />
-				<label asp-for="EndAt" class="control-label"></label>
-				<span asp-validation-for="EndAt" class="text-danger"></span>
+
+			<div class="col-md-6">
+			<div class="form-floating required my-4">
+				<select asp-for="EventID" class="form-control" asp-items="ViewBag.EventID"></select>
+				<label asp-for="EventID" class="control-label"></label>
 			</div>
 		</div>
 		<div class="w-100" style="margin:0px;"></div>
 
 		<div class="col-md-3">
-			<div class="form-floating required my-4">
-				
+			<div class="form-floating required ">
+
 				<input asp-for="VolunteersNeeded" class="form-control" />
 				<label asp-for="VolunteersNeeded" class="control-label"></label>
 				<span asp-validation-for="VolunteersNeeded" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="col-md-3">
-			<div class="form-floating required my-4">
-				<select asp-for="EventID" class="form-control" asp-items="ViewBag.EventID"></select>
-				<label asp-for="EventID" class="control-label"></label>
+			<div class="form-floating required">
+				<input asp-for="ShiftDate" max="9999-12-12" class="form-control" />
+				<label asp-for="ShiftDate" class="control-label"></label>
+				<span asp-validation-for="ShiftDate" class="text-danger"></span>
 			</div>
 		</div>
+
+		<div class="w-100" style="margin:10px;"></div>
+		<div class="col-md-3">
+			<div class="form-floating required">
+				<input asp-for="StartAt" class="form-control" />
+				<label asp-for="StartAt" class="control-label"></label>
+				<span asp-validation-for="StartAt" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-floating required">
+				<input asp-for="EndAt" class="form-control" />
+				<label asp-for="EndAt" class="control-label"></label>
+				<span asp-validation-for="EndAt" class="text-danger"></span>
+			</div>
+		</div>
+		
+	
 
 		<div class="w-100" style="margin:0px;"></div>
 		<div class="col-md-6">

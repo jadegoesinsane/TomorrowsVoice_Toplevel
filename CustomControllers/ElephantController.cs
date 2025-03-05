@@ -98,7 +98,14 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
                 events = events.Where(d => d.Status == status)
                     .OrderBy(s => s.Name);
 
-            return new SelectList(events, "ID", "Name", id);
+			var eventList = events.Select(e => new
+			{
+				e.ID,
+				DisplayText = $"{e.Name} - Start Date:{e.StartDate:yyyy-MM-dd}  End Date:{e.EndDate:yyyy-MM-dd}"  
+			});
+
+			return new SelectList(eventList, "ID", "DisplayText", id);
+			
         }
 
         internal SelectList DirectorSelectList(int? id, Status? status = null)
