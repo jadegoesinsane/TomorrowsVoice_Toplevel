@@ -15,12 +15,12 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 	<style>
-		/* Centering the login form */
+	
 		.login-container {
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			height: 70vh; /* Adjust to fit your needs */
+			height: 70vh;
 		}
 
 		.login-form {
@@ -29,8 +29,21 @@
 			padding: 20px;
 			border: 1px solid #ccc;
 			border-radius: 8px;
-			background-color: #f8f9fa;
+			background-color: #e9ebf0;
 		}
+
+	
+		.btn-purple {
+			background-color: #8f3796;
+			color: #ffffff; 
+			border: 1px solid #6f42c1;
+		}
+
+			
+			.btn-purple:hover {
+				background-color: #611667;
+				color: #ffffff; 
+			}
 	</style>
 </head>
 <body>
@@ -76,14 +89,14 @@
 							<select class="form-select" id="userRole" name="userRole" required>
 								<option value="IndexForRehearsal">Rehearsal Director</option>
 								<option value="IndexForEvent">Event Administrator</option>
-								<option value="IndexForVolunteer">Event Volunteer</option>
+								<!--<option value="IndexForVolunteer">Event Volunteer</option>-->
 							</select>
 						</div>
 						<div class="mb-3">
 							<label for="password" class="form-label">Password</label>
 							<input type="password" class="form-control" id="password" name="password"  />
 						</div>
-						<button type="submit" class="btn btn-primary w-100">Login</button>
+						<button type="submit" class="btn btn-purple w-100">Login</button>
 					</form>
 					</div>
 				</div>
@@ -109,10 +122,10 @@
 		$('#loginForm').on('submit', function (e) {
 			e.preventDefault();
 
-			// Get the selected user role
+			
 			var selectedRole = $('#userRole').val();
 
-			// Define the URL based on the selected role
+			
 			var redirectUrl = '';
 			if (selectedRole === 'IndexForRehearsal') {
 				redirectUrl = '/Home/IndexForRehearsal';
@@ -122,7 +135,7 @@
 				redirectUrl = '/Home/IndexForVolunteer';
 			}
 
-			// Redirect to the corresponding URL
+			
 			window.location.href = redirectUrl;
 		});
 	</script>
