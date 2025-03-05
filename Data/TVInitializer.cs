@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Diagnostics;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Messaging;
@@ -429,6 +430,19 @@ namespace TomorrowsVoice_Toplevel.Data
 					// Randomly generate 50 singers
 					if (!context.Volunteers.Any())
 					{
+						context.Volunteers.AddRange(
+							new Volunteer
+							{
+								FirstName = "Adminster",
+								LastName = "Manager",
+								Email = $"11111@gmail.com",
+								Phone = $"2221112222",
+								HoursVolunteered = 11,
+								ParticipationCount = rnd.Next(2, 10),
+								absences = rnd.Next(0, 3),
+								totalWorkDuration = TimeSpan.Zero,
+								ID = 1000
+							});
 						for (int i = 0; i < 50; i++)
 						{
 							string first = firstNames[rnd.Next(firstNameCount)];
@@ -448,6 +462,9 @@ namespace TomorrowsVoice_Toplevel.Data
 							};
 							if (i % 2 == 0)
 								volunteer.MiddleName = lastNames[rnd.Next(lastNameCount)][1].ToString().ToUpper();
+
+							
+							
 							try
 							{
 								context.Volunteers.Add(volunteer);

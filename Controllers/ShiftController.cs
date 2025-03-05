@@ -626,7 +626,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public PartialViewResult GetMessages(int id,int volunteerID)
 		{
 			ViewBag.ShiftID = id;
-			if (volunteerID ==0) volunteerID = 2;
+			if (volunteerID ==0) volunteerID = 1000;
 			ViewBag.volunteerID = volunteerID;
 			var messages = _context.Messages
 				.Where(m => m.ChatID == id)
