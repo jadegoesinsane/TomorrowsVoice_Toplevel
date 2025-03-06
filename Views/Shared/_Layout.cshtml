@@ -15,7 +15,7 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 	<style>
-	
+
 		.login-container {
 			display: flex;
 			justify-content: center;
@@ -32,17 +32,17 @@
 			background-color: #e9ebf0;
 		}
 
-	
+
 		.btn-purple {
 			background-color: #8f3796;
-			color: #ffffff; 
+			color: #ffffff;
 			border: 1px solid #6f42c1;
 		}
 
-			
+
 			.btn-purple:hover {
 				background-color: #611667;
-				color: #ffffff; 
+				color: #ffffff;
 			}
 	</style>
 </head>
@@ -60,12 +60,12 @@
 						<li class="nav-item">
 							<!--<a class="navbar-brand d-none d-md-flex" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" style="height: 80px;" /></a>-->
 							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-								<img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" class="navbar-brand d-none d-md-inline-block" style="height: 80px;" />Home(Login)
+								<img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" class="navbar-brand d-none d-md-inline-block" style="height: 80px;" />Home
 							</a>
-							
+
 						</li>
-						
-						
+
+
 					</ul>
 
 					<!--<partial name="_LoginPartial" />-->
@@ -77,31 +77,28 @@
 		<main role="main" class="pb-3">
 			@RenderBody()
 		</main>
-		
-			<main role="main" class="pb-3">
-				<!-- Login form goes here -->
-				<div class="login-container">
-					<div class="login-form">
-						<h3 class="text-center">Login</h3>
+
+		<main role="main" class="pb-3">
+			<!-- Login form goes here -->
+			<div class="login-container">
+				<div class="login-form">
+
 					<form method="post" id="loginForm">
 						<div class="mb-3">
-							<label for="userRole" class="form-label">Select User Role</label>
+							<label for="userRole" class="form-label">Select System</label>
 							<select class="form-select" id="userRole" name="userRole" required>
-								<option value="IndexForRehearsal">Rehearsal Director</option>
-								<option value="IndexForEvent">Event Administrator</option>
+								<option value="IndexForRehearsal">Rehearsal Manage System</option>
+								<option value="IndexForEvent">Event Manage System</option>
 								<!--<option value="IndexForVolunteer">Event Volunteer</option>-->
 							</select>
 						</div>
-						<div class="mb-3">
-							<label for="password" class="form-label">Password</label>
-							<input type="password" class="form-control" id="password" name="password"  />
-						</div>
-						<button type="submit" class="btn btn-purple w-100">Login</button>
+
+						<button type="submit" class="btn btn-purple w-100">Submit</button>
 					</form>
-					</div>
 				</div>
-			</main>
-		
+			</div>
+		</main>
+
 	</div>
 	<div class="spacer" style="height: 75px; width: 100%;"></div>
 	<footer class="footer text-muted">
@@ -122,10 +119,10 @@
 		$('#loginForm').on('submit', function (e) {
 			e.preventDefault();
 
-			
+
 			var selectedRole = $('#userRole').val();
 
-			
+
 			var redirectUrl = '';
 			if (selectedRole === 'IndexForRehearsal') {
 				redirectUrl = '/Home/IndexForRehearsal';
@@ -135,11 +132,11 @@
 				redirectUrl = '/Home/IndexForVolunteer';
 			}
 
-			
+
 			window.location.href = redirectUrl;
 		});
 	</script>
-	
+
 	@await RenderSectionAsync("Scripts", required: false)
 	@await Component.InvokeAsync("NToastNotify")
 
