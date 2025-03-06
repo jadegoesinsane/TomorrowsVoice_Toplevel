@@ -601,8 +601,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private void PopulateDropDown(Shift? shift = null)
 		{
-			ViewData["EventID"] = new SelectList(_context.Events.OrderBy(e => e.Name), "ID", "Name");
-				//EventSelectList(shift?.EventID, Status.Active);
+			ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
 
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
@@ -615,8 +614,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private void PopulateDropDown2(Shift? shift = null)
 		{
-            ViewData["EventID"] = new SelectList(_context.Events.OrderBy(e => e.Name), "ID", "Name");
-            //ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
+           // ViewData["EventID"] = new SelectList(_context.Events.OrderBy(e => e.Name), "ID", "Name");
+           ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
 
             var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()

@@ -101,7 +101,7 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			var eventList = events.Select(e => new
 			{
 				e.ID,
-				DisplayText = $"{e.Name} - Start Date:{e.StartDate:yyyy-MM-dd}  End Date:{e.EndDate:yyyy-MM-dd}"  
+				DisplayText = $"{e.Name} ({e.StartDate:MM-dd-yyyy} - {e.EndDate:MM-dd-yyyy})"  
 			});
 
 			return new SelectList(eventList, "ID", "DisplayText", id);
