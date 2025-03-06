@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using TomorrowsVoice_Toplevel.Models;
-using TomorrowsVoice_Toplevel.Models.Messaging;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
@@ -737,37 +736,7 @@ namespace TomorrowsVoice_Toplevel.Data
 						context.Shifts.AddRange(shifts);
 						context.SaveChanges();
 
-						//Add Chat for Shifts
-						foreach (var shift in shifts)
-						{
-							shift.AddChat(context);
-						}
 
-						string[] msgString = new string[] {
-						"I can't wait!",
-						"I'll bring timbits!",
-						"I hope the weathers nice.",
-						"How is everyone doing?",
-						"I see some familiar faces ;)",
-						"I'm only doing this for my highschool volunteer hours...",
-						"LOL!",
-						"omg I totally signed up for the wrong shift but i'll make it work",
-						"where do we meet?",
-						"the event organizers really outdid themselves with this one",
-						"Dear friends, my car is currently in the shop and I require assistance in navigating to the location. Yours truly, me.",
-						"XDDDD",
-						"thats what im sayin!",
-						"Wow we should sign up for more shifts together guys we work so well together",
-						"hello?",
-						"hi!",
-						"why arent my messages sending",
-						"Is anyone allergic to peanuts here?",
-						"Is it okay if my partner comes to hangout and help????",
-						"I'm not feeling too well :( I may have to cancel...",
-						"Wow this website is amazing!",
-						"Anyone else here from Niagara College??",
-						"my password is just a lot of exclamation points, those are impossible to hack!!!!"
-					};
 
 						//User Shifts
 						if (!context.UserShifts.Any())
@@ -801,22 +770,6 @@ namespace TomorrowsVoice_Toplevel.Data
 									{
 										context.UserShifts.Remove(userShift);
 									}
-									Chat chat = context.Chats.FirstOrDefault(d => d.ID == shift.ID);
-									ChatUser chatUser = new ChatUser
-									{
-										UserID = user.ID,
-										ChatID = chat.ID
-									};
-									try
-									{
-										context.ChatUsers.Add(chatUser);
-										context.SaveChanges();
-									}
-									catch (Exception)
-									{
-										context.ChatUsers.Remove(chatUser);
-									}
-									chat.AddMessage(context, user, msgString[rnd.Next(msgString.Length)]);
 								}
 							}
 						}

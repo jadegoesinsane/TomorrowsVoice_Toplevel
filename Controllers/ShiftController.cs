@@ -17,7 +17,6 @@ using SQLitePCL;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
-using TomorrowsVoice_Toplevel.Models.Messaging;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Utilities;
@@ -624,83 +623,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			ViewBag.StatusList = new SelectList(statusList);
 		}
-		public PartialViewResult GetMessages(int id,int volunteerID)
-		{
-			ViewBag.ShiftID = id;
-			if (volunteerID ==0) volunteerID = 1000;
-			ViewBag.volunteerID = volunteerID;
-			var messages = _context.Messages
-				.Where(m => m.ChatID == id)
-				.Include(m => m.User)
-				.Select(m => new MessageVM
-				{
-					Name = !string.IsNullOrEmpty(m.User.Nickname) ? m.User.Nickname : m.User.NameFormatted,
-					CreatedOn = m.CreatedOn,
-					Content = m.Content ?? string.Empty
-				})
-				.ToList();
 
-			return PartialView("_GetMessages", messages);
-			//var chat = _context.Chats.FirstOrDefault(c => c.ID == id);
-			//var messages = _context.Messages
-			//	.Where(m => m.ChatID == chat.ID)
-			//	.OrderBy(m => m.CreatedOn)
-			//	.ToList();
-			//var messageVMs = new List<MessageVM>();
-			//foreach (var message in messages)
-			//{
-			//	string name = "Unknown";
-
-			//	var volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == message.FromAccountID);
-			//	if (volunteer != null)
-			//	{
-			//		name = !string.IsNullOrEmpty(volunteer.Nickname) ? volunteer.Nickname : volunteer.NameFormatted;
-			//	}
-			//	else
-			//	{
-			//		var director = _context.Directors.FirstOrDefault(d => d.ID == message.FromAccountID);
-			//		if (director != null)
-			//		{
-			//			name = !string.IsNullOrEmpty(director.Nickname) ? director.Nickname : director.NameFormatted;
-			//		}
-			//	}
-
-			//	messageVMs.Add(new MessageVM
-			//	{
-			//		Content = message.Content,
-			//		CreatedOn = message.CreatedOn,
-			//		Name = name,
-			//		// Avatar = volunteer?.Avatar
-			//	});
-			//}
-			//return PartialView("_GetMessages", messageVMs);
-		}
-
-		public IActionResult SendMessage(int shiftID, int volunteerID, string content)
-		{
-
-			
-			var chat = _context.Chats.FirstOrDefault(c => c.ID == shiftID);
-			if (chat == null)
-			{
-				chat = new Chat { ID = shiftID };
-				_context.Chats.Add(chat);
-				_context.SaveChanges();
-			}
-			Volunteer volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == volunteerID);
-			var message = new Message
-			{
-				ChatID = chat.ID,
-				FromAccountID = volunteerID,
-				Content = content,
-				User = volunteer
-			};
-
-			_context.Messages.Add(message);
-			_context.SaveChanges();
-
-			return RedirectToAction("Details", new { id = shiftID });
-		}
 
 		public JsonResult GetShiftData()
 		{
