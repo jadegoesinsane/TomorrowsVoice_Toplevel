@@ -582,10 +582,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
 
-
-
-
-
 		public async Task<IActionResult> Email(string[] selectedOptions, string Subject, string emailContent)
 		{
 
@@ -721,6 +717,71 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 
+
+		public async Task<IActionResult> EmailNotice(int shiftID ,int volunteerID)
+
+
+		{
+
+			var volunteer =await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == volunteerID);
+			
+			var shift = await _context.Shifts.Include(a=>a.Event).FirstOrDefaultAsync(m => m.ID == shiftID);
+
+
+			string Subject = "Sign off shift ";
+
+			string emailContent = $"Volunteer {volunteer.NameFormatted}  sign off event{shift.Event.Name} shift {shift.TimeSummary}  ";
+
+
+
+			var volunteers = _context.Volunteers;
+
+			int folksCount=0;
+				try
+				{
+					//Send a Notice.
+					List<EmailAddress> folks = (from p in volunteers
+
+												where p.ID == 1000
+												select new EmailAddress
+												{
+													Name = p.NameFormatted,
+													Address = p.Email
+												}).ToList();
+					 folksCount = folks.Count;
+					if (folksCount > 0)
+					{
+						var msg = new EmailMessage()
+						{
+							ToAddresses = folks,
+							Subject = Subject,
+							Content = "<p>" + emailContent 
+
+						};
+						await _emailSender.SendToManyAsync(msg);
+						ViewData["Message"] = "Message sent to " + folksCount + " Manager"
+							+ ((folksCount == 1) ? "." : "s.");
+					}
+					else
+					{
+						ViewData["Message"] = "Message NOT sent!  No Manager.";
+					}
+				}
+				catch (Exception ex)
+				{
+					string errMsg = ex.GetBaseException().Message;
+					ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
+						+ ((folksCount == 1) ? "" : "s") + " in the list.";
+				}
+			
+			//return View();
+            return RedirectToAction("SignOffShift", new { volunteerID = volunteerID, shiftID = shiftID });
+
+
+
+        }
+
+
         // GET: Volunteer/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -783,7 +844,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 
         // GET: Shift/AddShift/5
-        public async Task<IActionResult> AddShift(int volunteerId, int shiftId)
+        public async Task<IActionResult> SignOffShift(int volunteerId, int shiftId)
         {
             if (shiftId == null)
             {
@@ -801,10 +862,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(shift);
         }
 
-        // POST: Shift/Delete/5
-        [HttpPost, ActionName("AddShift")]
+        [HttpPost, ActionName("SignOffShift")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddShiftConfirmed(int volunteerId, int shiftId)
+        public async Task<IActionResult> SignOffShiftConfirmed(int volunteerId, int shiftId)
         {
             var userShift = await _context.UserShifts
                                    .FirstOrDefaultAsync(us => us.UserID == volunteerId && us.ShiftID == shiftId);

@@ -63,7 +63,13 @@
 
                                 @if (item.ShiftDate < DateTime.Today.AddDays(7))
                                 {
-                                   
+                                    <a class="btn btn-primary add"
+                                       asp-controller="Volunteer"
+                                       asp-action="EmailNotice"
+                                       asp-route-volunteerId="@volunteer?.ID"
+                                       asp-route-shiftId="@item.ID">
+                                        Sign off
+                                    </a>
                                     
                                 }
                                 else
@@ -71,7 +77,7 @@
                                     <!-- Otherwise, render the active button -->
                                     <a class="btn btn-primary add"
                                        asp-controller="Volunteer"
-                                       asp-action="AddShift"
+                                       asp-action="SignOffShift"
                                        asp-route-volunteerId="@volunteer?.ID"
                                        asp-route-shiftId="@item.ID">
                                         Sign off
