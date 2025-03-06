@@ -19,7 +19,19 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public VolunteerAvatar? Avatar { get; set; }
 
 		[Display(Name ="Hours Volunteered")]
-		public int HoursVolunteered { get; set; }=0;
+		public int HoursVolunteered
+        {
+            get
+            {
+                return (int)totalWorkDuration.TotalHours;  // Cast to int and return
+            }
+
+
+        } 
+
+
+
+
 
         [Display(Name = "Total Work Duration")]
         public TimeSpan totalWorkDuration { get; set; }=TimeSpan.Zero;
