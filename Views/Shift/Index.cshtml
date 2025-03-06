@@ -27,8 +27,8 @@
                 <input class="form-control" type="date" id="FilterEndDate" name="FilterEndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
             </div>
            <div class="p-2">
-               <label class="control-label" for="DirectorID">Select by Event:</label>
-							@Html.DropDownList("EventID", null, "All Event", htmlAttributes: new { @class = "form-control", id = "EventID" })
+               <label class="control-label" for="EventID">Select by Event:</label>
+							@Html.DropDownList("EventID", null, "All Events", htmlAttributes: new { @class = "form-control", id = "EventID" })
 							
 						</div>
             <div class="p-2">

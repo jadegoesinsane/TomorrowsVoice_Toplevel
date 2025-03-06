@@ -38,7 +38,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 			}
 		}*/
 
-        [Display(Name = "Absences")]
+        [Display(Name = "Shifts Missed")]
         public int absences { get; set; }=0;
 
         [Display(Name = "Yearly Volunteering Goal")]
