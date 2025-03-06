@@ -61,6 +61,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public Status Status { get; set; } = Status.Active;
 
 		[Display(Name = "Volunteers Needed")]
+		[Required(ErrorMessage = " Requires Volunteers.")]
+		[Range(1, int.MaxValue, ErrorMessage = "Volunteers needed must be greater than 0.")]
 		public int VolunteersNeeded { get; set; }
 
 		public int VolunteersLeft
