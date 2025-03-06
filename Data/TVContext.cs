@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 using TomorrowsVoice_Toplevel.Models;
-using TomorrowsVoice_Toplevel.Models.Messaging;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Users.Account;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
@@ -71,21 +70,11 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<VolunteerAvatar> VolunteerAvatars { get; set; }
 
 		// Messaging DbSets
-		public DbSet<Chat> Chats { get; set; }
-
-		public DbSet<ChatUser> ChatUsers { get; set; }
-		public DbSet<Message> Messages { get; set; }
 
 		#endregion DbSets
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			//modelBuilder.Entity<Message>()
-			//	.Ignore(m => m.User);
-			modelBuilder.Entity<Message>()
-				.HasOne(m => m.User)
-				.WithMany()
-				.HasForeignKey(m => m.FromAccountID);
 			modelBuilder.Entity<User>()
 				.HasDiscriminator<string>("UserType")
 				.HasValue<Volunteer>("Volunteer")
@@ -156,9 +145,6 @@ namespace TomorrowsVoice_Toplevel.Data
 			modelBuilder.Entity<UserShift>()
 				.HasKey(us => new { us.UserID, us.ShiftID });
 
-			// Many to Many Chat User PK
-			modelBuilder.Entity<ChatUser>()
-				.HasKey(cu => new { cu.ChatID, cu.UserID });
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)
