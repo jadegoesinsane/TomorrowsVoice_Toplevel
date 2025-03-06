@@ -555,7 +555,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                         throw new InvalidOperationException("Cannot have work hours when marked as a No Show.");
                     }
 
-                    if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
+                    if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt > enrollmentVM.EndAt)
                     {
                         throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
                     }

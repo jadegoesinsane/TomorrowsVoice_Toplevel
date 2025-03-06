@@ -17,7 +17,7 @@
     </button>
     <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
         <div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
-          
+
             <div class="p-2">
                 <label class="control-label" for="FilterStartDate">Start Date:</label>
                 <input class="form-control" type="date" id="FilterStartDate" name="FilterStartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
@@ -26,11 +26,11 @@
                 <label class="control-label" for="FilterEndDate">End Date:</label>
                 <input class="form-control" type="date" id="FilterEndDate" name="FilterEndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
             </div>
-           <div class="p-2">
-               <label class="control-label" for="EventID">Select by Event:</label>
-							@Html.DropDownList("EventID", null, "All Events", htmlAttributes: new { @class = "form-control", id = "EventID" })
-							
-						</div>
+            <div class="p-2">
+                <label class="control-label" for="EventID">Select by Event:</label>
+                @Html.DropDownList("EventID", null, "All Events", htmlAttributes: new { @class = "form-control", id = "EventID" })
+
+            </div>
             <div class="p-2">
                 <strong><label class="control-label" for="StatusFilter">Status</label></strong>
                 @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
@@ -86,25 +86,55 @@
                     </td>
 
                     <td>
+                        @{
+                            bool condition = false;
 
+                            foreach (var d in item.UserShifts)
+                            {
+                                if (d.NoShow == true)
+                                {
+                                    condition = true;
+                                    continue;
 
+                                }
+                                else if (d.NoShow == false && d.EndAt - d.StartAt > TimeSpan.Zero)
+                                {
+                                    condition = true;
+                                    continue;
 
-                        @if (item.ShiftDate <= DateTime.Today)
-						{
-                            <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
-                                        data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-                                    Track Performance
-                                </button>
-						}
-						else
-						{
+                                }
+                                else
+                                {
+                                    condition = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        @if (condition)
+                        {
                             <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
-                                    data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal" 
+                                    data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                                Edit Performance
+                            </button>
+                        }
+
+                        else if (item.ShiftDate <= DateTime.Today)
+                        {
+                            <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
+                                    data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                                Track Performance
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
+                                    data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
                                     disabled>
                                 Track Performance
                             </button>
-						}
-                   
+                        }
+
                     </td>
                     <td>
                         @if (item.Status != Status.Archived)
@@ -122,7 +152,7 @@
             }
         </tbody>
     </table>
-     <partial name="_PagingNavBar" />
+    <partial name="_PagingNavBar" />
     <!-- Performance Tracking Modal -->
     <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -186,8 +216,8 @@
                         UserID: row.find("input[name='UserID']").val(),
                         ShiftID: shiftId,
                         ShowOrNot: row.find("input[name='ShowOrNot']").prop("checked"),
-                        StartAt: row.find("input[name='StartAt']").val()+":00",  
-                        EndAt: row.find("input[name='EndAt']").val() + ":00"     
+                        StartAt: row.find("input[name='StartAt']").val() + ":00",
+                        EndAt: row.find("input[name='EndAt']").val() + ":00"
                     };
 
 
