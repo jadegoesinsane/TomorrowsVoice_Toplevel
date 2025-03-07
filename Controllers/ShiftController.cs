@@ -38,6 +38,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
 
 		{
+			ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Event");
+
+			if (!EventID.HasValue)
+			{
+				//Go back to the proper return url for the Events controller
+				return Redirect(ViewData["returnURL"].ToString());
+			}
+
 			//Count the number of filters applied - start by assuming no filters
 			ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
@@ -48,6 +56,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var shifts = _context.Shifts
 				.Include(s => s.Event)
 				.Include(s => s.UserShifts)
+				.Where(s => s.EventID == EventID.GetValueOrDefault())
 				.AsNoTracking();
 
 			if (!String.IsNullOrEmpty(StatusFilter))
@@ -80,10 +89,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				shifts = shifts.Where(e => e.ShiftDate >= FilterStartDate && e.ShiftDate <= FilterEndDate);
 			}
 
-			if (EventID.HasValue)
-			{
-				shifts = shifts.Where(r => r.EventID == EventID);
-			}
 			//Give feedback about the state of the filters
 			if (numberFilters != 0)
 			{
@@ -100,6 +105,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				page = 1;//Reset page to start
 			}
+
+			// MASTER Record, Events
+			Event? events = await _context.Events.FirstOrDefaultAsync(e => e.ID == EventID.GetValueOrDefault());
+
+			ViewBag.Event = events;
+
 
 			//Handle Paging
 			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());

@@ -118,6 +118,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var @event = await _context.Events
 				.FirstOrDefaultAsync(m => m.ID == id);
+
 			if (@event == null)
 			{
 				return NotFound();

@@ -2,181 +2,214 @@
 @{
 
     Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
+    TomorrowsVoice_Toplevel.Models.Volunteering.Event events = (TomorrowsVoice_Toplevel.Models.Volunteering.Event)ViewBag.Event;
+    ViewData["Title"] = ViewData["ControllerFriendlyName"];
 
 }
-<form asp-action="Index" method="get">
-    <div class="form-horizontal my-3">
-        <div class="row align-items-center">
-            <h1 class="col m-0">Shifts</h1>
-           
+
+<div>
+    <!-- Nav tabs -->
+    <nav>
+        <div class="nav nav-pills" id="myTabs" role="tablist">
+            <button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
+                    type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
+                Basic Details
+            </button>
+            <button class="nav-link" id="Shifts-Tab" data-bs-toggle="tab" data-bs-target="#ShiftsPanel"
+                    type="button" role="tab" aria-controls="ShiftsPanel" aria-selected="false">
+                Shifts
+            </button>
         </div>
+    </nav>
 
-        <div class="col-md-3 ms-auto d-flex justify-content-between">
-            <a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add @ViewData["ControllerFriendlyName"]</a>
-            <a asp-action="CreateMany" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add Template Shifts </a>
+    <!-- Tab panes -->
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
+            <br />
+            <partial name="_EventDetail" model="events" />
         </div>
-    </div>
- 
-    <button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
-            data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-        <i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
-    </button>
-    <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-        <div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
+        <div class="tab-pane fade ml-3" role="tabpanel" id="ShiftsPanel" aria-labelledby="Shifts-tab">
+            <br />
+            <form asp-action="Index" method="get">
+                <input type="hidden" name="EventID" value="@events.ID" />
+                <div class="form-horizontal my-3">
+                    <div class="row align-items-center">
+                        <h1 class="col m-0">Shifts</h1>
 
-            <div class="p-2">
-                <label class="control-label" for="FilterStartDate">Start Date:</label>
-                <input class="form-control" type="date" id="FilterStartDate" name="FilterStartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
-            </div>
-            <div class="p-2">
-                <label class="control-label" for="FilterEndDate">End Date:</label>
-                <input class="form-control" type="date" id="FilterEndDate" name="FilterEndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
-            </div>
-            <div class="p-2">
-                <label class="control-label" for="EventID">Select by Event:</label>
-                @Html.DropDownList("EventID", null, "All Events", htmlAttributes: new { @class = "form-control", id = "EventID" })
+                    </div>
 
-            </div>
-            <div class="p-2">
-                <strong><label class="control-label" for="StatusFilter">Status</label></strong>
-                @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
-                         "Any", htmlAttributes: new { @class = "form-control" })
-            </div>
-            <div class="p-2 ms-auto">
-                <button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
-                    <i class=" bi bi-funnel-fill"></i>Apply
-                </button>
-            </div>
-            <div class="p-2">
-                <a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
-            </div>
-        </div>
-    </div>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.ShiftDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.VolunteersNeeded)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Status)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Event)
-                </th>
-                <th>
-                    Track Performance
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TimeSummary)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.VolunteersLeft)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Event.Name)
-                    </td>
-
-                    <td>
-                        @{
-                            bool condition = false;
-
-                            foreach (var d in item.UserShifts)
-                            {
-                                if (d.NoShow == true)
-                                {
-                                    condition = true;
-                                    continue;
-
-                                }
-                                else if (d.NoShow == false && d.EndAt - d.StartAt > TimeSpan.Zero)
-                                {
-                                    condition = true;
-                                    continue;
-
-                                }
-                                else
-                                {
-                                    condition = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        @if (condition)
-                        {
-                            <button type="button"  class="btn btn-outline-primary trackPerformanceBtn"
-                                    data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-                                Edit Performance
-                            </button>
-                        }
-
-                        else if (item.ShiftDate <= DateTime.Today)
-                        {
-                            <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
-                                    data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-                                Track Performance
-                            </button>
-                        }
-                        else
-                        {
-                            <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
-                                    data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
-                                    disabled>
-                                Track Performance
-                            </button>
-                        }
-
-                    </td>
-                    <td>
-                        @if (item.Status != Status.Archived)
-                        {
-                            <partial name="_CrudIcons" model="@item.ID" />
-                        }
-                        else
-                        {
-                            <partial name="_CrudIconsRecover" model="@item.ID" />
-                        }
-                    </td>
-                </tr>
-
-
-            }
-        </tbody>
-    </table>
-    <partial name="_PagingNavBar" />
-    <!-- Performance Tracking Modal -->
-    <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="performanceModalLabel">Track Performance</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="performanceModalContent">
-                        <p class="text-center text-muted">Loading...</p>
+                    <div class="col-md-3 ms-auto d-flex justify-content-between">
+                        <a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add @ViewData["ControllerFriendlyName"]</a>
+                        <a asp-action="CreateMany" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add Template Shifts </a>
                     </div>
                 </div>
-            </div>
+
+                <button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+                        data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                    <i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
+                </button>
+                <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+                    <div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
+
+                        <div class="p-2">
+                            <label class="control-label" for="FilterStartDate">Start Date:</label>
+                            <input class="form-control" type="date" id="FilterStartDate" name="FilterStartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
+                        </div>
+                        <div class="p-2">
+                            <label class="control-label" for="FilterEndDate">End Date:</label>
+                            <input class="form-control" type="date" id="FilterEndDate" name="FilterEndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
+                        </div>
+                        <div class="p-2">
+                            <label class="control-label" for="EventID">Select by Event:</label>
+                            @Html.DropDownList("EventID", null, "All Events", htmlAttributes: new { @class = "form-control", id = "EventID" })
+
+                        </div>
+                        <div class="p-2">
+                            <strong><label class="control-label" for="StatusFilter">Status</label></strong>
+                            @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
+                                     "Any", htmlAttributes: new { @class = "form-control" })
+                        </div>
+                        <div class="p-2 ms-auto">
+                            <button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
+                                <i class=" bi bi-funnel-fill"></i>Apply
+                            </button>
+                        </div>
+                        <div class="p-2">
+                            <a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ShiftDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.VolunteersNeeded)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Event)
+                            </th>
+                            <th>
+                                Track Performance
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TimeSummary)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.VolunteersLeft)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Event.Name)
+                                </td>
+
+                                <td>
+                                    @{
+                                        bool condition = false;
+
+                                        foreach (var d in item.UserShifts)
+                                        {
+                                            if (d.NoShow == true)
+                                            {
+                                                condition = true;
+                                                continue;
+
+                                            }
+                                            else if (d.NoShow == false && d.EndAt - d.StartAt > TimeSpan.Zero)
+                                            {
+                                                condition = true;
+                                                continue;
+
+                                            }
+                                            else
+                                            {
+                                                condition = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    @if (condition)
+                                    {
+                                        <button type="button" class="btn btn-outline-primary trackPerformanceBtn"
+                                                data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                                            Edit Performance
+                                        </button>
+                                    }
+
+                                    else if (item.ShiftDate <= DateTime.Today)
+                                    {
+                                        <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
+                                                data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                                            Track Performance
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
+                                                data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
+                                                disabled>
+                                            Track Performance
+                                        </button>
+                                    }
+
+                                </td>
+                                <td>
+                                    @if (item.Status != Status.Archived)
+                                    {
+                                        <partial name="_CrudIcons" model="@item.ID" />
+                                    }
+                                    else
+                                    {
+                                        <partial name="_CrudIconsRecover" model="@item.ID" />
+                                    }
+                                </td>
+                            </tr>
+
+
+                        }
+                    </tbody>
+                </table>
+                <partial name="_PagingNavBar" />
+                <!-- Performance Tracking Modal -->
+                <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="performanceModalLabel">Track Performance</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="performanceModalContent">
+                                    <p class="text-center text-muted">Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
         </div>
     </div>
+</div>
 
-</form>
+
 @section Scripts {
 
 
