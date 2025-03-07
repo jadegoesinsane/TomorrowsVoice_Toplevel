@@ -9,6 +9,8 @@
 
 }
 <partial name="_ViewHeading" />
+<div id="calendar"></div>
+@*
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
 	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
@@ -86,9 +88,12 @@
 
     </tbody>
 </table>
-@* <partial name="_PagingNavBar" /> *@
-</form>
+<partial name="_PagingNavBar" /> 
+</form> *@
+
+
 @section Scripts{
+	<script src="~/js/eventCalendar.js"></script>
 @* 	<script>
 		var modal = document.getElementById("shiftModal");
 
