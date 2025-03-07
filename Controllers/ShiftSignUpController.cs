@@ -187,6 +187,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Details(int shiftID, int volunteerId)
         {
+
+
             var userShift = new UserShift
             {
                 UserID = volunteerId,
@@ -213,6 +215,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VolunteerShifts(int shiftID, int volID)
         {
+
+            bool userShiftExists = _context.UserShifts
+         .Any(us => us.UserID == volID && us.ShiftID == shiftID);
+
+            if (userShiftExists)
+            {
+               
+                TempData["ErrorMessage"] = "This volunteer is already signed up for this shift.";
+
+               
+                return RedirectToAction("Details", "ShiftSignUp", new { volunteerId = volID, shiftID = shiftID });
+            }
             // create new volunteer signup
             var userShift = new UserShift
             {

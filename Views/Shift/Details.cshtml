@@ -35,14 +35,5 @@
 	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
 	<a asp-action="Index">Back to List</a> |
 	<!--Link to sign up for this shift that only shows up if volunteers are needed-->
-	@{
-		if (Model.VolunteersNeeded > Model.UserShifts.Count())
-		{
-			<a asp-controller="ShiftSignUp" asp-action="Details" asp-route-id="@Model.ID">Sign Up</a>
-		}
-		else
-		{
-			<a disabled>No more volunteers needed</a>
-		}
-	}
+	
 </div>
