@@ -137,16 +137,22 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: ShiftSignUp/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? shiftId, int? volunteerId)
         {
-            if (id == null)
+            if (shiftId == null)
             {
                 return NotFound();
             }
 
+
+            ViewData["VolunteerID"] = volunteerId;
+            var volunteer = await _context.Volunteers
+                
+                .FirstOrDefaultAsync(m => m.ID == volunteerId);
+
             var shift = await _context.Shifts
                 .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID == shiftId);
             if (shift == null)
             {
                 return NotFound();
@@ -179,11 +185,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [HttpPost]
         [Route("ShiftSignUp/Details/{shiftID}/{volID}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Details(int shiftID, int volID)
+        public async Task<IActionResult> Details(int shiftID, int volunteerId)
         {
             var userShift = new UserShift
             {
-                UserID = volID,
+                UserID = volunteerId,
                 ShiftID = shiftID
             };
 

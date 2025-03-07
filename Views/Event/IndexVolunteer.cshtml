@@ -1,0 +1,150 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Event>
+@{
+
+    Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
+
+}
+<form asp-action="IndexVolunteer" method="get">
+    <div class="form-horizontal my-3">
+        <div class="row align-items-center">
+            <h1 class="col m-0">Events</h1>
+           
+        </div>
+    </div>
+    <button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+            data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+        <i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
+    </button>
+    <br />
+    <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+        <div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
+            <div class="p-2">
+                <strong><label class="control-label" for="SearchString">Event Name</label></strong>
+                @Html.TextBox("SearchString", null, new { @class = "form-control" })
+            </div>
+            <div class="p-2">
+                <label class="control-label" for="FilterStartDate">Start Date:</label>
+                <input class="form-control" type="date" id="FilterStartDate" name="FilterStartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
+            </div>
+            <div class="p-2">
+                <label class="control-label" for="FilterEndDate">End Date:</label>
+                <input class="form-control" type="date" id="FilterEndDate" name="FilterEndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
+            </div>
+            <div class="p-2">
+                <strong><label class="control-label" for="Location">Location</label></strong>
+                @Html.DropDownList("Location", null, "All Locations", new { @class = "form-control" })
+            </div>
+            <div class="p-2">
+                <strong><label class="control-label" for="StatusFilter">Status</label></strong>
+                @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
+                         "Any", htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="p-2 ms-auto">
+                <button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
+                    <i class=" bi bi-funnel-fill"></i>Apply
+                </button>
+            </div>
+            <div class="p-2">
+                <a asp-action="IndexVolunteer" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-12 mb-3">
+                <div class="card">
+                    @*         <div class="card-header"> *@
+                    <button class="card-header btn btn-link" style="text-align:left;" type="button" data-bs-toggle="collapse" data-bs-target="#c-@item.ID" aria-expanded="false" aria-controls="c-@item.ID">
+                        <h2 class="m-0">
+                            @item.Name
+                        </h2>
+                        <p class="m-0">
+                            <i class="bi bi-calendar"></i>
+                            @item.DateSummary
+                        </p>
+                        <p class="m-0">
+                            <i class="bi bi-geo-alt"></i>
+                            @item.Location
+                        </p>
+                    </button>
+                    @*    </div> *@
+                    <div class="collapse" id="c-@item.ID">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    @item.Descripion
+                                </div>
+                                <div class="col-md-2">
+                                    @if (item.Status != Status.Archived)
+                                    {
+                                        <a asp-controller="Shift" asp-action="Index" asp-route-EventID="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
+                                           role="button" data-bs-toggle="tooltip" Details">
+                                            <i class="bi bi-search"></i>
+                                        </a>
+                                        
+                                    }
+                                  
+                                </div>
+                            </div>
+                            @foreach (var date in item.Shifts.GroupBy(s => s.ShiftDate))
+                            {
+                                <div class="row">
+                                    <div class="col-12">
+                                        @{
+                                            string dateFormat;
+                                            if (date.Key.Year == item.StartDate.Year)
+                                                dateFormat = date.Key.ToString("MMMM d");
+                                            else
+                                                dateFormat = date.Key.ToString("MMMM d, yyyy");
+                                        }
+                                        @if (date.All(s => s.VolunteersLeft <= 0))
+                                        {
+                                            <button class="btn btn-link disabled" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
+                                                <strong>@dateFormat</strong>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
+                                                <strong>@dateFormat</strong>
+                                            </button>
+                                        }
+                                        <div class="collapse" id="c-@date.Key.ToString("yyyyMMdd")">
+                                            <table class="table">
+                                                <tbody>
+                                                    @foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
+                                                    {
+                                                        if (shift.VolunteersLeft <= 0)
+                                                        {
+                                                            <tr style="color: #6c757d !important;">
+                                                                <td><a style="color: #6c757d !important; font-weight:normal !important;">@shift.StartAt.ToString("hh:mm tt") - @shift.EndAt.ToString("hh:mm tt")</a></td>
+                                                                <td>@shift.VolunteersLeft</td>
+                                                            </tr>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a asp-controller="ShiftSignUp" asp-action="Details" asp-route-shiftId="@shift.ID"
+                                                               asp-route-volunteerId="@ViewData["VolunteerID"]"
+                                                               style="font-weight:normal !important;">
+                                                                @shift.StartAt.ToString("hh:mm tt") - @shift.EndAt.ToString("hh:mm tt")
+                                                            </a>
+
+                                                            
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <partial name="_PagingNavBar" />
+</form>

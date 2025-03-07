@@ -86,9 +86,15 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.absences)
                     </td>
+                   
+
                     <td>
-                        <button type="button" class="btn btn-primary" onclick="exportToExcel2()">Add Shift</button>
+                        <a asp-controller="Event" asp-action="IndexVolunteer" asp-route-id="@item.ID" type="button" class="btn btn-primary">
+                            Add Shift
+                        </a>
+
                     </td>
+
                     <td>
                         @Html.DisplayFor(modelItem => item.Status)
                     </td>

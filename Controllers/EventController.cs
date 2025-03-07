@@ -22,6 +22,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_context = context;
 		}
 
+
+
 		// GET: Event
 		public async Task<IActionResult> Index(string? SearchString, string? Location, DateTime FilterStartDate,
 			DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
@@ -551,7 +553,93 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(data);
 		}
 
-		private bool EventExists(int id)
+
+
+        public async Task<IActionResult> IndexVolunteer(int? id,string? SearchString, string? Location, DateTime FilterStartDate,
+            DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
+        {
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+            Enum.TryParse(StatusFilter, out Status selectedStatus);
+
+            PopulateDropDownLists();
+            var statusList = Enum.GetValues(typeof(Status))
+                         .Cast<Status>()
+                         .Where(s => s == Status.Active || s == Status.Archived)
+                         .ToList();
+
+            ViewBag.StatusList = new SelectList(statusList);
+            ViewData["VolunteerID"] = id;
+            var events = _context.Events
+                .Include(e => e.Shifts)
+                .ThenInclude(s => s.UserShifts)
+                .AsNoTracking();
+
+            if (!String.IsNullOrEmpty(StatusFilter))
+            {
+                events = events.Where(p => p.Status == selectedStatus);
+
+                // filter out archived events if the user does not specifically select "archived"
+                if (selectedStatus != Status.Archived)
+                {
+                    events = events.Where(s => s.Status != Status.Archived);
+                }
+                numberFilters++;
+            }
+            // filter out events even if status filter has not been set
+            else
+            {
+                events = events.Where(s => s.Status != Status.Archived);
+            }
+            //Filter For Start and End times
+            if (FilterStartDate != default(DateTime) || FilterEndDate != default(DateTime))
+            {
+                if (FilterStartDate != default(DateTime))
+                {
+                    ViewData["StartDate"] = FilterStartDate.ToString("yyyy-MM-dd");
+                }
+                if (FilterEndDate != default(DateTime))
+                {
+                    ViewData["EndDate"] = FilterEndDate.ToString("yyyy-MM-dd");
+                }
+                events = events.Where(e => e.StartDate >= FilterStartDate && e.EndDate <= FilterEndDate);
+            }
+            if (!String.IsNullOrEmpty(SearchString))
+            {
+                events = events.Where(p => p.Name.ToUpper().Contains(SearchString.ToUpper()));
+                numberFilters++;
+            }
+            if (!String.IsNullOrEmpty(Location))
+            {
+                events = events.Where(e => e.Location.Contains(Location));
+                numberFilters++;
+            }
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                //Keep the Bootstrap collapse open
+                @ViewData["ShowFilter"] = " show";
+            }
+            //Before we sort, see if we have called for a change of filtering or sorting
+            if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+            }
+
+            //Handle Paging
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Event>.CreateAsync(events.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
+        }
+        private bool EventExists(int id)
 		{
 			return _context.Events.Any(e => e.ID == id);
 		}
