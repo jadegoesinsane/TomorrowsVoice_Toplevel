@@ -35,7 +35,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		// GET: Shift
 		public async Task<IActionResult> Index(int? EventID, string? Location, DateTime FilterStartDate,
-			DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
+			int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
 
 		{
 			ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Event");
@@ -76,17 +76,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				shifts = shifts.Where(s => s.Status != Status.Archived);
 			}
 			//Filter For Start and End times
-			if (FilterStartDate != default(DateTime) || FilterEndDate != default(DateTime))
+			if (FilterStartDate != default(DateTime))
 			{
 				if (FilterStartDate != default(DateTime))
 				{
 					ViewData["StartDate"] = FilterStartDate.ToString("yyyy-MM-dd");
 				}
-				if (FilterEndDate != default(DateTime))
-				{
-					ViewData["EndDate"] = FilterEndDate.ToString("yyyy-MM-dd");
-				}
-				shifts = shifts.Where(e => e.ShiftDate >= FilterStartDate && e.ShiftDate <= FilterEndDate);
+				shifts = shifts.Where(e => e.ShiftDate == FilterStartDate);
 			}
 
 			//Give feedback about the state of the filters

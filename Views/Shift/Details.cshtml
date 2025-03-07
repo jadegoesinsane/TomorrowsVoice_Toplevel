@@ -33,7 +33,7 @@
 
 <div>
 	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-	<a asp-action="Index">Back to List</a> |
+	<a asp-controller="Shift" asp-action="Index" asp-route-EventID="@Model?.ID">Back to List</a> |
 	<!--Link to sign up for this shift that only shows up if volunteers are needed-->
 	
 </div>
