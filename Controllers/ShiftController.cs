@@ -637,7 +637,42 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.OrderBy(v => v.LastName), "ID", "NameFormatted");
 		}
 
-		public JsonResult GetShiftData()
+        // Sign a volunteer up for a shift
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ShiftSignUp(int shiftID, int volID)
+        {
+            // create new volunteer signup
+            var userShift = new UserShift
+            {
+                UserID = volID,
+                ShiftID = shiftID
+            };
+
+            // get date for success toast
+            string date = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.StartAt.ToLongDateString()).FirstOrDefault();
+            // get name for success toast
+            string name = _context.Volunteers.Where(v => v.ID == volID).Select(v => v.NameFormatted).FirstOrDefault();
+            // get event for success toast
+            int eventID = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.EventID).FirstOrDefault();
+            string event_ = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault();
+
+
+            try
+            {
+                _context.Add(userShift);
+                await _context.SaveChangesAsync();
+                AddSignUpToast(date, name, event_);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
+            }
+
+            return RedirectToAction($"Details", "Volunteer", new { id = volID });
+        }
+
+        public JsonResult GetShiftData()
 		{
 			var date = new DateTime(2025, 11, 30);
 

@@ -7,7 +7,7 @@
 
 <div style="display: grid; place-content: center;">
     <h1>Confirm Sign-Up</h1>
-     <form asp-action="VolunteerShifts" asp-route-shiftID="@Model.ID" asp-route-volID="VALUE_OF_VOLID" method="post" class="form-container">
+    <form asp-controller="ShiftSignUp"  asp-action="VolunteerShifts" asp-route-shiftID="@Model.ID" asp-route-volID="VALUE_OF_VOLID" method="post" class="form-container">
         <div class="form-area">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">

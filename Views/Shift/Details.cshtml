@@ -4,14 +4,32 @@
 	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
 
 }
-<partial name="_ViewHeading" />
 
-<div>
+<h1>@Model.Event.Name Shift</h1>
+<strong>@Model.TimeSummary</strong>
+<hr />
+<label>Volunteer(s) Signed Up:</label>
+<p style="display: inline"> @Model.UserShifts.Count()/@Model.VolunteersNeeded</p>
+<ul>
+	@foreach (var v in Model.UserShifts)
+	{
+		<li>
+			@v.User.NameFormatted
+			@if (v.User is Director)
+			{
+				<span> - Director</span>
+			}
+		</li>
+	}
+</ul>
+@* <div>
 	<dl class="row">
 		<div class="col-auto">
-			<strong>@Model.TimeSummary</strong>
-			<hr />
-			<p>Volunteers: @Model.UserShifts.Count()/@Model.VolunteersNeeded</p>
+			
+			
+			<ul>
+
+			</ul>
 			@foreach(var v in Model.UserShifts)
 			{
 				<p>
@@ -27,57 +45,56 @@
 			<div class="ml-3" style="max-height: 100%;overflow-y: scroll;overflow-x: clip;" id="chatbox"></div>
 		</div>
 	</dl>
-</div>
-<div style="display: grid; place-content: center;">
-	<h1>Confirm Sign-Up</h1>
-	<form asp-action="VolunteerShifts" asp-route-shiftID="@Model.ID" asp-route-volID="VALUE_OF_VOLID" method="post" class="form-container">
-		<div class="form-area">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="row">
-				<div class="col-md-4">
-					<label class="control-label" for="VolunteerID" style="margin-top: 7px">Select a Volunteer:</label>
+</div> *@
+@{
+	if (Model.VolunteersNeeded > Model.UserShifts.Count())
+	{
+		<div style="display: grid; place-content: center;">
+			<h2>Confirm Sign-Up</h2>
+			<form asp-action="ShiftSignUp" asp-route-shiftID="@Model.ID" asp-route-volID="VALUE_OF_VOLID" method="post" class="form-container">
+				<div class="form-area">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<div class="row">
+						<div class="col-md-4">
+							<label class="control-label" for="VolunteerID" style="margin-top: 7px">Select a Volunteer:</label>
+						</div>
+						<div class="col-md-4">
+							@Html.DropDownList("VolunteerID", null, "- Select a Volunteer", htmlAttributes: new { @class = "form-control", id = "VolunteerID" })
+						</div>
+					</div>
+					<div style="margin-top: 10px">
+						Are you sure you want to sign up for
+						<strong>@Html.DisplayFor(Model => Model.Event.Name)</strong>
+						from
+						<strong>@Html.DisplayFor(model => model.StartAt)</strong>
+						to
+						<strong>@Html.DisplayFor(model => model.EndAt)</strong>
+						?
+					</div>
 				</div>
-				<div class="col-md-4">
-					@Html.DropDownList("VolunteerID", null, "- Select a Volunteer", htmlAttributes: new { @class = "form-control", id = "VolunteerID" })
+				<div class="form-footer">
+					@Html.AntiForgeryToken()
+					<input type="hidden" name="shiftID" value="@Model.ID" />
+					<input type="hidden" name="volID" value="" id="volInput" />
+					<button type="submit" class="btn btn-primary" disabled id="btnSubmit">Sign Up</button>
 				</div>
-			</div>
-			<div style="margin-top: 10px">
-				Are you sure you want to sign up for
-				<strong>@Html.DisplayFor(Model => Model.Event.Name)</strong>
-				from
-				<strong>@Html.DisplayFor(model => model.StartAt)</strong>
-				to
-				<strong>@Html.DisplayFor(model => model.EndAt)</strong>
-				?
-			</div>
+			</form>
 		</div>
-		<div class="form-footer">
-			@Html.AntiForgeryToken()
-			<input type="hidden" name="shiftID" value="@Model.ID" />
-			<input type="hidden" name="volID" value="" id="volInput" />
-			<button type="submit" class="btn btn-primary" disabled id="btnSubmit">Sign Up</button>
-			|
-			<a href="javascript:history.back()">Back to List</a>
-		</div>
-	</form>
-</div>
+	}
+	else
+	{
+		<a disabled>No more volunteers needed</a>
+	}
+}
+
 
 
 
 <div>
 	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-	<a asp-controller="Shift" asp-action="Index" asp-route-EventID="@Model?.ID">Back to List</a> |
+	<a href="javascript:history.back()">Back to List</a>
 	<!--Link to sign up for this shift that only shows up if volunteers are needed-->
-	@{
-		if (Model.VolunteersNeeded > Model.UserShifts.Count())
-		{
-			<a asp-controller="ShiftSignUp" asp-action="Details" asp-route-id="@Model.ID">Sign Up</a>
-		}
-		else
-		{
-			<a disabled>No more volunteers needed</a>
-		}
-	}
+	
 </div>
 
 <script>
