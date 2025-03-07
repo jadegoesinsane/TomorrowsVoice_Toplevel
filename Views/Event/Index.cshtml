@@ -106,7 +106,7 @@
                                     }
                                     </div>
                             </div>
-                            @foreach (var date in item.Shifts.GroupBy(s => s.StartAt.Date))
+                            @foreach (var date in item.Shifts.GroupBy(s => s.ShiftDate))
                             {
                                 <div class="row">
                                     <div class="col-12">
