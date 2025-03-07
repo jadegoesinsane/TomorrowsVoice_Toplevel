@@ -133,6 +133,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
+
+			// To show volunteer select list
+			PopulateVolunteers();
+
 			return View(shift);
 		}
 
@@ -624,6 +628,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewBag.StatusList = new SelectList(statusList);
 		}
 
+		// method to put list of active volunteers into viewdata
+		private void PopulateVolunteers()
+		{
+			ViewData["VolunteerID"] = new SelectList(_context
+				.Volunteers
+				.Where(v=>v.Status == Status.Active)
+				.OrderBy(v => v.LastName), "ID", "NameFormatted");
+		}
 
 		public JsonResult GetShiftData()
 		{

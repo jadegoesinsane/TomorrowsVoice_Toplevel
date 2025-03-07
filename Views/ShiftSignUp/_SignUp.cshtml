@@ -1,0 +1,62 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
+@{
+
+    Layout = "~/Views/Shared/_EventVolunteerLayout.cshtml";
+
+}
+
+<div style="display: grid; place-content: center;">
+    <h1>Confirm Sign-Up</h1>
+     <form asp-action="VolunteerShifts" asp-route-shiftID="@Model.ID" asp-route-volID="VALUE_OF_VOLID" method="post" class="form-container">
+        <div class="form-area">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="control-label" for="VolunteerID" style="margin-top: 7px">Select a Volunteer:</label>
+                </div>
+                <div class="col-md-4">
+                    @Html.DropDownList("VolunteerID", null, "- Select a Volunteer", htmlAttributes: new { @class = "form-control", id = "VolunteerID" })
+                </div>
+            </div>
+            <div style="margin-top: 10px">
+                Are you sure you want to sign up for
+                <strong>@Html.DisplayFor(Model => Model.Event.Name)</strong>
+                from
+                <strong>@Html.DisplayFor(model => model.StartAt)</strong>
+                to
+                <strong>@Html.DisplayFor(model => model.EndAt)</strong>
+                ?
+            </div>
+        </div>
+        <div class="form-footer">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="shiftID" value="@Model.ID" />
+            <input type="hidden" name="volID" value="" id="volInput" />
+            <button type="submit" class="btn btn-primary" disabled id="btnSubmit">Sign Up</button>
+            |
+            <a href="javascript:history.back()">Back to List</a>
+        </div>
+     </form>
+</div>
+
+<script>
+    // get elements
+    var dropDown = document.getElementById("VolunteerID");
+    var signUpLink = document.getElementById("SignUp");
+    var submitButton = document.getElementById("btnSubmit");
+    var dropValue;
+    // set values when dropdown changed
+    dropDown.addEventListener("change", 
+        () =>
+        {
+            dropValue = dropDown.value;
+            console.log(dropValue);
+            document.getElementById("volInput").value = dropValue;
+            if (dropValue !== ""){
+                submitButton.disabled = false;
+            }
+            else{
+                submitButton.disabled = true;
+            }
+        });
+</script>
