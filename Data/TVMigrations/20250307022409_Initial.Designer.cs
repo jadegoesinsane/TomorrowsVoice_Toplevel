@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250301181552_Initial")]
+    [Migration("20250307022409_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -661,7 +661,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.City", "City")
-                        .WithMany()
+                        .WithMany("Chapters")
                         .HasForeignKey("CityID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -885,6 +885,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.City", b =>
                 {
+                    b.Navigation("Chapters");
+
                     b.Navigation("CityEvents");
                 });
 

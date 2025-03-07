@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Mono.TextTemplating;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -40,7 +34,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDownLists();
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
-						 .Where(s => s == Status.Active  || s == Status.Archived)
+						 .Where(s => s == Status.Active || s == Status.Archived)
 						 .ToList();
 
 			ViewBag.StatusList = new SelectList(statusList);
@@ -135,9 +129,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Event/Create
 		public IActionResult Create()
 		{
-			Event abc = new Event();
-			PopulateAssignedEnrollmentData(abc);
-
+			Event @event = new Event();
+			PopulateAssignedEnrollmentData(@event);
 			return View();
 		}
 
@@ -146,7 +139,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,StartDate,EndDate,Descripion,Location,Status")] Event @event, string[] selectedOptions)
+		public async Task<IActionResult> Create([Bind("ID,Name,StartDate,EndDate,Descripion,Location,Shifts")] Event @event, string[] selectedOptions)
 		{
 			try
 			{
@@ -155,6 +148,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(@event);
 					await _context.SaveChangesAsync();
+					foreach (Shift shift in @event.Shifts)
+					{
+						shift.EventID = @event.ID;
+					}
 					AddSuccessToast(@event.Name);
 					//_toastNotification.AddSuccessToastMessage($"{event.NameFormatted} was successfully created.");
 					return RedirectToAction("Details", new { @event.ID });
@@ -409,6 +406,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.ToListAsync();
 			return Json(shifts);
 		}
+
 		public async Task<IActionResult> GetEvents()
 		{
 			var events = await _context.Events

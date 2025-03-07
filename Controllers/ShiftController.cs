@@ -137,7 +137,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateAssignedEnrollmentData(shift);
 
 			PopulateDropDown(shift);
-
 			return View();
 		}
 
@@ -153,18 +152,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				UpdateEnrollments(selectedOptions, shift);
 				if (ModelState.IsValid)
 				{
-					 
-
-
-                    var eventRecord = _context.Events
+					var eventRecord = _context.Events
 									.FirstOrDefault(e => e.ID == shift.EventID);
-                    if (shift.ShiftDate < eventRecord.StartDate || shift.ShiftDate > eventRecord.EndDate)
+					if (shift.ShiftDate < eventRecord.StartDate || shift.ShiftDate > eventRecord.EndDate)
 					{
 						// Throwing exception when overlap condition is met
 						throw new DbUpdateException("Unable to save changes. Your date is out of Event range..");
 					}
-                    
-                    var sameshifts = _context.Shifts
+
+					var sameshifts = _context.Shifts
 						.Where(r => r.ShiftDate == shift.ShiftDate && r.EventID == shift.EventID);
 
 					if (sameshifts.Count() != 0)
@@ -187,8 +183,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							}
 						}
 					}
-                    
-                    _context.Add(shift);
+
+					_context.Add(shift);
 					await _context.SaveChangesAsync();
 					AddSuccessToast(shift.ShiftDuration.ToString());
 					// _toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
@@ -549,19 +545,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					var enrollment = await _context.UserShifts.Include(g => g.User)
 						.FirstOrDefaultAsync(e => e.UserID == enrollmentVM.UserID && e.ShiftID == enrollmentVM.ShiftID);
 
-                    
-                    if (enrollmentVM.ShowOrNot == true && enrollmentVM.StartAt - enrollmentVM.EndAt != TimeSpan.Zero)
-                    {
-                        throw new InvalidOperationException("Cannot have work hours when marked as a No Show.");
-                    }
+					if (enrollmentVM.ShowOrNot == true && enrollmentVM.StartAt - enrollmentVM.EndAt != TimeSpan.Zero)
+					{
+						throw new InvalidOperationException("Cannot have work hours when marked as a No Show.");
+					}
 
-                    if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
-                    {
-                        throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
-                    }
+					if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
+					{
+						throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
+					}
 
-
-                    if (enrollment != null)
+					if (enrollment != null)
 					{
 						if (volunteer != null)
 						{
@@ -611,7 +605,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewBag.StatusList = new SelectList(statusList);
 		}
 
-
 		private void PopulateDropDown2(Shift? shift = null)
 		{
 			ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
@@ -623,10 +616,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			ViewBag.StatusList = new SelectList(statusList);
 		}
-		public PartialViewResult GetMessages(int id,int volunteerID)
+
+		public PartialViewResult GetMessages(int id, int volunteerID)
 		{
 			ViewBag.ShiftID = id;
-			if (volunteerID ==0) volunteerID = 1000;
+			if (volunteerID == 0) volunteerID = 1000;
 			ViewBag.volunteerID = volunteerID;
 			var messages = _context.Messages
 				.Where(m => m.ChatID == id)
@@ -677,8 +671,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public IActionResult SendMessage(int shiftID, int volunteerID, string content)
 		{
-
-			
 			var chat = _context.Chats.FirstOrDefault(c => c.ID == shiftID);
 			if (chat == null)
 			{
@@ -714,7 +706,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			};
 			return Json(data);
 		}
-
 
 		private bool ShiftExists(int id)
 		{

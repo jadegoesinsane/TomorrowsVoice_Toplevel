@@ -11,7 +11,7 @@
 		<div class="col-md-3">
 			<div class="form-floating required">
 				<input asp-for="StartDate" max="9999-12-12" class="form-control" id="startDate" />
-				<label asp-for="StartDate"  class="control-label"></label>
+				<label asp-for="StartDate" class="control-label"></label>
 				<span asp-validation-for="StartDate" class="text-danger"></span>
 			</div>
 		</div>
@@ -38,8 +38,6 @@
 			</div>
 		</div>
 		<div class="w-100" style="margin:0px;"></div>
-
-		<div class="w-100" style="margin:0px;"></div>
 		<div class="col-md-6">
 			<div class="row">
 				<div class="form-group col-md">
@@ -58,14 +56,38 @@
 		</div>
 
 		<div class="w-100" style="margin:0px;"></div>
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<div class="form-floating my-4">
 				<textarea asp-for="Descripion" class="form-control" style="height: 100px" placeholder="Notes"></textarea>
 				<label asp-for="Descripion" class="control-label"></label>
 				<span asp-validation-for="Descripion" class="text-danger"></span>
 			</div>
 		</div>
-		@* Input for total number of active singers per chapter *@
+		<div class="w-100" style="margin:0px;"></div>
+		<div class="col-md-8" id="shift-container">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							Shift Date
+						</th>
+						<th>
+							Start Time
+						</th>
+						<th>
+							End Time
+						</th>
+						<th>
+							Volunteers Needed
+						</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="shift-tbody">
+				</tbody>
+			</table>
+			<button type="button" class="btn btn-primary" id="add-shift">Add Shift</button>
+		</div>
 
 	</div>
 	<partial name="_FormFooter" />
@@ -79,9 +101,38 @@
 	<script src="~/js/multiselect.js"></script>
 
 	<script>
-		
+		$(document).ready(function () {
+			$("#add-shift").click(function () {
+				var shiftCount = $("#shift-tbody .shift-row").length;
+				var startDate = $("#startDate").val();
+				var shiftHtml = `
+						<tr class="shift-row">
+						<td>
+						<input type="date" name="Shifts[${shiftCount}].ShiftDate" class="form-control" value="${startDate}" />
+						</td>
+						<td>
+						<input type="time" name="Shifts[${shiftCount}].StartAt" class="form-control" />
+						</td>
+						<td>
+						<input type="time" name="Shifts[${shiftCount}].EndAt" class="form-control" />
+						</td>
+						<td>
+						<input type="number" name="Shifts[${shiftCount}].VolunteersNeeded" class="form-control" />
+						</td>
+						<td>
+						<button type="button" class="btn btn-danger remove-shift">Remove</button>
+						</td>
+						</tr>`;
+				$("#shift-tbody").append(shiftHtml);
+			});
+
+			$(document).on("click", ".remove-shift", function () {
+				$(this).closest(".shift-row").remove();
+			});
+		});
+
 		$("form").submit(function (event) {
-			
+
 			var startDate = $("#startDate").val();
 			var endDate = $("#endDate").val();
 
@@ -89,7 +140,7 @@
 			var endDateObj = new Date(endDate);
 
 			if (startDateObj > endDateObj) {
-				
+
 				event.preventDefault();
 
 				alert("Start Date cannot be greater than End Date.");
@@ -107,10 +158,10 @@
 					document.getElementById('endDate').value = "2025-12-22";
 					document.getElementById('Name').value = "Sas Gift Wrapping - 2025";
 					document.getElementById('Location').value = "Midtown, Saskatoon";
+					document.getElementById('Descripion').value = "Test";
 					document.getElementById('availOptions').value = 4;
 				}
 			})
 		}
 	</script>
-
 }
