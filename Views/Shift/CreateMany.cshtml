@@ -80,8 +80,12 @@
 
 
 	</div>
-	<partial name="_FormFooter" />
-	<button type="submit" class="btn btn-primary">Create Shifts</button>
+	<div class="row form-footer">
+		<div class="form-group col-md-6">
+			<input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
+		</div>
+	</div>
+	
 </form>
 
 @section Scripts {
