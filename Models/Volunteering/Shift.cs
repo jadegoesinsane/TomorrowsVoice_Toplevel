@@ -1,7 +1,6 @@
 ﻿using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.ComponentModel.DataAnnotations;
 using TomorrowsVoice_Toplevel.Data;
-using TomorrowsVoice_Toplevel.Models.Messaging;
 
 namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
@@ -61,6 +60,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public Status Status { get; set; } = Status.Active;
 
 		[Display(Name = "Volunteers Needed")]
+		[Required(ErrorMessage = " Requires Volunteers.")]
+		[Range(1, int.MaxValue, ErrorMessage = "Volunteers needed must be greater than 0.")]
 		public int VolunteersNeeded { get; set; }
 
 		public int VolunteersLeft
@@ -90,21 +91,6 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public int EventID { get; set; }
 		public Event? Event { get; set; }
 		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
-
-		public void AddChat(TVContext context)
-		{
-			if (!context.Chats.Any(d => d.ID == ID))
-			{
-				Chat chat = new Chat
-				{
-					ID = ID,
-					Shift = this,
-					Title = $"Shift {ID}"
-				};
-				context.Chats.Add(chat);
-				context.SaveChanges();
-			}
-		}
 
 		public static explicit operator Shift(Task<Shift?> v)
 		{

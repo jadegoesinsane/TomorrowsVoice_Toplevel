@@ -17,7 +17,6 @@ using SQLitePCL;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
-using TomorrowsVoice_Toplevel.Models.Messaging;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Utilities;
@@ -550,10 +549,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						throw new InvalidOperationException("Cannot have work hours when marked as a No Show.");
 					}
 
-					if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
-					{
-						throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
-					}
+                    if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
+                    {
+                        throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
+                    }
 
 					if (enrollment != null)
 					{
@@ -564,7 +563,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							{
 								volunteer.totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount--;
-								volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
+								//volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
 							}
 						}
 						enrollment.NoShow = enrollmentVM.ShowOrNot;
@@ -578,7 +577,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							{
 								volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount++;
-								volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
+								//volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
 							}
 						}
 					}
@@ -607,9 +606,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		private void PopulateDropDown2(Shift? shift = null)
 		{
-			ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
+           // ViewData["EventID"] = new SelectList(_context.Events.OrderBy(e => e.Name), "ID", "Name");
+           ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
 
-			var statusList = Enum.GetValues(typeof(Status))
+            var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
 						 .Where(s => s == Status.Active || s == Status.Canceled || s == Status.Archived)
 						 .ToList();
@@ -617,81 +617,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewBag.StatusList = new SelectList(statusList);
 		}
 
-		public PartialViewResult GetMessages(int id, int volunteerID)
-		{
-			ViewBag.ShiftID = id;
-			if (volunteerID == 0) volunteerID = 1000;
-			ViewBag.volunteerID = volunteerID;
-			var messages = _context.Messages
-				.Where(m => m.ChatID == id)
-				.Include(m => m.User)
-				.Select(m => new MessageVM
-				{
-					Name = !string.IsNullOrEmpty(m.User.Nickname) ? m.User.Nickname : m.User.NameFormatted,
-					CreatedOn = m.CreatedOn,
-					Content = m.Content ?? string.Empty
-				})
-				.ToList();
-
-			return PartialView("_GetMessages", messages);
-			//var chat = _context.Chats.FirstOrDefault(c => c.ID == id);
-			//var messages = _context.Messages
-			//	.Where(m => m.ChatID == chat.ID)
-			//	.OrderBy(m => m.CreatedOn)
-			//	.ToList();
-			//var messageVMs = new List<MessageVM>();
-			//foreach (var message in messages)
-			//{
-			//	string name = "Unknown";
-
-			//	var volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == message.FromAccountID);
-			//	if (volunteer != null)
-			//	{
-			//		name = !string.IsNullOrEmpty(volunteer.Nickname) ? volunteer.Nickname : volunteer.NameFormatted;
-			//	}
-			//	else
-			//	{
-			//		var director = _context.Directors.FirstOrDefault(d => d.ID == message.FromAccountID);
-			//		if (director != null)
-			//		{
-			//			name = !string.IsNullOrEmpty(director.Nickname) ? director.Nickname : director.NameFormatted;
-			//		}
-			//	}
-
-			//	messageVMs.Add(new MessageVM
-			//	{
-			//		Content = message.Content,
-			//		CreatedOn = message.CreatedOn,
-			//		Name = name,
-			//		// Avatar = volunteer?.Avatar
-			//	});
-			//}
-			//return PartialView("_GetMessages", messageVMs);
-		}
-
-		public IActionResult SendMessage(int shiftID, int volunteerID, string content)
-		{
-			var chat = _context.Chats.FirstOrDefault(c => c.ID == shiftID);
-			if (chat == null)
-			{
-				chat = new Chat { ID = shiftID };
-				_context.Chats.Add(chat);
-				_context.SaveChanges();
-			}
-			Volunteer volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == volunteerID);
-			var message = new Message
-			{
-				ChatID = chat.ID,
-				FromAccountID = volunteerID,
-				Content = content,
-				User = volunteer
-			};
-
-			_context.Messages.Add(message);
-			_context.SaveChanges();
-
-			return RedirectToAction("Details", new { id = shiftID });
-		}
 
 		public JsonResult GetShiftData()
 		{
@@ -706,6 +631,119 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			};
 			return Json(data);
 		}
+
+        public IActionResult CreateMany()
+        {
+            Shift shift = new Shift();
+            
+
+            PopulateDropDown(shift);
+
+            return View();
+        }
+
+		// POST: Shift/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		// POST: Shift/Create
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> CreateMany([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, 
+												DateTime StartAt, DateTime EndAt, DateTime StartAt2, DateTime EndAt2, DateTime StartAt3, DateTime EndAt3)
+		{
+			try
+			{
+				
+				if (ModelState.IsValid)
+				{
+					var eventRecord = _context.Events
+								.FirstOrDefault(e => e.ID == shift.EventID);
+					if (eventRecord == null)
+					{
+						// If the event does not exist, handle the error
+						ModelState.AddModelError("", "Event not found.");
+						return View(shift);
+					}
+
+
+					// Creating shifts for each day in the event date range
+					var shiftsToCreate = new List<Shift>();
+					for (var date = eventRecord.StartDate; date <= eventRecord.EndDate; date = date.AddDays(1))
+					{
+						shiftsToCreate.Add(new Shift
+						{
+							ShiftDate = date,
+							StartAt = StartAt,
+							EndAt = EndAt,
+							EventID = shift.EventID
+							,VolunteersNeeded= shift.VolunteersNeeded
+						});
+						shiftsToCreate.Add(new Shift
+						{
+							ShiftDate = date,
+							StartAt = StartAt2,
+							EndAt = EndAt2,
+							EventID = shift.EventID,
+							VolunteersNeeded = shift.VolunteersNeeded
+						});
+						shiftsToCreate.Add(new Shift
+						{
+							ShiftDate = date,
+							StartAt = StartAt3,
+							EndAt = EndAt3,
+							EventID = shift.EventID,
+							VolunteersNeeded = shift.VolunteersNeeded
+						});
+					}
+
+					// Check for overlaps for the new shifts
+					foreach (var newShift in shiftsToCreate)
+					{
+						var sameshifts = _context.Shifts
+							.Where(r => r.ShiftDate == newShift.ShiftDate && r.EventID == newShift.EventID);
+
+						foreach (var existingShift in sameshifts)
+						{
+							// Overlap checking logic
+							if ((newShift.StartAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.StartAt.TimeOfDay > existingShift.StartAt.TimeOfDay) ||
+								(newShift.EndAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.EndAt.TimeOfDay > existingShift.StartAt.TimeOfDay))
+							{
+								throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+							}
+						}
+					}
+
+					// Save new shifts to the database
+					_context.AddRange(shiftsToCreate);
+					await _context.SaveChangesAsync();
+
+					AddSuccessToast("Shifts successfully created.");
+
+					return RedirectToAction("Index");
+				}
+			}
+			catch (DbUpdateException dex)
+			{
+				string message = dex.GetBaseException().Message;
+				if (message.Contains("overlapping shifts"))
+				{
+					ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
+				}
+				else if (message.Contains("Event range"))
+				{
+					ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range..");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+				}
+			}
+
+			PopulateDropDown(shift);
+		
+			return View(shift);
+		}
+
 
 		private bool ShiftExists(int id)
 		{

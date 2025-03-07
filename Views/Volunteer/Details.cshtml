@@ -8,17 +8,17 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>@Model.NameFormatted</h1>
 
-<div>
-    <h4>@Model.NameFormatted</h4>
+@* <div>
+    <h4></h4>
     <hr />
-</div>
+</div> *@
 
 
 
 <div>
-    <nav>
+@*     <nav>
         <div class="nav nav-pills" id="myTabs" role="tablist">
             <button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
                     type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
@@ -29,7 +29,7 @@
                 Shifts
             </button>
         </div>
-    </nav>
+    </nav> *@
 
 
 
@@ -37,7 +37,7 @@
         <div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
             <br />
                 <dl class="row">
-                    <dt class = "col-sm-2">
+@*                      <dt class = "col-sm-2">
                         @Html.DisplayNameFor(model => model.FirstName)
                     </dt>
                     <dd class = "col-sm-10">
@@ -54,67 +54,80 @@
                     </dt>
                     <dd class = "col-sm-10">
                         @Html.DisplayFor(model => model.LastName)
-                    </dd>
-                    <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.Email)
-                    </dt>
-                    <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.Email)
-                    </dd>
-                    <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.Phone)
-                    </dt>
-                    <dd class = "col-sm-10">
-                        <a href="tel: ">@Html.DisplayFor(model=>model.PhoneFormatted)</a>
-                    </dd>
-                    <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.HoursVolunteered)
-                    </dt>
-                    <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.HoursVolunteered)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.ParticipationCount)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.ParticipationCount)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.absences)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.absences)
-                    </dd>
-                   
+                    </dd>  *@
+                    <div class="col-sm-2">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Email)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Email)
+                        </dd>
+                    </div>
+                    <div class="col-sm-10">
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(model => model.Phone)
+                        </dt>
+                        <dd class="col-sm-10">
+                            <a href="tel: ">@Html.DisplayFor(model => model.PhoneFormatted)</a>
+                        </dd>
+                    </div>
                 </dl>
+                <dl class="row">
+                    <div class="col-sm-2">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.HoursVolunteered)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.HoursVolunteered)
+                        </dd>
+                    </div>
+                    <div class="col-sm-2">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ParticipationCount)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.ParticipationCount)
+                        </dd>
+                    </div>
+                    <div class="col-sm-2">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.absences)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.absences)
+                        </dd>
+                    </div>
 
+                 </dl>
     
         </div>
-        <div class="tab-pane fade ml-3" role="tabpanel" id="ShiftsPanel" aria-labelledby="Shifts-tab">
-            <br />
+        <hr/>
+        <div id="ShiftsPanel">
+            @* @Html.Partial("ListOfShiftDetails", "Volunteer", new {id=Model}) *@
         </div>
-    <div>
 
-            <div>
+@*         <div class="tab-pane fade ml-3" role="tabpanel" id="ShiftsPanel" aria-labelledby="Shifts-tab">
+        <br />*@
+        </div> 
+
 
 
  <div>
-
-     
-
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
                     <partial name="_BackToList" />
-
 </div>
+
 @section Scripts {
     <script type="text/javascript">
-        $('.nav-link').click(function () {
+        @* $('.nav-link').click(function () {
             var activeTab = $(this).attr("id");
             switch (activeTab) {
                 case 'Shifts-Tab': $('#ShiftsPanel').load('/Volunteer/ListOfShiftDetails/@Model.ID');
                     break;
                 default: break;
             };
-        })
+        }) *@
+
+                $('#ShiftsPanel').load('/Volunteer/ListOfShiftDetails/@Model.ID');
     </script>
-}
+} 
