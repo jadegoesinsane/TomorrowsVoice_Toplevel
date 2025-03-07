@@ -158,7 +158,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 return NotFound();
             }
 
-            populateLists();
+         
 
             return View(shift);
         }
