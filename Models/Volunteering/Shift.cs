@@ -31,6 +31,9 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public String DateFormat => ShiftDate.ToString("dddd, MMMM d");
 		public String TimeSummary => $"{DateFormat} ⋅ {TimeFormat}";
 
+		[DisplayFormat(NullDisplayText = "(No title)")]
+		public string? Title { get; set; }
+
 		[Display(Name = "Date")]
 		[Required(ErrorMessage = "Please select a date for this Shift")]
 		[DataType(DataType.Date)]
