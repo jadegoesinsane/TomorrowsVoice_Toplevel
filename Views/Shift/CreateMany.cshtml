@@ -5,6 +5,7 @@
 
 }
 <partial name="_ViewHeading" />
+<p>Create three schedules for each day of the event( morning, afternoon, and evening).</p>
 <form asp-action="CreateMany" class="form-container" method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
@@ -17,117 +18,139 @@
 		</div>
 		<div class="w-100" style="margin:0px;"></div>
 
-		<div class="col-md-3">
-			<div class="form-floating required ">
-
-				<input asp-for="VolunteersNeeded" class="form-control" />
-				<label asp-for="VolunteersNeeded" class="control-label"></label>
-				<span asp-validation-for="VolunteersNeeded" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-3">
-		</div>
+		
+		
 		<div class="w-100" style="margin:0px;"></div>
 
 		<div class="w-100" style="margin:10px;"></div>
 
 
-		<div class="col-md-3">
-			<div class="form-floating required">
-				<input type="time" name="StartAt" class="form-control" required />
-				<label for="StartAt" class="control-label">Start Time for Shift 1</label>
-				
-			</div>
-		</div>
-		<div class="col-md-3">
-			<div class="form-floating required">
-				<input type="time" name="EndAt" class="form-control" required />
-				<label for="EndAt" class="control-label">End Time for Shift 1</label>
-				
-			</div>
-		</div>
-		<div class="w-100" style="margin:10px;"></div>
-		<div class="col-md-3">
-			<div class="form-floating required">
-				<input type="time" name="StartAt2" class="form-control" required />
-				<label for="StartAt2" class="control-label">Start Time for Shift 2</label>
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="time" name="StartAt" class="form-control" required />
+                <label for="StartAt" class="control-label">Start Time for Morning Shift </label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="time" name="EndAt" class="form-control" required />
+                <label for="EndAt" class="control-label">End Time for Morning Shift</label>
+            </div>
+        </div>
 
-			</div>
-		</div>
-		<div class="col-md-3">
-			<div class="form-floating required">
-				<input type="time" name="EndAt2" class="form-control" required />
-				<label for="EndAt2" class="control-label">End Time for Shift 2</label>
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="number" class="form-control" id="VolunteersNeeded" name="VolunteersNeeded" min="1" required />
+                <label for="VolunteersNeeded" class="control-label">Volunteers Needed</label>
+            </div>
+        </div>
 
-			</div>
-		</div>
-		<div class="w-100" style="margin:10px;"></div>
-		<div class="col-md-3">
-			<div class="form-floating required">
-				<input type="time" name="StartAt3" class="form-control" required />
-				<label for="StartAt3" class="control-label">Start Time for Shift 3</label>
+        <div class="w-100" style="margin:10px;"></div>
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="time" name="StartAt2" class="form-control" required />
+                <label for="StartAt2" class="control-label">Start Time for Afternoon Shift</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="time" name="EndAt2" class="form-control" required />
+                <label for="EndAt2" class="control-label">End Time for Afternoon Shift </label>
+            </div>
+        </div>
 
-			</div>
-		</div>
-		<div class="col-md-3">
-			<div class="form-floating required">
-				<input type="time" name="EndAt3" class="form-control" required />
-				<label for="EndAt3" class="control-label">End Time for Shift 3</label>
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="number" class="form-control" id="VolunteersNeeded2" name="VolunteersNeeded2" min="1" required />
+                <label for="VolunteersNeeded2" class="control-label">Volunteers Needed</label>
+            </div>
+        </div>
 
-			</div>
-		</div>
+        <div class="w-100" style="margin:10px;"></div>
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="time" name="StartAt3" class="form-control" required />
+                <label for="StartAt3" class="control-label">Start Time for Evening Shift </label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="time" name="EndAt3" class="form-control" required />
+                <label for="EndAt3" class="control-label">End Time for Evening Shift</label>
+            </div>
+        </div>
 
+        <div class="col-md-3">
+            <div class="form-floating required">
+                <input type="number" class="form-control" id="VolunteersNeeded3" name="VolunteersNeeded3" min="1" required />
+                <label for="VolunteersNeeded3" class="control-label">Volunteers Needed</label>
+            </div>
+        </div>
+    </div>
 
-
-	</div>
-	<div class="row form-footer">
-		<div class="form-group col-md-6">
-			<input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
-		</div>
-	</div>
-	
+    <div class="row form-footer">
+        <div class="form-group col-md-6">
+            <input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
+        </div>
+    </div>
 </form>
 
 @section Scripts {
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
+    <script>
+        $(document).ready(function () {
+            // Set default time values
+            $("input[name='StartAt']").val("10:00");
+            $("input[name='EndAt']").val("14:00");
 
-	<script src="~/js/multiselect.js"></script>
+            $("input[name='StartAt2']").val("14:00");
+            $("input[name='EndAt2']").val("18:00");
 
-	<script>
+            $("input[name='StartAt3']").val("18:00");
+            $("input[name='EndAt3']").val("21:00");
 
-		$("form").submit(function (event) {
+            // Set default Volunteers Needed values
+            $("input[name='VolunteersNeeded']").val(4);
+            $("input[name='VolunteersNeeded2']").val(5);
+            $("input[name='VolunteersNeeded3']").val(5);
+        });
 
-			var startAt = $("#StartAt").val();
-			var endAt = $("#EndAt").val();
+        $("form").submit(function (event) {
+            var startAt = $("input[name='StartAt']").val();
+            var endAt = $("input[name='EndAt']").val();
+            var startAt2 = $("input[name='StartAt2']").val();
+            var endAt2 = $("input[name='EndAt2']").val();
+            var startAt3 = $("input[name='StartAt3']").val();
+            var endAt3 = $("input[name='EndAt3']").val();
+
+            // Check if any Start time is greater than End time
+            if (startAt > endAt) {
+                event.preventDefault();
+                alert("Morning shift: Start time cannot be later than End time.");
+                return false;
+            }
+
+            if (startAt2 > endAt2) {
+                event.preventDefault();
+                alert("Afternoon shift: Start time cannot be later than End time.");
+                return false;
+            }
+
+            if (startAt3 > endAt3) {
+                event.preventDefault();
+                alert("Evening shift: Start time cannot be later than End time.");
+                return false;
+            }
+        });
+    </script>
 
 
-			if (startAt > endAt) {
-
-					event.preventDefault();
-
-
-					alert("Start time cannot be later than End time.");
-				}
-
-		});
-	</script>
-
-	<script type="text/javascript">
-		function fillFields() {
-			$.ajax({
-				url: '@Url.Action("GetShiftData", "Shift")',
-				type: 'GET',
-				success: function (data) {
-					document.getElementById('ShiftDate').value = "2025-11-30"
-					document.getElementById('StartAt').value = "10:00";
-					document.getElementById('EndAt').value = "14:00";
-					document.getElementById('VolunteersNeeded').value = 5;
-					document.getElementById('EventID').value = 5;
-				}
-			})
-		}
-	</script>
 
 }
+
+
+
+
+
