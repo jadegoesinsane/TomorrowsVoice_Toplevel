@@ -68,6 +68,7 @@
 		<div class="col-md-8">
 			<div id='timetable' style="height: 100%; width: 100%;"></div>
 		</div>
+		<div id="tooltip" class="row g-2">My tooltip</div>
 	</div>
 	<partial name="_FormFooter" />
 </form>
@@ -78,11 +79,18 @@
 	}
 
 	<script src="~/js/multiselect.js"></script>
-	<script src="~/js/shiftTimeTable.js"></script>
-	<script>
+	<script src="~/js/shiftTimeTable.js" type="module"></script>
+	<script type="text/javascript">
+		function rangeCheck() {
+    calendar.setOption('validRange', {
+        start: document.getElementById('startDate').value,
+        end: document.getElementById('endDate').value
+    });
+}
+
 		$("form").submit(function (event) {
 			document.getElementById('shiftsJson').value = JSON.stringify(calendar.getEvents());
-
+			console.log(calendar.getEvents());
 			var startDate = $("#startDate").val();
 			var endDate = $("#endDate").val();
 
@@ -112,6 +120,30 @@
 					document.getElementById('availOptions').value = 4;
 				}
 			})
+				calendar.setOption('validRange', {
+					start: "2025-11-30",
+					end: "2025-12-22"
+				});
+			
 		}
 	</script>
 }
+<style>
+	#tooltip {
+		width: 30%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: #fcfcfc;
+		color: black;
+		font-weight: bold;
+		padding: 5px;
+		border-radius: 4px;
+		font-size: 90%;
+		z-index: 1000 !important;	
+		display: none;
+	}
+	.form-floating > .control-label {
+		top: 9px;
+	}
+</style>

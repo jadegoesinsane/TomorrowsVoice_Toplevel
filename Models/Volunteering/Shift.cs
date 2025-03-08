@@ -34,6 +34,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		[DisplayFormat(NullDisplayText = "(No title)")]
 		public string? Title { get; set; }
 
+		public string Colour { get; set; } = "#467ECE";
+
 		[Display(Name = "Date")]
 		[Required(ErrorMessage = "Please select a date for this Shift")]
 		[DataType(DataType.Date)]

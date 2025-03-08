@@ -4,28 +4,21 @@
 	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
 
 }
-@{
-    ViewData["Title"] = "Edit";
-}
-
-<h1>Edit</h1>
-
-<h4>Event</h4>
-<hr />
-
+<partial name="_ViewHeading" />
 <form asp-action="Edit" class="form-container" method="post" enctype="multipart/form-data">
+	<input type="hidden" id="shiftsJson" name="Shifts" />
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
 		<div class="col-md-3">
 			<div class="form-floating required">
-				<input asp-for="StartDate" max="9999-12-12" class="form-control" id="startDate" />
+				<input asp-for="StartDate" max="9999-12-12" class="form-control" id="startDate" onchange="rangeCheck()" />
 				<label asp-for="StartDate" class="control-label"></label>
 				<span asp-validation-for="StartDate" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="form-floating required">
-				<input asp-for="EndDate" id="endDate" class="form-control" max="9999-12-12" />
+				<input asp-for="EndDate" id="endDate" class="form-control" max="9999-12-12" onchange="rangeCheck()" />
 				<label asp-for="EndDate" class="control-label"></label>
 				<span asp-validation-for="EndDate" class="text-danger"></span>
 			</div>
@@ -46,10 +39,6 @@
 			</div>
 		</div>
 		<div class="w-100" style="margin:0px;"></div>
-
-
-
-		<div class="w-100" style="margin:0px;"></div>
 		<div class="col-md-6">
 			<div class="row">
 				<div class="form-group col-md">
@@ -68,29 +57,71 @@
 		</div>
 
 		<div class="w-100" style="margin:0px;"></div>
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<div class="form-floating my-4">
 				<textarea asp-for="Descripion" class="form-control" style="height: 100px" placeholder="Notes"></textarea>
 				<label asp-for="Descripion" class="control-label"></label>
 				<span asp-validation-for="Descripion" class="text-danger"></span>
 			</div>
 		</div>
-		@* Input for total number of active singers per chapter *@
-
+		<div class="w-100" style="margin:0px;"></div>
+		<div class="col-md-8">
+			<div id='timetable' style="height: 100%; width: 100%;"></div>
+		</div>
+		<div id="tooltip" class="row g-2">My tooltip</div>
 	</div>
 	<partial name="_FormFooter" />
 </form>
 
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 
-    <script src="~/js/multiselect.js"></script>
-
+	<script src="~/js/multiselect.js"></script>
+	<script src="~/js/shiftTimeTable.js" type="module"></script>
 	<script>
+		function loadShifts(id) {
+			fetch(`/Event/GetShifts?id=${id}`)
+				.then(response => response.json())
+				.then(shifts => {
+					console.log('Shifts: ', shifts);
+					shifts.forEach(shift => {
+						calendar.addEvent({
+							id: shift.id,
+							title: shift.title,
+							start: shift.start,
+							end: shift.end,
+							allDay: shift.allDay,
+							backgroundColor: shift.backgroundColor,
+							borderColor: shift.borderColor,
+							extendedProps: {
+								volunteersNeeded: shift.volunteersNeeded,
+								daysOfWeek: shift.daysOfWeek
+							}
+						});
+					});
+				})
+				.catch(error => console.error('Error loading shifts:', error));
+		}
+		document.addEventListener('DOMContentLoaded', function () {
+			loadShifts(@ViewBag.ID);
+			console.log(calendar.getEvents());
+		});
+
+	</script>
+	<script type="text/javascript">
+
+		function rangeCheck() {
+			calendar.setOption('validRange', {
+				start: document.getElementById('startDate').value,
+				end: document.getElementById('endDate').value
+			});
+		}
 
 		$("form").submit(function (event) {
-
+			document.getElementById('shiftsJson').value = JSON.stringify(calendar.getEvents());
+			console.log(calendar.getEvents());
 			var startDate = $("#startDate").val();
 			var endDate = $("#endDate").val();
 
@@ -105,4 +136,46 @@
 			}
 		});
 	</script>
+
+	<script type="text/javascript">
+		function fillFields() {
+			$.ajax({
+				url: '@Url.Action("GetEventData", "Event")',
+				type: 'GET',
+				success: function (data) {
+					document.getElementById('startDate').value = "2025-11-30"
+					document.getElementById('endDate').value = "2025-12-22";
+					document.getElementById('Name').value = "Sas Gift Wrapping - 2025";
+					document.getElementById('Location').value = "Midtown, Saskatoon";
+					document.getElementById('Descripion').value = "Test";
+					document.getElementById('availOptions').value = 4;
+				}
+			})
+			calendar.setOption('validRange', {
+				start: "2025-11-30",
+				end: "2025-12-22"
+			});
+
+		}
+	</script>
 }
+<style>
+	#tooltip {
+		width: 30%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: #fcfcfc;
+		color: black;
+		font-weight: bold;
+		padding: 5px;
+		border-radius: 4px;
+		font-size: 90%;
+		z-index: 1000 !important;
+		display: none;
+	}
+
+	.form-floating > .control-label {
+		top: 9px;
+	}
+</style>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.IdentityModel.Tokens;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -156,6 +157,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							ShiftDate = DateTime.Parse(shiftJson.Start).Date,
 							StartAt = DateTime.Parse(shiftJson.Start),
 							EndAt = DateTime.Parse(shiftJson.End),
+							Colour = string.IsNullOrEmpty(shiftJson.BackgroundColor) ? "#467ECE" : shiftJson.BackgroundColor,
 							VolunteersNeeded = shiftJson.ExtendedProps.VolunteersNeeded
 						});
 					}
@@ -197,12 +199,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var @event = await _context.Events
 			  .Include(g => g.CityEvents).ThenInclude(e => e.City)
+			  .Include(e => e.Shifts)
 			  .FirstOrDefaultAsync(m => m.ID == id);
 			if (@event == null)
 			{
 				return NotFound();
 			}
-
+			ViewBag.ID = @event.ID;
 			PopulateAssignedEnrollmentData(@event);
 			return View(@event);
 		}
@@ -212,7 +215,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, string[] selectedOptions)
+		public async Task<IActionResult> Edit(int id, string[] selectedOptions, string Shifts)
 		{
 			var @eventToUpdate = await _context.Events
 			  .Include(g => g.CityEvents).ThenInclude(e => e.City)
@@ -223,6 +226,26 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 			UpdateEnrollments(selectedOptions, @eventToUpdate);
+
+
+			var shifts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShiftJson>>(Shifts);
+			if (shifts != null)
+			{
+				eventToUpdate.Shifts.Clear();
+				foreach (var shiftJson in shifts)
+				{
+					@eventToUpdate.Shifts.Add(new Shift
+					{
+						Title = shiftJson.Title,
+						ShiftDate = DateTime.Parse(shiftJson.Start).Date,
+						StartAt = DateTime.Parse(shiftJson.Start),
+						EndAt = DateTime.Parse(shiftJson.End),
+						Colour = shiftJson.BackgroundColor,
+						VolunteersNeeded = shiftJson.ExtendedProps.VolunteersNeeded
+					});
+				}
+			}
+			
 			// Try updating with posted values
 			if (await TryUpdateModelAsync<Event>(@eventToUpdate,
 					"",
@@ -374,97 +397,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(events);
 		}
 
-		public async Task<IActionResult> GetShifts()
+		[HttpGet]
+		public async Task<IActionResult> GetShifts(int id)
 		{
 			var shifts = await _context.Shifts
-				.Include(s => s.Event)
-				.Select(s => new
-				{
-					id = s.ID,
-					groupId = s.EventID,
-					title = $"{s.TimeFormat}",
-					start = $"{s.ShiftDate.ToString("yyyy-MM-dd")}{s.StartAt.ToString("THH:mm:ss")}",
-					end = $"{s.ShiftDate.ToString("yyyy-MM-dd")}{s.EndAt.ToString("THH:mm:ss")}",
-					display = "list-item",
-					borderColor =
-					s.EventID == 1 ? "#bc3700" : // light red
-					s.EventID == 2 ? "#cc351e" : // dark red
-					s.EventID == 3 ? "#00863e" : // light green
-					s.EventID == 4 ? "#005d1f" : // dark green
-					s.EventID == 5 ? "#856288" : // light purple
-					s.EventID == 6 ? "#523256" : // dark purple
-					s.EventID == 7 ? "#0176ad" : // light blue
-					s.EventID == 8 ? "#035083" : // dark blue
-					s.EventID == 9 ? "#222bff" : // really bright blue
-					s.EventID == 10 ? "#8325f2" : // really bright purple
-					s.EventID == 11 ? "#cc326d" : // dark pink
-					s.EventID == 12 ? "#a15c80" : // light pink
-					"#fff",
-					textColor =
-					s.EventID == 1 ? "#bc3700" : // light red
-					s.EventID == 2 ? "#cc351e" : // dark red
-					s.EventID == 3 ? "#00863e" : // light green
-					s.EventID == 4 ? "#005d1f" : // dark green
-					s.EventID == 5 ? "#856288" : // light purple
-					s.EventID == 6 ? "#523256" : // dark purple
-					s.EventID == 7 ? "#0176ad" : // light blue
-					s.EventID == 8 ? "#035083" : // dark blue
-					s.EventID == 9 ? "#222bff" : // really bright blue
-					s.EventID == 10 ? "#8325f2" : // really bright purple
-					s.EventID == 11 ? "#cc326d" : // dark pink
-					s.EventID == 12 ? "#a15c80" : // light pink
-					"#fff",
-					url = Url.Action("Details", "Shift", new { id = s.ID })
-				})
+				.Where(s => s.EventID == id)
 				.ToListAsync();
-			return Json(shifts);
-		}
 
-		public async Task<IActionResult> GetEvents()
-		{
-			var events = await _context.Events
-				.Include(e => e.Shifts)
-				.Select(e => new
-				{
-					id = e.ID,
-					groupId = e.ID,
-					title = e.Name,
-					start = $"{e.StartDate.ToString("yyyy-MM-dd")}{e.StartDate.ToString("THH:mm:ss")}",
-					end = $"{e.EndDate.AddDays(1).ToString("yyyy-MM-dd")}{e.EndDate.ToString("THH:mm:ss")}",
-					display = "block",
-					textColor = "white",
-					borderColor =
-					e.ID == 1 ? "#bc3700" : // light red
-					e.ID == 2 ? "#cc351e" : // dark red
-					e.ID == 3 ? "#00863e" : // light green
-					e.ID == 4 ? "#005d1f" : // dark green
-					e.ID == 5 ? "#856288" : // light purple
-					e.ID == 6 ? "#523256" : // dark purple
-					e.ID == 7 ? "#0176ad" : // light blue
-					e.ID == 8 ? "#035083" : // dark blue
-					e.ID == 9 ? "#222bff" : // really bright blue
-					e.ID == 10 ? "#8325f2" : // really bright purple
-					e.ID == 11 ? "#cc326d" : // dark pink
-					e.ID == 12 ? "#a15c80" : // light pink
-					"#fff",
-					backgroundColor =
-					e.ID == 1 ? "#bc3700" : // light red
-					e.ID == 2 ? "#cc351e" : // dark red
-					e.ID == 3 ? "#00863e" : // light green
-					e.ID == 4 ? "#005d1f" : // dark green
-					e.ID == 5 ? "#856288" : // light purple
-					e.ID == 6 ? "#523256" : // dark purple
-					e.ID == 7 ? "#0176ad" : // light blue
-					e.ID == 8 ? "#035083" : // dark blue
-					e.ID == 9 ? "#222bff" : // really bright blue
-					e.ID == 10 ? "#8325f2" : // really bright purple
-					e.ID == 11 ? "#cc326d" : // dark pink
-					e.ID == 12 ? "#a15c80" : // light pink
-					"#fff",
-					url = Url.Action("Details", "Event", new { id = e.ID })
-				})
-				.ToListAsync();
-			return Json(events);
+			return Json(shifts);
 		}
 
 		private void PopulateAssignedEnrollmentData(Event abc)
