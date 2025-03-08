@@ -213,10 +213,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			catch (DbUpdateException dex)
 			{
 				string message = dex.GetBaseException().Message;
-				if (message.Contains("UNIQUE") && message.Contains("volunteer.Email"))
+				if (message.Contains("UNIQUE") && message.Contains("Email"))
 				{
 					ModelState.AddModelError("", "Unable to save changes. Remember, " +
-						"you cannot have duplicate Name and Email.");
+						"you cannot have duplicate Email.");
 				}
 				else
 				{

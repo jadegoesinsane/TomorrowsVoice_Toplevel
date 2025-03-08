@@ -80,7 +80,7 @@
                                     @if (item.Status != Status.Archived)
                                     {
                                         <a asp-controller="Shift" asp-action="Index" asp-route-EventID="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
-                                           role="button" data-bs-toggle="tooltip" Details">
+                                           role="button" data-bs-toggle="tooltip" title="Details">
                                             <i class="bi bi-search"></i>
                                         </a>
                                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
