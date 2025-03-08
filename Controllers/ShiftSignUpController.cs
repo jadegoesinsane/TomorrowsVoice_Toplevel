@@ -25,12 +25,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
         // GET: ShiftSignUp
         public async Task<IActionResult> Index(
-            string? SearchString, 
-            int? CityID, 
-            string? actionButton, 
-            int? page, 
-            int? pageSizeID, 
-            DateTime StartDate, 
+            string? SearchString,
+            int? CityID,
+            string? actionButton,
+            int? page,
+            int? pageSizeID,
+            DateTime StartDate,
             DateTime EndDate,
             string sortDirection = "asc",
             string sortField = "Date"
@@ -69,15 +69,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 .Where(s => s.Status != Status.Archived && s.VolunteersNeeded > s.UserShifts.Count())
                 .Where(a => a.StartAt >= StartDate && a.StartAt <= EndDate)
                 .AsNoTracking();
-                //.GroupBy(s => s.ShiftDate)
-                //.Select(g => g.OrderBy(s => s.ID).First())
-                
+            //.GroupBy(s => s.ShiftDate)
+            //.Select(g => g.OrderBy(s => s.ID).First())
+
 
             // Filters
             if (CityID.HasValue)
             {
-				shifts = shifts.Where(s => s.Event.CityEvents.Any(ce => ce.CityID == CityID));
-				numFilters++;
+                shifts = shifts.Where(s => s.Event.CityEvents.Any(ce => ce.CityID == CityID));
+                numFilters++;
             }
             if (!String.IsNullOrEmpty(SearchString))
             {
@@ -137,40 +137,34 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: ShiftSignUp/Details/5
-        public async Task<IActionResult> Details(int? shiftId, int? volunteerId)
+        public async Task<IActionResult> Details(int? id)
         {
-            if (shiftId == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-
-            ViewData["VolunteerID"] = volunteerId;
-            var volunteer = await _context.Volunteers
-                
-                .FirstOrDefaultAsync(m => m.ID == volunteerId);
-
             var shift = await _context.Shifts
                 .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.ID == shiftId);
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (shift == null)
             {
                 return NotFound();
             }
 
-         
+            populateLists();
 
             return View(shift);
         }
 
-        public async Task <IActionResult> DateShift(DateTime date, int? page, int? pageSizeID)
+        public async Task<IActionResult> DateShift(DateTime date, int? page, int? pageSizeID)
         {
             //var shift = _context.Shifts.Where(s => s.ID == id).FirstOrDefault();
             //var date = shift.ShiftDate;
 
             var shifts = _context.Shifts
                 .Include(s => s.Event).Include(s => s.UserShifts)
-                .Where(s=>s.ShiftDate == date && s.Status == Status.Active && s.VolunteersNeeded > s.UserShifts.Count());
+                .Where(s => s.ShiftDate == date && s.Status == Status.Active && s.VolunteersNeeded > s.UserShifts.Count());
 
             ViewData["Date"] = date.ToLongDateString();
 
@@ -185,13 +179,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [HttpPost]
         [Route("ShiftSignUp/Details/{shiftID}/{volID}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Details(int shiftID, int volunteerId)
+        public async Task<IActionResult> Details(int shiftID, int volID)
         {
-
-
             var userShift = new UserShift
             {
-                UserID = volunteerId,
+                UserID = volID,
                 ShiftID = shiftID
             };
 
@@ -210,52 +202,40 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(shift);
         }
 
-        [HttpPost]
-        [Route("ShiftSignUp/Test/{shiftID}/{volID}")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> VolunteerShifts(int shiftID, int volID)
-        {
+        //[HttpPost]
+        //[Route("ShiftSignUp/Test/{shiftID}/{volID}")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> VolunteerShifts(int shiftID, int volID)
+        //{
+        //    // create new volunteer signup
+        //    var userShift = new UserShift
+        //    {
+        //        UserID = volID,
+        //        ShiftID = shiftID
+        //    };
 
-            bool userShiftExists = _context.UserShifts
-         .Any(us => us.UserID == volID && us.ShiftID == shiftID);
-
-            if (userShiftExists)
-            {
-               
-                TempData["ErrorMessage"] = "This volunteer is already signed up for this shift.";
-
-               
-                return RedirectToAction("Details", "ShiftSignUp", new { volunteerId = volID, shiftID = shiftID });
-            }
-            // create new volunteer signup
-            var userShift = new UserShift
-            {
-                UserID = volID,
-                ShiftID = shiftID
-            };
-
-            // get date for success toast
-            string date = _context.Shifts.Where(s=>s.ID == shiftID).Select(s => s.StartAt.ToLongDateString()).FirstOrDefault();
-            // get name for success toast
-            string name = _context.Volunteers.Where(v => v.ID == volID).Select(v => v.NameFormatted).FirstOrDefault();
-            // get event for success toast
-            int eventID = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.EventID).FirstOrDefault();
-            string event_ = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault() ;
+        //    // get date for success toast
+        //    string date = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.StartAt.ToLongDateString()).FirstOrDefault();
+        //    // get name for success toast
+        //    string name = _context.Volunteers.Where(v => v.ID == volID).Select(v => v.NameFormatted).FirstOrDefault();
+        //    // get event for success toast
+        //    int eventID = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.EventID).FirstOrDefault();
+        //    string event_ = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault();
 
 
-            try
-            {
-                _context.Add(userShift);
-                await _context.SaveChangesAsync();
-                AddSignUpToast(date, name, event_);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
-            }
+        //    try
+        //    {
+        //        _context.Add(userShift);
+        //        await _context.SaveChangesAsync();
+        //        AddSignUpToast(date, name, event_);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
+        //    }
 
-            return RedirectToAction($"Details", "Volunteer", new { id = volID });
-        }
+        //    return RedirectToAction($"Details", "Volunteer", new { id = volID });
+        //}
 
 
         private SelectList CitySelectList()
@@ -269,7 +249,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         {
             return new SelectList(_context
                 .Volunteers
-                .OrderBy(v=>v.LastName), "ID", "NameFormatted");
+                .OrderBy(v => v.LastName), "ID", "NameFormatted");
         }
 
         public void populateLists()
@@ -277,117 +257,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
             ViewData["VolunteerID"] = VolunteerSelectList();
             ViewData["CityID"] = CitySelectList();
         }
-
-        //// GET: ShiftSignUp/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["EventID"] = new SelectList(_context.Events, "ID", "ID");
-        //    return View();
-        //}
-
-        //// POST: ShiftSignUp/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("ID,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(shift);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["EventID"] = new SelectList(_context.Events, "ID", "ID", shift.EventID);
-        //    return View(shift);
-        //}
-
-        //// GET: ShiftSignUp/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var shift = await _context.Shifts.FindAsync(id);
-        //    if (shift == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["EventID"] = new SelectList(_context.Events, "ID", "ID", shift.EventID);
-        //    return View(shift);
-        //}
-
-        //// POST: ShiftSignUp/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("ID,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift)
-        //{
-        //    if (id != shift.ID)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(shift);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ShiftExists(shift.ID))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["EventID"] = new SelectList(_context.Events, "ID", "ID", shift.EventID);
-        //    return View(shift);
-        //}
-
-        //// GET: ShiftSignUp/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var shift = await _context.Shifts
-        //        .Include(s => s.Event)
-        //        .FirstOrDefaultAsync(m => m.ID == id);
-        //    if (shift == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(shift);
-        //}
-
-        //// POST: ShiftSignUp/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var shift = await _context.Shifts.FindAsync(id);
-        //    if (shift != null)
-        //    {
-        //        _context.Shifts.Remove(shift);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
 
         private bool ShiftExists(int id)
         {
