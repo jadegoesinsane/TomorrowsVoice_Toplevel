@@ -79,8 +79,11 @@
 	}
 
 	<script src="~/js/multiselect.js"></script>
+	<script type="text/javascript">
+		var id = @ViewBag.ID;
+	</script>
 	<script src="~/js/shiftTimeTable.js" type="module"></script>
-	<script>
+	@* <script>
 		function loadShifts(id) {
 			fetch(`/Event/GetShifts?id=${id}`)
 				.then(response => response.json())
@@ -109,7 +112,7 @@
 			console.log(calendar.getEvents());
 		});
 
-	</script>
+	</script> *@
 	<script type="text/javascript">
 
 		function rangeCheck() {
@@ -121,7 +124,6 @@
 
 		$("form").submit(function (event) {
 			document.getElementById('shiftsJson').value = JSON.stringify(calendar.getEvents());
-			console.log(calendar.getEvents());
 			var startDate = $("#startDate").val();
 			var endDate = $("#endDate").val();
 

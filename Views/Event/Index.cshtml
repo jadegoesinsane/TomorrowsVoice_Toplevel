@@ -137,14 +137,37 @@
                                                         if (shift.VolunteersLeft <= 0)
                                                         {
                                                             <tr style="color: #6c757d !important;">
-                                                                <td><a style="color: #6c757d !important; font-weight:normal !important;">@shift.StartAt.ToString("hh:mm tt") - @shift.EndAt.ToString("hh:mm tt")</a></td>
+                                                                <td></td>
+                                                                <td><span style="color: @shift.BackgroundColor; font-weight:900;">|</span>
+                                                                <a style="color: #6c757d !important; font-weight:normal !important;">@shift.TimeFormat</a></td>
+                                                               
+                                                                    @if (string.IsNullOrEmpty(shift.Title))
+                                                                    {
+                                                                        <td>(no title)</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td>@shift.Title</td>
+                                                                    }
+                                                                
                                                                 <td>@shift.VolunteersLeft</td>
                                                             </tr>
                                                         }
                                                         else
                                                         {
                                                             <tr>
-                                                                <td><a asp-action="Details" asp-route-id="@shift.ID" asp-controller="Shift" style="font-weight:normal !important;">@shift.StartAt.ToString("hh:mm tt") - @shift.EndAt.ToString("hh:mm tt")</a></td>
+                                                            <td></td>
+                                                                <td>
+                                                                <span style="color: @shift.BackgroundColor; font-weight:900;">|</span>
+                                                                <a asp-action="Details" asp-route-id="@shift.ID" asp-controller="Shift" style="font-weight:normal !important;">@shift.TimeFormat</a></td>
+                                                                @if (string.IsNullOrEmpty(shift.Title))
+                                                                {
+                                                                    <td style="color: #6c757d !important;">(no title)</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td>@shift.Title</td>
+                                                                }
                                                                 <td>@shift.VolunteersLeft</td>
                                                             </tr>
                                                         }

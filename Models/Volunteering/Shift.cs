@@ -31,10 +31,19 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public String DateFormat => ShiftDate.ToString("dddd, MMMM d");
 		public String TimeSummary => $"{DateFormat} ⋅ {TimeFormat}";
 
+		[StringLength(55)]
 		[DisplayFormat(NullDisplayText = "(No title)")]
 		public string? Title { get; set; }
 
-		public string Colour { get; set; } = "#467ECE";
+		public string? Location { get; set; }
+
+		[Display(Name = "Notes")]
+		[StringLength(255)]
+		[DataType(DataType.MultilineText)]
+		public string? Note { get; set; }
+
+		public string BackgroundColor { get; set; } = "#467ECE";
+		public string TextColor { get; set; } = "#FFFFFF";
 
 		[Display(Name = "Date")]
 		[Required(ErrorMessage = "Please select a date for this Shift")]
@@ -66,7 +75,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		[Display(Name = "Volunteers Needed")]
 		[Required(ErrorMessage = " Requires Volunteers.")]
-		[Range(1, int.MaxValue, ErrorMessage = "Volunteers needed must be greater than 0.")]
+		[Range(0, int.MaxValue, ErrorMessage = "Volunteers needed must be a positive value.")]
 		public int VolunteersNeeded { get; set; }
 
 		public int VolunteersLeft

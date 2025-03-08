@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250308103602_Initial")]
+    [Migration("20250308230404_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -472,7 +472,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Colour")
+                    b.Property<string>("BackgroundColor")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -481,6 +481,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Property<int>("EventID")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ShiftDate")
                         .HasColumnType("TEXT");
@@ -491,7 +498,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("TextColor")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
+                        .HasMaxLength(55)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("VolunteersNeeded")

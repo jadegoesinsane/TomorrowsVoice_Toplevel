@@ -113,8 +113,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: true),
-                    Colour = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 55, nullable: true),
+                    Location = table.Column<string>(type: "TEXT", nullable: true),
+                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    BackgroundColor = table.Column<string>(type: "TEXT", nullable: false),
+                    TextColor = table.Column<string>(type: "TEXT", nullable: false),
                     ShiftDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
