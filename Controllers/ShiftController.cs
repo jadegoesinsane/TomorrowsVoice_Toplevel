@@ -662,6 +662,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 ShiftID = shiftID
             };
 
+			var shift = _context.Shifts.Where(s => s.ID == shiftID).FirstOrDefault();
+
             // get date for success toast
             string date = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.StartAt.ToLongDateString()).FirstOrDefault();
             // get name for success toast
@@ -673,16 +675,30 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             try
             {
+				if (shift.Status == Status.Canceled)
+				{
+					throw new Exception("Cannot register for a cancelled shift");
+				}
                 _context.Add(userShift);
                 await _context.SaveChangesAsync();
                 AddSignUpToast(date, name, event_);
+
+                return RedirectToAction($"Details", "Volunteer", new { id = volID });
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
+                if (ex.GetBaseException().Message.Contains("cancelled"))
+				{
+                    ModelState.AddModelError("", "Cannot register ");
+                }
+				else
+				{
+                    ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
+                }
+				return RedirectToAction("Details", "Shift", new { id = shiftID });
             }
 
-            return RedirectToAction($"Details", "Volunteer", new { id = volID });
+            
         }
 
         public JsonResult GetShiftData()
