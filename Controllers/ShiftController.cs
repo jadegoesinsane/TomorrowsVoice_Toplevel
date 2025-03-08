@@ -141,14 +141,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: Shift/Create
-		public IActionResult Create()
+		public IActionResult Create(int EventID)
 		{
-			Shift shift = new Shift();
-			PopulateAssignedEnrollmentData(shift);
+            Shift shift = new Shift();
 
-			PopulateDropDown(shift);
-			return View();
-		}
+            ViewData["EventID"] = EventID;
+            var eventData = _context.Events
+			.Where(e => e.ID == EventID)
+			.FirstOrDefault();
+
+            ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
+
+
+            return View();
+        }
 
 		// POST: Shift/Create
 		// To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -159,7 +165,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			try
 			{
-				UpdateEnrollments(selectedOptions, shift);
+				
 				if (ModelState.IsValid)
 				{
 					var eventRecord = _context.Events
@@ -180,12 +186,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							if (ABC.ID != shift.ID) // Don't compare it to itself!
 							{
 								// Check if it Overlaps
-								if (shift.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.StartAt.TimeOfDay > ABC.StartAt.TimeOfDay)
+								if (shift.StartAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.StartAt.TimeOfDay >= ABC.StartAt.TimeOfDay)
 								{
 									// Throwing exception when overlap condition is met
 									throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
 								}
-								else if (shift.EndAt.TimeOfDay < ABC.EndAt.TimeOfDay && shift.EndAt.TimeOfDay > ABC.StartAt.TimeOfDay)
+								else if (shift.EndAt.TimeOfDay <= ABC.EndAt.TimeOfDay && shift.EndAt.TimeOfDay > ABC.StartAt.TimeOfDay)
 								{
 									// Throwing exception when overlap condition is met
 									throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
@@ -223,10 +229,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 				}
 			}
-			PopulateDropDown(shift);
-			PopulateAssignedEnrollmentData(shift);
+			
 
-			return View(shift);
+			ViewData["EventID"] = shift. EventID;
+			var eventData = _context.Events
+			.Where(e => e.ID == shift.EventID)
+			.FirstOrDefault();
+
+			ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
+
+
+			return View();
 		}
 
 		// GET: Shift/Edit/5
@@ -767,7 +780,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						foreach (var existingShift in sameshifts)
 						{
 							// Overlap checking logic
-							if ((newShift.StartAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.StartAt.TimeOfDay > existingShift.StartAt.TimeOfDay) ||
+							if ((newShift.StartAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.StartAt.TimeOfDay >= existingShift.StartAt.TimeOfDay) ||
 								(newShift.EndAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.EndAt.TimeOfDay > existingShift.StartAt.TimeOfDay))
 							{
 								throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
@@ -781,7 +794,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					AddSuccessToast("Shifts successfully created.");
 
-					return RedirectToAction("Index");
+					return View();
 				}
 			}
 			catch (DbUpdateException dex)
@@ -800,10 +813,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 				}
 			}
+			ViewData["EventID"] = shift.EventID;
+			var eventData = _context.Events
+		.Where(e => e.ID == shift. EventID)
+		.FirstOrDefault();
 
-		
-		
-			return View(shift);
+
+
+			ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
+
+
+
+
+			return View();
 		}
 
 
