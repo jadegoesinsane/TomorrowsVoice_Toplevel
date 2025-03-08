@@ -703,7 +703,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> CreateMany([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, 
-												DateTime StartAt, DateTime EndAt, DateTime StartAt2, DateTime EndAt2, DateTime StartAt3, DateTime EndAt3)
+												DateTime StartAt, DateTime EndAt,int VolunteersNeeded, DateTime StartAt2, DateTime EndAt2, int VolunteersNeeded2
+			, int VolunteersNeeded3, DateTime StartAt3, DateTime EndAt3)
 		{
 			try
 			{
@@ -730,7 +731,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							StartAt = StartAt,
 							EndAt = EndAt,
 							EventID = shift.EventID
-							,VolunteersNeeded= shift.VolunteersNeeded
+							,VolunteersNeeded= VolunteersNeeded
 						});
 						shiftsToCreate.Add(new Shift
 						{
@@ -738,7 +739,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							StartAt = StartAt2,
 							EndAt = EndAt2,
 							EventID = shift.EventID,
-							VolunteersNeeded = shift.VolunteersNeeded
+							VolunteersNeeded = VolunteersNeeded2
 						});
 						shiftsToCreate.Add(new Shift
 						{
@@ -746,7 +747,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							StartAt = StartAt3,
 							EndAt = EndAt3,
 							EventID = shift.EventID,
-							VolunteersNeeded = shift.VolunteersNeeded
+							VolunteersNeeded = VolunteersNeeded3
 						});
 					}
 

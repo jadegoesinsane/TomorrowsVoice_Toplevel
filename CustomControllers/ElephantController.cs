@@ -183,8 +183,15 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			_toastNotification.AddSuccessToastMessage(message);
 		}
 
-		// Error
-		protected void AddErrorToast(string message)
+        // Custom Notification for Cancelling a shift
+        protected void AddCancelledToast(string date, string name, string event_)
+        {
+            string message = $"{name} successfully cancelled shift on {date} for {event_}";
+            _toastNotification.AddSuccessToastMessage(message);
+        }
+
+        // Error
+        protected void AddErrorToast(string message)
 		{
 			_toastNotification.AddErrorToastMessage(message);
 		}
