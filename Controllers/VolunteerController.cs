@@ -876,13 +876,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             var Shift =  _context.Shifts
                                   .FirstOrDefault(v => v.ID == shiftId);
+
+			// get info for toast notification
+			string shiftDate = Shift.ShiftDate.ToLongDateString();
+			string volunteerName = volunteer.NameFormatted;
+            int eventID = _context.Shifts.Where(s => s.ID == shiftId).Select(s => s.EventID).FirstOrDefault();
+            string eventName = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault();
+
             try
             {
                 if (userShift != null)
                 {
                     _context.UserShifts.Remove(userShift);
                     await _context.SaveChangesAsync();
-                    AddSuccessToast($"Shift {Shift.ShiftDate} successfully removed for volunteer {volunteer.NameFormatted}.");
+					AddCancelledToast(shiftDate, volunteerName, eventName);
+					//AddSuccessToast($"Shift {Shift.ShiftDate} successfully removed for volunteer {volunteer.NameFormatted}.");
                     return RedirectToAction(nameof(Index));
                 }
             }
