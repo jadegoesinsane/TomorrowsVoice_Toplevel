@@ -8,10 +8,33 @@
 	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
 
 }
+<div>
+    <!-- Nav tabs -->
+    <nav>
+        <div class="nav nav-pills" id="myTabs" role="tablist">
+            <button class="nav-link active" id="Calendar-Tab" data-bs-toggle="tab" data-bs-target="#CalendarPanel"
+                    type="button" role="tab" aria-controls="CalendarPanel" aria-selected="true">
+                Basic Details
+            </button>
+            <button class="nav-link" id="List-Tab" data-bs-toggle="tab" data-bs-target="#ListPanel"
+                    type="button" role="tab" aria-controls="ListPanel" aria-selected="false">
+                Shifts
+            </button>
+        </div>
+    </nav>
 
-<div id="calendar"></div>
-
-
+	    <!-- Tab panes -->
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" role="Calendarpanel" id="CalendarPanel">
+            <br />
+			<div id="calendar"></div>
+		</div>
+		<div class="tab-pane fade ml-3" role="tabpanel" id="ListPanel" aria-labelledby="List-tab">
+            <br />
+			<partial name="_ShiftListSignUp" />
+		</div>
+	</div>
+</div>
 @*
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />

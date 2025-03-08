@@ -157,6 +157,89 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(shift);
         }
 
+        // GET: ShiftList Partial View
+        public async Task<IActionResult> ShiftList(int? EventID, string? Location, DateTime FilterStartDate,
+            int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
+
+        {
+            ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Event");
+
+            if (!EventID.HasValue)
+            {
+                //Go back to the proper return url for the Events controller
+                return Redirect(ViewData["returnURL"].ToString());
+            }
+
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+            Enum.TryParse(StatusFilter, out Status selectedStatus);
+
+            populateLists();
+
+            var shifts = _context.Shifts
+                .Include(s => s.Event)
+                .Include(s => s.UserShifts)
+                .Where(s => s.EventID == EventID.GetValueOrDefault())
+                .AsNoTracking();
+
+            if (!String.IsNullOrEmpty(StatusFilter))
+            {
+                shifts = shifts.Where(p => p.Status == selectedStatus);
+
+                // filter out archived events if the user does not specifically select "archived"
+                if (selectedStatus != Status.Archived)
+                {
+                    shifts = shifts.Where(s => s.Status != Status.Archived);
+                }
+                numberFilters++;
+            }
+            // filter out events even if status filter has not been set
+            else
+            {
+                shifts = shifts.Where(s => s.Status != Status.Archived);
+            }
+            //Filter For Start and End times
+            if (FilterStartDate != default(DateTime))
+            {
+                if (FilterStartDate != default(DateTime))
+                {
+                    ViewData["StartDate"] = FilterStartDate.ToString("yyyy-MM-dd");
+                }
+                shifts = shifts.Where(e => e.ShiftDate == FilterStartDate);
+            }
+
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                //Keep the Bootstrap collapse open
+                @ViewData["ShowFilter"] = " show";
+            }
+            //Before we sort, see if we have called for a change of filtering or sorting
+            if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+            }
+
+            // MASTER Record, Events
+            Event? events = await _context.Events.FirstOrDefaultAsync(e => e.ID == EventID.GetValueOrDefault());
+
+            ViewBag.Event = events;
+
+
+            //Handle Paging
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
+
+            return PartialView("_ShiftListSignUp", pagedData);
+        }
+            
         public async Task<IActionResult> DateShift(DateTime date, int? page, int? pageSizeID)
         {
             //var shift = _context.Shifts.Where(s => s.ID == id).FirstOrDefault();
@@ -252,10 +335,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 .OrderBy(v => v.LastName), "ID", "NameFormatted");
         }
 
-        public void populateLists()
+        public void populateLists(Shift? shift = null)
         {
             ViewData["VolunteerID"] = VolunteerSelectList();
             ViewData["CityID"] = CitySelectList();
+            ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
+
+            var statusList = Enum.GetValues(typeof(Status))
+                         .Cast<Status>()
+                         .Where(s => s == Status.Active || s == Status.Canceled || s == Status.Archived)
+                         .ToList();
+
+            ViewBag.StatusList = new SelectList(statusList);
         }
 
         private bool ShiftExists(int id)

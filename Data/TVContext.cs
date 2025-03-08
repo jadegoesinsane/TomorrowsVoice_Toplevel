@@ -145,6 +145,11 @@ namespace TomorrowsVoice_Toplevel.Data
 			modelBuilder.Entity<UserShift>()
 				.HasKey(us => new { us.UserID, us.ShiftID });
 
+			// Volunteer should only be able to sign up for each shift once
+			modelBuilder.Entity<UserShift>()
+				.HasIndex(u => new { u.ShiftID, u.UserID })
+				.IsUnique();
+
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)
