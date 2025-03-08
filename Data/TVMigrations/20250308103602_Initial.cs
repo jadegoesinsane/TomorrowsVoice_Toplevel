@@ -496,9 +496,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "DirectorID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserShifts_ShiftID",
+                name: "IX_UserShifts_ShiftID_UserID",
                 table: "UserShifts",
-                column: "ShiftID");
+                columns: new[] { "ShiftID", "UserID" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserShifts_VolunteerID",

@@ -149,10 +149,18 @@ namespace TomorrowsVoice_Toplevel.Data
 			modelBuilder.Entity<UserShift>()
 				.HasIndex(u => new { u.ShiftID, u.UserID })
 				.IsUnique();
+          
 
-		}
 
-		public override int SaveChanges(bool acceptAllChangesOnSuccess)
+            modelBuilder.Entity<Event>()
+            .HasMany<Shift>(s => s.Shifts)
+            .WithOne(s => s.Event)
+            .HasForeignKey(s => s.EventID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
 		{
 			OnBeforeSaving();
 			return base.SaveChanges(acceptAllChangesOnSuccess);

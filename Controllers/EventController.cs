@@ -316,13 +316,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (@event != null)
 				{
-					//_context.Events.Remove(event);
-					foreach (var a in @event.Shifts)
+					_context.Events.Remove(@event);
+					/*foreach (var a in @event.Shifts)
 					{
 						a.Status = Status.Archived;
 					}
 					// Here we are archiving a event instead of deleting them
-					@event.Status = Status.Archived;
+					@event.Status = Status.Archived;*/
 
 					await _context.SaveChangesAsync();
 					AddSuccessToast(@event.Name);

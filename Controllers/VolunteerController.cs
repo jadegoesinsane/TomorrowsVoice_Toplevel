@@ -330,10 +330,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (volunteer != null)
 				{
-					//_context.Volunteers.Remove(vounteer);
+					_context.Volunteers.Remove(volunteer);
 
 					// Here we are archiving a vounteer instead of deleting them
-					volunteer.Status = Status.Archived;
+					//volunteer.Status = Status.Archived;
 					await _context.SaveChangesAsync();
 					AddSuccessToast(volunteer.NameFormatted);
 					return RedirectToAction(nameof(Index));

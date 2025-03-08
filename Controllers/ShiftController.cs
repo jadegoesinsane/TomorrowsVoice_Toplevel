@@ -378,8 +378,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (shift != null)
 				{
-					//_context.Singers.Remove(singer);
-					shift.Status = Status.Archived;
+					_context.Shifts.Remove(shift);
+					//shift.Status = Status.Archived;
 					// Here we are archiving a singer instead of deleting them
 					//_context.Shifts.Remove(shift);
 					await _context.SaveChangesAsync();
