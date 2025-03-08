@@ -680,7 +680,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				 .Include(c => c.Director)
 				 .Include(c => c.Chapter)
                  .Where(a => a.Chapter.Status != Status.Archived)
-                 .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate && a.Status != Status.Archived)
+                 .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate && a.Status != Status.Archived && a.Status != Status.Canceled)
 				 .GroupBy(a => new { a.Chapter.City.Name })
 				 .Select(grp => new AttendanceSummaryVM
 				 {
@@ -706,7 +706,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var details = await _context.Rehearsals
 				.Include(r => r.RehearsalAttendances)
                 .Where(a => a.Chapter.Status != Status.Archived)
-                .Where(r => r.Chapter.City.Name == city && r.RehearsalDate >= startDate && r.RehearsalDate <= endDate && r.Status != Status.Archived)
+                .Where(r => r.Chapter.City.Name == city && r.RehearsalDate >= startDate && r.RehearsalDate <= endDate && r.Status != Status.Archived && r.Status != Status.Canceled)
 				 .Select(r => new RehearsalViewModelDetails
 				 {
 					 Rehearsal_Date = r.RehearsalDate,
@@ -725,7 +725,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				  .Include(c => c.Director)
 				  .Include(c => c.Chapter)
                   .Where(a => a.Chapter.Status != Status.Archived)
-                  .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate && a.Status != Status.Archived)
+                  .Where(a => a.RehearsalDate >= startDate && a.RehearsalDate <= endDate && a.Status != Status.Archived && a.Status != Status.Canceled)
 				  .GroupBy(a => new { a.Chapter.City.Name })
 				  .Select(grp => new AttendanceSummaryVM
 				  {
@@ -829,7 +829,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					.ThenInclude(c => c.Director)
 					.ThenInclude(c => c.Chapter)
                     .Where(a => a.Rehearsal.Chapter.Status != Status.Archived)
-                    .Where(a => a.Rehearsal.RehearsalDate >= startDate && a.Rehearsal.RehearsalDate <= endDate && a.Rehearsal.Status != Status.Archived)
+                    .Where(a => a.Rehearsal.RehearsalDate >= startDate && a.Rehearsal.RehearsalDate <= endDate && a.Rehearsal.Status != Status.Archived && a.Rehearsal.Status != Status.Canceled)
 				.GroupBy(a => new { a.Rehearsal.Chapter.City.Name, a.Rehearsal.RehearsalDate, a.Rehearsal.TotalSingers })
 				.Select(grp => new RehearsalViewModelDetails
 				{
