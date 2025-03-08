@@ -4,18 +4,17 @@
 	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
 
 }
-<partial name="_ViewHeading" />
+
+<h2>@ViewData["Event"]</h2>
+
 <p>Create three schedules for each day of the event( morning, afternoon, and evening).</p>
+<br />
 <form asp-action="CreateMany" class="form-container" method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" name="EventID" value="@ViewData["EventID"]" />
 	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
 
-		<div class="col-md-6">
-			<div class="form-floating required my-4">
-				<select asp-for="EventID" class="form-control" asp-items="ViewBag.EventID"></select>
-				<label asp-for="EventID" class="control-label"></label>
-			</div>
-		</div>
+		
 		<div class="w-100" style="margin:0px;"></div>
 
 		
@@ -90,7 +89,7 @@
 
     <div class="row form-footer">
         <div class="form-group col-md-6">
-            <input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
+            <input type="submit"  value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
         </div>
     </div>
 </form>

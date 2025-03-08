@@ -686,12 +686,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(data);
 		}
 
-        public IActionResult CreateMany()
+        public IActionResult CreateMany(int EventID)
         {
             Shift shift = new Shift();
-            
 
-            PopulateDropDown(shift);
+			ViewData["EventID"] = EventID;
+            var eventData = _context.Events
+        .Where(e => e.ID == EventID)
+        .FirstOrDefault(); 
+
+            
+                
+                ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
+            
 
             return View();
         }
@@ -794,7 +801,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 
-			PopulateDropDown(shift);
+		
 		
 			return View(shift);
 		}
