@@ -8,193 +8,94 @@
 	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
 
 }
-<div>
-    <!-- Nav tabs -->
-    <nav>
-        <div class="nav nav-pills" id="myTabs" role="tablist">
-            <button class="nav-link active" id="Calendar-Tab" data-bs-toggle="tab" data-bs-target="#CalendarPanel"
-                    type="button" role="tab" aria-controls="CalendarPanel" aria-selected="true">
-                Basic Details
-            </button>
-            <button class="nav-link" id="List-Tab" data-bs-toggle="tab" data-bs-target="#ListPanel"
-                    type="button" role="tab" aria-controls="ListPanel" aria-selected="false">
-                Shifts
-            </button>
-        </div>
-    </nav>
 
-	    <!-- Tab panes -->
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" role="Calendarpanel" id="CalendarPanel">
-            <br />
-			<div id="calendar"></div>
-		</div>
-		<div class="tab-pane fade ml-3" role="tabpanel" id="ListPanel" aria-labelledby="List-tab">
-            <br />
-			<partial name="_ShiftListSignUp" />
+<h1>Select a Shift</h1>
+<form asp-action="Index" method="get">
+	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+	<div class="form-horizontal">
+		<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+			Filter/Search @ViewData["numberFilters"]
+		</button><br />
+		<div class="collapse  @ViewData["ShowFilter"]" id="collapseFilter">
+			<div class="card card-body bg-light">
+				<div class="row">
+					<div class="form-floating col-md-3">
+						@Html.DropDownList("CityID", null, "All Cities", htmlAttributes: new { @class = "form-control", id = "CityID" })
+						<label class="control-label" for="CityID">Select by City:</label>
+					</div>
+					<div class="form-floating col-md-3">
+						@Html.DropDownList("EventID", null, "All Events", htmlAttributes: new { @class = "form-control", id = "EventID" })
+						<label class="control-label" for="CityID">Select by Event:</label>
+					</div>
+				</div>
+				<div class="row mt-4">
+					<div class="form-floating col-md-3">
+						<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
+						<label class="control-label" for="StartDate">Start Date:</label>
+
+					</div>
+					<div class="form-floating col-md-3">
+						<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
+						<label class="control-label" for="EndDate">End Date:</label>
+
+					</div>
+					<div class="col-md-3 d-flex justify-content-evenly">
+						<input type="submit" name="actionButton" value="Filter"
+							   class="btn btn-outline-primary" />
+						<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+					</div>
+				</div>
+
+			</div>
 		</div>
 	</div>
-</div>
-@*
-<form asp-action="Index" method="get">
-    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    <div class="form-horizontal">
-			<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-				Filter/Search @ViewData["numberFilters"]
-			</button><br />
-			<div class="collapse  @ViewData["ShowFilter"]" id="collapseFilter">
-				<div class="card card-body bg-light">
-					<div class="row">
-						<div class="form-floating col-md-3">
-							@Html.DropDownList("CityID", null, "All Cities", htmlAttributes: new { @class = "form-control", id = "CityID" })
-							<label class="control-label" for="CityID">Select by City:</label>
-						</div>
-						<div class="form-floating col-md-3">
-							@Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
-							<label class="control-label" for="SearchString">Search Event Title:</label>
-						</div>
-					</div>
-					<div class="row mt-4">
-						<div class="form-floating col-md-3">
-							<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
-							<label class="control-label" for="StartDate">Start Date:</label>
+	<h5 style="margin-top:10px">@ViewData["ShiftCount"] Shifts available between @ViewData["StartDate"] and @ViewData["EndDate"]</h5>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.Event)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.ShiftDate)
+				</th>
+				<th>
+					Time
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.VolunteersNeeded)
+				</th>
 
-						</div>
-						<div class="form-floating col-md-3">
-							<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
-							<label class="control-label" for="EndDate">End Date:</label>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Event.Name)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.ShiftDate)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.StartAt) - @Html.DisplayFor(modelItem => item.EndAt)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.VolunteersLeft)
+					</td>
+					<td>
+						<a asp-action="Details" asp-controller="Shift" asp-route-id="@item.ID">Sign Up</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 
-						</div>
-						<div class="col-md-3 d-flex justify-content-evenly">
-							<input type="submit" name="actionButton" value="Filter"
-								   class="btn btn-outline-primary" />
-							<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-    <table class="table table-hover">
-    <thead>
-        <tr>
-            <th>
-                Date
-            </th>
-            <th>
-                Shifts Available
-            </th>
-			<th></th>
-        </tr>
-    </thead>
-    
-    <tbody>
-        @{
-            List<String> DateList = new List<String>();
-			int count = 0;
-
-            foreach (var item in Model)
-            {
-                string dateString = item.StartAt.ToLongDateString();
-                if (!DateList.Contains(dateString))
-                {
-                    DateList.Add(dateString);
-                    
-							<tr>
-								<td>@dateString</td>
-								<td>@Model.Where(s=>s.StartAt.ToLongDateString() == dateString).Count()</td>
-								<td><a asp-action="DateShift" asp-route-date="@item.ShiftDate" >View Shifts</a></td>
-							</tr>
-                }
-				count++;
-            }
-        }
-
-    </tbody>
-</table>
-<partial name="_PagingNavBar" /> 
-</form> *@@*
-<form asp-action="Index" method="get">
-    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    <div class="form-horizontal">
-			<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-				Filter/Search @ViewData["numberFilters"]
-			</button><br />
-			<div class="collapse  @ViewData["ShowFilter"]" id="collapseFilter">
-				<div class="card card-body bg-light">
-					<div class="row">
-						<div class="form-floating col-md-3">
-							@Html.DropDownList("CityID", null, "All Cities", htmlAttributes: new { @class = "form-control", id = "CityID" })
-							<label class="control-label" for="CityID">Select by City:</label>
-						</div>
-						<div class="form-floating col-md-3">
-							@Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
-							<label class="control-label" for="SearchString">Search Event Title:</label>
-						</div>
-					</div>
-					<div class="row mt-4">
-						<div class="form-floating col-md-3">
-							<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
-							<label class="control-label" for="StartDate">Start Date:</label>
-
-						</div>
-						<div class="form-floating col-md-3">
-							<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
-							<label class="control-label" for="EndDate">End Date:</label>
-
-						</div>
-						<div class="col-md-3 d-flex justify-content-evenly">
-							<input type="submit" name="actionButton" value="Filter"
-								   class="btn btn-outline-primary" />
-							<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-    <table class="table table-hover">
-    <thead>
-        <tr>
-            <th>
-                Date
-            </th>
-            <th>
-                Shifts Available
-            </th>
-			<th></th>
-        </tr>
-    </thead>
-    
-    <tbody>
-        @{
-            List<String> DateList = new List<String>();
-			int count = 0;
-
-            foreach (var item in Model)
-            {
-                string dateString = item.StartAt.ToLongDateString();
-                if (!DateList.Contains(dateString))
-                {
-                    DateList.Add(dateString);
-                    
-							<tr>
-								<td>@dateString</td>
-								<td>@Model.Where(s=>s.StartAt.ToLongDateString() == dateString).Count()</td>
-								<td><a asp-action="DateShift" asp-route-date="@item.ShiftDate" >View Shifts</a></td>
-							</tr>
-                }
-				count++;
-            }
-        }
-
-    </tbody>
-</table>
-<partial name="_PagingNavBar" /> 
-</form> *@
-
+	<partial name="_PagingNavBar" />
+</form>
 
 @section Scripts{
 	<script src="~/js/eventCalendar.js"></script>
