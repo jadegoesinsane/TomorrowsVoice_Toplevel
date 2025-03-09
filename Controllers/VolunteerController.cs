@@ -692,7 +692,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						{
 							ToAddresses = folks,
 							Subject = Subject,
-							Content = "<p>" + emailContent + "</p><p>Please access the <strong>Niagara College</strong> web site to review.</p>"
+							Content = "<p>" + emailContent + "</p><p>Please access the <strong>Tomorrows Voice</strong> web site to review.</p>"
 
 						};
 						await _emailSender.SendToManyAsync(msg);
@@ -732,7 +732,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			string Subject = "Sign off shift ";
 
-			string emailContent = $"Volunteer {volunteer.NameFormatted}  sign off event{shift.Event.Name} shift {shift.TimeSummary}  ";
+			string emailContent = $"Volunteer: {volunteer.NameFormatted}  sign off event :{shift.Event.Name} shift: {shift.TimeSummary}  ";
 
 
 
