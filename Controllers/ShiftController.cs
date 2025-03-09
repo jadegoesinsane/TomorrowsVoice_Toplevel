@@ -655,8 +655,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ShiftSignUp(int shiftID, int volID)
         {
-            // create new volunteer signup
-            var userShift = new UserShift
+
+			bool userShiftExists = _context.UserShifts
+		.Any(us => us.UserID == volID && us.ShiftID == shiftID);
+
+			if (userShiftExists)
+			{
+
+				TempData["ErrorMessage"] = "This volunteer is already signed up for this shift.";
+
+
+				return RedirectToAction("Details", "Shift", new { id = shiftID });
+			}
+			// create new volunteer signup
+			var userShift = new UserShift
             {
                 UserID = volID,
                 ShiftID = shiftID

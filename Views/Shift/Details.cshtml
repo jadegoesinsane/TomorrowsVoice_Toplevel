@@ -8,7 +8,9 @@
 <h1>@Model.Event.Name Shift</h1>
 <strong>@Model.TimeSummary</strong>
 <hr />
-
+@{
+	var errorMessage = TempData["ErrorMessage"] as string;
+}
 @{
 	if (Model.VolunteersNeeded > Model.UserShifts.Count())
 	{
@@ -40,6 +42,13 @@
 					@Html.AntiForgeryToken()
 					<input type="hidden" name="shiftID" value="@Model.ID" />
 					<input type="hidden" name="volID" value="" id="volInput" />
+					@if (!string.IsNullOrEmpty(errorMessage))
+					{
+						<div style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
+							@errorMessage
+						</div>
+					}
+					<br />
 					@if (Model.ShiftDate < DateTime.Today)
 					{
 						
