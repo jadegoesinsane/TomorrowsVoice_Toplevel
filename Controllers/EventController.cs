@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 using NToastNotify;
+using NToastNotify.Helpers;
+using Org.BouncyCastle.Utilities;
 using System.Globalization;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -143,7 +145,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,StartDate,EndDate,Descripion,Location,BackgroundColour")] Event @event, string[] selectedOptions, string Shifts)
+		public async Task<IActionResult> Create([Bind("Name,StartDate,EndDate,Descripion,Location,BackgroundColour")] Event @event, string[] selectedOptions, string Shifts)
 		{
 			try
 			{
@@ -450,8 +452,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					BorderColor = e.BackgroundColour,
 					TextColor = e.TextColour
 				}).ToList();
-
-			return Json(events);
+			var shifts = _context.Shifts
+				.Select(s => new ShiftJson
+				{
+					ID = s.ID,
+					Start = s.StartAt.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
+					End = s.EndAt.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
+					Title = s.Title,
+					Display = "list-item"
+				}).ToList();
+			return Json(events).MergeWith(Json(shifts));
 		}
 
 		private void PopulateAssignedEnrollmentData(Event abc)
@@ -531,7 +541,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["Location"] = new SelectList(location, events?.Location);
 
 			var colour = ColourSelectList();
-			ViewData["Colour"] = new SelectList(colour, events?.BackgroundColour);
+			ViewData["BackgroundColour"] = new SelectList(colour, events?.BackgroundColour);
 
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
