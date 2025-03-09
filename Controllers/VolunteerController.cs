@@ -1059,6 +1059,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(pagedData);
         }
 
+        // Page for Selecting a volunteer
+        public async Task<IActionResult> VolunteerSelect()
+		{
+            ViewData["VolunteerID"] = new SelectList(_context
+                .Volunteers
+                .Where(v => v.Status == Status.Active)
+                .OrderBy(v => v.LastName), "ID", "NameFormatted");
+            return View();
+		}
+
         private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
