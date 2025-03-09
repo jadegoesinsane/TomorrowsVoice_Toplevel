@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewData["Title"] = "VolunteerSelect";
+    Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
+}
+<div style="display: grid; place-content: center;">
+	
+    <form asp-controller="Volunteer"  asp-action="Details" class="form-container">
+		
+        <div class="form-area">
+			<h1>Select a Volunteer</h1>
+			@Html.DropDownList("VolunteerID", null, "- Select a Volunteer", htmlAttributes: new { @class = "form-control", id = "VolunteerID" })
+        </div>
+        <div class="form-footer">
+            <input type="hidden" name="id" value="" id="volInput" />
+            <button type="submit" class="btn btn-primary" disabled id="btnSubmit">Go to Profile Page</button>
+        </div>
+    </form>
+</div>
+
+<script>
+	// get elements
+	var dropDown = document.getElementById("VolunteerID");
+	var signUpLink = document.getElementById("SignUp");
+	var submitButton = document.getElementById("btnSubmit");
+	var dropValue;
+	// set values when dropdown changed
+	dropDown.addEventListener("change",
+		() =>
+		{
+			dropValue = dropDown.value;
+			console.log(dropValue);
+			document.getElementById("volInput").value = dropValue;
+			if (dropValue !== ""){
+				submitButton.disabled = false;
+			}
+			else{
+				submitButton.disabled = true;
+			}
+		});
+</script>
+
+
