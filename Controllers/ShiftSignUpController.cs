@@ -25,8 +25,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
         // GET: ShiftSignUp
         public async Task<IActionResult> Index(
-            string? SearchString,
-            int? CityID,
+			int? EventID,
+			int? CityID,
             string? actionButton,
             int? page,
             int? pageSizeID,
@@ -79,13 +79,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 shifts = shifts.Where(s => s.Event.CityEvents.Any(ce => ce.CityID == CityID));
                 numFilters++;
             }
-            if (!String.IsNullOrEmpty(SearchString))
-            {
-                shifts = shifts.Where(r => r.Event.Name.ToUpper().Contains(SearchString.ToUpper()));
-                numFilters++;
-            }
+			if (EventID.HasValue)
+			{
+				shifts = shifts.Where(s => s.EventID == EventID);
+				numFilters++;
+			}
 
-            ViewData["AptCount"] = shifts.Count();
+			ViewData["ShiftCount"] = shifts.Count();
 
             // Show how many filters are applied
             if (numFilters != 0)
@@ -129,11 +129,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
             ViewData["sortDirection"] = sortDirection;
 
             // Paging
-            //int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-            //ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-            //var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
 
-            return View(shifts);
+            return View(pagedData);
         }
 
         // GET: ShiftSignUp/Details/5
@@ -335,11 +335,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 .OrderBy(v => v.LastName), "ID", "NameFormatted");
         }
 
-        public void populateLists(Shift? shift = null)
+		private SelectList EventSelectList()
+		{
+			return new SelectList(_context
+				.Events
+				.OrderBy(c => c.Name), "ID", "Name");
+		}
+
+		public void populateLists()
         {
             ViewData["VolunteerID"] = VolunteerSelectList();
             ViewData["CityID"] = CitySelectList();
-            ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
+            ViewData["EventID"] = EventSelectList();
 
             var statusList = Enum.GetValues(typeof(Status))
                          .Cast<Status>()
