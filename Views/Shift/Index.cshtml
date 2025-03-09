@@ -34,8 +34,10 @@
                 <input type="hidden" name="EventID" value="@events.ID" />
                 <div class="form-horizontal my-3">
                     <div class="row align-items-center">
-                        <h1 class="col m-0">Shifts</h1>
-
+                        <h1 class="col m-0">@events.Name</h1>
+                    </div>
+                    <div class="row align-items-center">
+                        <h2 class="col m-0">Shifts</h2>
                     </div>
 
                     <div class="col-md-3 ms-auto d-flex justify-content-between">
@@ -44,32 +46,6 @@
                     </div>
                 </div>
 
-                <button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
-                        data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-                    <i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
-                </button>
-                <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-                    <div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
-
-                        <div class="p-2">
-                            <label class="control-label" for="FilterStartDate">Start Date:</label>
-                            <input class="form-control" type="date" id="FilterStartDate" name="FilterStartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
-                        </div>
-                        <div class="p-2">
-                            <strong><label class="control-label" for="StatusFilter">Status</label></strong>
-                            @Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
-                                     "Any", htmlAttributes: new { @class = "form-control" })
-                        </div>
-                        <div class="p-2 ms-auto">
-                            <button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
-                                <i class=" bi bi-funnel-fill"></i>Apply
-                            </button>
-                        </div>
-                        <div class="p-2">
-                            <a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
-                        </div>
-                    </div>
-                </div>
 
                 <table class="table">
                     <thead>
@@ -78,13 +54,13 @@
                                 @Html.DisplayNameFor(model => model.ShiftDate)
                             </th>
                             <th>
+                                Shift Time
+                            </th>
+                            <th>
                                 @Html.DisplayNameFor(model => model.VolunteersNeeded)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Status)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Event)
                             </th>
                             <th>
                                 Track Performance
@@ -97,16 +73,16 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.TimeSummary)
+                                    @Html.DisplayFor(modelItem => item.DateFormat)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TimeFormat)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.VolunteersLeft)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Status)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Event.Name)
                                 </td>
 
                                 <td>
