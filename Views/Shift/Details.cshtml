@@ -8,51 +8,15 @@
 <h1>@Model.Event.Name Shift</h1>
 <strong>@Model.TimeSummary</strong>
 <hr />
-<label>Volunteer(s) Signed Up:</label>
-<p style="display: inline"> @Model.UserShifts.Count()/@Model.VolunteersNeeded</p>
-<ul>
-	@foreach (var v in Model.UserShifts)
-	{
-		<li>
-			@v.User.NameFormatted
-			@if (v.User is Director)
-			{
-				<span> - Director</span>
-			}
-		</li>
-	}
-</ul>
-@* <div>
-	<dl class="row">
-		<div class="col-auto">
-			
-			
-			<ul>
 
-			</ul>
-			@foreach(var v in Model.UserShifts)
-			{
-				<p>
-					@v.User.NameFormatted
-					@if (v.User is Director)
-					{
-						<span> - Director</span>
-					}
-				</p>
-			}
-		</div>
-		<div class="col-6" style="max-height:350px;">
-			<div class="ml-3" style="max-height: 100%;overflow-y: scroll;overflow-x: clip;" id="chatbox"></div>
-		</div>
-	</dl>
-</div> *@
 @{
 	if (Model.VolunteersNeeded > Model.UserShifts.Count())
 	{
-		<div style="display: grid; place-content: center;">
-			<h2>Confirm Sign-Up</h2>
+		<div style="display: grid;">
+
 			<form asp-action="ShiftSignUp" asp-route-shiftID="@Model.ID" asp-route-volID="VALUE_OF_VOLID" method="post" class="form-container">
 				<div class="form-area">
+					<h2>Confirm Sign-Up</h2>
 					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 					<div class="row">
 						<div class="col-md-4">
@@ -87,8 +51,26 @@
 	}
 }
 
+<label style="margin-top:15px">@Model.UserShifts.Count()/@Model.VolunteersNeeded Volunteer(s) Signed Up:</label>
+<ul>
+	@foreach (var v in Model.UserShifts)
+	{
+		<li>
+			@v.User.NameFormatted
+			@if (v.User is Director)
+			{
+				<span> - Director</span>
+			}
+		</li>
+	}
+</ul>
 
-<div>
+	
+
+
+
+
+<div style="margin-top:15px">
 	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
 	<a href="javascript:history.back()">Back to List</a>
 	<!--Link to sign up for this shift that only shows up if volunteers are needed-->
