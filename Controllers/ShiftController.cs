@@ -47,11 +47,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			//Count the number of filters applied - start by assuming no filters
-			ViewData["Filtering"] = "btn-outline-secondary";
-			int numberFilters = 0;
-			Enum.TryParse(StatusFilter, out Status selectedStatus);
+			//ViewData["Filtering"] = "btn-outline-secondary";
+			//int numberFilters = 0;
+			//Enum.TryParse(StatusFilter, out Status selectedStatus);
 
-			PopulateDropDown2();
+			//PopulateDropDown2();
 
 			var shifts = _context.Shifts
 				.Include(s => s.Event)
@@ -59,49 +59,49 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Where(s => s.EventID == EventID.GetValueOrDefault())
 				.AsNoTracking();
 
-			if (!String.IsNullOrEmpty(StatusFilter))
-			{
-				shifts = shifts.Where(p => p.Status == selectedStatus);
+			//if (!String.IsNullOrEmpty(StatusFilter))
+			//{
+			//	shifts = shifts.Where(p => p.Status == selectedStatus);
 
-				// filter out archived events if the user does not specifically select "archived"
-				if (selectedStatus != Status.Archived)
-				{
-					shifts = shifts.Where(s => s.Status != Status.Archived);
-				}
-				numberFilters++;
-			}
-			// filter out events even if status filter has not been set
-			else
-			{
-				shifts = shifts.Where(s => s.Status != Status.Archived);
-			}
+			//	// filter out archived events if the user does not specifically select "archived"
+			//	if (selectedStatus != Status.Archived)
+			//	{
+			//		shifts = shifts.Where(s => s.Status != Status.Archived);
+			//	}
+			//	numberFilters++;
+			//}
+			//// filter out events even if status filter has not been set
+			//else
+			//{
+			//	shifts = shifts.Where(s => s.Status != Status.Archived);
+			//}
 			//Filter For Start and End times
-			if (FilterStartDate != default(DateTime))
-			{
-				if (FilterStartDate != default(DateTime))
-				{
-					ViewData["StartDate"] = FilterStartDate.ToString("yyyy-MM-dd");
-				}
-				shifts = shifts.Where(e => e.ShiftDate == FilterStartDate);
-			}
+			//if (FilterStartDate != default(DateTime))
+			//{
+			//	if (FilterStartDate != default(DateTime))
+			//	{
+			//		ViewData["StartDate"] = FilterStartDate.ToString("yyyy-MM-dd");
+			//	}
+			//	shifts = shifts.Where(e => e.ShiftDate == FilterStartDate);
+			//}
 
 			//Give feedback about the state of the filters
-			if (numberFilters != 0)
-			{
-				//Toggle the Open/Closed state of the collapse depending on if we are filtering
-				ViewData["Filtering"] = " btn-danger";
-				//Show how many filters have been applied
-				ViewData["numberFilters"] = "(" + numberFilters.ToString()
-					+ " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
-				//Keep the Bootstrap collapse open
-				@ViewData["ShowFilter"] = " show";
-			}
-			//Before we sort, see if we have called for a change of filtering or sorting
-			if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
-			{
-				page = 1;//Reset page to start
+			//if (numberFilters != 0)
+			//{
+			//	//Toggle the Open/Closed state of the collapse depending on if we are filtering
+			//	ViewData["Filtering"] = " btn-danger";
+			//	//Show how many filters have been applied
+			//	ViewData["numberFilters"] = "(" + numberFilters.ToString()
+			//		+ " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+			//	//Keep the Bootstrap collapse open
+			//	@ViewData["ShowFilter"] = " show";
+			//}
+			////Before we sort, see if we have called for a change of filtering or sorting
+			//if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+			//{
+			//	page = 1;//Reset page to start
 
-			}
+			//}
 
 			// MASTER Record, Events
 			Event? events = await _context.Events.FirstOrDefaultAsync(e => e.ID == EventID.GetValueOrDefault());
@@ -110,11 +110,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 
 			//Handle Paging
-			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-			var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
+			//int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+			//ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+			//var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
 
-			return View(pagedData);
+			return View(shifts);
 		}
 
 		// GET: Shift/Details/5
@@ -166,7 +166,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			try
 			{
-				
 				if (ModelState.IsValid)
 				{
 					var eventRecord = _context.Events
@@ -629,18 +628,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewBag.StatusList = new SelectList(statusList);
 		}
 
-		private void PopulateDropDown2(Shift? shift = null)
-		{
-           // ViewData["EventID"] = new SelectList(_context.Events.OrderBy(e => e.Name), "ID", "Name");
-           ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
+		//private void PopulateDropDown2(Shift? shift = null)
+		//{
+  //         // ViewData["EventID"] = new SelectList(_context.Events.OrderBy(e => e.Name), "ID", "Name");
+  //         ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
 
-            var statusList = Enum.GetValues(typeof(Status))
-						 .Cast<Status>()
-						 .Where(s => s == Status.Active || s == Status.Canceled || s == Status.Archived)
-						 .ToList();
+  //          var statusList = Enum.GetValues(typeof(Status))
+		//				 .Cast<Status>()
+		//				 .Where(s => s == Status.Active || s == Status.Canceled || s == Status.Archived)
+		//				 .ToList();
 
-			ViewBag.StatusList = new SelectList(statusList);
-		}
+		//	ViewBag.StatusList = new SelectList(statusList);
+		//}
 
 		// method to put list of active volunteers into viewdata
 		private void PopulateVolunteers()
