@@ -117,7 +117,7 @@
                                             else
                                                 dateFormat = date.Key.ToString("MMMM d, yyyy");
                                         }
-                                        @if(date.All(s => s.VolunteersLeft <= 0))
+                                        @if (date.All(s => s.VolunteersLeft <= 0) || date.All(s => s.ShiftDate <= DateTime.Today) || date.All(s => s.Status == Status.Canceled))
                                         {
                                             <button class="btn btn-link disabled" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
                                                 <strong>@dateFormat</strong>

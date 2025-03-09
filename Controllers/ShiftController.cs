@@ -40,7 +40,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Event");
 
-			if (!EventID.HasValue)
+            if (!EventID.HasValue)
 			{
 				//Go back to the proper return url for the Events controller
 				return Redirect(ViewData["returnURL"].ToString());
@@ -100,6 +100,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
 			{
 				page = 1;//Reset page to start
+
 			}
 
 			// MASTER Record, Events
