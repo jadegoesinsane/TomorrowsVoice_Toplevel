@@ -437,6 +437,23 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(shifts);
 		}
 
+		public JsonResult GetEvents()
+		{
+			var events = _context.Events
+				.Select(e => new EventJson
+				{
+					ID = e.ID,
+					Title = e.Name ?? string.Empty,
+					Start = e.StartDate.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
+					End = e.EndDate.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
+					BackgroundColor = e.BackgroundColour,
+					BorderColor = e.BackgroundColour,
+					TextColor = e.TextColour
+				}).ToList();
+
+			return Json(events);
+		}
+
 		private void PopulateAssignedEnrollmentData(Event abc)
 		{
 			//For this to work, you must have Included the child collection in the parent object
