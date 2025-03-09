@@ -6,6 +6,7 @@
 }
 <partial name="_ViewHeading" />
 <form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
+	<input type="hidden" asp-for="ID" />
 	<input type="hidden" id="shiftsJson" name="Shifts" />
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
@@ -33,7 +34,7 @@
 		</div>
 		<div class="col-md-3">
 			<div class="form-floating required">
-				<input asp-for="BackgroundColour" class="form-control" />
+				@Html.DropDownList("Colour", null, new { @class = "form-control" })
 				<label asp-for="BackgroundColour" class="control-label"></label>
 				<span asp-validation-for="BackgroundColour" class="text-danger"></span>
 			</div>
@@ -98,7 +99,6 @@
 
 		$("form").submit(function (event) {
 			document.getElementById('shiftsJson').value = JSON.stringify(calendar.getEvents());
-			console.log(calendar.getEvents());
 			var startDate = $("#startDate").val();
 			var endDate = $("#endDate").val();
 

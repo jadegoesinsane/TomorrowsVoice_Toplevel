@@ -36,6 +36,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Descripion = table.Column<string>(type: "TEXT", nullable: false),
                     Location = table.Column<string>(type: "TEXT", nullable: false),
+                    BackgroundColour = table.Column<string>(type: "TEXT", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

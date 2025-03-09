@@ -4,6 +4,7 @@ const brightColors = ["#467ECE", "#9944bc", "#d3162b", "#804205", "#aa394f"];
 const pastelColors = ["#F6CBDF", "#D7E3C0", "#f5e0ac", "#BFD6E9", "#d8cbe7"];
 
 var calendarEl = document.getElementById('timetable');
+var id = document.getElementById('ID').value;
 
 window.calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'timeGridWeek',

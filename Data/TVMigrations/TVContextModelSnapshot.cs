@@ -437,6 +437,10 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("BackgroundColour")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Descripion")
                         .IsRequired()
                         .HasColumnType("TEXT");

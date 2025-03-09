@@ -134,6 +134,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			Event @event = new Event();
 			PopulateAssignedEnrollmentData(@event);
+			PopulateDropDownLists(@event);
 			return View();
 		}
 
@@ -513,7 +514,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["Location"] = new SelectList(location, events?.Location);
 
 			var colour = ColourSelectList();
-			ViewData[""]
+			ViewData["Colour"] = new SelectList(colour, events?.BackgroundColour);
 
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
@@ -521,8 +522,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						 .ToList();
 
 			ViewBag.StatusList = new SelectList(statusList);
-
-			
 		}
 
 		public JsonResult GetEventData()
