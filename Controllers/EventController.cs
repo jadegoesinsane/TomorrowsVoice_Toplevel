@@ -75,7 +75,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					ViewData["EndDate"] = FilterEndDate.ToString("yyyy-MM-dd");
 				}
-				events = events.Where(e => e.StartDate >= FilterStartDate && e.EndDate <= FilterEndDate);
+				events = events.Where(e => e.Shifts.Any(s =>
+	(s.ShiftDate >= FilterStartDate) &&
+	   s.ShiftDate <= FilterEndDate)
+  );
 			}
 			if (!String.IsNullOrEmpty(SearchString))
 			{
