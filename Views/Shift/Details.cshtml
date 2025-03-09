@@ -30,7 +30,7 @@
 						Are you sure you want to sign up for
 						<strong>@Html.DisplayFor(Model => Model.Event.Name)</strong>
 						from
-						<strong>@Html.DisplayFor(model => model.StartAt)</strong>
+						<strong>@Html.DisplayFor(model => model.ShiftDate)</strong>
 						to
 						<strong>@Html.DisplayFor(model => model.EndAt)</strong>
 						?
@@ -40,7 +40,20 @@
 					@Html.AntiForgeryToken()
 					<input type="hidden" name="shiftID" value="@Model.ID" />
 					<input type="hidden" name="volID" value="" id="volInput" />
-					<button type="submit" class="btn btn-primary" disabled id="btnSubmit">Sign Up</button>
+					@if (Model.ShiftDate < DateTime.Today)
+					{
+						
+						<button type="submit" class="btn btn-primary" disabled>Sign Up</button>
+						<br />
+						<p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
+							Note:You cannot join a shift that has already passed.
+						</p>
+					}
+					else
+					{
+						<button type="submit" class="btn btn-primary" disabled id="btnSubmit">Sign Up</button>
+						
+					}
 				</div>
 			</form>
 		</div>
