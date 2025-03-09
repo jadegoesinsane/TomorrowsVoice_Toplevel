@@ -35,6 +35,28 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public string Location { get; set; }
 
+		[Display(Name = "Background Colour")]
+		public string BackgroundColour { get; set; } = "#467ECE";
+
+		[Display(Name = "Text Colour")]
+		public string TextColour
+		{
+			get
+			{
+				var brightColors = new List<string> { "#467ECE", "#9944bc", "#d3162b", "#804205", "#aa394f" };
+				var pastelColors = new List<string> { "#F6CBDF", "#D7E3C0", "#f5e0ac", "#BFD6E9", "#d8cbe7" };
+
+				if (brightColors.Contains(this.BackgroundColour))
+				{
+					return "#FFFFFF";
+				}
+				else
+				{
+					return "#000000";
+				}
+			}
+		}
+
 		[Display(Name = "Status")]
 		public Status Status { get; set; } = Status.Active;
 

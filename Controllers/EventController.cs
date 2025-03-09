@@ -142,7 +142,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,StartDate,EndDate,Descripion,Location")] Event @event, string[] selectedOptions, string Shifts)
+		public async Task<IActionResult> Create([Bind("ID,Name,StartDate,EndDate,Descripion,Location,BackgroundColour")] Event @event, string[] selectedOptions, string Shifts)
 		{
 			try
 			{
@@ -512,12 +512,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			ViewData["Location"] = new SelectList(location, events?.Location);
 
+			var colour = ColourSelectList();
+			ViewData[""]
+
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
 						 .Where(s => s == Status.Active || s == Status.Inactive)
 						 .ToList();
 
 			ViewBag.StatusList = new SelectList(statusList);
+
+			
 		}
 
 		public JsonResult GetEventData()

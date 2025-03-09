@@ -33,6 +33,13 @@
 		</div>
 		<div class="col-md-3">
 			<div class="form-floating required">
+				<input asp-for="BackgroundColour" class="form-control" />
+				<label asp-for="BackgroundColour" class="control-label"></label>
+				<span asp-validation-for="BackgroundColour" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-floating required">
 				<input asp-for="Location" class="form-control" />
 				<label asp-for="Location" class="control-label"></label>
 				<span asp-validation-for="Location" class="text-danger"></span>

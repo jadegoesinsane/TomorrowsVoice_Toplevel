@@ -160,6 +160,14 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 
 			return locations.ToList();
 		}
+		internal IEnumerable<string> ColourSelectList()
+		{
+			return new List<string>
+			{
+				"#467ECE", "#9944bc", "#d3162b", "#804205", "#aa394f", 
+				"#F6CBDF", "#D7E3C0", "#f5e0ac", "#BFD6E9", "#d8cbe7"
+			};
+		}
 
 		#endregion Select Lists
 
