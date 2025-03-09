@@ -8,6 +8,8 @@
 		public string? BackgroundColor { get; set; }
 		public string? BorderColor { get; set; }
 		public string? TextColor { get; set; }
+		public string? Display { get; set; }
+		public bool? displayEventEnd {  get; set; }
 		public ExtendedProps? ExtendedProps { get; set; }
 	}
 
@@ -32,5 +34,6 @@
 		public string? BackgroundColor { get; set; }
 		public string? BorderColor { get; set; }
 		public string? TextColor { get; set; }
+		public bool? allDay { get; set; }
 	}
 }

@@ -54,9 +54,9 @@
         @foreach (var item in Model)
         {
             <div class="col-12 mb-3">
-                <div class="card">
+                <div class="card" style="border-bottom-color: @item.BackgroundColour; border-bottom-width:thick;">
             @*         <div class="card-header"> *@
-                        <button class="card-header btn btn-link" style="text-align:left;" type="button" data-bs-toggle="collapse" data-bs-target="#c-@item.ID" aria-expanded="false" aria-controls="c-@item.ID">
+                    <button class="card-header btn btn-link" style="text-align:left; border-bottom-color: @item.BackgroundColour; border-bottom-width:thick;" type="button" data-bs-toggle="collapse" data-bs-target="#c-@item.ID" aria-expanded="false" aria-controls="c-@item.ID">
                             <h2 class="m-0">
                                 @item.Name
                             </h2>

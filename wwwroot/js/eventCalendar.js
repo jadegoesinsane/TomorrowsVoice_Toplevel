@@ -4,9 +4,19 @@ window.calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
     themeSystem: 'bootstrap5',
     eventDisplay: 'block',
-    events: `/Event/GetEvents`,
+    eventSources: [`/Event/GetEvents`, `/Event/GetEventShifts`],
     eventClick: function (info) {
-        window.location.href = `/Event/Details/${info.event.id}`;
+        if (info.event.extendedProps.isShift) {
+            window.location.href = `/Shift/Details/${info.event.id}`;
+        } else {
+            window.location.href = `/Event/Details/${info.event.id}`;
+        }
+    },
+    eventTimeFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        omitZeroMinute: true,
+        meridiem: true
     }
 });
 

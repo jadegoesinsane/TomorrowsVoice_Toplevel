@@ -5,7 +5,6 @@ const pastelColors = ["#F6CBDF", "#D7E3C0", "#f5e0ac", "#BFD6E9", "#d8cbe7"];
 
 var calendarEl = document.getElementById('timetable');
 var id = document.getElementById('ID').value;
-
 window.calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'timeGridWeek',
     themeSystem: 'bootstrap5',
@@ -28,7 +27,13 @@ window.calendar = new FullCalendar.Calendar(calendarEl, {
     eventClick: function (info) {
         clicked(info);
     },
-    events: `/Event/GetShifts?id=${id}`
+    events: `/Event/GetShifts?id=${id}`,
+    eventTimeFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        omitZeroMinute: true,
+        meridiem: true
+    }
 });
 
 document.addEventListener('DOMContentLoaded', function () {

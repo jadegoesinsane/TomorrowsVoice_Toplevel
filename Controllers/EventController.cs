@@ -212,6 +212,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return NotFound();
 			}
 			ViewBag.ID = @event.ID;
+			PopulateDropDownLists(@event);
 			PopulateAssignedEnrollmentData(@event);
 			return View(@event);
 		}
@@ -263,7 +264,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					 r => r.EndDate,
 					 r => r.Location,
 					r => r.Descripion,
-					r => r.Status))
+					r => r.Status,
+					r => r.BackgroundColour))
 			{
 				try
 				{
@@ -418,16 +420,64 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public JsonResult GetShifts(int id)
 		{
-			var shifts = _context.Shifts
-				.Where(s => s.EventID == id)
-				.Select(s => new ShiftJson
+
+				var shifts = _context.Shifts
+					.Where(s => s.EventID == id)
+					.Select(s => new ShiftJson
+					{
+						Title = s.Title ?? string.Empty,
+						Start = s.StartAt.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
+						End = s.EndAt.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
+						BackgroundColor = s.BackgroundColor,
+						BorderColor = s.BackgroundColor,
+						TextColor = s.TextColor,
+						Display = "block",
+						displayEventEnd = true,
+						ExtendedProps = new ExtendedProps
+						{
+							VolunteersNeeded = s.VolunteersNeeded,
+							Note = s.Note ?? string.Empty,
+							Location = s.Location ?? string.Empty
+						}
+					}).ToList();
+
+				return Json(shifts);
+
+		}
+
+		public JsonResult GetEvents()
+		{
+			var events = _context.Events
+				.Select(e => new
 				{
-					Title = s.Title ?? string.Empty,
+					ID = e.ID,
+					Title = e.Name ?? string.Empty,
+					Start = e.StartDate.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
+					End = e.EndDate.AddDays(1).ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
+					BackgroundColor = e.BackgroundColour,
+					BorderColor = e.BackgroundColour,
+					TextColor = e.TextColour,
+					allDay = true,
+					isShift = false
+				}).ToList();
+			return Json(events);
+		}
+
+		public JsonResult GetEventShifts()
+		{
+			var shifts = _context.Shifts
+				.Select(s => new
+				{
+					ID = s.ID,
+					Title = s.Title ?? "Shift",
 					Start = s.StartAt.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
 					End = s.EndAt.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
 					BackgroundColor = s.BackgroundColor,
 					BorderColor = s.BackgroundColor,
-					TextColor = s.TextColor,
+					TextColor = s.BackgroundColor,
+					Display = "list-item",
+					displayEventEnd = true,
+					isShift = true,
 					ExtendedProps = new ExtendedProps
 					{
 						VolunteersNeeded = s.VolunteersNeeded,
@@ -437,31 +487,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}).ToList();
 
 			return Json(shifts);
-		}
-
-		public JsonResult GetEvents()
-		{
-			var events = _context.Events
-				.Select(e => new EventJson
-				{
-					ID = e.ID,
-					Title = e.Name ?? string.Empty,
-					Start = e.StartDate.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
-					End = e.EndDate.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
-					BackgroundColor = e.BackgroundColour,
-					BorderColor = e.BackgroundColour,
-					TextColor = e.TextColour
-				}).ToList();
-			var shifts = _context.Shifts
-				.Select(s => new ShiftJson
-				{
-					ID = s.ID,
-					Start = s.StartAt.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
-					End = s.EndAt.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture),
-					Title = s.Title,
-					Display = "list-item"
-				}).ToList();
-			return Json(events).MergeWith(Json(shifts));
 		}
 
 		private void PopulateAssignedEnrollmentData(Event abc)
