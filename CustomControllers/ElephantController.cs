@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NToastNotify;
+using System.Drawing.Imaging;
 using System.IO;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
@@ -88,27 +89,26 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			return new SelectList(cities, "ID", "Name", id);
 		}
 
-        // Get Directors
-        internal SelectList EventSelectList(int? id, Status? status = null)
-        {
-            var events = _context.Events
-                    .OrderBy(s => s.Name);
+		// Get Directors
+		internal SelectList EventSelectList(int? id, Status? status = null)
+		{
+			var events = _context.Events
+					.OrderBy(s => s.Name);
 
-            if (status.HasValue)
-                events = events.Where(d => d.Status == status)
-                    .OrderBy(s => s.Name);
+			if (status.HasValue)
+				events = events.Where(d => d.Status == status)
+					.OrderBy(s => s.Name);
 
 			var eventList = events.Select(e => new
 			{
 				e.ID,
-				DisplayText = $"{e.Name} ({e.StartDate:MM-dd-yyyy} - {e.EndDate:MM-dd-yyyy})"  
+				DisplayText = $"{e.Name} ({e.StartDate:MM-dd-yyyy} - {e.EndDate:MM-dd-yyyy})"
 			});
 
 			return new SelectList(eventList, "ID", "DisplayText", id);
-			
-        }
+		}
 
-        internal SelectList DirectorSelectList(int? id, Status? status = null)
+		internal SelectList DirectorSelectList(int? id, Status? status = null)
 		{
 			var directors = _context.Directors
 					.OrderBy(s => s.LastName).ThenBy(s => s.FirstName);
@@ -149,7 +149,7 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 		//	return new SelectList(chapters, "ID", "Name", id);
 		//}
 
-		// Get Event 
+		// Get Event
 		internal IEnumerable<string> EventLocationSelectList()
 		{
 			var locations = _context.Events
@@ -160,13 +160,26 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 
 			return locations.ToList();
 		}
-		internal IEnumerable<string> ColourSelectList()
+
+		internal SelectList ColourSelectList(object? selectedValue)
 		{
-			return new List<string>
+			SelectListGroup BrightColours = new SelectListGroup() { Name = "Bright Colours" };
+			SelectListGroup PastelColours = new SelectListGroup() { Name = "Pastel Colours" };
+			IEnumerable<SelectListItem> brightColours = ColourPalette.BrightColours.Select(c => new SelectListItem
 			{
-				"#467ECE", "#9944bc", "#d3162b", "#804205", "#aa394f", 
-				"#F6CBDF", "#D7E3C0", "#f5e0ac", "#BFD6E9", "#d8cbe7"
-			};
+				Value = c.Value,
+				Text = c.Key,
+				Group = BrightColours
+			});
+
+			IEnumerable<SelectListItem> pastelColours = ColourPalette.PastelColours.Select(c => new SelectListItem
+			{
+				Value = c.Value,
+				Text = c.Key,
+				Group = PastelColours
+			});
+
+			return new SelectList(pastelColours.Concat(brightColours).ToList(), "Value", "Text", selectedValue, "Group.Name");
 		}
 
 		#endregion Select Lists
@@ -191,15 +204,15 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			_toastNotification.AddSuccessToastMessage(message);
 		}
 
-        // Custom Notification for Cancelling a shift
-        protected void AddCancelledToast(string date, string name, string event_)
-        {
-            string message = $"{name} successfully cancelled shift on {date} for {event_}";
-            _toastNotification.AddSuccessToastMessage(message);
-        }
+		// Custom Notification for Cancelling a shift
+		protected void AddCancelledToast(string date, string name, string event_)
+		{
+			string message = $"{name} successfully cancelled shift on {date} for {event_}";
+			_toastNotification.AddSuccessToastMessage(message);
+		}
 
-        // Error
-        protected void AddErrorToast(string message)
+		// Error
+		protected void AddErrorToast(string message)
 		{
 			_toastNotification.AddErrorToastMessage(message);
 		}

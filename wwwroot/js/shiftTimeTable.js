@@ -1,7 +1,30 @@
 ﻿import { computePosition, flip, shift, offset, arrow } from 'https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.13/+esm';
 
-const brightColors = ["#467ECE", "#9944bc", "#d3162b", "#804205", "#aa394f"];
-const pastelColors = ["#F6CBDF", "#D7E3C0", "#f5e0ac", "#BFD6E9", "#d8cbe7"];
+const brightColours = {
+    "Blue": "#467ECE",
+    "Purple": "#9944bc",
+    "Red": "#d3162b",
+    "Brown": "#804205",
+    "Magenta": "#aa394f"
+};
+
+const lightColours = {
+    "Pink": "#F6CBDF",
+    "Green": "#D7E3C0",
+    "Yellow": "#f5e0ac",
+    "Light Blue": "#BFD6E9",
+    "Light Purple": "#d8cbe7"
+};
+
+function getTextColour(colour) {
+    if (Object.values(brightColours).includes(colour)) {
+        return "#FFFFFF";
+    } else if (Object.values(lightColours).includes(colour)) {
+        return "#000000";
+    } else {
+        return "#000000";
+    }
+}
 
 var calendarEl = document.getElementById('timetable');
 var id = document.getElementById('ID').value;
@@ -41,14 +64,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function selected(info) {
+    const backgroundColour = brightColors["Blue"]; // Default color
+    const textColour = getTextColour(backgroundColour);
+
     calendar.addEvent({
         start: info.start,
         end: info.end,
         allDay: info.allDay,
         volunteersNeeded: null,
-        backgroundColor: '#467ECE',
-        borderColor: '#467ECE',
-        textColor: '#FFFFFF',
+        backgroundColor: backgroundColour,
+        borderColor: backgroundColour,
+        textColor: textColour,
         extendedProps: {
             daysOfWeek: [],
             note: "",
@@ -68,18 +94,14 @@ function clicked(info) {
         <div class="col-md-3 offset-1">
             <select name="colour" id="cboColour" class="form-control">
                 <optgroup label="Bright">
-                    <option value="#467ECE" ${info.event.backgroundColor === "#467ECE" ? 'selected' : ''} default>Blue</option>
-                    <option value="#9944bc" ${info.event.backgroundColor === "#9944bc" ? 'selected' : ''}>Purple</option>
-                    <option value="#d3162b" ${info.event.backgroundColor === "#d3162b" ? 'selected' : ''}>Red</option>
-                    <option value="#804205" ${info.event.backgroundColor === "#804205" ? 'selected' : ''}>Brown</option>
-                    <option value="#aa394f" ${info.event.backgroundColor === "#aa394f" ? 'selected' : ''}>Magenta</option>
+                    ${Object.entries(brightColours).map(([name, value]) => `
+                    <option value="${value}" ${info.event.backgroundColor === value ? 'selected' : ''}>${name}</option>
+                    `).join('')}
                 </optgroup>
                 <optgroup label="Pastel">
-                    <option value="#F6CBDF" ${info.event.backgroundColor === "#F6CBDF" ? 'selected' : ''}>Pink</option>
-                    <option value="#D7E3C0" ${info.event.backgroundColor === "#D7E3C0" ? 'selected' : ''}>Green</option>
-                    <option value="#f5e0ac" ${info.event.backgroundColor === "#f5e0ac" ? 'selected' : ''}>Yellow</option>
-                    <option value="#BFD6E9" ${info.event.backgroundColor === "#BFD6E9" ? 'selected' : ''}>Blue</option>
-                    <option value="#d8cbe7" ${info.event.backgroundColor === "#d8cbe7" ? 'selected' : ''}>Purple</option>
+                    ${Object.entries(lightColours).map(([name, value]) => `
+                    <option value="${value}" ${info.event.backgroundColor === value ? 'selected' : ''}>${name}</option>
+                    `).join('')}
                 </optgroup>
             </select>
         </div>
@@ -166,12 +188,7 @@ function clicked(info) {
         info.event.setProp('title', title);
         info.event.setProp('backgroundColor', colour);
         info.event.setProp('borderColor', colour);
-
-        if (brightColors.includes(colour)) {
-            info.event.setProp('textColor', 'white');
-        } else if (pastelColors.includes(colour)) {
-            info.event.setProp('textColor', 'black');
-        }
+        info.event.setProp('textColor', getTextColour(colour))
 
         info.event.setStart(new Date(`${date}T${start}`).toISOString());
         info.event.setEnd(new Date(`${date}T${end}`).toISOString());

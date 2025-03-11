@@ -1,16 +1,17 @@
 ﻿var calendarEl = document.getElementById('calendar');
 
 window.calendar = new FullCalendar.Calendar(calendarEl, {
+    timeZone: 'UTC',
     initialView: 'dayGridMonth',
     themeSystem: 'bootstrap5',
+    headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+    },
     eventDisplay: 'block',
     eventSources: [`/Event/GetEvents`, `/Event/GetEventShifts`],
     dayMaxEventRows: true,
-    views: {
-        timeGrid: {
-            dayMaxEventRows: 6
-        }
-    },
     eventClick: function (info) {
         if (info.event.extendedProps.isShift) {
             window.location.href = `/Shift/Details/${info.event.id}`;

@@ -118,7 +118,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     Location = table.Column<string>(type: "TEXT", nullable: true),
                     Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
                     BackgroundColor = table.Column<string>(type: "TEXT", nullable: false),
-                    TextColor = table.Column<string>(type: "TEXT", nullable: false),
                     ShiftDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),

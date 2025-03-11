@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using NToastNotify;
 using NToastNotify.Helpers;
 using Org.BouncyCastle.Utilities;
+using System.Diagnostics;
 using System.Globalization;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -164,8 +165,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                             ShiftDate = DateTime.Parse(shiftJson.Start).Date,
                             StartAt = DateTime.Parse(shiftJson.Start),
                             EndAt = DateTime.Parse(shiftJson.End),
-                            BackgroundColor = string.IsNullOrEmpty(shiftJson.BackgroundColor) ? "#467ECE" : shiftJson.BackgroundColor,
-                            TextColor = string.IsNullOrEmpty(shiftJson.TextColor) ? "#FFFFFF" : shiftJson.TextColor,
+                            BackgroundColor = string.IsNullOrEmpty(shiftJson.BackgroundColor) ? ColourPalette.BrightColours["Blue"] : shiftJson.BackgroundColor,
                             Note = shiftJson.ExtendedProps?.Note,
                             VolunteersNeeded = shiftJson.ExtendedProps?.VolunteersNeeded ?? 0
                         });
@@ -239,24 +239,30 @@ namespace TomorrowsVoice_Toplevel.Controllers
             ViewBag.ID = @eventToUpdate.ID;
             UpdateEnrollments(selectedOptions, @eventToUpdate);
 
-            var shifts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShiftJson>>(Shifts);
-            if (shifts != null)
+            try
             {
-                eventToUpdate.Shifts.Clear();
-                foreach (var shiftJson in shifts)
+                var shifts = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ShiftJson>>(Shifts);
+                if (shifts != null)
                 {
-                    eventToUpdate.Shifts.Add(new Shift
+                    eventToUpdate.Shifts.Clear();
+                    foreach (var shiftJson in shifts)
                     {
-                        Title = shiftJson.Title,
-                        ShiftDate = DateTime.Parse(shiftJson.Start).Date,
-                        StartAt = DateTime.Parse(shiftJson.Start),
-                        EndAt = DateTime.Parse(shiftJson.End),
-                        BackgroundColor = string.IsNullOrEmpty(shiftJson.BackgroundColor) ? "#467ECE" : shiftJson.BackgroundColor,
-                        TextColor = string.IsNullOrEmpty(shiftJson.TextColor) ? "#FFFFFF" : shiftJson.TextColor,
-                        Note = shiftJson.ExtendedProps?.Note,
-                        VolunteersNeeded = shiftJson.ExtendedProps?.VolunteersNeeded ?? 0
-                    });
+                        eventToUpdate.Shifts.Add(new Shift
+                        {
+                            Title = shiftJson.Title,
+                            ShiftDate = DateTime.Parse(shiftJson.Start).Date,
+                            StartAt = DateTime.Parse(shiftJson.Start),
+                            EndAt = DateTime.Parse(shiftJson.End),
+                            BackgroundColor = string.IsNullOrEmpty(shiftJson.BackgroundColor) ? ColourPalette.BrightColours["Blue"] : shiftJson.BackgroundColor,
+                            Note = shiftJson.ExtendedProps?.Note,
+                            VolunteersNeeded = shiftJson.ExtendedProps?.VolunteersNeeded ?? 0
+                        });
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.GetBaseException().Message);
             }
 
             // Try updating with posted values
@@ -570,8 +576,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             ViewData["Location"] = new SelectList(location, events?.Location);
 
-            var colour = ColourSelectList();
-            ViewData["BackgroundColour"] = new SelectList(colour, events?.BackgroundColour);
+            ViewData["BackgroundColour"] = ColourSelectList(events?.BackgroundColour);
 
             var statusList = Enum.GetValues(typeof(Status))
                          .Cast<Status>()

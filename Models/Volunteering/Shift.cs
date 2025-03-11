@@ -1,6 +1,8 @@
 ﻿using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing.Imaging;
 using TomorrowsVoice_Toplevel.Data;
+using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
@@ -42,8 +44,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
         [DataType(DataType.MultilineText)]
         public string? Note { get; set; }
 
-        public string BackgroundColor { get; set; } = "#467ECE";
-        public string TextColor { get; set; } = "#FFFFFF";
+        public string BackgroundColor { get; set; } = ColourPalette.BrightColours["Blue"];
+        public string TextColor => ColourPalette.GetTextColour(BackgroundColor);
 
         [Display(Name = "Date")]
         [Required(ErrorMessage = "Please select a date for this Shift")]

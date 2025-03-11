@@ -499,10 +499,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("TextColor")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Title")
                         .HasMaxLength(55)
                         .HasColumnType("TEXT");

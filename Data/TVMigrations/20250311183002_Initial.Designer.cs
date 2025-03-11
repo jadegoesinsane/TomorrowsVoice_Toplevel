@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250311173005_Initial")]
+    [Migration("20250311183002_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -501,10 +501,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("TextColor")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
                         .HasMaxLength(55)
