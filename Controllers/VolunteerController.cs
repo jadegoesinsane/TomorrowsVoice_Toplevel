@@ -466,25 +466,25 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
         public IActionResult DownloadVolunteers()
         {
-            //Get the appointments
-            var appts = from a in _context.Volunteers
-                        
-                        orderby a.HoursVolunteered descending
-                        select new
-                        {
-                            
-                            Name = a.NameFormatted,
-                            Hours = a.HoursVolunteered,
-                            Participation = a.ParticipationCount,
-                            Absences = a.absences,
-                            Phone = a.PhoneFormatted,
-                            Email = a.Email,
-                           
-                        };
-            //How many rows?
-            int numRows = appts.Count();
+			//Get the appointments
+			var appts = from a in _context.Volunteers
 
-            if (numRows > 0) //We have data
+						orderby a.ParticipationCount descending
+						select new
+						{
+
+							Name = a.NameFormatted,
+							Hours = a.HoursVolunteered,
+							Participation = a.ParticipationCount,
+							Absences = a.absences,
+							Phone = a.PhoneFormatted,
+							Email = a.Email,
+
+						};
+			//How many rows?
+			int numRows = appts.Count();
+
+			if (numRows > 0) //We have data
             {
                 //Create a new spreadsheet from scratch.
                 using (ExcelPackage excel = new ExcelPackage())
@@ -899,7 +899,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 ModelState.AddModelError("", "Unable to delete record. Please try again.");
             }
 
-            return View(userShift);
+            return RedirectToAction("VolunteerforUser", "Volunteer");
 
 
         }

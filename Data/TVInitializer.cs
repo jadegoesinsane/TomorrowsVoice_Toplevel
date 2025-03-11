@@ -779,8 +779,9 @@ namespace TomorrowsVoice_Toplevel.Data
 
 										volunteer.ParticipationCount++;
 										volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
+										
 
-                                    }
+									}
                                     else if (shift.EventID == 4) {
                                          userShift = new UserShift
                                         {
@@ -799,8 +800,9 @@ namespace TomorrowsVoice_Toplevel.Data
 
                                         volunteer.ParticipationCount++;
                                         volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
+										
 
-                                    }
+									}
                                     else
                                     {
                                          userShift = new UserShift

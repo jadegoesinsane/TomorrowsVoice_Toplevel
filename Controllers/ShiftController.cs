@@ -587,7 +587,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							{
 								volunteer.totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount--;
-								//volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
+								
 							}
 						}
 						enrollment.NoShow = enrollmentVM.ShowOrNot;
@@ -601,7 +601,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							{
 								volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount++;
-								//volunteer.HoursVolunteered = (int)volunteer.totalWorkDuration.TotalHours;
+							
 							}
 						}
 					}
