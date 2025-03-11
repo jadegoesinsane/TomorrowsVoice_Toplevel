@@ -10,12 +10,17 @@ var calendar = new FullCalendar.Calendar(calendarEl, {
         end: 'prev,next today'
     },
     navLinks: true,
+    eventTimeFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        omitZeroMinute: true,
+        meridiem: true
+    },
     navLinkDayClick: function (date) { window.location.href = '/Rehearsal/SetRehearsal?date=' + date.toISOString().split('T')[0] },
     //dateClick: function (info) { dateModal(info) }
 });
 calendar.render();
 /*document.addEventListener('DOMContentLoaded', function () {
-    
 });*/
 
 /*function dateModal (date)
@@ -26,7 +31,7 @@ calendar.render();
         {
             dates += event;
         }
-    });    
+    });
 
     $('#exampleModal .modal-body').text('Selected Date: ' + date);
     $('#exampleModal').modal('show')
