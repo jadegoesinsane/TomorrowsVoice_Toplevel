@@ -40,7 +40,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Event");
 
-            if (!EventID.HasValue)
+			if (!EventID.HasValue)
 			{
 				//Go back to the proper return url for the Events controller
 				return Redirect(ViewData["returnURL"].ToString());
@@ -108,7 +108,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			ViewBag.Event = events;
 
-
 			//Handle Paging
 			//int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
 			//ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
@@ -144,18 +143,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Shift/Create
 		public IActionResult Create(int EventID)
 		{
-            Shift shift = new Shift();
+			Shift shift = new Shift();
 
-            ViewData["EventID"] = EventID;
-            var eventData = _context.Events
+			ViewData["EventID"] = EventID;
+			var eventData = _context.Events
 			.Where(e => e.ID == EventID)
 			.FirstOrDefault();
 
-            ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
+			ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
 
-
-            return View();
-        }
+			return View();
+		}
 
 		// POST: Shift/Create
 		// To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -202,7 +200,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					_context.Add(shift);
 					await _context.SaveChangesAsync();
-					AddSuccessToast(shift.ShiftDuration.ToString());
+					_toastNotification.AddSuccessToastMessage($"{shift.Title ?? "Shift"} at {shift.TimeFormat} was successfully created.");
 					// _toastNotification.AddSuccessToastMessage($"{singer.NameFormatted} was successfully created.");
 					return RedirectToAction("Details", new { shift.ID });
 				}
@@ -229,15 +227,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 				}
 			}
-			
 
-			ViewData["EventID"] = shift. EventID;
+			ViewData["EventID"] = shift.EventID;
 			var eventData = _context.Events
 			.Where(e => e.ID == shift.EventID)
 			.FirstOrDefault();
 
 			ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
-
 
 			return View();
 		}
@@ -324,7 +320,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						}
 					}
 					await _context.SaveChangesAsync();
-					_toastNotification.AddSuccessToastMessage($"{shiftToUpdate.ShiftDuration} was successfully updated.");
+					_toastNotification.AddSuccessToastMessage($"{shiftToUpdate.Title ?? "Shift"} at {shiftToUpdate.TimeFormat} was successfully updated.");
 					return RedirectToAction("Details", new { shiftToUpdate.ID });
 				}
 				catch (RetryLimitExceededException)
@@ -384,7 +380,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var shift = await _context.Shifts
-
 			   .FirstOrDefaultAsync(m => m.ID == id);
 
 			try
@@ -396,7 +391,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					// Here we are archiving a singer instead of deleting them
 					//_context.Shifts.Remove(shift);
 					await _context.SaveChangesAsync();
-					AddSuccessToast(shift.ShiftDuration.ToString());
+					_toastNotification.AddSuccessToastMessage($"{shift.Title ?? "Shift"} at {shift.TimeFormat} was successfully deleted.");
 					return RedirectToAction(nameof(Index));
 				}
 			}
@@ -444,7 +439,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					// Here we are archiving a singer instead of deleting them
 					//_context.Shifts.Remove(shift);
 					await _context.SaveChangesAsync();
-					AddSuccessToast(shift.ShiftDuration.ToString());
+					_toastNotification.AddSuccessToastMessage($"{shift.Title ?? "Shift"} at {shift.TimeFormat} was successfully recovered.");
 					return RedirectToAction(nameof(Index));
 				}
 			}
@@ -573,10 +568,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						throw new InvalidOperationException("Cannot have work hours when marked as a No Show.");
 					}
 
-                    if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
-                    {
-                        throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
-                    }
+					if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
+					{
+						throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
+					}
 
 					if (enrollment != null)
 					{
@@ -587,7 +582,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							{
 								volunteer.totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount--;
-								
 							}
 						}
 						enrollment.NoShow = enrollmentVM.ShowOrNot;
@@ -601,7 +595,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							{
 								volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount++;
-							
 							}
 						}
 					}
@@ -630,10 +623,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		//private void PopulateDropDown2(Shift? shift = null)
 		//{
-  //         // ViewData["EventID"] = new SelectList(_context.Events.OrderBy(e => e.Name), "ID", "Name");
-  //         ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
+		//         // ViewData["EventID"] = new SelectList(_context.Events.OrderBy(e => e.Name), "ID", "Name");
+		//         ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);
 
-  //          var statusList = Enum.GetValues(typeof(Status))
+		//          var statusList = Enum.GetValues(typeof(Status))
 		//				 .Cast<Status>()
 		//				 .Where(s => s == Status.Active || s == Status.Canceled || s == Status.Archived)
 		//				 .ToList();
@@ -646,74 +639,68 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			ViewData["VolunteerID"] = new SelectList(_context
 				.Volunteers
-				.Where(v=>v.Status == Status.Active)
+				.Where(v => v.Status == Status.Active)
 				.OrderBy(v => v.LastName), "ID", "NameFormatted");
 		}
 
-        // Sign a volunteer up for a shift
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ShiftSignUp(int shiftID, int volID)
-        {
-
+		// Sign a volunteer up for a shift
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ShiftSignUp(int shiftID, int volID)
+		{
 			bool userShiftExists = _context.UserShifts
 		.Any(us => us.UserID == volID && us.ShiftID == shiftID);
 
 			if (userShiftExists)
 			{
-
 				TempData["ErrorMessage"] = "This volunteer is already signed up for this shift.";
-
 
 				return RedirectToAction("Details", "Shift", new { id = shiftID });
 			}
 			// create new volunteer signup
 			var userShift = new UserShift
-            {
-                UserID = volID,
-                ShiftID = shiftID
-            };
+			{
+				UserID = volID,
+				ShiftID = shiftID
+			};
 
 			var shift = _context.Shifts.Where(s => s.ID == shiftID).FirstOrDefault();
 
-            // get date for success toast
-            string date = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.StartAt.ToLongDateString()).FirstOrDefault();
-            // get name for success toast
-            string name = _context.Volunteers.Where(v => v.ID == volID).Select(v => v.NameFormatted).FirstOrDefault();
-            // get event for success toast
-            int eventID = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.EventID).FirstOrDefault();
-            string event_ = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault();
+			// get date for success toast
+			string date = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.StartAt.ToLongDateString()).FirstOrDefault();
+			// get name for success toast
+			string name = _context.Volunteers.Where(v => v.ID == volID).Select(v => v.NameFormatted).FirstOrDefault();
+			// get event for success toast
+			int eventID = _context.Shifts.Where(s => s.ID == shiftID).Select(s => s.EventID).FirstOrDefault();
+			string event_ = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault();
 
-
-            try
-            {
+			try
+			{
 				if (shift.Status == Status.Canceled)
 				{
 					throw new Exception("Cannot register for a cancelled shift");
 				}
-                _context.Add(userShift);
-                await _context.SaveChangesAsync();
-                AddSignUpToast(date, name, event_);
+				_context.Add(userShift);
+				await _context.SaveChangesAsync();
+				AddSignUpToast(date, name, event_);
 
-                return RedirectToAction($"Details", "Volunteer", new { id = volID });
-            }
-            catch (Exception ex)
-            {
-                if (ex.GetBaseException().Message.Contains("cancelled"))
+				return RedirectToAction($"Details", "Volunteer", new { id = volID });
+			}
+			catch (Exception ex)
+			{
+				if (ex.GetBaseException().Message.Contains("cancelled"))
 				{
-                    ModelState.AddModelError("", "Cannot register ");
-                }
+					ModelState.AddModelError("", "Cannot register ");
+				}
 				else
 				{
-                    ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
-                }
+					ModelState.AddModelError("", $"Error: {ex.GetBaseException().Message}");
+				}
 				return RedirectToAction("Details", "Shift", new { id = shiftID });
-            }
+			}
+		}
 
-            
-        }
-
-        public JsonResult GetShiftData()
+		public JsonResult GetShiftData()
 		{
 			var date = new DateTime(2025, 11, 30);
 
@@ -727,22 +714,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(data);
 		}
 
-        public IActionResult CreateMany(int EventID)
-        {
-            Shift shift = new Shift();
+		public IActionResult CreateMany(int EventID)
+		{
+			Shift shift = new Shift();
 
 			ViewData["EventID"] = EventID;
-            var eventData = _context.Events
-        .Where(e => e.ID == EventID)
-        .FirstOrDefault(); 
+			var eventData = _context.Events
+		.Where(e => e.ID == EventID)
+		.FirstOrDefault();
 
-            
-                
-                ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
-            
+			ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
 
-            return View();
-        }
+			return View();
+		}
 
 		// POST: Shift/Create
 		// To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -750,13 +734,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Shift/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> CreateMany([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, 
-												DateTime StartAt, DateTime EndAt,int VolunteersNeeded, DateTime StartAt2, DateTime EndAt2, int VolunteersNeeded2
+		public async Task<IActionResult> CreateMany([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift,
+												DateTime StartAt, DateTime EndAt, int VolunteersNeeded, DateTime StartAt2, DateTime EndAt2, int VolunteersNeeded2
 			, int VolunteersNeeded3, DateTime StartAt3, DateTime EndAt3)
 		{
 			try
 			{
-				
 				if (ModelState.IsValid)
 				{
 					var eventRecord = _context.Events
@@ -768,7 +751,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						return View(shift);
 					}
 
-
 					// Creating shifts for each day in the event date range
 					var shiftsToCreate = new List<Shift>();
 					for (var date = eventRecord.StartDate; date <= eventRecord.EndDate; date = date.AddDays(1))
@@ -779,7 +761,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							StartAt = StartAt,
 							EndAt = EndAt,
 							EventID = shift.EventID
-							,VolunteersNeeded= VolunteersNeeded
+							,
+							VolunteersNeeded = VolunteersNeeded
 						});
 						shiftsToCreate.Add(new Shift
 						{
@@ -820,7 +803,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					_context.AddRange(shiftsToCreate);
 					await _context.SaveChangesAsync();
 
-					AddSuccessToast("Shifts successfully created.");
+					_toastNotification.AddSuccessToastMessage($"Shifts were successfully added to {eventRecord.Name}.");
 
 					return View();
 				}
@@ -843,19 +826,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			ViewData["EventID"] = shift.EventID;
 			var eventData = _context.Events
-		.Where(e => e.ID == shift. EventID)
+		.Where(e => e.ID == shift.EventID)
 		.FirstOrDefault();
-
-
 
 			ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
 
-
-
-
 			return View();
 		}
-
 
 		private bool ShiftExists(int id)
 		{
