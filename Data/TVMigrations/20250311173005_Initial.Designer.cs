@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250309124931_Initial")]
+    [Migration("20250311173005_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -609,9 +609,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>
                 {
                     b.HasBaseType("TomorrowsVoice_Toplevel.Models.Users.User");
-
-                    b.Property<int>("HoursVolunteered")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ParticipationCount")
                         .HasColumnType("INTEGER");

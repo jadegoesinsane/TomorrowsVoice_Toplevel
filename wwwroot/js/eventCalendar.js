@@ -5,6 +5,12 @@ window.calendar = new FullCalendar.Calendar(calendarEl, {
     themeSystem: 'bootstrap5',
     eventDisplay: 'block',
     eventSources: [`/Event/GetEvents`, `/Event/GetEventShifts`],
+    dayMaxEventRows: true,
+    views: {
+        timeGrid: {
+            dayMaxEventRows: 6
+        }
+    },
     eventClick: function (info) {
         if (info.event.extendedProps.isShift) {
             window.location.href = `/Shift/Details/${info.event.id}`;

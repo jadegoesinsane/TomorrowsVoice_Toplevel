@@ -607,9 +607,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     b.HasBaseType("TomorrowsVoice_Toplevel.Models.Users.User");
 
-                    b.Property<int>("HoursVolunteered")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ParticipationCount")
                         .HasColumnType("INTEGER");
 
