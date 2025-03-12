@@ -91,14 +91,15 @@
 	<script src="~/js/shiftTimeTable.js" type="module"></script>
 	<script type="text/javascript">
 		function rangeCheck() {
-    calendar.setOption('validRange', {
-        start: document.getElementById('startDate').value,
-        end: document.getElementById('endDate').value
-    });
-}
+			calendar.setOption('validRange', {
+				start: document.getElementById('startDate').value,
+				end: document.getElementById('endDate').value
+			});
+		}
 
 		$("form").submit(function (event) {
 			document.getElementById('shiftsJson').value = JSON.stringify(calendar.getEvents());
+
 			var startDate = $("#startDate").val();
 			var endDate = $("#endDate").val();
 
@@ -128,10 +129,10 @@
 					document.getElementById('availOptions').value = 4;
 				}
 			})
-				calendar.setOption('validRange', {
+			calendar.setOption('validRange', {
 				start: "2025-03-08",
 				end: "2025-04-01"
-				});
+			});
 
 		}
 	</script>
@@ -151,6 +152,7 @@
 		z-index: 1000 !important;
 		display: none;
 	}
+
 	.form-floating > .control-label {
 		top: 9px;
 	}

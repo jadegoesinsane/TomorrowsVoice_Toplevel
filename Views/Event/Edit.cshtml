@@ -91,36 +91,6 @@
 		var id = @ViewBag.ID;
 	</script>
 	<script src="~/js/shiftTimeTable.js" type="module"></script>
-	@* <script>
-		function loadShifts(id) {
-			fetch(`/Event/GetShifts?id=${id}`)
-				.then(response => response.json())
-				.then(shifts => {
-					console.log('Shifts: ', shifts);
-					shifts.forEach(shift => {
-						calendar.addEvent({
-							id: shift.id,
-							title: shift.title,
-							start: shift.start,
-							end: shift.end,
-							allDay: shift.allDay,
-							backgroundColor: shift.backgroundColor,
-							borderColor: shift.borderColor,
-							extendedProps: {
-								volunteersNeeded: shift.volunteersNeeded,
-								daysOfWeek: shift.daysOfWeek
-							}
-						});
-					});
-				})
-				.catch(error => console.error('Error loading shifts:', error));
-		}
-		document.addEventListener('DOMContentLoaded', function () {
-			loadShifts(@ViewBag.ID);
-			console.log(calendar.getEvents());
-		});
-
-	</script> *@
 	<script type="text/javascript">
 
 		function rangeCheck() {

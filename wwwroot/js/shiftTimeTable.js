@@ -56,6 +56,29 @@ window.calendar = new FullCalendar.Calendar(calendarEl, {
         minute: '2-digit',
         omitZeroMinute: true,
         meridiem: true
+    },
+    eventDrop: function (eventDropInfo) {
+        const newEvent = eventDropInfo.event;
+        const oldEvent = eventDropInfo.oldEvent;
+
+        const newRecurring = eventDropInfo.event._def.recurringDef;
+        const oldRecurring = eventDropInfo.oldEvent._def.recurringDef;
+
+        if (newRecurring != null && oldRecurring != null) {
+            if (newEvent.start.getDay() != oldEvent.start.getDay()) {
+                const daysOfWeek = newRecurring.typeData.daysOfWeek;
+                const shiftedDaysOfWeek = daysOfWeek.map(day => (day + newEvent.start.getDay() - oldEvent.start.getDay() + 7) % 7);
+                newEvent._def.recurringDef.typeData.daysOfWeek = shiftedDaysOfWeek;
+            }
+            if (newEvent.start.getTime() != oldEvent.start.getTime()) {
+                const startTime = newEvent.start.getHours() * 3600000 + newEvent.start.getMinutes() * 60000;
+                const endTime = newEvent.end.getHours() * 3600000 + newEvent.end.getMinutes() * 60000;
+
+                newEvent._def.recurringDef.typeData.startTime = { years: 0, months: 0, days: 0, milliseconds: startTime };
+                newEvent._def.recurringDef.typeData.endTime = { years: 0, months: 0, days: 0, milliseconds: endTime };
+            }
+            refresh();
+        }
     }
 });
 
@@ -64,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function selected(info) {
-    const backgroundColour = brightColors["Blue"]; // Default color
+    const backgroundColour = brightColours["Blue"]; // Default color
     const textColour = getTextColour(backgroundColour);
 
     calendar.addEvent({
@@ -107,34 +130,56 @@ function clicked(info) {
         </div>
     </div>
     <div class="g-1 row">
-        <i class="bi bi-person col-md-1"></i>
-        <div class="col-md-11">
+        <i class="bi bi-person col-1 col-form-label"></i>
+        <div class="col">
             <input type="number" id="volunteersNeeded" placeholder="Volunteers needed" class="form-control" value="${info.event.extendedProps.volunteersNeeded}">
         </div>
     </div>
     <div class="g-1 row">
-        <i class="bi bi-clock col-md-1"></i>
-        <div class="col-md-11">
+        <i class="bi bi-clock col-1 col-form-label"></i>
+        <div class="col">
             <input type="date" id="date" class="form-control" value="${info.event.startStr.substring(0, 10)}">
         </div>
-        <div class="col-md-5 offset-1">
+        <div class="col">
             <input type="time" id="start" class="form-control" value="${info.event.startStr.substring(11, 16)}">
         </div>
-        <i class="bi bi-arrow-right col-md-1"></i>
-        <div class="col-md-5">
+        <i class="bi bi-arrow-right col col-form-label"></i>
+        <div class="col">
             <input type="time" id="end" class="form-control" value="${info.event.endStr.substring(11, 16)}">
         </div>
     </div>
     <div class="g-1 row">
-        <i class="bi bi-geo-alt col-md-1"></i>
-        <div class="col-md-11">
+        <i class="bi bi-geo-alt col-1 col-form-label"></i>
+        <div class="col">
             <input type="text" id="location" placeholder="Location" class="form-control" value="${info.event.extendedProps.location}">
         </div>
     </div>
     <div class="g-1 row">
-        <i class="bi bi-arrow-counterclockwise col-md-1"></i>
+        <i class="bi bi-arrow-counterclockwise col-1 col-form-label"></i>
         <div class="col-md-11">
-            <select name="dow" id="cboDow" class="form-control" multiple>
+            <div class="btn-group" role="group" aria-label="Repeat on these days">
+                <input type="checkbox" class="btn-check" id="btn-sunday" autocomplete="off" ${daysOfWeek.includes(0) ? 'checked' : ''}>
+                <label class="btn btn-light" for="btn-sunday">Sun</label>
+
+                <input type="checkbox" class="btn-check" id="btn-monday" autocomplete="off" ${daysOfWeek.includes(1) ? 'checked' : ''}>
+                <label class="btn btn-light" for="btn-monday">Mon</label>
+
+                <input type="checkbox" class="btn-check" id="btn-tuesday" autocomplete="off" ${daysOfWeek.includes(2) ? 'checked' : ''}>
+                <label class="btn btn-light" for="btn-tuesday">Tue</label>
+
+                <input type="checkbox" class="btn-check" id="btn-wednesday" autocomplete="off" ${daysOfWeek.includes(3) ? 'checked' : ''}>
+                <label class="btn btn-light" for="btn-wednesday">Wed</label>
+
+                <input type="checkbox" class="btn-check" id="btn-thursday" autocomplete="off" ${daysOfWeek.includes(4) ? 'checked' : ''}>
+                <label class="btn btn-light" for="btn-thursday">Thu</label>
+
+                <input type="checkbox" class="btn-check" id="btn-friday" autocomplete="off" ${daysOfWeek.includes(5) ? 'checked' : ''}>
+                <label class="btn btn-light" for="btn-friday">Fri</label>
+
+                <input type="checkbox" class="btn-check" id="btn-saturday" autocomplete="off" ${daysOfWeek.includes(6) ? 'checked' : ''}>
+                <label class="btn btn-light" for="btn-saturday">Sat</label>
+            </div>
+            <!--<select name="dow" id="cboDow" class="form-control" multiple>
                 <option value="never" ${daysOfWeek.length === 0 ? 'selected' : ''}>Don't repeat</option>
                 <option value="0" ${daysOfWeek.includes(0) ? 'selected' : ''}>Sunday</option>
                 <option value="1" ${daysOfWeek.includes(1) ? 'selected' : ''}>Monday</option>
@@ -143,12 +188,12 @@ function clicked(info) {
                 <option value="4" ${daysOfWeek.includes(4) ? 'selected' : ''}>Thursday</option>
                 <option value="5" ${daysOfWeek.includes(5) ? 'selected' : ''}>Friday</option>
                 <option value="6" ${daysOfWeek.includes(6) ? 'selected' : ''}>Saturday</option>
-            </select>
+            </select>--!>
         </div>
     </div>
     <div class="g-1 row">
-        <i class="bi bi-card-text col-md-1"></i>
-        <div class="col-md-11">
+        <i class="bi bi-card-text col-1 col-form-label"></i>
+        <div class="col">
             <textarea rows="1" style="width: 100%;" id="note" placeholder="Notes">${info.event._def.extendedProps.note}</textarea>
         </div>
     </div>
@@ -183,7 +228,15 @@ function clicked(info) {
         const volunteersNeeded = document.getElementById('volunteersNeeded').value;
         const location = document.getElementById('location').value;
         const note = document.getElementById('note').value;
-        const repeat = Array.from(document.getElementById('cboDow').selectedOptions).map(option => option.value);
+
+        const repeat = [];
+        if (document.getElementById('btn-sunday').checked) repeat.push(0);
+        if (document.getElementById('btn-monday').checked) repeat.push(1);
+        if (document.getElementById('btn-tuesday').checked) repeat.push(2);
+        if (document.getElementById('btn-wednesday').checked) repeat.push(3);
+        if (document.getElementById('btn-thursday').checked) repeat.push(4);
+        if (document.getElementById('btn-friday').checked) repeat.push(5);
+        if (document.getElementById('btn-saturday').checked) repeat.push(6);
 
         info.event.setProp('title', title);
         info.event.setProp('backgroundColor', colour);
@@ -197,13 +250,12 @@ function clicked(info) {
         info.event.setExtendedProp('location', location);
         info.event.setExtendedProp('note', note);
 
-        if (repeat != "never") {
+        if (repeat.length > 0) {
             if (info.event.groupId != null && info.event.daysOfWeek != null)
                 return;
             const bg = info.event.backgroundColor;
             const txt = info.event.textColor;
             info.event.remove();
-            const daysOfWeek = Array.from(repeat).map(day => parseInt(day));
 
             calendar.addEvent({
                 groupId: 'shift-' + Date.now(),
@@ -213,11 +265,13 @@ function clicked(info) {
                 allDay: false,
                 extendedProps: {
                     volunteersNeeded: volunteersNeeded,
+                    location: location,
+                    note: note,
                 },
                 backgroundColor: bg,
                 borderColor: bg,
                 textColor: txt,
-                daysOfWeek: daysOfWeek
+                daysOfWeek: repeat
             });
         }
 
@@ -270,4 +324,10 @@ function showTooltip() {
 
 function hideTooltip() {
     tooltip.style.display = '';
+}
+
+function refresh() {
+    const viewStart = calendar.view.currentStart;
+    const viewName = calendar.view.type;
+    calendar.changeView(viewName, viewStart);
 }

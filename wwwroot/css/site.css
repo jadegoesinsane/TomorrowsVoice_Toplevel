@@ -361,6 +361,15 @@ th .sort-icon {
     border-color: #8f3796;
 }
 
+.btn-group > .btn-check + .btn-light {
+    border-color: #ced4da;
+}
+.btn-group > .btn-check:checked + .btn-light {
+    background-color: #712ab7;
+    border-color: #541a9b;
+    color: white;
+}
+
 .btn-link {
     color: #372BE9;
     text-decoration: none;
