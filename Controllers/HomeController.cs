@@ -35,59 +35,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(model);
 		}
 
-		public IActionResult IndexForRehearsal()
-		{
-			var model = new HomeVM
-			{
-				SingerCount = _context.Singers.Where(s => s.Status == Status.Active).Count(),
-				RehearsalCount = _context.Rehearsals.Where(r => r.Status == Status.Active).Count(),
-				DirectorCount = _context.Directors.Where(s => s.Status == Status.Active).Count(),
-				ChapterCount = _context.Chapters.Where(c => c.Status == Status.Active).Count(),
-				EventCount = _context.Events.Where(c => c.Status == Status.Active).Count(),
-
-				VolunteerCount = _context.Volunteers.Where(c => c.Status == Status.Active).Count(),
-				ShiftCount = _context.Shifts.Where(c => c.Status == Status.Active).Count(),
-				CityCount = _context.Cities.Count()
-			};
-			return View(model);
-		}
-
-		public IActionResult IndexForEvent()
-		{
-			var model = new HomeVM
-			{
-				SingerCount = _context.Singers.Where(s => s.Status == Status.Active).Count(),
-				RehearsalCount = _context.Rehearsals.Where(r => r.Status == Status.Active).Count(),
-				DirectorCount = _context.Directors.Where(s => s.Status == Status.Active).Count(),
-				ChapterCount = _context.Chapters.Where(c => c.Status == Status.Active).Count(),
-				EventCount = _context.Events.Where(c => c.Status == Status.Active).Count(),
-
-				VolunteerCount = _context.Volunteers.Where(c => c.Status == Status.Active).Count(),
-				ShiftCount = _context.Shifts.Where(c => c.Status == Status.Active).Count(),
-				CityCount = _context.Cities.Count()
-			};
-			return View(model);
-		}
-
-
-		public IActionResult IndexForVolunteer()
-		{
-
-
-			var model = new HomeVM
-			{
-				SingerCount = _context.Singers.Where(s => s.Status == Status.Active).Count(),
-				RehearsalCount = _context.Rehearsals.Where(r => r.Status == Status.Active).Count(),
-				DirectorCount = _context.Directors.Where(s => s.Status == Status.Active).Count(),
-				ChapterCount = _context.Chapters.Where(c => c.Status == Status.Active).Count(),
-				EventCount = _context.Events.Where(c => c.Status == Status.Active).Count(),
-
-				VolunteerCount = _context.Volunteers.Where(c => c.Status == Status.Active).Count(),
-				ShiftCount = _context.Shifts.Where(c => c.Status == Status.Active).Count(),
-				CityCount = _context.Cities.Count()
-			};
-			return View(model);
-		}
 		public IActionResult Privacy()
 		{
 			return View();
@@ -118,20 +65,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			return $"{_context.Chapters.Where(c => c.Status == Status.Active).Count()} Chapters";
 		}
-        public string VolunteerCount()
-        {
-            return $"{_context.Volunteers.Where(s => s.Status == Status.Active).Count()} Volunteers";
-        }
 
-        public string ShiftCount()
-        {
-            return $"{_context.Shifts.Where(c => c.Status == Status.Active).Count()} Shifts";
-        }
-        public string EventCount()
-        {
-            return $"{_context.Events.Where(c => c.Status == Status.Active).Count()} Events";
-        }
+		public string VolunteerCount()
+		{
+			return $"{_context.Volunteers.Where(s => s.Status == Status.Active).Count()} Volunteers";
+		}
 
+		public string ShiftCount()
+		{
+			return $"{_context.Shifts.Where(c => c.Status == Status.Active).Count()} Shifts";
+		}
+
+		public string EventCount()
+		{
+			return $"{_context.Events.Where(c => c.Status == Status.Active).Count()} Events";
+		}
 
 		public string CityCount()
 		{
