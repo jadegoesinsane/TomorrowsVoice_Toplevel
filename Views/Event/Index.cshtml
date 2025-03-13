@@ -106,39 +106,34 @@
 									}
 								</div>
 							</div>
+							@{string parentID = $"{item.ID}-accordion";}
+							<div class="accordion" id="@parentID">
 							@foreach (var date in item.Shifts.GroupBy(s => s.ShiftDate))
 							{
-								<div class="row">
-									<div class="col-12">
-										@{
-											string dateFormat;
-											if (date.Key.Year == item.StartDate.Year)
-												dateFormat = date.Key.ToString("MMMM d");
-											else
-												dateFormat = date.Key.ToString("MMMM d, yyyy");
-										}
-										@if (date.All(s => s.VolunteersLeft <= 0) || date.All(s => s.ShiftDate < DateTime.Today) || date.All(s => s.Status == Status.Canceled))
-										{
-											<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
-												<strong>@dateFormat</strong>
-											</button>
-										}
-										else
-										{
-											<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
-												<strong>@dateFormat</strong>
-											</button>
-										}
-										<div class="collapse" id="c-@date.Key.ToString("yyyyMMdd")">
-											<div class="container">
-												@foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
-												{
-													string title = shift.Title ?? "(no title)";
-													<div class="row bd-callout" style="border-left-color: @shift.BackgroundColor;">
+									string dateFormat;
+									if (date.Key.Year == item.StartDate.Year)
+										dateFormat = date.Key.ToString("MMMM d");
+									else
+										dateFormat = date.Key.ToString("MMMM d, yyyy");
+									string dateID = $"i{item.ID}h{date.Key.ToShortDateString()}";
+									string cShifts = $"i{item.ID}s{date.Key.ToShortDateString()}";
+									<div class="card">
+										<div class="card-header" id="@dateID">
+											<h5 class="mb-0">
+												<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#@cShifts" aria-expanded="true" aria-controls="@cShifts">
+													@dateFormat
+												</button>
+											</h5>
+										</div>
+
+										<div id="@cShifts" class="collapse" aria-labelledby="@dateID" data-parent="#@parentID">
+											@foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
+											{
+												
+													@{string title = shift.Title ?? "(no title)";}
+													<div class="row bd-callout position-relative" style="border-left-color: @shift.BackgroundColor;">
 														<div class="col">
-															<a asp-action="Details" asp-route-id="@shift.ID" asp-controller="Shift">
-																@shift.TimeFormat
-															</a>
+															@shift.TimeFormat
 														</div>
 														<div class="col">
 															@title
@@ -146,57 +141,14 @@
 														<div class="col">
 															<small>Signed Up: @shift.UserShifts.Count() / @shift.VolunteersNeeded</small>
 														</div>
+														<a asp-action="Details" class="stretched-link" asp-route-id="@shift.ID" asp-controller="Shift"></a>
 													</div>
-												}
-											</div>
-											@*<table class="table">
-									<tbody>
-									@foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
-									{
-									if (shift.VolunteersLeft <= 0)
-									{
-									<tr style="color: #6c757d !important;">
-									<td></td>
-									<td><span style="color: @shift.BackgroundColor; font-weight:900;">|</span>
-									<a style="color: #6c757d !important; font-weight:normal !important;">@shift.TimeFormat</a></td>
-
-									@if (string.IsNullOrEmpty(shift.Title))
-									{
-									<td>(no title)</td>
-									}
-									else
-									{
-									<td>@shift.Title</td>
-									}
-
-									<td>@shift.VolunteersLeft</td>
-									</tr>
-									}
-									else
-									{
-									<tr>
-									<td></td>
-									<td>
-									<span style="color: @shift.BackgroundColor; font-weight:900;">|</span>
-									<a asp-action="Details" asp-route-id="@shift.ID" asp-controller="Shift" style="font-weight:normal !important;">@shift.TimeFormat</a></td>
-									@if (string.IsNullOrEmpty(shift.Title))
-									{
-									<td style="color: #6c757d !important;">(no title)</td>
-									}
-									else
-									{
-									<td>@shift.Title</td>
-									}
-									<td>@shift.VolunteersLeft</td>
-									</tr>
-									}
-									}
-									</tbody>
-									</table>*@
+												
+											}
 										</div>
-									</div>
 								</div>
 							}
+							</div>
 						</div>
 					</div>
 				</div>
