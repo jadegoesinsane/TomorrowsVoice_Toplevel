@@ -239,7 +239,7 @@ namespace TomorrowsVoice_Toplevel.Data
 							{
 								FirstName = "Mendelt",
 								LastName = "Hoekstra",
-								Email = "mHoekstra@sample.com",
+								Email = "director@outlook.com",
 								Phone = "0000000000",
 								ChapterID = 1,
 								ID = context.GetNextID()
@@ -432,12 +432,12 @@ namespace TomorrowsVoice_Toplevel.Data
 						context.Volunteers.AddRange(
 							new Volunteer
 							{
-								FirstName = "Manager",
-								LastName = "Manager",
-								Email = $"11111@gmail.com",
+								FirstName = "Cave",
+								LastName = "Johnson",
+								Email = $"planner@outlook.com",
 								Phone = $"2221112222",
 								//HoursVolunteered = 0,
-								ParticipationCount =0,
+								ParticipationCount = 0,
 								absences = 0,
 								totalWorkDuration = TimeSpan.Zero,
 								ID = 1000
@@ -463,8 +463,6 @@ namespace TomorrowsVoice_Toplevel.Data
 							if (i % 2 == 0)
 								volunteer.MiddleName = lastNames[rnd.Next(lastNameCount)][1].ToString().ToUpper();
 
-							
-							
 							try
 							{
 								context.Volunteers.Add(volunteer);
@@ -562,7 +560,6 @@ namespace TomorrowsVoice_Toplevel.Data
 								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
 							{
 								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
-								
 							};
 
 								foreach (var date in dates)
@@ -606,7 +603,6 @@ namespace TomorrowsVoice_Toplevel.Data
 								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
 							{
 								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
-								
 							};
 
 								foreach (var date in dates)
@@ -676,7 +672,6 @@ namespace TomorrowsVoice_Toplevel.Data
 
 								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
 							{
-								
 								(new TimeSpan(11, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
 							};
 
@@ -730,13 +725,10 @@ namespace TomorrowsVoice_Toplevel.Data
 									}
 								}
 							}
-
 						}
 
 						context.Shifts.AddRange(shifts);
 						context.SaveChanges();
-
-
 
 						//User Shifts
 						if (!context.UserShifts.Any())
@@ -744,77 +736,65 @@ namespace TomorrowsVoice_Toplevel.Data
 							var volunteers = context.Volunteers.ToList();
 							var directors = context.Directors.ToList();
 							var users = volunteers.Cast<User>().ToArray();
-							
 
-
-                            foreach (Shift shift in context.Shifts)
+							foreach (Shift shift in context.Shifts)
 							{
 								rnd.Shuffle<User>(users);
 
-                               
-
-                                // Test Messaging with Seed Data
-                                foreach (User user in users.Take(rnd.Next(shift.VolunteersNeeded + 1)))
+								// Test Messaging with Seed Data
+								foreach (User user in users.Take(rnd.Next(shift.VolunteersNeeded + 1)))
 								{
 									if (shift.VolunteersLeft <= 0)
 										continue;
 
 									UserShift userShift = new UserShift { };
 
-                                    if (shift.EventID == 1) {
+									if (shift.EventID == 1)
+									{
+										userShift = new UserShift
+										{
+											UserID = user.ID,
+											ShiftID = shift.ID,
+											Shift = shift,
+											User = user,
+											StartAt = new TimeSpan(10, 0, 0),
+											EndAt = new TimeSpan(14, 0, 0)
+										};
 
-
-                                         userShift = new UserShift
-                                        {
-                                            UserID = user.ID,
-                                            ShiftID = shift.ID,
-                                            Shift = shift,
-                                            User = user,
-                                            StartAt = new TimeSpan(10, 0, 0),  
-                                            EndAt = new TimeSpan(14, 0, 0)
-
-                                        };
-
-                                        var volunteer = context.Volunteers.FirstOrDefault(a=>a.ID == user.ID);
+										var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
 
 										volunteer.ParticipationCount++;
 										volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
-										
-
 									}
-                                    else if (shift.EventID == 4) {
-                                         userShift = new UserShift
-                                        {
-                                            UserID = user.ID,
-                                            ShiftID = shift.ID,
-                                            Shift = shift,
-                                            User = user,
+									else if (shift.EventID == 4)
+									{
+										userShift = new UserShift
+										{
+											UserID = user.ID,
+											ShiftID = shift.ID,
+											Shift = shift,
+											User = user,
 
-                                            StartAt = new TimeSpan(11, 0, 0), 
-                                            EndAt = new TimeSpan(18, 0, 0)
+											StartAt = new TimeSpan(11, 0, 0),
+											EndAt = new TimeSpan(18, 0, 0)
+										};
 
+										var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
 
-                                        };
-
-                                        var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
-
-                                        volunteer.ParticipationCount++;
-                                        volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
-										
-
+										volunteer.ParticipationCount++;
+										volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
 									}
-                                    else
-                                    {
-                                         userShift = new UserShift
-                                        {
-                                            UserID = user.ID,
-                                            ShiftID = shift.ID,
-                                            Shift = shift,
-                                            User = user
-                                        };
-                                    }
+									else
+									{
+										userShift = new UserShift
+										{
+											UserID = user.ID,
+											ShiftID = shift.ID,
+											Shift = shift,
+											User = user
+										};
+									}
 
-                                   
 									try
 									{
 										context.UserShifts.Add(userShift);
