@@ -6,12 +6,12 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 	{
 		public int UserID { get; set; }
 		public User? User { get; set; }
-		
+
 		public int ShiftID { get; set; }
 		public Shift? Shift { get; set; }
-        public bool NoShow { get; set; } = false;
+		public bool NoShow { get; set; } = false;
 
-        public TimeSpan StartAt { get; set; }
-        public TimeSpan EndAt { get; set; }
-    }
+		public TimeSpan StartAt { get; set; }
+		public TimeSpan EndAt { get; set; }
+	}
 }

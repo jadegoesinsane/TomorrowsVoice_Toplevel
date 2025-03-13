@@ -9,8 +9,8 @@ namespace TomorrowsVoice_Toplevel.Models
 {
 	public class Director : User
 	{
-		public Director()
-		{ }
+		//public Director()
+		//{ }
 
 		//public Director(TVContext context)
 		//{
@@ -25,7 +25,7 @@ namespace TomorrowsVoice_Toplevel.Models
 
 		//#endregion Summary Properties
 
-		//public int ID { get; set; }
+		public int ID { get; set; }
 		public DirectorAvatar? Avatar { get; set; }
 
 		[Display(Name = "Chapter")]

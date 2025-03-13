@@ -27,7 +27,7 @@
 		<div class="w-100" style="margin:10px;"></div>
 		<div class="col-md-3">
 			<div class="form-floating required">
-				<input asp-for="Name" class="form-control" />
+				<input asp-for="Name" class="form-control" placeholder="Name" />
 				<label asp-for="Name" class="control-label"></label>
 				<span asp-validation-for="Name" class="text-danger"></span>
 			</div>
@@ -41,7 +41,7 @@
 		</div>
 		<div class="col-md-3">
 			<div class="form-floating required">
-				<input asp-for="Location" class="form-control" />
+				<input asp-for="Location" class="form-control" placeholder="Address" />
 				<label asp-for="Location" class="control-label"></label>
 				<span asp-validation-for="Location" class="text-danger"></span>
 			</div>
@@ -151,9 +151,5 @@
 		font-size: 90%;
 		z-index: 1000 !important;
 		display: none;
-	}
-
-	.form-floating > .control-label {
-		top: 9px;
 	}
 </style>

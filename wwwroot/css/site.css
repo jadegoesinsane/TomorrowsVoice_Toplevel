@@ -86,7 +86,7 @@ h2 {
     content: " (optional)";
 }
 
-.form-floating > .form-control, .form-floating > .form-select {
+/*.form-floating > .form-control, .form-floating > .form-select {
     height: calc(2.5rem + 2px);
     line-height: 1.25;
 }
@@ -100,9 +100,9 @@ h2 {
 
 .form-floating > .form-control {
     padding: .5rem;
-}
-    /* Overwrite Bootstrap5 floating label*/
-    .form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {
+}*/
+/* Overwrite Bootstrap5 floating label*/
+/*.form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown) {
         padding-top: .5rem;
         padding-bottom: .5rem;
     }
@@ -117,7 +117,7 @@ h2 {
             padding: 0px;
             padding-left: 5px;
             padding-right: 5px;
-        }
+        }*/
 
 .card .control-label {
     background-color: rgba(247,248,249, 0.95) !important;
@@ -172,6 +172,15 @@ h2 {
 
 .count::before {
     content: counter(num);
+}
+
+.bd-callout {
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #e9ecef;
+    border-left-width: .25rem;
+    border-radius: .25rem;
 }
 
 /*
@@ -251,12 +260,14 @@ td > .btn {
 th {
     position: relative;
 }
-th .sort-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-}
+
+    th .sort-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
 .fa-sort, .fa-sort-up, .fa-sort-down {
     opacity: 50%;
 }
@@ -364,6 +375,7 @@ th .sort-icon {
 .btn-group > .btn-check + .btn-light {
     border-color: #ced4da;
 }
+
 .btn-group > .btn-check:checked + .btn-light {
     background-color: #712ab7;
     border-color: #541a9b;
@@ -516,15 +528,15 @@ a {
 /* The Modal (background) */
 /*.modal {
     display: none;*/ /* Hidden by default */
-    /*position: fixed;*/ /* Stay in place */
-    /*z-index: 1;*/ /* Sit on top */
-    /*left: 0;
+/*position: fixed;*/ /* Stay in place */
+/*z-index: 1;*/ /* Sit on top */
+/*left: 0;
     top: 0;
     width: 100%;*/ /* Full width */
-    /*height: 100%;*/ /* Full height */
-    /*overflow: auto;*/ /* Enable scroll if needed */
-    /*background-color: rgb(0,0,0);*/ /* Fallback color */
-    /*background-color: rgba(0,0,0,0.4);*/ /* Black w/ opacity */
+/*height: 100%;*/ /* Full height */
+/*overflow: auto;*/ /* Enable scroll if needed */
+/*background-color: rgb(0,0,0);*/ /* Fallback color */
+/*background-color: rgba(0,0,0,0.4);*/ /* Black w/ opacity */
 /*}*/
 
 /* Modal Content/Box */

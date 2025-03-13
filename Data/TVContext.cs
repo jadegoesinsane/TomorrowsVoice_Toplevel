@@ -45,8 +45,9 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		// Accounts
 		public DbSet<UserID> UserIDs { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
+
+		public DbSet<User> Users { get; set; }
+		public DbSet<Role> Roles { get; set; }
 
 		// Chapters
 		public DbSet<Director> Directors { get; set; }
@@ -145,22 +146,14 @@ namespace TomorrowsVoice_Toplevel.Data
 			modelBuilder.Entity<UserShift>()
 				.HasKey(us => new { us.UserID, us.ShiftID });
 
-			// Volunteer should only be able to sign up for each shift once
-			modelBuilder.Entity<UserShift>()
-				.HasIndex(u => new { u.ShiftID, u.UserID })
-				.IsUnique();
-          
+			modelBuilder.Entity<Event>()
+			.HasMany<Shift>(s => s.Shifts)
+			.WithOne(s => s.Event)
+			.HasForeignKey(s => s.EventID)
+			.OnDelete(DeleteBehavior.Cascade);
+		}
 
-
-            modelBuilder.Entity<Event>()
-            .HasMany<Shift>(s => s.Shifts)
-            .WithOne(s => s.Event)
-            .HasForeignKey(s => s.EventID)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        }
-
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+		public override int SaveChanges(bool acceptAllChangesOnSuccess)
 		{
 			OnBeforeSaving();
 			return base.SaveChanges(acceptAllChangesOnSuccess);

@@ -7,15 +7,15 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
 	public class Volunteer : User
 	{
-		public Volunteer()
-		{ }
+		//public Volunteer()
+		//{ }
 
 		//public Volunteer(TVContext context)
 		//{
 		//	ID = context.GetNextID();
 		//}
 
-		//public int ID { get; set; }
+		public int ID { get; set; }
 		public VolunteerAvatar? Avatar { get; set; }
 
 		[Display(Name = "Hours Volunteered")]

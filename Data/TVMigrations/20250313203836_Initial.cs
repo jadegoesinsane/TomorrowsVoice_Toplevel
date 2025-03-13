@@ -177,7 +177,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     Nickname = table.Column<string>(type: "TEXT", nullable: true),
                     UserType = table.Column<string>(type: "TEXT", maxLength: 13, nullable: false),
                     ChapterID = table.Column<int>(type: "INTEGER", nullable: true),
-                    totalWorkDuration = table.Column<TimeSpan>(type: "TEXT", nullable: true),
+                    TotalWorkDuration = table.Column<TimeSpan>(type: "TEXT", nullable: true),
                     ParticipationCount = table.Column<int>(type: "INTEGER", nullable: true),
                     absences = table.Column<int>(type: "INTEGER", nullable: true),
                     YearlyVolunteerGoal = table.Column<int>(type: "INTEGER", nullable: true),
@@ -499,10 +499,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "DirectorID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserShifts_ShiftID_UserID",
+                name: "IX_UserShifts_ShiftID",
                 table: "UserShifts",
-                columns: new[] { "ShiftID", "UserID" },
-                unique: true);
+                column: "ShiftID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserShifts_VolunteerID",

@@ -540,10 +540,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasIndex("DirectorID");
 
-                    b.HasIndex("VolunteerID");
+                    b.HasIndex("ShiftID");
 
-                    b.HasIndex("ShiftID", "UserID")
-                        .IsUnique();
+                    b.HasIndex("VolunteerID");
 
                     b.ToTable("UserShifts");
                 });
@@ -606,14 +605,14 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("ParticipationCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<TimeSpan>("TotalWorkDuration")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("YearlyVolunteerGoal")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("absences")
                         .HasColumnType("INTEGER");
-
-                    b.Property<TimeSpan>("totalWorkDuration")
-                        .HasColumnType("TEXT");
 
                     b.HasDiscriminator().HasValue("Volunteer");
                 });

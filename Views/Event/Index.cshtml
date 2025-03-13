@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Event>
 @{
 
-    Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
+	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
 
 }
 <form asp-action="Index" method="get">
@@ -15,7 +15,7 @@
 			data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
 		<i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
 	</button>
-    <br />
+	<br />
 	<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
 		<div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
 			<div class="p-2">
@@ -49,140 +49,159 @@
 			</div>
 		</div>
 	</div>
-    <br />
-    <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-12 mb-3">
-                <div class="card" style="border-bottom-color: @item.BackgroundColour; border-bottom-width:thick;">
-            @*         <div class="card-header"> *@
-                    <button class="card-header btn btn-link" style="text-align:left; border-bottom-color: @item.BackgroundColour; border-bottom-width:thick;" type="button" data-bs-toggle="collapse" data-bs-target="#c-@item.ID" aria-expanded="false" aria-controls="c-@item.ID">
-                            <h2 class="m-0">
-                                @item.Name
-                            </h2>
-                        <p class="m-0">
-                            <i class="bi bi-calendar"></i>
-                            @item.DateSummary
-                        </p>
-                        <p class="m-0">
-                            <i class="bi bi-geo-alt"></i>
-                            @item.Location
-                        </p>
-                        </button>
-                 @*    </div> *@
-                    <div class="collapse" id="c-@item.ID">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-10">
-                                    @item.Descripion
-                                </div>
-                                <div class="col-md-2">
-                                    @if (item.Status != Status.Archived)
-                                    {
-                                        <a asp-controller="Shift" asp-action="Index" asp-route-EventID="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
-                                           role="button" data-bs-toggle="tooltip" title="Details">
-                                            <i class="bi bi-search"></i>
-                                        </a>
-                                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
-                                           role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-                                           role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                                            <i class="bi bi-x-lg"></i>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-controller="Shift"  asp-action="Index" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
-                                           role="button" data-bs-toggle="tooltip" Details">
-                                            <i class="bi bi-search"></i>
-                                        </a>
+	<br />
+	<div class="row">
+		@foreach (var item in Model)
+		{
+			<div class="col-12 mb-3">
+				<div class="card" style="border-bottom-color: @item.BackgroundColour; border-bottom-width:thick;">
+					@*         <div class="card-header"> *@
+					<button class="card-header btn btn-link" style="text-align:left; border-bottom-color: @item.BackgroundColour; border-bottom-width:thick;" type="button" data-bs-toggle="collapse" data-bs-target="#c-@item.ID" aria-expanded="false" aria-controls="c-@item.ID">
+						<h2 class="m-0">
+							@item.Name
+						</h2>
+						<p class="m-0">
+							<i class="bi bi-calendar"></i>
+							@item.DateSummary
+						</p>
+						<p class="m-0">
+							<i class="bi bi-geo-alt"></i>
+							@item.Location
+						</p>
+					</button>
+					@*    </div> *@
+					<div class="collapse" id="c-@item.ID">
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-10">
+									@item.Descripion
+								</div>
+								<div class="col-md-2">
+									@if (item.Status != Status.Archived)
+									{
+										<a asp-controller="Shift" asp-action="Index" asp-route-EventID="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
+										   role="button" data-bs-toggle="tooltip" title="Details">
+											<i class="bi bi-search"></i>
+										</a>
+										<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
+										   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+											<i class="bi bi-pencil-square"></i>
+										</a>
+										<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+										   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+											<i class="bi bi-x-lg"></i>
+										</a>
+									}
+									else
+									{
+										<a asp-controller="Shift" asp-action="Index" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
+										   role="button" data-bs-toggle="tooltip" Details">
+											<i class="bi bi-search"></i>
+										</a>
 
-                                        <a asp-action="Recover" asp-route-id="@Model" class="btn btn-sm btn-outline-danger"
-                                           role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
-                                            <i class="bi bi-arrow-clockwise"></i>
-                                        </a>
-                                    }
-                                    </div>
-                            </div>
-                            @foreach (var date in item.Shifts.GroupBy(s => s.ShiftDate))
-                            {
-                                <div class="row">
-                                    <div class="col-12">
-                                        @{
-                                            string dateFormat;
-                                            if (date.Key.Year == item.StartDate.Year)
-                                                dateFormat = date.Key.ToString("MMMM d");
-                                            else
-                                                dateFormat = date.Key.ToString("MMMM d, yyyy");
-                                        }
-                                        @if (date.All(s => s.VolunteersLeft <= 0) || date.All(s => s.ShiftDate < DateTime.Today) || date.All(s => s.Status == Status.Canceled))
-                                        {
-                                            <button class="btn btn-link disabled" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
-                                                <strong>@dateFormat</strong>
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
-                                                <strong>@dateFormat</strong>
-                                            </button>
-                                        }
-                                        <div class="collapse" id="c-@date.Key.ToString("yyyyMMdd")">
-                                            <table class="table">
-                                                <tbody>
-                                                    @foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
-                                                    {
-                                                        if (shift.VolunteersLeft <= 0)
-                                                        {
-                                                            <tr style="color: #6c757d !important;">
-                                                                <td></td>
-                                                                <td><span style="color: @shift.BackgroundColor; font-weight:900;">|</span>
-                                                                <a style="color: #6c757d !important; font-weight:normal !important;">@shift.TimeFormat</a></td>
-                                                               
-                                                                    @if (string.IsNullOrEmpty(shift.Title))
-                                                                    {
-                                                                        <td>(no title)</td>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <td>@shift.Title</td>
-                                                                    }
-                                                                
-                                                                <td>@shift.VolunteersLeft</td>
-                                                            </tr>
-                                                        }
-                                                        else
-                                                        {
-                                                            <tr>
-                                                            <td></td>
-                                                                <td>
-                                                                <span style="color: @shift.BackgroundColor; font-weight:900;">|</span>
-                                                                <a asp-action="Details" asp-route-id="@shift.ID" asp-controller="Shift" style="font-weight:normal !important;">@shift.TimeFormat</a></td>
-                                                                @if (string.IsNullOrEmpty(shift.Title))
-                                                                {
-                                                                    <td style="color: #6c757d !important;">(no title)</td>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <td>@shift.Title</td>
-                                                                }
-                                                                <td>@shift.VolunteersLeft</td>
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
+										<a asp-action="Recover" asp-route-id="@Model" class="btn btn-sm btn-outline-danger"
+										   role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
+											<i class="bi bi-arrow-clockwise"></i>
+										</a>
+									}
+								</div>
+							</div>
+							@foreach (var date in item.Shifts.GroupBy(s => s.ShiftDate))
+							{
+								<div class="row">
+									<div class="col-12">
+										@{
+											string dateFormat;
+											if (date.Key.Year == item.StartDate.Year)
+												dateFormat = date.Key.ToString("MMMM d");
+											else
+												dateFormat = date.Key.ToString("MMMM d, yyyy");
+										}
+										@if (date.All(s => s.VolunteersLeft <= 0) || date.All(s => s.ShiftDate < DateTime.Today) || date.All(s => s.Status == Status.Canceled))
+										{
+											<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
+												<strong>@dateFormat</strong>
+											</button>
+										}
+										else
+										{
+											<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#c-@date.Key.ToString("yyyyMMdd")" aria-expanded="false" aria-controls="c-@date.Key.ToString("yyyyMMdd")">
+												<strong>@dateFormat</strong>
+											</button>
+										}
+										<div class="collapse" id="c-@date.Key.ToString("yyyyMMdd")">
+											<div class="container">
+												@foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
+												{
+													string title = shift.Title ?? "(no title)";
+													<div class="row bd-callout" style="border-left-color: @shift.BackgroundColor;">
+														<div class="col">
+															<a asp-action="Details" asp-route-id="@shift.ID" asp-controller="Shift">
+																@shift.TimeFormat
+															</a>
+														</div>
+														<div class="col">
+															@title
+														</div>
+														<div class="col">
+															<small>Signed Up: @shift.UserShifts.Count() / @shift.VolunteersNeeded</small>
+														</div>
+													</div>
+												}
+											</div>
+											@*<table class="table">
+									<tbody>
+									@foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
+									{
+									if (shift.VolunteersLeft <= 0)
+									{
+									<tr style="color: #6c757d !important;">
+									<td></td>
+									<td><span style="color: @shift.BackgroundColor; font-weight:900;">|</span>
+									<a style="color: #6c757d !important; font-weight:normal !important;">@shift.TimeFormat</a></td>
+
+									@if (string.IsNullOrEmpty(shift.Title))
+									{
+									<td>(no title)</td>
+									}
+									else
+									{
+									<td>@shift.Title</td>
+									}
+
+									<td>@shift.VolunteersLeft</td>
+									</tr>
+									}
+									else
+									{
+									<tr>
+									<td></td>
+									<td>
+									<span style="color: @shift.BackgroundColor; font-weight:900;">|</span>
+									<a asp-action="Details" asp-route-id="@shift.ID" asp-controller="Shift" style="font-weight:normal !important;">@shift.TimeFormat</a></td>
+									@if (string.IsNullOrEmpty(shift.Title))
+									{
+									<td style="color: #6c757d !important;">(no title)</td>
+									}
+									else
+									{
+									<td>@shift.Title</td>
+									}
+									<td>@shift.VolunteersLeft</td>
+									</tr>
+									}
+									}
+									</tbody>
+									</table>*@
+										</div>
+									</div>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
 	<partial name="_PagingNavBar" />
 </form>
