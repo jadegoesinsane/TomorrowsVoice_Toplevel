@@ -20,8 +20,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public IActionResult Index()
 		{
-			
-			return View();
+			var model = new HomeVM
+			{
+				SingerCount = _context.Singers.Where(s => s.Status == Status.Active).Count(),
+				RehearsalCount = _context.Rehearsals.Where(r => r.Status == Status.Active).Count(),
+				DirectorCount = _context.Directors.Where(s => s.Status == Status.Active).Count(),
+				ChapterCount = _context.Chapters.Where(c => c.Status == Status.Active).Count(),
+				EventCount = _context.Events.Where(c => c.Status == Status.Active).Count(),
+
+				VolunteerCount = _context.Volunteers.Where(c => c.Status == Status.Active).Count(),
+				ShiftCount = _context.Shifts.Where(c => c.Status == Status.Active).Count(),
+				CityCount = _context.Cities.Count()
+			};
+			return View(model);
 		}
 
 		public IActionResult IndexForRehearsal()

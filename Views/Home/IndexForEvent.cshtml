@@ -1,13 +1,9 @@
-﻿
-
-
-@model TomorrowsVoice_Toplevel.ViewModels.HomeVM
-@{
+﻿@model TomorrowsVoice_Toplevel.ViewModels.HomeVM
+@* @{
 	Layout = "_EventAdminLayout";
 	ViewData["Title"] = "Home Page";
 }
-<h1>Dashboard</h1>
-
+<h1>Dashboard</h1> *@
 
 <div class="card-deck">
 
@@ -23,7 +19,6 @@
 			</p>
 		</div>
 	</a>
-
 
 	<a class="card text-black bg-green mx-md-1 mx-lg-3 d-none d-md-table-cell" asp-area="" asp-controller="City" asp-action="Index">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mic-fill" viewBox="0 0 16 16">
@@ -50,8 +45,6 @@
 
 </div>
 
-
-
 <div class="row g-4 my-3">
 	<div class="col-md-9">
 		<div class="form-footer">
@@ -70,8 +63,6 @@
 	<script type="text/javascript">
 		document.addEventListener('DOMContentLoaded', function () {
 			var duration = 2000;
-
-
 
 			var event = document.getElementById('event');
 			var eventCount = @Model.EventCount;
