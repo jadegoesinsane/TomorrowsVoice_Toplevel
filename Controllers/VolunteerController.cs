@@ -39,7 +39,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Volunteer
 		public async Task<IActionResult> Index(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
 		{
-            string[] sortOptions = new[] { "Volunteer","Hours Volunteered","Participation","Absences" };
+            string[] sortOptions = new[] { "Volunteer","Hours Volunteered", "Shifts Attended", "Shifts Missed" };
 
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
@@ -128,7 +128,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 ViewData["absenceSort"] = "fa fa-solid fa-sort";
                 if (sortDirection == "asc")
                 {
-                    volunteers = volunteers.OrderBy(v => v.HoursVolunteered);
+                    volunteers = volunteers.OrderBy(v => (int)v.HoursVolunteered);
                     ViewData["hourVolSort"] = "fa fa-solid fa-sort-up";
                 }
                 else
@@ -137,7 +137,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     ViewData["hourVolSort"] = "fa fa-solid fa-sort-down";
                 }
             }
-            else if (sortField == "Participation")
+            else if (sortField == "Shifts Attended")
             {
                 ViewData["volunteerSort"] = "fa fa-solid fa-sort";
                 ViewData["hourVolSort"] = "fa fa-solid fa-sort";
@@ -153,7 +153,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     ViewData["partiSort"] = "fa fa-solid fa-sort-down";
                 }
             }
-            else if (sortField == "Absences")
+            else if (sortField == "Shifts Missed")
             {
                 ViewData["volunteersSort"] = "fa fa-solid fa-sort";
                 ViewData["hourVolSort"] = "fa fa-solid fa-sort";
