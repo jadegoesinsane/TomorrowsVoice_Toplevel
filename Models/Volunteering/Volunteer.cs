@@ -15,7 +15,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		//	ID = context.GetNextID();
 		//}
 
-		public int ID { get; set; }
+		//public int ID { get; set; }
 		public VolunteerAvatar? Avatar { get; set; }
 
 		[Display(Name = "Hours Volunteered")]
