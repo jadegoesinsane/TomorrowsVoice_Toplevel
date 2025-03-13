@@ -439,7 +439,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								//HoursVolunteered = 0,
 								ParticipationCount =0,
 								absences = 0,
-								totalWorkDuration = TimeSpan.Zero,
+								TotalWorkDuration = TimeSpan.Zero,
 								ID = 1000
 							});
 
@@ -457,7 +457,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								//HoursVolunteered = 0,
 								ParticipationCount = 0,
 								absences = 0,
-								totalWorkDuration = TimeSpan.Zero,
+								TotalWorkDuration = TimeSpan.Zero,
 								ID = context.GetNextID()
 							};
 							if (i % 2 == 0)
@@ -778,7 +778,7 @@ namespace TomorrowsVoice_Toplevel.Data
                                         var volunteer = context.Volunteers.FirstOrDefault(a=>a.ID == user.ID);
 
 										volunteer.ParticipationCount++;
-										volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
+										volunteer.TotalWorkDuration += userShift.EndAt - userShift.StartAt;
 										
 
 									}
@@ -799,7 +799,7 @@ namespace TomorrowsVoice_Toplevel.Data
                                         var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
 
                                         volunteer.ParticipationCount++;
-                                        volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
+                                        volunteer.TotalWorkDuration += userShift.EndAt - userShift.StartAt;
 										
 
 									}

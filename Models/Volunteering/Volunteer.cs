@@ -22,7 +22,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public int HoursVolunteered {
 			
 
-			get { return (int)totalWorkDuration.TotalHours; }
+			get { return (int)TotalWorkDuration.TotalHours; }
 			
 		} 
 
@@ -30,7 +30,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 
 		[Display(Name = "Total Work Duration")]
-        public TimeSpan totalWorkDuration { get; set; }=TimeSpan.Zero;
+        public TimeSpan TotalWorkDuration { get; set; }=TimeSpan.Zero;
 
         [Display(Name = "Shifts Attended")]
         public int ParticipationCount { get; set; }=0;
