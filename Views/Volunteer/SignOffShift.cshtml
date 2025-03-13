@@ -8,13 +8,12 @@
     ViewData["Title"] = "Sign off";
 }
 
-<h1>Sign off</h1>
-
-<h3>Are you sure you want to sign off this shift?</h3>
+<h1>Cancel  Shift</h1>
 <div>
-    <h4>Shift</h4>
     <hr />
-    <dl class="row">
+    Are you sure you want to sign off <strong>@Model.Event.Name shift</strong> on <strong>@Model.ShiftDate.ToLongDateString()</strong> from <strong>@Model.StartAt - @Model.EndAt</strong>?
+@*     <dl class="row">
+        <dt>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StartAt)
         </dt>
@@ -39,7 +38,10 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Event.Name)
         </dd>
-    </dl>
+    </dl> *@
+    <p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block; margin-top:10px;" aria-live="assertive">
+        Note: If your shift is cancelled within 7 days of the shift date, an email will be sent to the event manager.
+    </p>
 
 
 
