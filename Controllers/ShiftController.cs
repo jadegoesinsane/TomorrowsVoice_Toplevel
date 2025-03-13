@@ -580,7 +580,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							if (enrollment.NoShow == true) volunteer.absences--;
 							if (enrollment.EndAt > enrollment.StartAt)
 							{
-								volunteer.totalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
+								volunteer.TotalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount--;
 							}
 						}
@@ -593,7 +593,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							if (enrollment.NoShow == true) volunteer.absences++;
 							if (enrollment.EndAt > enrollment.StartAt)
 							{
-								volunteer.totalWorkDuration += enrollment.EndAt - enrollment.StartAt;
+								volunteer.TotalWorkDuration += enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount++;
 							}
 						}

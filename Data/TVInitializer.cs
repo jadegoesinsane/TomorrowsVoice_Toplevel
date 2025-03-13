@@ -439,7 +439,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								//HoursVolunteered = 0,
 								ParticipationCount = 0,
 								absences = 0,
-								totalWorkDuration = TimeSpan.Zero,
+								TotalWorkDuration = TimeSpan.Zero,
 								ID = 1000
 							});
 
@@ -457,7 +457,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								//HoursVolunteered = 0,
 								ParticipationCount = 0,
 								absences = 0,
-								totalWorkDuration = TimeSpan.Zero,
+								TotalWorkDuration = TimeSpan.Zero,
 								ID = context.GetNextID()
 							};
 							if (i % 2 == 0)
@@ -765,19 +765,22 @@ namespace TomorrowsVoice_Toplevel.Data
 
 										volunteer.ParticipationCount++;
 										volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
-									}
-									else if (shift.EventID == 4)
-									{
-										userShift = new UserShift
-										{
-											UserID = user.ID,
-											ShiftID = shift.ID,
-											Shift = shift,
-											User = user,
+										
 
-											StartAt = new TimeSpan(11, 0, 0),
-											EndAt = new TimeSpan(18, 0, 0)
-										};
+									}
+                                    else if (shift.EventID == 4) {
+                                         userShift = new UserShift
+                                        {
+                                            UserID = user.ID,
+                                            ShiftID = shift.ID,
+                                            Shift = shift,
+                                            User = user,
+
+                                            StartAt = new TimeSpan(11, 0, 0), 
+                                            EndAt = new TimeSpan(18, 0, 0)
+
+
+                                        };
 
 										var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
 

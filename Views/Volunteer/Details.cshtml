@@ -9,53 +9,12 @@
 }
 
 <h1>@Model.NameFormatted</h1>
-
-@* <div>
-    <h4></h4>
-    <hr />
-</div> *@
-
-
-
 <div>
-@*     <nav>
-        <div class="nav nav-pills" id="myTabs" role="tablist">
-            <button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
-                    type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
-                Basic Details
-            </button>
-            <button class="nav-link" id="Shifts-Tab" data-bs-toggle="tab" data-bs-target="#ShiftsPanel"
-                    type="button" role="tab" aria-controls="ShiftsPanel" aria-selected="false">
-                Shifts
-            </button>
-        </div>
-    </nav> *@
-
-
-
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
             <br />
                 <dl class="row">
-@*                      <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.FirstName)
-                    </dt>
-                    <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.FirstName)
-                    </dd>
-                    <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.MiddleName)
-                    </dt>
-                    <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.MiddleName)
-                    </dd>
-                    <dt class = "col-sm-2">
-                        @Html.DisplayNameFor(model => model.LastName)
-                    </dt>
-                    <dd class = "col-sm-10">
-                        @Html.DisplayFor(model => model.LastName)
-                    </dd>  *@
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <dt>
                             @Html.DisplayNameFor(model => model.Email)
                         </dt>
@@ -63,7 +22,7 @@
                             @Html.DisplayFor(model => model.Email)
                         </dd>
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-9">
                         <dt class="col-sm-2">
                             @Html.DisplayNameFor(model => model.Phone)
                         </dt>
@@ -102,16 +61,9 @@
     
         </div>
         <hr/>
-        <div id="ShiftsPanel">
-            @* @Html.Partial("ListOfShiftDetails", "Volunteer", new {id=Model}) *@
-        </div>
-
-@*         <div class="tab-pane fade ml-3" role="tabpanel" id="ShiftsPanel" aria-labelledby="Shifts-tab">
-        <br />*@
-        </div> 
-
-
-
+    </div>
+    <div id="ShiftsPanel"></div>
+</div>
  <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
         <partial name="_BackToList" />
@@ -120,15 +72,6 @@
 
 @section Scripts {
     <script type="text/javascript">
-        @* $('.nav-link').click(function () {
-            var activeTab = $(this).attr("id");
-            switch (activeTab) {
-                case 'Shifts-Tab': $('#ShiftsPanel').load('/Volunteer/ListOfShiftDetails/@Model.ID');
-                    break;
-                default: break;
-            };
-        }) *@
-
-                $('#ShiftsPanel').load('/Volunteer/ListOfShiftDetails/@Model.ID');
+        $('#ShiftsPanel').load('/Volunteer/ListOfShiftDetails/@Model.ID');
     </script>
 } 
