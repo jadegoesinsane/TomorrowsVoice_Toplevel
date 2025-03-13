@@ -18,24 +18,19 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		//public int ID { get; set; }
 		public VolunteerAvatar? Avatar { get; set; }
 
-		[Display(Name ="Hours Volunteered")]
-		public int HoursVolunteered {
-			
-
+		[Display(Name = "Hours Volunteered")]
+		public int HoursVolunteered
+		{
 			get { return (int)TotalWorkDuration.TotalHours; }
-			
-		} 
-
-
-
+		}
 
 		[Display(Name = "Total Work Duration")]
-        public TimeSpan TotalWorkDuration { get; set; }=TimeSpan.Zero;
+		public TimeSpan TotalWorkDuration { get; set; } = TimeSpan.Zero;
 
-        [Display(Name = "Shifts Attended")]
-        public int ParticipationCount { get; set; }=0;
+		[Display(Name = "Shifts Attended")]
+		public int ParticipationCount { get; set; } = 0;
 
-        /*public string CurrentYearVolunteerTotal
+		/*public string CurrentYearVolunteerTotal
 		{
 			get
 			{
@@ -46,11 +41,12 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 			}
 		}*/
 
-        [Display(Name = "Shifts Missed")]
-        public int absences { get; set; }=0;
+		[Display(Name = "Shifts Missed")]
+		public int absences { get; set; } = 0;
 
-        [Display(Name = "Yearly Volunteering Goal")]
-        public int? YearlyVolunteerGoal { get; set; }=0;
+		[Display(Name = "Yearly Volunteering Goal")]
+		public int? YearlyVolunteerGoal { get; set; } = 0;
+
 		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
 	}
 }

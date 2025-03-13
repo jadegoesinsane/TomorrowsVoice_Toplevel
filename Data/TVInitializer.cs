@@ -764,28 +764,25 @@ namespace TomorrowsVoice_Toplevel.Data
 										var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
 
 										volunteer.ParticipationCount++;
-										volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
-										
-
+										volunteer.TotalWorkDuration += userShift.EndAt - userShift.StartAt;
 									}
-                                    else if (shift.EventID == 4) {
-                                         userShift = new UserShift
-                                        {
-                                            UserID = user.ID,
-                                            ShiftID = shift.ID,
-                                            Shift = shift,
-                                            User = user,
+									else if (shift.EventID == 4)
+									{
+										userShift = new UserShift
+										{
+											UserID = user.ID,
+											ShiftID = shift.ID,
+											Shift = shift,
+											User = user,
 
-                                            StartAt = new TimeSpan(11, 0, 0), 
-                                            EndAt = new TimeSpan(18, 0, 0)
-
-
-                                        };
+											StartAt = new TimeSpan(11, 0, 0),
+											EndAt = new TimeSpan(18, 0, 0)
+										};
 
 										var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
 
 										volunteer.ParticipationCount++;
-										volunteer.totalWorkDuration += userShift.EndAt - userShift.StartAt;
+										volunteer.TotalWorkDuration += userShift.EndAt - userShift.StartAt;
 									}
 									else
 									{
