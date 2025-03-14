@@ -564,3 +564,58 @@ a {
         text-decoration: none;
         cursor: pointer;
     }
+
+/* Select2 Styling */
+.select2-selection--single {
+    border: 0px !important
+}
+
+.select2-selection__rendered {
+    padding: revert !important;
+}
+
+.dot {
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+/* Site Shift / Event Colours */
+.blue {
+    background-color: #467ECE;
+}
+
+.purple {
+    background-color: #9944bc;
+}
+
+.red {
+    background-color: #d3162b;
+}
+
+.brown {
+    background-color: #804205;
+}
+
+.magenta {
+    background-color: #aa394f;
+}
+
+.pink {
+    background-color: #F6CBDF;
+}
+
+.green {
+    background-color: #D7E3C0;
+}
+
+.yellow {
+    background-color: #f5e0ac;
+}
+
+.lightblue {
+    background-color: #BFD6E9;
+}
+
+.lightpurple {
+    background-color: #d8cbe7;
+}
