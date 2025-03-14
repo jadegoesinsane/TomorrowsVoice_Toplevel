@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Users;
-using TomorrowsVoice_Toplevel.Models.Users.Account;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Models
@@ -26,7 +25,6 @@ namespace TomorrowsVoice_Toplevel.Models
 		//#endregion Summary Properties
 
 		//public int ID { get; set; }
-		public DirectorAvatar? Avatar { get; set; }
 
 		[Display(Name = "Chapter")]
 		[Required(ErrorMessage = "Please select a Chapter")]

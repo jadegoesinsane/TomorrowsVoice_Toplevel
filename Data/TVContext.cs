@@ -2,7 +2,6 @@
 using System.Numerics;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Users;
-using TomorrowsVoice_Toplevel.Models.Users.Account;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
@@ -54,7 +53,6 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		public DbSet<City> Cities { get; set; }
 		public DbSet<Chapter> Chapters { get; set; }
-		public DbSet<DirectorAvatar> DirectorAvatars { get; set; }
 		public DbSet<DirectorDocument> DirectorDocuments { get; set; }
 		public DbSet<UploadedFile> UploadedFiles { get; set; }
 		public DbSet<Singer> Singers { get; set; }
@@ -68,7 +66,6 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<Shift> Shifts { get; set; }
 		public DbSet<Volunteer> Volunteers { get; set; }
 		public DbSet<UserShift> UserShifts { get; set; }
-		public DbSet<VolunteerAvatar> VolunteerAvatars { get; set; }
 
 		// Messaging DbSets
 

@@ -205,27 +205,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DirectorAvatars",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DirectorID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Content = table.Column<byte[]>(type: "BLOB", nullable: true),
-                    MimeType = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DirectorAvatars", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_DirectorAvatars_Users_DirectorID",
-                        column: x => x.DirectorID,
-                        principalTable: "Users",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Rehearsals",
                 columns: table => new
                 {
@@ -343,27 +322,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VolunteerAvatars",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Content = table.Column<byte[]>(type: "BLOB", nullable: true),
-                    MimeType = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VolunteerAvatars", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_VolunteerAvatars_Users_VolunteerID",
-                        column: x => x.VolunteerID,
-                        principalTable: "Users",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RehearsalAttendances",
                 columns: table => new
                 {
@@ -427,12 +385,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "IX_CityEvents_EventID",
                 table: "CityEvents",
                 column: "EventID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DirectorAvatars_DirectorID",
-                table: "DirectorAvatars",
-                column: "DirectorID",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RehearsalAttendances_RehearsalID",
@@ -507,12 +459,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "IX_UserShifts_VolunteerID",
                 table: "UserShifts",
                 column: "VolunteerID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VolunteerAvatars_VolunteerID",
-                table: "VolunteerAvatars",
-                column: "VolunteerID",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -520,9 +466,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
         {
             migrationBuilder.DropTable(
                 name: "CityEvents");
-
-            migrationBuilder.DropTable(
-                name: "DirectorAvatars");
 
             migrationBuilder.DropTable(
                 name: "FileContent");
@@ -538,9 +481,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             migrationBuilder.DropTable(
                 name: "UserShifts");
-
-            migrationBuilder.DropTable(
-                name: "VolunteerAvatars");
 
             migrationBuilder.DropTable(
                 name: "UploadedFiles");

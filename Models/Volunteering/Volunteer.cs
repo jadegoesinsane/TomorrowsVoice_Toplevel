@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Users;
-using TomorrowsVoice_Toplevel.Models.Users.Account;
 
 namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
@@ -16,7 +15,6 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		//}
 
 		//public int ID { get; set; }
-		public VolunteerAvatar? Avatar { get; set; }
 
 		[Display(Name = "Hours Volunteered")]
 		public int HoursVolunteered

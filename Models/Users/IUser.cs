@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TomorrowsVoice_Toplevel.Models.Users.Account;
 
 namespace TomorrowsVoice_Toplevel.Models.Users
 {

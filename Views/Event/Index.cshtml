@@ -106,10 +106,12 @@
 									}
 								</div>
 							</div>
-							@{string parentID = $"{item.ID}-accordion";}
+							@{
+								string parentID = $"{item.ID}-accordion";
+							}
 							<div class="accordion" id="@parentID">
-							@foreach (var date in item.Shifts.GroupBy(s => s.ShiftDate))
-							{
+								@foreach (var date in item.Shifts.GroupBy(s => s.ShiftDate))
+								{
 									string dateFormat;
 									if (date.Key.Year == item.StartDate.Year)
 										dateFormat = date.Key.ToString("MMMM d");
@@ -129,25 +131,38 @@
 										<div id="@cShifts" class="collapse" aria-labelledby="@dateID" data-parent="#@parentID">
 											@foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
 											{
-												
-													@{string title = shift.Title ?? "(no title)";}
-													<div class="row bd-callout position-relative" style="border-left-color: @shift.BackgroundColor;">
-														<div class="col">
-															@shift.TimeFormat
-														</div>
-														<div class="col">
-															@title
-														</div>
-														<div class="col">
-															<small>Signed Up: @shift.UserShifts.Count() / @shift.VolunteersNeeded</small>
-														</div>
+
+												string title = shift.Title ?? "(no title)";
+												<div class="row bd-callout" style="border-left-color: @shift.BackgroundColor;">
+													<div class="position-relative row col-11">
+													<div class="col">
+														@shift.TimeFormat
+													</div>
+													<div class="col">
+														@title
+													</div>
+													<div class="col">
+														<small>Signed Up: @shift.UserShifts.Count() / @shift.VolunteersNeeded</small>
+													</div>
 														<a asp-action="Details" class="stretched-link" asp-route-id="@shift.ID" asp-controller="Shift"></a>
 													</div>
-												
+													<div class="col">
+														<a asp-action="Edit" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-success"
+														   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+															<i class="bi bi-pencil-square"></i>
+														</a>
+														<a asp-action="Delete" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-danger"
+														   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+															<i class="bi bi-x-lg"></i>
+														</a>
+													</div>
+													
+												</div>
+
 											}
 										</div>
-								</div>
-							}
+									</div>
+								}
 							</div>
 						</div>
 					</div>
