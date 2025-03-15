@@ -4,18 +4,8 @@ using TomorrowsVoice_Toplevel.Models.Users;
 
 namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
-	public class Volunteer : User
+	public class Volunteer : Person
 	{
-		//public Volunteer()
-		//{ }
-
-		//public Volunteer(TVContext context)
-		//{
-		//	ID = context.GetNextID();
-		//}
-
-		//public int ID { get; set; }
-
 		[Display(Name = "Hours Volunteered")]
 		public int HoursVolunteered
 		{
@@ -28,17 +18,6 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		[Display(Name = "Shifts Attended")]
 		public int ParticipationCount { get; set; } = 0;
 
-		/*public string CurrentYearVolunteerTotal
-		{
-			get
-			{
-				TimeSpan total = new TimeSpan();
-				foreach (TimeSpan item in UserShifts.Select(vs => vs.Shift.ShiftDuration))
-					total.Add(item);
-				return string.Format("{0:D2}:{1:D2}", total.Hours, total.Minutes);
-			}
-		}*/
-
 		[Display(Name = "Shifts Missed")]
 		public int absences { get; set; } = 0;
 
@@ -46,5 +25,6 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public int? YearlyVolunteerGoal { get; set; } = 0;
 
 		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
+		public ICollection<VolunteerTags> Tags { get; set; } = new List<VolunteerTags>();
 	}
 }

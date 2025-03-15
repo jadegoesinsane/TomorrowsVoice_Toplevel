@@ -39,7 +39,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			// Select list for statuses
 			Enum.TryParse(StatusFilter, out Status selectedStatus);
 
-
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
 						  .Where(s => s == Status.Active || s == Status.Inactive || s == Status.Archived)
@@ -225,7 +224,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var director = await _context.Directors
-				.Include(d => d.VulnerableSectorChecks)
+				.Include(d => d.Documents)
 				.FirstOrDefaultAsync(d => d.ID == id);
 
 			if (director == null)
@@ -241,12 +240,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id,  List<IFormFile> theFiles)
+		public async Task<IActionResult> Edit(int id, List<IFormFile> theFiles)
 		{
 			var directorToUpdate = await _context.Directors
 				.Include(d => d.Chapter)
 				.Include(d => d.Rehearsals)
-				.Include(d => d.VulnerableSectorChecks)
+				.Include(d => d.Documents)
 				.FirstOrDefaultAsync(d => d.ID == id);
 
 			if (directorToUpdate == null)
@@ -312,7 +311,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(d => d.Chapter)
 					.ThenInclude(c => c.City)
 				.Include(d => d.Rehearsals)
-				.Include(d => d.VulnerableSectorChecks)
+				.Include(d => d.Documents)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (director == null)
@@ -328,7 +327,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var director = await _context.Directors
-				.Include(d => d.VulnerableSectorChecks)
+				.Include(d => d.Documents)
 				.FirstOrDefaultAsync(d => d.ID == id);
 			try
 			{
@@ -374,7 +373,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(d => d.Chapter)
 					.ThenInclude(c => c.City)
 				.Include(d => d.Rehearsals)
-				.Include(d => d.VulnerableSectorChecks)
+				.Include(d => d.Documents)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (director == null)
@@ -390,7 +389,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var director = await _context.Directors
-				.Include(d => d.VulnerableSectorChecks)
+				.Include(d => d.Documents)
 				.FirstOrDefaultAsync(d => d.ID == id);
 			try
 			{
@@ -431,10 +430,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
-						 .Where(s => s == Status.Active|| s== Status.Inactive)
+						 .Where(s => s == Status.Active || s == Status.Inactive)
 						 .ToList();
 
-		
 			ViewBag.StatusList = new SelectList(statusList);
 		}
 
@@ -494,7 +492,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						}
 						d.MimeType = mimeType;
 						d.FileName = fileName;
-						director.VulnerableSectorChecks.Add(d);
+						director.Documents.Add(d);
 					};
 				}
 			}

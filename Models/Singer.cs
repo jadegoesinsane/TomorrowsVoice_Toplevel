@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TomorrowsVoice_Toplevel.Models.Users;
 
 namespace TomorrowsVoice_Toplevel.Models
 {
-	public class Singer : Person
+    public class Singer : Person
 	{
 		public int ID { get; set; }
 

@@ -18,59 +18,58 @@ using TomorrowsVoice_Toplevel.ViewModels;
 using TomorrowsVoice_Toplevel.Utilities;
 using static TomorrowsVoice_Toplevel.Utilities.EmailService;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Numeric;
+using Microsoft.AspNetCore.Identity;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
 	public class VolunteerController : ElephantController
 	{
 		private readonly TVContext _context;
+		private readonly ApplicationDbContext _identityContext;
 		private readonly IMyEmailSender _emailSender;
-		public VolunteerController(TVContext context, IMyEmailSender emailSender, IToastNotification toastNotification) : base(context, toastNotification)
+		private readonly UserManager<IdentityUser> _userManager;
+
+		public VolunteerController(TVContext context, ApplicationDbContext identityContext, IMyEmailSender emailSender, UserManager<IdentityUser> userManager, IToastNotification toastNotification) : base(context, toastNotification)
 		{
 			_context = context;
-
+			_identityContext = identityContext;
 			_emailSender = emailSender;
+			_userManager = userManager;
 		}
-
-
-		
-
 
 		// GET: Volunteer
 		public async Task<IActionResult> Index(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
 		{
-            string[] sortOptions = new[] { "Volunteer","Hours Volunteered", "Shifts Attended", "Shifts Missed" };
+			string[] sortOptions = new[] { "Volunteer", "Hours Volunteered", "Shifts Attended", "Shifts Missed" };
 
-            //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
+			//Count the number of filters applied - start by assuming no filters
+			ViewData["Filtering"] = "btn-outline-secondary";
 			int numberFilters = 0;
-            Enum.TryParse(StatusFilter, out Status selectedDOW);
+			Enum.TryParse(StatusFilter, out Status selectedDOW);
 
-           
-            var statusList = Enum.GetValues(typeof(Status))
-                         .Cast<Status>()
-                         .Where(s => s == Status.Active || s == Status.Archived)
-                         .ToList();
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active || s == Status.Archived)
+						 .ToList();
 
+			ViewBag.StatusList = new SelectList(statusList);
+			var volunteers = _context.Volunteers.AsNoTracking();
+			if (!String.IsNullOrEmpty(StatusFilter))
+			{
+				volunteers = volunteers.Where(p => p.Status == selectedDOW);
 
-            ViewBag.StatusList = new SelectList(statusList);
-            var volunteers = _context.Volunteers.AsNoTracking();
-            if (!String.IsNullOrEmpty(StatusFilter))
-            {
-                volunteers = volunteers.Where(p => p.Status == selectedDOW);
-
-                // filter out archived singers if the user does not specifically select "archived"
-                if (selectedDOW != Status.Archived)
-                {
-                    volunteers = volunteers.Where(s => s.Status != Status.Archived);
-                }
-                numberFilters++;
-            }
-            else
-            {
-                volunteers = volunteers.Where(s => s.Status != Status.Archived);
-            }
-            if (!String.IsNullOrEmpty(SearchString))
+				// filter out archived singers if the user does not specifically select "archived"
+				if (selectedDOW != Status.Archived)
+				{
+					volunteers = volunteers.Where(s => s.Status != Status.Archived);
+				}
+				numberFilters++;
+			}
+			else
+			{
+				volunteers = volunteers.Where(s => s.Status != Status.Archived);
+			}
+			if (!String.IsNullOrEmpty(SearchString))
 			{
 				volunteers = volunteers.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
 									   || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
@@ -92,98 +91,94 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				page = 1;//Reset page to start
 
-                if (sortOptions.Contains(actionButton))//Change of sort is requested
-                {
-                    if (actionButton == sortField) //Reverse order on same field
-                    {
-                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
-                    }
-                    sortField = actionButton;//Sort by the button clicked
-                }
-            }
+				if (sortOptions.Contains(actionButton))//Change of sort is requested
+				{
+					if (actionButton == sortField) //Reverse order on same field
+					{
+						sortDirection = sortDirection == "asc" ? "desc" : "asc";
+					}
+					sortField = actionButton;//Sort by the button clicked
+				}
+			}
 			if (sortField == "Volunteer")
-            {
-                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
-                ViewData["partiSort"] = "fa fa-solid fa-sort";
-                ViewData["absenceSort"] = "fa fa-solid fa-sort";
-                if (sortDirection == "asc")
-                {
-                    volunteers = volunteers
+			{
+				ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+				ViewData["partiSort"] = "fa fa-solid fa-sort";
+				ViewData["absenceSort"] = "fa fa-solid fa-sort";
+				if (sortDirection == "asc")
+				{
+					volunteers = volunteers
 						.OrderBy(v => v.LastName)
 						.ThenBy(v => v.FirstName);
-                    ViewData["volunteerSort"] = "fa fa-solid fa-sort-up";
-                }
-                else
-                {
-                    volunteers = volunteers
+					ViewData["volunteerSort"] = "fa fa-solid fa-sort-up";
+				}
+				else
+				{
+					volunteers = volunteers
 						.OrderByDescending(v => v.LastName)
 						.ThenBy(v => v.FirstName);
-                    ViewData["volunteerSort"] = "fa fa-solid fa-sort-down";
-                }
-            }
-            else if (sortField == "Hours Volunteered")
-            {
-                ViewData["volunteerSort"] = "fa fa-solid fa-sort";
-                ViewData["partiSort"] = "fa fa-solid fa-sort";
-                ViewData["absenceSort"] = "fa fa-solid fa-sort";
-                if (sortDirection == "asc")
-                {
-                    volunteers = volunteers.OrderBy(v => (int)v.HoursVolunteered);
-                    ViewData["hourVolSort"] = "fa fa-solid fa-sort-up";
-                }
-                else
-                {
-                    volunteers = volunteers.OrderByDescending(v => v.HoursVolunteered);
-                    ViewData["hourVolSort"] = "fa fa-solid fa-sort-down";
-                }
-            }
-            else if (sortField == "Shifts Attended")
-            {
-                ViewData["volunteerSort"] = "fa fa-solid fa-sort";
-                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
-                ViewData["absenceSort"] = "fa fa-solid fa-sort";
-                if (sortDirection == "asc")
-                {
-                    volunteers = volunteers.OrderBy(v => v.ParticipationCount);
-                    ViewData["partiSort"] = "fa fa-solid fa-sort-up";
-                }
-                else
-                {
-                    volunteers = volunteers.OrderByDescending(v => v.ParticipationCount);
-                    ViewData["partiSort"] = "fa fa-solid fa-sort-down";
-                }
-            }
-            else if (sortField == "Shifts Missed")
-            {
-                ViewData["volunteersSort"] = "fa fa-solid fa-sort";
-                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
-                if (sortDirection == "asc")
-                {
-                    volunteers = volunteers.OrderBy(v => v.absences);
-                    ViewData["absenceSort"] = "fa fa-solid fa-sort-up";
-                }
-                else
-                {
-                    volunteers = volunteers.OrderByDescending(v => v.absences);
-                    ViewData["absenceSort"] = "fa fa-solid fa-sort-down";
-                }
-            }
+					ViewData["volunteerSort"] = "fa fa-solid fa-sort-down";
+				}
+			}
+			else if (sortField == "Hours Volunteered")
+			{
+				ViewData["volunteerSort"] = "fa fa-solid fa-sort";
+				ViewData["partiSort"] = "fa fa-solid fa-sort";
+				ViewData["absenceSort"] = "fa fa-solid fa-sort";
+				if (sortDirection == "asc")
+				{
+					volunteers = volunteers.OrderBy(v => (int)v.HoursVolunteered);
+					ViewData["hourVolSort"] = "fa fa-solid fa-sort-up";
+				}
+				else
+				{
+					volunteers = volunteers.OrderByDescending(v => v.HoursVolunteered);
+					ViewData["hourVolSort"] = "fa fa-solid fa-sort-down";
+				}
+			}
+			else if (sortField == "Shifts Attended")
+			{
+				ViewData["volunteerSort"] = "fa fa-solid fa-sort";
+				ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+				ViewData["absenceSort"] = "fa fa-solid fa-sort";
+				if (sortDirection == "asc")
+				{
+					volunteers = volunteers.OrderBy(v => v.ParticipationCount);
+					ViewData["partiSort"] = "fa fa-solid fa-sort-up";
+				}
+				else
+				{
+					volunteers = volunteers.OrderByDescending(v => v.ParticipationCount);
+					ViewData["partiSort"] = "fa fa-solid fa-sort-down";
+				}
+			}
+			else if (sortField == "Shifts Missed")
+			{
+				ViewData["volunteersSort"] = "fa fa-solid fa-sort";
+				ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+				if (sortDirection == "asc")
+				{
+					volunteers = volunteers.OrderBy(v => v.absences);
+					ViewData["absenceSort"] = "fa fa-solid fa-sort-up";
+				}
+				else
+				{
+					volunteers = volunteers.OrderByDescending(v => v.absences);
+					ViewData["absenceSort"] = "fa fa-solid fa-sort-down";
+				}
+			}
 
+			//Set sort for next time
+			ViewData["sortField"] = sortField;
+			ViewData["sortDirection"] = sortDirection;
 
-            //Set sort for next time
-            ViewData["sortField"] = sortField;
-            ViewData["sortDirection"] = sortDirection;
-
-            //Handle Paging
-            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+			//Handle Paging
+			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
 			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
 			var pagedData = await PaginatedList<Volunteer>.CreateAsync(volunteers.AsNoTracking(), page ?? 1, pageSize);
 
 			return View(pagedData);
 		}
-	
-
-		
 
 		// GET: Volunteer/Create
 		public IActionResult Create()
@@ -347,8 +342,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(volunteer);
 		}
 
-
-
 		public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
@@ -395,6 +388,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return View(volunteer);
 		}
+
 		private void PopulateAssignedEnrollmentData(Volunteer volunteer)
 		{
 			//For this to work, you must have Included the child collection in the parent object
@@ -464,130 +458,121 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 		}
-        public IActionResult DownloadVolunteers()
-        {
+
+		public IActionResult DownloadVolunteers()
+		{
 			//Get the appointments
 			var appts = from a in _context.Volunteers
 
 						orderby a.ParticipationCount descending
 						select new
 						{
-
 							Name = a.NameFormatted,
 							Hours = a.HoursVolunteered,
 							Participation = a.ParticipationCount,
 							Absences = a.absences,
 							Phone = a.PhoneFormatted,
 							Email = a.Email,
-
 						};
 			//How many rows?
 			int numRows = appts.Count();
 
 			if (numRows > 0) //We have data
-            {
-                //Create a new spreadsheet from scratch.
-                using (ExcelPackage excel = new ExcelPackage())
-                {
+			{
+				//Create a new spreadsheet from scratch.
+				using (ExcelPackage excel = new ExcelPackage())
+				{
+					//Note: you can also pull a spreadsheet out of the database if you
+					//have saved it in the normal way we do, as a Byte Array in a Model
+					//such as the UploadedFile class.
+					//
+					// Suppose...
+					//
+					// var theSpreadsheet = _context.UploadedFiles.Include(f => f.FileContent).Where(f => f.ID == id).SingleOrDefault();
+					//
+					//    //Pass the Byte[] FileContent to a MemoryStream
+					//
+					// using (MemoryStream memStream = new MemoryStream(theSpreadsheet.FileContent.Content))
+					// {
+					//     ExcelPackage package = new ExcelPackage(memStream);
+					// }
 
-                    //Note: you can also pull a spreadsheet out of the database if you
-                    //have saved it in the normal way we do, as a Byte Array in a Model
-                    //such as the UploadedFile class.
-                    //
-                    // Suppose...
-                    //
-                    // var theSpreadsheet = _context.UploadedFiles.Include(f => f.FileContent).Where(f => f.ID == id).SingleOrDefault();
-                    //
-                    //    //Pass the Byte[] FileContent to a MemoryStream
-                    //
-                    // using (MemoryStream memStream = new MemoryStream(theSpreadsheet.FileContent.Content))
-                    // {
-                    //     ExcelPackage package = new ExcelPackage(memStream);
-                    // }
+					var workSheet = excel.Workbook.Worksheets.Add("Appointments");
 
-                    var workSheet = excel.Workbook.Worksheets.Add("Appointments");
+					//Note: Cells[row, column]
+					workSheet.Cells[3, 1].LoadFromCollection(appts, true);
 
-                    //Note: Cells[row, column]
-                    workSheet.Cells[3, 1].LoadFromCollection(appts, true);
+					//Style first column for dates
 
-                    //Style first column for dates
-                   
+					//Style fee column for currency
 
-                    //Style fee column for currency
-                   
+					//Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
+					//Make Date and Patient Bold
+					workSheet.Cells[4, 1, numRows + 3, 2].Style.Font.Bold = true;
 
-                    //Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
-                    //Make Date and Patient Bold
-                    workSheet.Cells[4, 1, numRows + 3, 2].Style.Font.Bold = true;
+					//Note: these are fine if you are only 'doing' one thing to the range of cells.
+					//Otherwise you should USE a range object for efficiency
 
-                    //Note: these are fine if you are only 'doing' one thing to the range of cells.
-                    //Otherwise you should USE a range object for efficiency
-                   
+					//Set Style and backgound colour of headings
+					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 7])
+					{
+						headings.Style.Font.Bold = true;
+						var fill = headings.Style.Fill;
+						fill.PatternType = ExcelFillStyle.Solid;
+						fill.BackgroundColor.SetColor(Color.LightBlue);
+					}
 
-                    //Set Style and backgound colour of headings
-                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 7])
-                    {
-                        headings.Style.Font.Bold = true;
-                        var fill = headings.Style.Fill;
-                        fill.PatternType = ExcelFillStyle.Solid;
-                        fill.BackgroundColor.SetColor(Color.LightBlue);
-                    }
+					////Boy those notes are BIG!
+					////Lets put them in comments instead.
 
-                    ////Boy those notes are BIG!
-                    ////Lets put them in comments instead.
-                   
+					//Autofit columns
+					workSheet.Cells.AutoFitColumns();
+					//Note: You can manually set width of columns as well
+					//workSheet.Column(7).Width = 10;
 
-                    //Autofit columns
-                    workSheet.Cells.AutoFitColumns();
-                    //Note: You can manually set width of columns as well
-                    //workSheet.Column(7).Width = 10;
+					//Add a title and timestamp at the top of the report
+					workSheet.Cells[1, 1].Value = "Volunteers Report";
+					using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 7])
+					{
+						Rng.Merge = true; //Merge columns start and end range
+						Rng.Style.Font.Bold = true; //Font should be bold
+						Rng.Style.Font.Size = 18;
+						Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+					}
+					//Since the time zone where the server is running can be different, adjust to
+					//Local for us.
+					DateTime utcDate = DateTime.UtcNow;
+					TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+					DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+					using (ExcelRange Rng = workSheet.Cells[2, 7])
+					{
+						Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+							localDate.ToShortDateString();
+						Rng.Style.Font.Bold = true; //Font should be bold
+						Rng.Style.Font.Size = 12;
+						Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+					}
 
-                    //Add a title and timestamp at the top of the report
-                    workSheet.Cells[1, 1].Value = "Volunteers Report";
-                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 7])
-                    {
-                        Rng.Merge = true; //Merge columns start and end range
-                        Rng.Style.Font.Bold = true; //Font should be bold
-                        Rng.Style.Font.Size = 18;
-                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    }
-                    //Since the time zone where the server is running can be different, adjust to 
-                    //Local for us.
-                    DateTime utcDate = DateTime.UtcNow;
-                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
-                    using (ExcelRange Rng = workSheet.Cells[2, 7])
-                    {
-                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
-                            localDate.ToShortDateString();
-                        Rng.Style.Font.Bold = true; //Font should be bold
-                        Rng.Style.Font.Size = 12;
-                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                    }
+					//Ok, time to download the Excel
 
-                    //Ok, time to download the Excel
-
-                    try
-                    {
-                        Byte[] theData = excel.GetAsByteArray();
-                        string filename = "Volunteers Report.xlsx";
-                        string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                        return File(theData, mimeType, filename);
-                    }
-                    catch (Exception)
-                    {
-                        return BadRequest("Could not build and download the file.");
-                    }
-                }
-            }
-            return NotFound("No data.");
-        }
-
+					try
+					{
+						Byte[] theData = excel.GetAsByteArray();
+						string filename = "Volunteers Report.xlsx";
+						string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+						return File(theData, mimeType, filename);
+					}
+					catch (Exception)
+					{
+						return BadRequest("Could not build and download the file.");
+					}
+				}
+			}
+			return NotFound("No data.");
+		}
 
 		public async Task<IActionResult> Email(string[] selectedOptions, string Subject, string emailContent)
 		{
-
-
 			var allOptions = _context.Volunteers;
 			var currentOptionsHS = new HashSet<int>();
 			//Instead of one list with a boolean, we will make two lists
@@ -603,9 +588,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					{
 						ID = c.ID,
 						DisplayText = c.NameFormatted,
-
 					});
-
 				}
 				else
 				{
@@ -614,15 +597,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						ID = c.ID,
 						DisplayText = c.NameFormatted
 					});
-
 				}
 			}
 
 			ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
 			ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-
-
-
 
 			var selectedOptionsHS = new HashSet<string>(selectedOptions);
 			var currentOptions = new HashSet<int>(select1.Select(b => b.ID));
@@ -636,9 +615,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						{
 							ID = c.ID,
 							Email = c.Email,
-
 						});
-
 					}
 				}
 				else //not selected
@@ -649,22 +626,15 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							.FirstOrDefault(d => d.ID == c.ID);
 						if (enrollmentToRemove != null)
 						{
-
 							select1.Remove(new Volunteer
 							{
 								ID = c.ID,
 								Email = c.Email,
-
 							});
-
 						}
 					}
 				}
-
 			}
-
-
-
 
 			if (string.IsNullOrEmpty(Subject) || string.IsNullOrEmpty(emailContent))
 			{
@@ -693,7 +663,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							ToAddresses = folks,
 							Subject = Subject,
 							Content = "<p>" + emailContent + "</p><p>Please access the <strong>Tomorrows Voice</strong> web site to review.</p>"
-
 						};
 						await _emailSender.SendToManyAsync(msg);
 						ViewData["Message"] = "Message sent to " + folksCount + " Client"
@@ -712,197 +681,175 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				}
 			}
 			return View();
-
-
-
-
 		}
 
-
-
-		public async Task<IActionResult> EmailNotice(int shiftID ,int volunteerID)
-
+		public async Task<IActionResult> EmailNotice(int shiftID, int volunteerID)
 
 		{
+			var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == volunteerID);
 
-			var volunteer =await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == volunteerID);
-			
-			var shift = await _context.Shifts.Include(a=>a.Event).FirstOrDefaultAsync(m => m.ID == shiftID);
-
+			var shift = await _context.Shifts.Include(a => a.Event).FirstOrDefaultAsync(m => m.ID == shiftID);
 
 			string Subject = "Sign off shift ";
 
 			string emailContent = $"Volunteer: {volunteer.NameFormatted}  sign off event :{shift.Event.Name} shift: {shift.TimeSummary}  ";
 
-
-
 			var volunteers = _context.Volunteers;
 
-			int folksCount=0;
-				try
-				{
-					//Send a Notice.
-					List<EmailAddress> folks = (from p in volunteers
+			int folksCount = 0;
+			try
+			{
+				//Send a Notice.
+				List<EmailAddress> folks = (from p in volunteers
 
-												where p.ID == 1000
-												select new EmailAddress
-												{
-													Name = p.NameFormatted,
-													Address = p.Email
-												}).ToList();
-					 folksCount = folks.Count;
-					if (folksCount > 0)
-					{
-						var msg = new EmailMessage()
-						{
-							ToAddresses = folks,
-							Subject = Subject,
-							Content = "<p>" + emailContent 
-
-						};
-						await _emailSender.SendToManyAsync(msg);
-						ViewData["Message"] = "Message sent to " + folksCount + " Manager"
-							+ ((folksCount == 1) ? "." : "s.");
-					}
-					else
-					{
-						ViewData["Message"] = "Message NOT sent!  No Manager.";
-					}
-				}
-				catch (Exception ex)
+											where p.ID == 1000
+											select new EmailAddress
+											{
+												Name = p.NameFormatted,
+												Address = p.Email
+											}).ToList();
+				folksCount = folks.Count;
+				if (folksCount > 0)
 				{
-					string errMsg = ex.GetBaseException().Message;
-					ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
-						+ ((folksCount == 1) ? "" : "s") + " in the list.";
+					var msg = new EmailMessage()
+					{
+						ToAddresses = folks,
+						Subject = Subject,
+						Content = "<p>" + emailContent
+					};
+					await _emailSender.SendToManyAsync(msg);
+					ViewData["Message"] = "Message sent to " + folksCount + " Manager"
+						+ ((folksCount == 1) ? "." : "s.");
 				}
-			
+				else
+				{
+					ViewData["Message"] = "Message NOT sent!  No Manager.";
+				}
+			}
+			catch (Exception ex)
+			{
+				string errMsg = ex.GetBaseException().Message;
+				ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
+					+ ((folksCount == 1) ? "" : "s") + " in the list.";
+			}
+
 			//return View();
-            return RedirectToAction("SignOffShift", new { volunteerID = volunteerID, shiftID = shiftID });
+			return RedirectToAction("SignOffShift", new { volunteerID = volunteerID, shiftID = shiftID });
+		}
 
+		// GET: Volunteer/Details/5
+		public async Task<IActionResult> Details(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
+			var volunteer = await _context.Volunteers
+				.FirstOrDefaultAsync(m => m.ID == id);
+			if (volunteer == null)
+			{
+				return NotFound();
+			}
 
-        }
+			return View(volunteer);
+		}
 
+		public PartialViewResult ListOfShiftDetails(int id)
 
-        // GET: Volunteer/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var volunteer = await _context.Volunteers
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (volunteer == null)
-            {
-                return NotFound();
-            }
-
-
-            return View(volunteer);
-        }
-        public PartialViewResult ListOfShiftDetails(int id)
-
-        {
-            var volunteer = _context.Volunteers
-                            .FirstOrDefault(v => v.ID == id);
-			 ViewData["Volunteer"] = volunteer;
-            var shifts = _context.Shifts
-				  .Include(a => a.UserShifts).Include(c=>c.Event)
-                  //.Where(vs => vs.Status != Status.Archived)
-                  .Where(r => r.UserShifts.Any(ra => ra.UserID == id)) 
+		{
+			var volunteer = _context.Volunteers
+							.FirstOrDefault(v => v.ID == id);
+			ViewData["Volunteer"] = volunteer;
+			var shifts = _context.Shifts
+				  .Include(a => a.UserShifts).Include(c => c.Event)
+				  //.Where(vs => vs.Status != Status.Archived)
+				  .Where(r => r.UserShifts.Any(ra => ra.UserID == id))
 				  .OrderBy(r => r.ShiftDate)
 				  .ToList();
 
-            return PartialView("_ListOfShiftDetails", shifts);
-        }
-        public async Task<IActionResult> ShiftIndex(int id)
-        {
+			return PartialView("_ListOfShiftDetails", shifts);
+		}
 
+		public async Task<IActionResult> ShiftIndex(int id)
+		{
+			var volunteer = _context.Volunteers
+							.FirstOrDefault(v => v.ID == id);
 
-            var volunteer = _context.Volunteers
-                            .FirstOrDefault(v => v.ID == id);
+			if (volunteer == null)
+			{
+				return NotFound();
+			}
+			ViewData["Volunteer"] = volunteer;
 
-            if (volunteer == null)
-            {
-                return NotFound();
-            }
-            ViewData["Volunteer"] = volunteer;
+			var volunteerShifts = _context.UserShifts.Include(a => a.Shift)
+								   .Where(vs => vs.UserID == volunteer.ID).Where(vs => vs.Shift.Status != Status.Archived)
+								   .Select(vs => vs.ShiftID)
+								   .ToList();
 
-            var volunteerShifts = _context.UserShifts.Include(a=>a.Shift)
-                                   .Where(vs => vs.UserID == volunteer.ID).Where(vs => vs.Shift.Status != Status.Archived)
-                                   .Select(vs => vs.ShiftID)
-                                   .ToList();
+			ViewData["VolunteerShifts"] = volunteerShifts;
 
-            ViewData["VolunteerShifts"] = volunteerShifts;
+			var tVContext = _context.Shifts.Include(s => s.Event);
+			return View(await tVContext.ToListAsync());
+		}
 
-            var tVContext = _context.Shifts.Include(s => s.Event);
-            return View(await tVContext.ToListAsync());
+		// GET: Shift/AddShift/5
+		public async Task<IActionResult> SignOffShift(int volunteerId, int shiftId)
+		{
+			if (shiftId == null)
+			{
+				return NotFound();
+			}
 
+			var shift = await _context.Shifts
+				.Include(s => s.Event)
+				.FirstOrDefaultAsync(m => m.ID == shiftId);
+			if (shift == null)
+			{
+				return NotFound();
+			}
+			ViewData["volunteerId"] = volunteerId;
+			return View(shift);
+		}
 
-        }
+		[HttpPost, ActionName("SignOffShift")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> SignOffShiftConfirmed(int volunteerId, int shiftId)
+		{
+			var userShift = await _context.UserShifts
+								   .FirstOrDefaultAsync(us => us.UserID == volunteerId && us.ShiftID == shiftId);
 
+			var volunteer = _context.Volunteers
+							.FirstOrDefault(v => v.ID == volunteerId);
 
-
-        // GET: Shift/AddShift/5
-        public async Task<IActionResult> SignOffShift(int volunteerId, int shiftId)
-        {
-            if (shiftId == null)
-            {
-                return NotFound();
-            }
-
-            var shift = await _context.Shifts
-                .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.ID == shiftId);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-            ViewData["volunteerId"] = volunteerId;
-            return View(shift);
-        }
-
-        [HttpPost, ActionName("SignOffShift")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignOffShiftConfirmed(int volunteerId, int shiftId)
-        {
-            var userShift = await _context.UserShifts
-                                   .FirstOrDefaultAsync(us => us.UserID == volunteerId && us.ShiftID == shiftId);
-
-            var volunteer = _context.Volunteers
-                            .FirstOrDefault(v => v.ID == volunteerId);
-
-            var Shift =  _context.Shifts
-                                  .FirstOrDefault(v => v.ID == shiftId);
+			var Shift = _context.Shifts
+								  .FirstOrDefault(v => v.ID == shiftId);
 
 			// get info for toast notification
 			string shiftDate = Shift.ShiftDate.ToLongDateString();
 			string volunteerName = volunteer.NameFormatted;
-            int eventID = _context.Shifts.Where(s => s.ID == shiftId).Select(s => s.EventID).FirstOrDefault();
-            string eventName = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault();
+			int eventID = _context.Shifts.Where(s => s.ID == shiftId).Select(s => s.EventID).FirstOrDefault();
+			string eventName = _context.Events.Where(e => e.ID == eventID).Select(e => e.Name).FirstOrDefault();
 
-            try
-            {
-                if (userShift != null)
-                {
-                    _context.UserShifts.Remove(userShift);
-                    await _context.SaveChangesAsync();
+			try
+			{
+				if (userShift != null)
+				{
+					_context.UserShifts.Remove(userShift);
+					await _context.SaveChangesAsync();
 					AddCancelledToast(shiftDate, volunteerName, eventName);
 					//AddSuccessToast($"Shift {Shift.ShiftDate} successfully removed for volunteer {volunteer.NameFormatted}.");
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Unable to delete record. Please try again.");
-            }
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException)
+			{
+				ModelState.AddModelError("", "Unable to delete record. Please try again.");
+			}
 
-            return RedirectToAction("VolunteerforUser", "Volunteer");
+			return RedirectToAction("VolunteerforUser", "Volunteer");
+		}
 
-
-        }
 		public JsonResult GetVolunteerData()
 		{
 			var data = new Volunteer
@@ -914,162 +861,160 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			};
 			return Json(data);
 		}
-        public async Task<IActionResult> IndexVolunteer(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
-        {
-            string[] sortOptions = new[] { "Volunteer", "Hours Volunteered", "Participation", "Absences" };
 
-            //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
-            int numberFilters = 0;
-            Enum.TryParse(StatusFilter, out Status selectedDOW);
-
-
-            var statusList = Enum.GetValues(typeof(Status))
-                         .Cast<Status>()
-                         .Where(s => s == Status.Active || s == Status.Archived)
-                         .ToList();
-
-
-            ViewBag.StatusList = new SelectList(statusList);
-            var volunteers = _context.Volunteers.AsNoTracking();
-            if (!String.IsNullOrEmpty(StatusFilter))
-            {
-                volunteers = volunteers.Where(p => p.Status == selectedDOW);
-
-                // filter out archived singers if the user does not specifically select "archived"
-                if (selectedDOW != Status.Archived)
-                {
-                    volunteers = volunteers.Where(s => s.Status != Status.Archived);
-                }
-                numberFilters++;
-            }
-            else
-            {
-                volunteers = volunteers.Where(s => s.Status != Status.Archived);
-            }
-            if (!String.IsNullOrEmpty(SearchString))
-            {
-                volunteers = volunteers.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
-                numberFilters++;
-            }
-            //Give feedback about the state of the filters
-            if (numberFilters != 0)
-            {
-                //Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
-                //Show how many filters have been applied
-                ViewData["numberFilters"] = "(" + numberFilters.ToString()
-                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
-                //Keep the Bootstrap collapse open
-                @ViewData["ShowFilter"] = " show";
-            }
-            //Before we sort, see if we have called for a change of filtering or sorting
-            if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
-            {
-                page = 1;//Reset page to start
-
-                if (sortOptions.Contains(actionButton))//Change of sort is requested
-                {
-                    if (actionButton == sortField) //Reverse order on same field
-                    {
-                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
-                    }
-                    sortField = actionButton;//Sort by the button clicked
-                }
-            }
-            if (sortField == "Volunteer")
-            {
-                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
-                ViewData["partiSort"] = "fa fa-solid fa-sort";
-                ViewData["absenceSort"] = "fa fa-solid fa-sort";
-                if (sortDirection == "asc")
-                {
-                    volunteers = volunteers
-                        .OrderBy(v => v.LastName)
-                        .ThenBy(v => v.FirstName);
-                    ViewData["volunteerSort"] = "fa fa-solid fa-sort-up";
-                }
-                else
-                {
-                    volunteers = volunteers
-                        .OrderByDescending(v => v.LastName)
-                        .ThenBy(v => v.FirstName);
-                    ViewData["volunteerSort"] = "fa fa-solid fa-sort-down";
-                }
-            }
-            else if (sortField == "Hours Volunteered")
-            {
-                ViewData["volunteerSort"] = "fa fa-solid fa-sort";
-                ViewData["partiSort"] = "fa fa-solid fa-sort";
-                ViewData["absenceSort"] = "fa fa-solid fa-sort";
-                if (sortDirection == "asc")
-                {
-                    volunteers = volunteers.OrderBy(v => v.HoursVolunteered);
-                    ViewData["hourVolSort"] = "fa fa-solid fa-sort-up";
-                }
-                else
-                {
-                    volunteers = volunteers.OrderByDescending(v => v.HoursVolunteered);
-                    ViewData["hourVolSort"] = "fa fa-solid fa-sort-down";
-                }
-            }
-            else if (sortField == "Participation")
-            {
-                ViewData["volunteerSort"] = "fa fa-solid fa-sort";
-                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
-                ViewData["absenceSort"] = "fa fa-solid fa-sort";
-                if (sortDirection == "asc")
-                {
-                    volunteers = volunteers.OrderBy(v => v.ParticipationCount);
-                    ViewData["partiSort"] = "fa fa-solid fa-sort-up";
-                }
-                else
-                {
-                    volunteers = volunteers.OrderByDescending(v => v.ParticipationCount);
-                    ViewData["partiSort"] = "fa fa-solid fa-sort-down";
-                }
-            }
-            else if (sortField == "Absences")
-            {
-                ViewData["volunteersSort"] = "fa fa-solid fa-sort";
-                ViewData["hourVolSort"] = "fa fa-solid fa-sort";
-                if (sortDirection == "asc")
-                {
-                    volunteers = volunteers.OrderBy(v => v.absences);
-                    ViewData["absenceSort"] = "fa fa-solid fa-sort-up";
-                }
-                else
-                {
-                    volunteers = volunteers.OrderByDescending(v => v.absences);
-                    ViewData["absenceSort"] = "fa fa-solid fa-sort-down";
-                }
-            }
-
-
-            //Set sort for next time
-            ViewData["sortField"] = sortField;
-            ViewData["sortDirection"] = sortDirection;
-
-            //Handle Paging
-            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-            var pagedData = await PaginatedList<Volunteer>.CreateAsync(volunteers.AsNoTracking(), page ?? 1, pageSize);
-
-            return View(pagedData);
-        }
-
-        // Page for Selecting a volunteer
-        public async Task<IActionResult> VolunteerSelect()
+		public async Task<IActionResult> IndexVolunteer(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
 		{
-            ViewData["VolunteerID"] = new SelectList(_context
-                .Volunteers
-                .Where(v => v.Status == Status.Active)
-                .OrderBy(v => v.LastName), "ID", "NameFormatted");
-            return View();
+			string[] sortOptions = new[] { "Volunteer", "Hours Volunteered", "Participation", "Absences" };
+
+			//Count the number of filters applied - start by assuming no filters
+			ViewData["Filtering"] = "btn-outline-secondary";
+			int numberFilters = 0;
+			Enum.TryParse(StatusFilter, out Status selectedDOW);
+
+			var statusList = Enum.GetValues(typeof(Status))
+						 .Cast<Status>()
+						 .Where(s => s == Status.Active || s == Status.Archived)
+						 .ToList();
+
+			ViewBag.StatusList = new SelectList(statusList);
+			var volunteers = _context.Volunteers.AsNoTracking();
+			if (!String.IsNullOrEmpty(StatusFilter))
+			{
+				volunteers = volunteers.Where(p => p.Status == selectedDOW);
+
+				// filter out archived singers if the user does not specifically select "archived"
+				if (selectedDOW != Status.Archived)
+				{
+					volunteers = volunteers.Where(s => s.Status != Status.Archived);
+				}
+				numberFilters++;
+			}
+			else
+			{
+				volunteers = volunteers.Where(s => s.Status != Status.Archived);
+			}
+			if (!String.IsNullOrEmpty(SearchString))
+			{
+				volunteers = volunteers.Where(p => p.LastName.ToUpper().Contains(SearchString.ToUpper())
+									   || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
+				numberFilters++;
+			}
+			//Give feedback about the state of the filters
+			if (numberFilters != 0)
+			{
+				//Toggle the Open/Closed state of the collapse depending on if we are filtering
+				ViewData["Filtering"] = " btn-danger";
+				//Show how many filters have been applied
+				ViewData["numberFilters"] = "(" + numberFilters.ToString()
+					+ " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+				//Keep the Bootstrap collapse open
+				@ViewData["ShowFilter"] = " show";
+			}
+			//Before we sort, see if we have called for a change of filtering or sorting
+			if (!String.IsNullOrEmpty(actionButton)) //Form Submitted!
+			{
+				page = 1;//Reset page to start
+
+				if (sortOptions.Contains(actionButton))//Change of sort is requested
+				{
+					if (actionButton == sortField) //Reverse order on same field
+					{
+						sortDirection = sortDirection == "asc" ? "desc" : "asc";
+					}
+					sortField = actionButton;//Sort by the button clicked
+				}
+			}
+			if (sortField == "Volunteer")
+			{
+				ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+				ViewData["partiSort"] = "fa fa-solid fa-sort";
+				ViewData["absenceSort"] = "fa fa-solid fa-sort";
+				if (sortDirection == "asc")
+				{
+					volunteers = volunteers
+						.OrderBy(v => v.LastName)
+						.ThenBy(v => v.FirstName);
+					ViewData["volunteerSort"] = "fa fa-solid fa-sort-up";
+				}
+				else
+				{
+					volunteers = volunteers
+						.OrderByDescending(v => v.LastName)
+						.ThenBy(v => v.FirstName);
+					ViewData["volunteerSort"] = "fa fa-solid fa-sort-down";
+				}
+			}
+			else if (sortField == "Hours Volunteered")
+			{
+				ViewData["volunteerSort"] = "fa fa-solid fa-sort";
+				ViewData["partiSort"] = "fa fa-solid fa-sort";
+				ViewData["absenceSort"] = "fa fa-solid fa-sort";
+				if (sortDirection == "asc")
+				{
+					volunteers = volunteers.OrderBy(v => v.HoursVolunteered);
+					ViewData["hourVolSort"] = "fa fa-solid fa-sort-up";
+				}
+				else
+				{
+					volunteers = volunteers.OrderByDescending(v => v.HoursVolunteered);
+					ViewData["hourVolSort"] = "fa fa-solid fa-sort-down";
+				}
+			}
+			else if (sortField == "Participation")
+			{
+				ViewData["volunteerSort"] = "fa fa-solid fa-sort";
+				ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+				ViewData["absenceSort"] = "fa fa-solid fa-sort";
+				if (sortDirection == "asc")
+				{
+					volunteers = volunteers.OrderBy(v => v.ParticipationCount);
+					ViewData["partiSort"] = "fa fa-solid fa-sort-up";
+				}
+				else
+				{
+					volunteers = volunteers.OrderByDescending(v => v.ParticipationCount);
+					ViewData["partiSort"] = "fa fa-solid fa-sort-down";
+				}
+			}
+			else if (sortField == "Absences")
+			{
+				ViewData["volunteersSort"] = "fa fa-solid fa-sort";
+				ViewData["hourVolSort"] = "fa fa-solid fa-sort";
+				if (sortDirection == "asc")
+				{
+					volunteers = volunteers.OrderBy(v => v.absences);
+					ViewData["absenceSort"] = "fa fa-solid fa-sort-up";
+				}
+				else
+				{
+					volunteers = volunteers.OrderByDescending(v => v.absences);
+					ViewData["absenceSort"] = "fa fa-solid fa-sort-down";
+				}
+			}
+
+			//Set sort for next time
+			ViewData["sortField"] = sortField;
+			ViewData["sortDirection"] = sortDirection;
+
+			//Handle Paging
+			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+			var pagedData = await PaginatedList<Volunteer>.CreateAsync(volunteers.AsNoTracking(), page ?? 1, pageSize);
+
+			return View(pagedData);
 		}
 
-        private bool VolunteerExists(int id)
+		// Page for Selecting a volunteer
+		public async Task<IActionResult> VolunteerSelect()
+		{
+			ViewData["VolunteerID"] = new SelectList(_context
+				.Volunteers
+				.Where(v => v.Status == Status.Active)
+				.OrderBy(v => v.LastName), "ID", "NameFormatted");
+			return View();
+		}
+
+		private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
 		}

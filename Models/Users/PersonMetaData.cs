@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TomorrowsVoice_Toplevel.Models
+namespace TomorrowsVoice_Toplevel.Models.Users
 {
-	public class Person : Auditable
+	public class PersonMetaData
 	{
 		[Display(Name = "Full Name")]
 		public string NameFormatted

@@ -46,7 +46,7 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<UserID> UserIDs { get; set; }
 
 		public DbSet<User> Users { get; set; }
-		public DbSet<Role> Roles { get; set; }
+		public DbSet<Tag> Roles { get; set; }
 
 		// Chapters
 		public DbSet<Director> Directors { get; set; }
@@ -116,6 +116,11 @@ namespace TomorrowsVoice_Toplevel.Data
 			// unique instructor email
 			modelBuilder.Entity<Director>()
 				.HasIndex(d => d.Email)
+				.IsUnique();
+
+			// Unique volunteer email
+			modelBuilder.Entity<Volunteer>()
+				.HasIndex(v => v.Email)
 				.IsUnique();
 
 			// prevent cascade delete from director to chapter

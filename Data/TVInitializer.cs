@@ -733,16 +733,14 @@ namespace TomorrowsVoice_Toplevel.Data
 						//User Shifts
 						if (!context.UserShifts.Any())
 						{
-							var volunteers = context.Volunteers.ToList();
-							var directors = context.Directors.ToList();
-							var users = volunteers.Cast<User>().ToArray();
+							var users = context.Volunteers.ToList().Cast<Volunteer>().ToArray();
 
 							foreach (Shift shift in context.Shifts)
 							{
 								int need = rnd.Next(shift.VolunteersNeeded + 1);
 								while (need > 0)
 								{
-									rnd.Shuffle<User>(users);
+									rnd.Shuffle<Volunteer>(users);
 									var user = users.First();
 
 									var existing = context.UserShifts
@@ -763,12 +761,6 @@ namespace TomorrowsVoice_Toplevel.Data
 										var volunteer = context.Volunteers.FirstOrDefault(v => v.ID == user.ID);
 										if (volunteer != null)
 											volunteer.UserShifts.Add(userShift);
-										else
-										{
-											var director = context.Directors.FirstOrDefault(d => d.ID == user.ID);
-											if (director != null)
-												director.UserShifts.Add(userShift);
-										}
 
 										shift.UserShifts.Add(userShift);
 
@@ -788,71 +780,6 @@ namespace TomorrowsVoice_Toplevel.Data
 										Debug.WriteLine($"UserShift already exists!");
 									}
 								}
-
-								// Test Messaging with Seed Data
-								//foreach (User user in users.Take(rnd.Next(shift.VolunteersNeeded + 1)))
-								//{
-								//	if (shift.VolunteersLeft <= 0)
-								//		continue;
-
-								//	UserShift userShift = new UserShift { };
-
-								//	if (shift.EventID == 1)
-								//	{
-								//		userShift = new UserShift
-								//		{
-								//			UserID = user.ID,
-								//			ShiftID = shift.ID,
-								//			Shift = shift,
-								//			User = user,
-								//			StartAt = new TimeSpan(10, 0, 0),
-								//			EndAt = new TimeSpan(14, 0, 0)
-								//		};
-
-								//		var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
-
-								//		volunteer.ParticipationCount++;
-								//		volunteer.TotalWorkDuration += userShift.EndAt - userShift.StartAt;
-								//	}
-								//	else if (shift.EventID == 4)
-								//	{
-								//		userShift = new UserShift
-								//		{
-								//			UserID = user.ID,
-								//			ShiftID = shift.ID,
-								//			Shift = shift,
-								//			User = user,
-
-								//			StartAt = new TimeSpan(11, 0, 0),
-								//			EndAt = new TimeSpan(18, 0, 0)
-								//		};
-
-								//		var volunteer = context.Volunteers.FirstOrDefault(a => a.ID == user.ID);
-
-								//		volunteer.ParticipationCount++;
-								//		volunteer.TotalWorkDuration += userShift.EndAt - userShift.StartAt;
-								//	}
-								//	else
-								//	{
-								//		userShift = new UserShift
-								//		{
-								//			UserID = user.ID,
-								//			ShiftID = shift.ID,
-								//			Shift = shift,
-								//			User = user
-								//		};
-								//	}
-
-								//	try
-								//	{
-								//		context.UserShifts.Add(userShift);
-								//		context.SaveChanges();
-								//	}
-								//	catch (Exception)
-								//	{
-								//		context.UserShifts.Remove(userShift);
-								//	}
-								//}
 							}
 						}
 					}

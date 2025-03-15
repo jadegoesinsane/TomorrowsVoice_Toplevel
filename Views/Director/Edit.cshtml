@@ -66,7 +66,7 @@
 		<div class="row">
 			<div class="form-group col-md-4">
 				@{
-					int fileCount = Model.VulnerableSectorChecks.Count;
+					int fileCount = Model.Documents.Count;
 					if (fileCount > 0)
 					{
 						<label class="control-label"> Current Documents:</label>
@@ -80,7 +80,7 @@
 					@{
 						if (fileCount > 0)
 						{
-							var firstFile = Model.VulnerableSectorChecks.FirstOrDefault(); ;
+							var firstFile = Model.Documents.FirstOrDefault(); ;
 							if (fileCount > 1)
 							{
 								<a class="" role="button" data-bs-toggle="collapse"
@@ -90,7 +90,7 @@
 								</a>
 								<div class="collapse" id="collapseDocs@(Model.ID)">
 									@{
-										foreach (var d in Model.VulnerableSectorChecks)
+										foreach (var d in Model.Documents)
 										{
 											<a asp-action="Download" asp-route-id="@d.ID">@d.FileName</a> <br />
 										}
@@ -108,14 +108,8 @@
 
 			<div class="form-group col-md-4">
 				@{
-					if (fileCount > 0)
-					{
-						<label class="control-label custom-file-label">Update Vulnerable Sector Check:</label>
-					}
-					else
-					{
-						<label class="control-label custom-file-label">Upload Vulnerable Sector Check:</label>
-					}
+					string action = fileCount > 0 ? "Update" : "Upload";
+					<label class="control-label custom-file-label">@action Documents:</label>
 
 				}
 				<div class="input-group mb-3">
