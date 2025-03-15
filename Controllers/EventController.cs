@@ -28,7 +28,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         }
 
         // GET: Event
-        public async Task<IActionResult> Index(string? SearchString, string? Location, DateTime FilterStartDate,
+        public async Task<IActionResult> Index(string? SearchString, int? CityID, DateTime FilterStartDate,
             DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
         {
             //Count the number of filters applied - start by assuming no filters
@@ -86,10 +86,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 events = events.Where(p => p.Name.ToUpper().Contains(SearchString.ToUpper()));
                 numberFilters++;
             }
-            if (!String.IsNullOrEmpty(Location))
+            if (CityID.HasValue)
             {
-                events = events.Where(e => e.Location.Contains(Location));
-                numberFilters++;
+                events = events.Where(p => p.CityEvents.Any(ce => ce.CityID == CityID));
+
+				numberFilters++;
             }
             //Give feedback about the state of the filters
             if (numberFilters != 0)
@@ -572,11 +573,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
         private void PopulateDropDownLists(Event? events = null)
         {
-            var location = EventLocationSelectList();
-
-            ViewData["Location"] = new SelectList(location, events?.Location);
-
-            ViewData["BackgroundColour"] = ColourSelectList(events?.BackgroundColour);
+			ViewData["CityID"] = CitySelectList();
+			ViewData["BackgroundColour"] = ColourSelectList(events?.BackgroundColour);
 
             var statusList = Enum.GetValues(typeof(Status))
                          .Cast<Status>()
@@ -683,7 +681,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(pagedData);
         }
 
-        public JsonResult AddShift(string? thing)
+		private SelectList CitySelectList()
+		{
+			return new SelectList(_context
+				.Cities
+				.OrderBy(c => c.Name), "ID", "Name");
+		}
+
+		public JsonResult AddShift(string? thing)
         {
             return Json(new { success = true, message = "Shift added successfully" });
         }
