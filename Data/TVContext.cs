@@ -45,7 +45,7 @@ namespace TomorrowsVoice_Toplevel.Data
 		// Accounts
 		public DbSet<UserID> UserIDs { get; set; }
 
-		public DbSet<User> Users { get; set; }
+		//public DbSet<User> Users { get; set; }
 		public DbSet<Tag> Roles { get; set; }
 
 		// Chapters
@@ -73,10 +73,10 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<User>()
-				.HasDiscriminator<string>("UserType")
-				.HasValue<Volunteer>("Volunteer")
-				.HasValue<Director>("Director");
+			//modelBuilder.Entity<User>()
+			//	.HasDiscriminator<string>("UserType")
+			//	.HasValue<Volunteer>("Volunteer")
+			//	.HasValue<Director>("Director");
 			// Ensure Director & Volunteer have a sequential ID
 			modelBuilder.Entity<UserID>().HasData(new UserID { ID = 1, NextID = 0 });
 
