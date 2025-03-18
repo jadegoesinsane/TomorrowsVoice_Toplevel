@@ -1013,8 +1013,77 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.OrderBy(v => v.LastName), "ID", "NameFormatted");
 			return View();
 		}
+        public async Task<IActionResult> TrackPerformance(int id, int volunteerId)
+        {
+            var groupClass = await _context.Shifts
+                .Include(g => g.UserShifts).ThenInclude(e => e.User)
+                .FirstOrDefaultAsync(m => m.ID == id);
 
-		private bool VolunteerExists(int id)
+            if (groupClass == null)
+            {
+                return NotFound();
+            }
+
+            var enrollmentsVM = groupClass.UserShifts.Where(e => e.User.ID == volunteerId).Select(e => new EnrollmentVM
+            {
+                UserID = e.UserID,
+                Volunteer = e.User.NameFormatted,
+                ShowOrNot = e.NoShow,
+                StartAt = e.StartAt,
+                EndAt = e.EndAt
+            }).ToList();
+
+            return PartialView("_TrackPerformance", enrollmentsVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
+        {
+            if (enrollments == null || enrollments.Count == 0)
+            {
+                return Json(new { success = false, message = "No data received." });
+            }
+
+            try
+            {
+                foreach (var enrollmentVM in enrollments)
+                {
+                    var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == enrollmentVM.UserID);
+
+                    var userShifts = await _context.UserShifts.FirstOrDefaultAsync(e => e.ShiftID == enrollmentVM.ShiftID);
+
+                    var enrollment = await _context.UserShifts.Include(g => g.User)
+                        .FirstOrDefaultAsync(e => e.UserID == enrollmentVM.UserID && e.ShiftID == enrollmentVM.ShiftID);
+
+                    if (enrollmentVM.ShowOrNot == true && enrollmentVM.StartAt - enrollmentVM.EndAt != TimeSpan.Zero)
+                    {
+                        throw new InvalidOperationException("Cannot have work hours when marked as a No Show.");
+                    }
+
+                    if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
+                    {
+                        throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
+                    }
+
+                    if (enrollment != null)
+                    {
+
+                        enrollment.NoShow = enrollmentVM.ShowOrNot;
+                        enrollment.StartAt = enrollmentVM.StartAt;
+                        enrollment.EndAt = enrollmentVM.EndAt;
+
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Performance updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error updating performance: " + ex.Message });
+            }
+        }
+        private bool VolunteerExists(int id)
 		{
 			return _context.Volunteers.Any(e => e.ID == id);
 		}

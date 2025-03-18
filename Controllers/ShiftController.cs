@@ -568,10 +568,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						throw new InvalidOperationException("Cannot have work hours when marked as a No Show.");
 					}
 
-					if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt >= enrollmentVM.EndAt)
-					{
-						throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
-					}
+                    if (enrollmentVM.ShowOrNot == false && enrollmentVM.StartAt > enrollmentVM.EndAt)
+                    {
+                        throw new InvalidOperationException("Start time cannot be after end time when the volunteer shows up.");
+                    }
 
 					if (enrollment != null)
 					{
@@ -582,21 +582,26 @@ namespace TomorrowsVoice_Toplevel.Controllers
 							{
 								volunteer.TotalWorkDuration -= enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount--;
+								
 							}
 						}
 						enrollment.NoShow = enrollmentVM.ShowOrNot;
-
-						enrollment.StartAt = enrollmentVM.StartAt;
+                       
+                        enrollment.StartAt = enrollmentVM.StartAt;
 						enrollment.EndAt = enrollmentVM.EndAt;
 						if (volunteer != null)
 						{
 							if (enrollment.NoShow == true) volunteer.absences++;
 							if (enrollment.EndAt > enrollment.StartAt)
 							{
-								volunteer.TotalWorkDuration += enrollment.EndAt - enrollment.StartAt;
+                                enrollment.WorkingHourRecorded = true;
+                                volunteer.TotalWorkDuration += enrollment.EndAt - enrollment.StartAt;
 								volunteer.ParticipationCount++;
+							
 							}
-						}
+							if (enrollment.EndAt == enrollment.StartAt) { enrollment.WorkingHourRecorded = false; }
+
+                        }
 					}
 				}
 
@@ -608,7 +613,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return Json(new { success = false, message = "Error updating performance: " + ex.Message });
 			}
 		}
-
 		private void PopulateDropDown(Shift? shift = null)
 		{
 			ViewData["EventID"] = EventSelectList(shift?.EventID, Status.Active);

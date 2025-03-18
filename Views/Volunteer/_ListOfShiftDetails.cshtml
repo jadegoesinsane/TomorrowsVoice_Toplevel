@@ -10,87 +10,199 @@
     </div>
     <a asp-action="Index" class="btn btn-primary" style="margin-bottom: 10px" asp-controller="ShiftSignUp">Sign Up for Shifts</a>
     <div class="panel-body scrollable-panel">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.ShiftDate)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.StartAt)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.EndAt)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Status)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Event)
-                    </th>
-                    <th>
-                       Action
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {  @if (item.ShiftDate >= DateTime.Today)
-                    {
+        <form asp-action="Index" method="get">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>
-                            
-                           @Html.DisplayFor(modelItem => item.ShiftDate)
-                            
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.StartAt)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EndAt)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Status)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Event.Name)
-                        </td>
-                        <td>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ShiftDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.StartAt)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EndAt)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Status)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Event)
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {  @if (item.ShiftDate >= DateTime.Today)
+                        {
+                            <tr>
+                                <td>
+
+                                    @Html.DisplayFor(modelItem => item.ShiftDate)
+
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartAt)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EndAt)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Event.Name)
+                                </td>
+                                <td>
 
 
 
-@*                                 @if (item.ShiftDate < DateTime.Today.AddDays(7))
-                                {
-                                    <a class="btn btn-primary add"
-                                       asp-controller="Volunteer"
-                                       asp-action="EmailNotice"
-                                       asp-route-volunteerId="@volunteer?.ID"
-                                       asp-route-shiftId="@item.ID">
-                                        Cancel Shift
-                                    </a>
-                                    
-                                }
-                                else
-                                { *@
+                                    @*                                 @if (item.ShiftDate < DateTime.Today.AddDays(7))
+                            {
+                            <a class="btn btn-primary add"
+                            asp-controller="Volunteer"
+                            asp-action="EmailNotice"
+                            asp-route-volunteerId="@volunteer?.ID"
+                            asp-route-shiftId="@item.ID">
+                            Cancel Shift
+                            </a>
+
+                            }
+                            else
+                            { *@
                                     <!-- Otherwise, render the active button -->
                                     <a class="btn btn-primary add"
-                                    id="btnCancel"
+                                       id="btnCancel"
                                        asp-controller="Volunteer"
                                        asp-action="SignOffShift"
                                        asp-route-volunteerId="@volunteer?.ID"
                                        asp-route-shiftId="@item.ID">
                                         Cancel Shift
                                     </a>
-@*                                 } *@
+                                    @*                                 } *@
 
-                        </td>
-                    </tr>
-                }}
-            </tbody>
-        </table>
+                                </td>
+                                <td>
+                                    @if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any())
+                                    {
+                                        <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
+                                                data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
+                                                disabled>
+                                            Record Hours
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
+                                                data-shiftid="@item.ID" data-volunteerid="@volunteer.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                                            Record Hours
+
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }}
+                </tbody>
+            </table>
+
+            <p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
+                Note: If your shift is cancelled within 7 days of the shift date, an email will be sent to the event manager.
+            </p>
+            <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="performanceModalLabel">Track Performance</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="performanceModalContent">
+                                <p class="text-center text-muted">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
 
-@section Scripts{
+        $(document).on("click", ".trackPerformanceBtn", function () {
+            let shiftId = $(this).data("shiftid");
+            let volunteerId = $(this).data("volunteerid");
+            $("#performanceModalContent").html('<p class="text-center text-muted">Loading...</p>');
+
+           $.get(`/Volunteer/TrackPerformance/${shiftId}`, { volunteerId: volunteerId }, function (data) {
+            $("#performanceModalContent").html(data);
+
+                if ($("#performanceModalContent #ShiftID").length === 0) {
+                    $("#performanceModalContent").append(`<input type="hidden" id="ShiftID" value="${shiftId}" />`);
+                } else {
+                    $("#performanceModalContent #ShiftID").val(shiftId);
+                }
+
+            }).fail(function () {
+                console.error("❌ Error loading performance data.");
+                $("#performanceModalContent").html('<p class="text-danger">Error loading performance data. Please try again.</p>');
+            });
+        });
+
+
+
+        $(document).on("click", "#savePerformance", function () {
+            console.log("🔹 Save button clicked!");
+
+            let shiftId = $("#ShiftID").val();
+            if (!shiftId) {
+                console.error("❌ ShiftID is missing!");
+                alert("Error: ShiftID is missing.");
+                return;
+            }
+
+            let enrollments = [];
+            $("#performanceTable tbody tr").each(function () {
+                let row = $(this);
+                let enrollment = {
+                    UserID: row.find("input[name='UserID']").val(),
+                    ShiftID: shiftId,
+                    ShowOrNot: row.find("input[name='ShowOrNot']").prop("checked"),
+                    StartAt: row.find("input[name='StartAt']").val() + ":00",
+                    EndAt: row.find("input[name='EndAt']").val() + ":00"
+                };
+
+
+                enrollments.push(enrollment);
+            });
+
+
+            $.ajax({
+                url: "/Volunteer/UpdatePerformance",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(enrollments),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Performance updated successfully.");
+                        location.reload();
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (xhr) {
+                    console.error("❌ AJAX Error:", xhr.responseText);
+                    alert("An error occurred while updating performance.");
+                }
+            });
+        });
+
+    });
+</script>
+@section Scripts {
 
 }
