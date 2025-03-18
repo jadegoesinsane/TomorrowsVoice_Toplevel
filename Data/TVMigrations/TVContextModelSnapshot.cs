@@ -504,6 +504,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<TimeSpan>("StartAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("WorkingHourRecorded")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("UserID", "ShiftID");
 
                     b.HasIndex("DirectorID");

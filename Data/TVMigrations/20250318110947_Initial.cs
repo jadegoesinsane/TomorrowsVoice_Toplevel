@@ -333,6 +333,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     NoShow = table.Column<bool>(type: "INTEGER", nullable: false),
                     StartAt = table.Column<TimeSpan>(type: "TEXT", nullable: false),
                     EndAt = table.Column<TimeSpan>(type: "TEXT", nullable: false),
+                    WorkingHourRecorded = table.Column<bool>(type: "INTEGER", nullable: false),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>

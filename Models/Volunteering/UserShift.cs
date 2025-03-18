@@ -13,5 +13,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public TimeSpan StartAt { get; set; }
 		public TimeSpan EndAt { get; set; }
-	}
+
+        public bool WorkingHourRecorded { get; set; } = false;
+    }
 }

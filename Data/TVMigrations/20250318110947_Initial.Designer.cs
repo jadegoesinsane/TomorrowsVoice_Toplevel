@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250318005647_Initial")]
+    [Migration("20250318110947_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -506,6 +506,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.Property<TimeSpan>("StartAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("WorkingHourRecorded")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("UserID", "ShiftID");
 
