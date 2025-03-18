@@ -39,7 +39,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             PopulateDropDownLists();
             var statusList = Enum.GetValues(typeof(Status))
                          .Cast<Status>()
-                         .Where(s => s == Status.Active || s == Status.Archived)
+                         .Where(s => s == Status.Active || s == Status.Closed)
                          .ToList();
 
             ViewBag.StatusList = new SelectList(statusList);
@@ -54,16 +54,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
                 events = events.Where(p => p.Status == selectedStatus);
 
                 // filter out archived events if the user does not specifically select "archived"
-                if (selectedStatus != Status.Archived)
+                if (selectedStatus != Status.Closed)
                 {
-                    events = events.Where(s => s.Status != Status.Archived);
+                    events = events.Where(s => s.Status != Status.Closed);
                 }
                 numberFilters++;
             }
             // filter out events even if status filter has not been set
             else
             {
-                events = events.Where(s => s.Status != Status.Archived);
+                events = events.Where(s => s.Status != Status.Closed);
             }
             //Filter For Start and End times
             if (FilterStartDate != default(DateTime) || FilterEndDate != default(DateTime))
@@ -344,6 +344,57 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					}
 					// Here we are archiving a event instead of deleting them
 					@event.Status = Status.Archived;*/
+
+                    await _context.SaveChangesAsync();
+                    AddSuccessToast(@event.Name);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to delete record. Please try again.");
+            }
+
+            return View(@event);
+        }
+        // GET: Event/Delete/5
+        public async Task<IActionResult> Close(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var @event = await _context.Events
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            return View(@event);
+        }
+
+        // POST: Event/Delete/5
+        [HttpPost, ActionName("Close")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CloseConfirmed(int id)
+        {
+            var @event = await _context.Events.Include(c => c.Shifts)
+
+               .FirstOrDefaultAsync(m => m.ID == id);
+
+            try
+            {
+                if (@event != null)
+                {
+                   // _context.Events.Remove(@event);
+                    foreach (var a in @event.Shifts)
+					{
+						a.Status = Status.Closed;
+					}
+					// Here we are archiving a event instead of deleting them
+					@event.Status = Status.Closed;
 
                     await _context.SaveChangesAsync();
                     AddSuccessToast(@event.Name);

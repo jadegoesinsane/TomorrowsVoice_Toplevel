@@ -77,7 +77,7 @@
 									@item.Descripion
 								</div>
 								<div class="col-md-2">
-									@if (item.Status != Status.Archived)
+									@if (item.Status != Status.Closed)
 									{
 										<a asp-controller="Shift" asp-action="Index" asp-route-EventID="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
 										   role="button" data-bs-toggle="tooltip" title="Details">
@@ -87,8 +87,8 @@
 										   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
 											<i class="bi bi-pencil-square"></i>
 										</a>
-										<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-										   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+										<a asp-action="Close" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+										   role="button" data-bs-toggle="tooltip" title="Close @ViewData["ControllerFriendlyName"]">
 											<i class="bi bi-x-lg"></i>
 										</a>
 									}
@@ -99,9 +99,13 @@
 											<i class="bi bi-search"></i>
 										</a>
 
-										<a asp-action="Recover" asp-route-id="@Model" class="btn btn-sm btn-outline-danger"
+										<a asp-action="Recover" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
 										   role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
 											<i class="bi bi-arrow-clockwise"></i>
+										</a>
+										<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+										   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+											<i class="bi bi-x-lg"></i>
 										</a>
 									}
 								</div>

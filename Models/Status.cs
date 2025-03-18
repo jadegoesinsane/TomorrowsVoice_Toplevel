@@ -5,7 +5,8 @@
 		Active,
 		Inactive,
 		Archived,
-		Canceled
+		Canceled,
+		Closed
 
 	}
 }
