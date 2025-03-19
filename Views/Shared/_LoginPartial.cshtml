@@ -18,7 +18,7 @@
 				@{
 					if (User.IsInRole("Director"))
 					{
-						<li><a class="dropdown-item" asp-area="" asp-controller="EmployeeAccount" asp-action="Details">Not Implemented</a></li>
+						<li><a class="dropdown-item" asp-area="" asp-controller="DirectorAccount" asp-action="Details">Manage Account</a></li>
 					}
 					else if (User.IsInRole("Planner"))
 					{
