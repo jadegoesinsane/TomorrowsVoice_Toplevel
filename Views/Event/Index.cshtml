@@ -89,6 +89,10 @@
 										</a>
 										<a asp-action="Close" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
 										   role="button" data-bs-toggle="tooltip" title="Close @ViewData["ControllerFriendlyName"]">
+											<i class="bi bi-stop-circle"></i>
+										</a>
+										<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+										   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
 											<i class="bi bi-x-lg"></i>
 										</a>
 									}
