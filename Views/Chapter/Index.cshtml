@@ -1,9 +1,4 @@
-@model IEnumerable<TomorrowsVoice_Toplevel.Models.Chapter>
-@{
-		
-	Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
-		
-	}
+@model IEnumerable<TomorrowsVoice_Toplevel.Models.Events.Chapter>
 <partial name="_ViewHeading" />
 
 <p>
@@ -85,7 +80,6 @@
 						@item.Singers.Where(s => s.Status == Status.Active).Count()
 					</td>
 					<td>
-					
 
 						@if (item.Status != Status.Archived)
 						{

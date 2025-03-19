@@ -1,11 +1,6 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.ViewModels.RehearsalViewModelDetails>
-@{
 
-    Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
-
-}
 <h2>@ViewData["City"] Rehearsal Details</h2>
-
 
 <table class="table">
     <thead>
@@ -30,9 +25,6 @@
         }
     </tbody>
 </table>
-
-
-
 
 <a asp-action="RehearsalsSummary"
   >Back to Summary</a>

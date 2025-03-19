@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TomorrowsVoice_Toplevel.Data;
-using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Events;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.ViewModels;
 

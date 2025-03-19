@@ -11,11 +11,12 @@ using OfficeOpenXml;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Events;
 using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-	public class SingerController : ElephantController
+    public class SingerController : ElephantController
 	{
 		private readonly TVContext _context;
 

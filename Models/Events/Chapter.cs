@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
-namespace TomorrowsVoice_Toplevel.Models
+namespace TomorrowsVoice_Toplevel.Models.Events
 {
 	public class Chapter : Auditable
 	{
@@ -20,7 +20,7 @@ namespace TomorrowsVoice_Toplevel.Models
 		{
 			get
 			{
-				return Address + ", " + /*Name + ", " + Province + ", " +*/ ((PostalCode.Length == 6) ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3)
+				return Address + ", " + /*Name + ", " + Province + ", " +*/ (PostalCode.Length == 6 ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3)
 					: PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4));
 			}
 		}
@@ -30,8 +30,8 @@ namespace TomorrowsVoice_Toplevel.Models
 		{
 			get
 			{
-				return ((PostalCode.Length == 6) ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3)
-					: PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4));
+				return PostalCode.Length == 6 ? PostalCode.Substring(0, 3) + " " + PostalCode.Substring(3)
+					: PostalCode.Substring(0, 3) + " " + PostalCode.Substring(4);
 			}
 		}
 

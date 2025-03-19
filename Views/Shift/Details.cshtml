@@ -51,7 +51,7 @@
 					<br />
 					@if (Model.ShiftDate < DateTime.Today)
 					{
-						
+
 						<button type="submit" class="btn btn-primary" disabled>Sign Up</button>
 						<br />
 						<p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
@@ -61,7 +61,7 @@
 					else
 					{
 						<button type="submit" class="btn btn-primary" disabled id="btnSubmit">Sign Up</button>
-						
+
 					}
 				</div>
 			</form>
@@ -79,7 +79,7 @@
 	{
 		<li>
 			@v.User.NameFormatted
-			@if (v.User is Director)
+			@if (v.User is TomorrowsVoice_Toplevel.Models.Events.Director)
 			{
 				<span> - Director</span>
 			}
@@ -87,16 +87,11 @@
 	}
 </ul>
 
-	
-
-
-
-
 <div style="margin-top:15px">
 	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
 	<a href="javascript:history.back()">Back to List</a>
 	<!--Link to sign up for this shift that only shows up if volunteers are needed-->
-	
+
 </div>
 
 <script>
@@ -107,15 +102,14 @@
 	var dropValue;
 	// set values when dropdown changed
 	dropDown.addEventListener("change",
-		() =>
-		{
+		() => {
 			dropValue = dropDown.value;
 			console.log(dropValue);
 			document.getElementById("volInput").value = dropValue;
-			if (dropValue !== ""){
+			if (dropValue !== "") {
 				submitButton.disabled = false;
 			}
-			else{
+			else {
 				submitButton.disabled = true;
 			}
 		});

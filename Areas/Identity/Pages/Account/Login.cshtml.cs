@@ -19,10 +19,11 @@ using TomorrowsVoice_Toplevel.Utilities;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Users;
+using TomorrowsVoice_Toplevel.Models.Events;
 
 namespace TomorrowsVoice_Toplevel.Areas.Identity.Pages.Account
 {
-	public class LoginModel : PageModel
+    public class LoginModel : PageModel
 	{
 		private readonly SignInManager<IdentityUser> _signInManager;
 		private readonly ILogger<LoginModel> _logger;
@@ -133,7 +134,8 @@ namespace TomorrowsVoice_Toplevel.Areas.Identity.Pages.Account
 						.FirstOrDefault()?.NameFormatted ??
 						_context.Directors
 						.Where(e => e.Email == Input.Email)
-						.FirstOrDefault()?.NameFormatted;
+						.FirstOrDefault()?.NameFormatted ?? 
+						Input.Email;
 
 					CookieHelper.CookieSet(HttpContext, "userName", summary, 3200);
 					_logger.LogInformation("User logged in.");

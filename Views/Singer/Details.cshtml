@@ -1,17 +1,11 @@
-﻿@model TomorrowsVoice_Toplevel.Models.Singer
-@{
+﻿@model TomorrowsVoice_Toplevel.Models.Events.Singer
 
-	Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
-
-}
 <partial name="_ViewHeading" />
 
 <div>
 	<h4>@Model.NameFormatted</h4>
 	<hr />
 </div>
-
-
 
 <div>
 	<!-- Nav tabs -->
@@ -89,11 +83,6 @@
 		</div>
 	</div>
 </div>
-
-
-
-
-
 
 <div>
 	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |

@@ -1,9 +1,5 @@
-﻿@model TomorrowsVoice_Toplevel.Models.Singer
-@{
+﻿@model TomorrowsVoice_Toplevel.Models.Events.Singer
 
-	Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
-
-}
 <partial name="_ViewHeading" />
 <div class="text-danger">@Html.Raw(TempData["Feedback"])</div>
 <form asp-action="InsertFromExcel" asp-controller="Singer" method="post" enctype="multipart/form-data">

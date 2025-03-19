@@ -5,8 +5,9 @@ using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
-namespace TomorrowsVoice_Toplevel.Models
+namespace TomorrowsVoice_Toplevel.Models.Events
 {
+	[ModelMetadataType(typeof(DirectorMetaData))]
 	public class Director : Person
 	{
 		[Display(Name = "Chapter")]

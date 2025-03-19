@@ -6,12 +6,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using TomorrowsVoice_Toplevel.Controllers;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Events;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
 {
-	public class TVInitializer
+    public class TVInitializer
 	{
 		/// <summary>
 		/// Prepares the Database and seeds data as required

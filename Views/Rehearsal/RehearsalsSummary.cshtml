@@ -1,139 +1,132 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.ViewModels.AttendanceSummaryVM>
-@{
 
-    Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
-
-}
 @{
-    ViewData["Title"] = "Summary";
-    var selectedStartDate = ViewData["StartDate"] = ((DateTime)ViewData["StartDate"]).ToString("yyyy-MM-dd") ;
-    var selectedEndDate = ViewData["EndDate"] = ((DateTime)ViewData["EndDate"]).ToString("yyyy-MM-dd") ;
+	ViewData["Title"] = "Summary";
+	var selectedStartDate = ViewData["StartDate"] = ((DateTime)ViewData["StartDate"]).ToString("yyyy-MM-dd");
+	var selectedEndDate = ViewData["EndDate"] = ((DateTime)ViewData["EndDate"]).ToString("yyyy-MM-dd");
 }
 
 <h2>Summary</h2>
 
-
 <form asp-controller="Rehearsal" asp-action="RehearsalsSummary" method="get" id="filterForm">
-    <div class="row my-2 p-2">
-        <div class="col-md-2">
-            <div class="form-floating">
-                <input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate"  max="9999-12-12"  aria-labelledby="lblStartDate" />
-                <label id="lblStartDate" for="startDate" class="control-label">Start Date:</label>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="form-floating">
-                <input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate"  max="9999-12-12" aria-labelledby="lblEndDate" />
-                <label id="lblEndDate" for="endDate" class="control-label">End Date:</label>
-            </div>
-        </div>
-        <div class="col-md">
-            <button class="btn btn-outline-primary" type="submit" onclick="exportToExcel3()">Filter</button>
-        </div>
-        <div class="col-md-3 ms-auto d-flex justify-content-between">
-            <button type="button" class="btn btn-primary" onclick="exportToExcel1()">Detail Excel</button>
-            <button type="button" class="btn btn-primary" onclick="exportToExcel2()">Summary Excel</button>
-        </div>
-    </div>
+	<div class="row my-2 p-2">
+		<div class="col-md-2">
+			<div class="form-floating">
+				<input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" max="9999-12-12" aria-labelledby="lblStartDate" />
+				<label id="lblStartDate" for="startDate" class="control-label">Start Date:</label>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-floating">
+				<input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" max="9999-12-12" aria-labelledby="lblEndDate" />
+				<label id="lblEndDate" for="endDate" class="control-label">End Date:</label>
+			</div>
+		</div>
+		<div class="col-md">
+			<button class="btn btn-outline-primary" type="submit" onclick="exportToExcel3()">Filter</button>
+		</div>
+		<div class="col-md-3 ms-auto d-flex justify-content-between">
+			<button type="button" class="btn btn-primary" onclick="exportToExcel1()">Detail Excel</button>
+			<button type="button" class="btn btn-primary" onclick="exportToExcel2()">Summary Excel</button>
+		</div>
+	</div>
 
 </form>
 
 <table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.City)</th>
+	<thead>
+		<tr>
+			<th>@Html.DisplayNameFor(model => model.City)</th>
 
-            <th>Num. of Rehearsals</th>
-            <th>Avg. Attendance</th>
-            <th>Avg. Attendance Rate</th>
-            <th>@Html.DisplayNameFor(model => model.Highest_Attendance)</th>
-            <th>@Html.DisplayNameFor(model => model.Lowest_Attendance)</th>
-            <th>@Html.DisplayNameFor(model => model.Total_Attendance)</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <a asp-action="RehearsalDetails"
-                       asp-route-city="@item.City"
-                       asp-route-startDate="@selectedStartDate"
-                       asp-route-endDate="@selectedEndDate">
-                        @Html.DisplayFor(modelItem => item.City)
-                    </a>
-                
-                </td>
-                <td>@Html.DisplayFor(modelItem => item.Number_Of_Rehearsals)</td>
+			<th>Num. of Rehearsals</th>
+			<th>Avg. Attendance</th>
+			<th>Avg. Attendance Rate</th>
+			<th>@Html.DisplayNameFor(model => model.Highest_Attendance)</th>
+			<th>@Html.DisplayNameFor(model => model.Lowest_Attendance)</th>
+			<th>@Html.DisplayNameFor(model => model.Total_Attendance)</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					<a asp-action="RehearsalDetails"
+					   asp-route-city="@item.City"
+					   asp-route-startDate="@selectedStartDate"
+					   asp-route-endDate="@selectedEndDate">
+						@Html.DisplayFor(modelItem => item.City)
+					</a>
 
-                <td>@Html.DisplayFor(modelItem => item.Average_Attendance)</td>
-                <td>@Html.DisplayFor(modelItem => item.Average_Attendance_Rate)</td>
-                <td>@Html.DisplayFor(modelItem => item.Highest_Attendance)</td>
+				</td>
+				<td>@Html.DisplayFor(modelItem => item.Number_Of_Rehearsals)</td>
 
-                <td>@Html.DisplayFor(modelItem => item.Lowest_Attendance)</td>
+				<td>@Html.DisplayFor(modelItem => item.Average_Attendance)</td>
+				<td>@Html.DisplayFor(modelItem => item.Average_Attendance_Rate)</td>
+				<td>@Html.DisplayFor(modelItem => item.Highest_Attendance)</td>
 
-                <td>@Html.DisplayFor(modelItem => item.Total_Attendance)</td>
-            </tr>
-        }
-    </tbody>
+				<td>@Html.DisplayFor(modelItem => item.Lowest_Attendance)</td>
+
+				<td>@Html.DisplayFor(modelItem => item.Total_Attendance)</td>
+			</tr>
+		}
+	</tbody>
 </table>
 
-
 <form id="exportForm" asp-controller="Rehearsal" asp-action="RehearsalsDetailReport" method="get" style="display:none;">
-    <input type="hidden" name="startDate" id="exportStartDate" />
-    <input type="hidden" name="endDate" id="exportEndDate" />
+	<input type="hidden" name="startDate" id="exportStartDate" />
+	<input type="hidden" name="endDate" id="exportEndDate" />
 </form>
 
 <form id="exportForm2" asp-controller="Rehearsal" asp-action="RehearsalsSummaryReport" method="get" style="display:none;">
-    <input type="hidden" name="startDate" id="exportStartDate2" />
-    <input type="hidden" name="endDate" id="exportEndDate2" />
+	<input type="hidden" name="startDate" id="exportStartDate2" />
+	<input type="hidden" name="endDate" id="exportEndDate2" />
 </form>
 
 @section Scripts {
-    <script>
-        function exportToExcel3() {
-                            
-            var startDate = document.getElementById('startDate').value;
-            var endDate = document.getElementById('endDate').value;
+	<script>
+		function exportToExcel3() {
 
-                             
-            if (new Date(startDate) > new Date(endDate)) {
-                alert("Start Date cannot be later than End Date.");
-                return; 
-            }
-                          }
-    </script>
-    <script>
-        function exportToExcel1() {
-           
-            var startDate = document.getElementById('startDate').value;
-            var endDate = document.getElementById('endDate').value;
+			var startDate = document.getElementById('startDate').value;
+			var endDate = document.getElementById('endDate').value;
 
-            if (new Date(startDate) > new Date(endDate)) {
-                alert("Start Date cannot be later than End Date.");
-                return; 
-            }
-            document.getElementById('exportStartDate').value = startDate;
-            document.getElementById('exportEndDate').value = endDate;
+			if (new Date(startDate) > new Date(endDate)) {
+				alert("Start Date cannot be later than End Date.");
+				return;
+			}
+		}
+	</script>
+	<script>
+		function exportToExcel1() {
 
-            document.getElementById('exportForm').submit();
-        }
-    </script>
+			var startDate = document.getElementById('startDate').value;
+			var endDate = document.getElementById('endDate').value;
 
-    <script>
-        function exportToExcel2() {
-           
-            var startDate = document.getElementById('startDate').value;
-            var endDate = document.getElementById('endDate').value;
+			if (new Date(startDate) > new Date(endDate)) {
+				alert("Start Date cannot be later than End Date.");
+				return;
+			}
+			document.getElementById('exportStartDate').value = startDate;
+			document.getElementById('exportEndDate').value = endDate;
 
-            if (startDate > endDate) {
-                alert("Start Date cannot be later than End Date.");
-                return; 
-            }
-            document.getElementById('exportStartDate2').value = startDate;
-            document.getElementById('exportEndDate2').value = endDate;
-            
-            document.getElementById('exportForm2').submit();
-        }
-    </script>
+			document.getElementById('exportForm').submit();
+		}
+	</script>
+
+	<script>
+		function exportToExcel2() {
+
+			var startDate = document.getElementById('startDate').value;
+			var endDate = document.getElementById('endDate').value;
+
+			if (startDate > endDate) {
+				alert("Start Date cannot be later than End Date.");
+				return;
+			}
+			document.getElementById('exportStartDate2').value = startDate;
+			document.getElementById('exportEndDate2').value = endDate;
+
+			document.getElementById('exportForm2').submit();
+		}
+	</script>
 }

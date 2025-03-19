@@ -1,6 +1,8 @@
-﻿namespace TomorrowsVoice_Toplevel.Models.Volunteering
+﻿using TomorrowsVoice_Toplevel.Models.Events;
+
+namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
-	public class CityEvent
+    public class CityEvent
 	{
 		public int CityID { get; set; }
 

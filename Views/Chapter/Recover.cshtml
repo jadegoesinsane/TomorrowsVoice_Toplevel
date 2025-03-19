@@ -1,9 +1,4 @@
-﻿@model TomorrowsVoice_Toplevel.Models.Chapter
-@{
-
-	Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
-
-}
+﻿@model TomorrowsVoice_Toplevel.Models.Events.Chapter
 <partial name="_ViewHeading" />
 
 <div>
@@ -38,9 +33,9 @@
 	</dl>
 	<p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
 		Note: Recovering a chapter will recover all related directors, singers, and rehearsals.
-	<form asp-action="Recover">
-		<input type="hidden" asp-for="ID" />
-		<input type="submit" value="Recover" class="btn btn-danger" /> |
-		<partial name="_BackToList" />
-	</form>
+		<form asp-action="Recover">
+			<input type="hidden" asp-for="ID" />
+			<input type="submit" value="Recover" class="btn btn-danger" /> |
+			<partial name="_BackToList" />
+		</form>
 </div>

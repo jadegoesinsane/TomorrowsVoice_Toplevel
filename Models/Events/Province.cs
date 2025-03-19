@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TomorrowsVoice_Toplevel.Models
+namespace TomorrowsVoice_Toplevel.Models.Events
 {
     public enum Province
     {

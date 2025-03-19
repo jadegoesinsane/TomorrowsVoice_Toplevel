@@ -1,47 +1,42 @@
-@model IEnumerable<TomorrowsVoice_Toplevel.Models.Director>
-@{
-
-    Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
-
-}
+@model IEnumerable<TomorrowsVoice_Toplevel.Models.Events.Director>
 <br />
 <div class="panel panel-primary">
-    <div class="panel-heading">
-        <h4 class="panel-title">List of Directors</h4>
-    </div>
-    <div class="panel-body scrollable-panel">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.NameFormatted)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Email)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PhoneFormatted)
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            <a asp-action="Details" asp-controller="Director" asp-route-ID="@item.ID" asp-route-chapterID="@ViewBag.ChapterID">
-                                @Html.DisplayFor(modelItem => item.NameFormatted)
-                            </a>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PhoneFormatted)
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+	<div class="panel-heading">
+		<h4 class="panel-title">List of Directors</h4>
+	</div>
+	<div class="panel-body scrollable-panel">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>
+						@Html.DisplayNameFor(model => model.NameFormatted)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Email)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.PhoneFormatted)
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>
+							<a asp-action="Details" asp-controller="Director" asp-route-ID="@item.ID" asp-route-chapterID="@ViewBag.ChapterID">
+								@Html.DisplayFor(modelItem => item.NameFormatted)
+							</a>
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Email)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.PhoneFormatted)
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
 </div>

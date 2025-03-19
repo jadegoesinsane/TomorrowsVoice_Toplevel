@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Events;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
 {
-	public class TVContext : DbContext
+    public class TVContext : DbContext
 	{
 		//To give access to IHttpContextAccessor for Audit Data with IAuditable
 		private readonly IHttpContextAccessor _httpContextAccessor;

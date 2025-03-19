@@ -30,10 +30,11 @@ using NuGet.Protocol;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.IO;
 using NToastNotify;
+using TomorrowsVoice_Toplevel.Models.Events;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-	public class RehearsalController : ElephantController
+    public class RehearsalController : ElephantController
 	{
 		private readonly TVContext _context;
 

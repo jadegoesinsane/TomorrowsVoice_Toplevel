@@ -1,9 +1,4 @@
-﻿<!-- Modal-->@{
-
-	Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
-
-}
-<div class="modal fade" id="addCityModal" tabindex="-1" role="dialog" aria-labelledby="CityModalLabel">
+﻿<div class="modal fade" id="addCityModal" tabindex="-1" role="dialog" aria-labelledby="CityModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -12,7 +7,7 @@
 			</div>
 			<div class="modal-body">
 				@{
-					var c = new TomorrowsVoice_Toplevel.Models.City();
+					var c = new TomorrowsVoice_Toplevel.Models.Events.City();
 					<partial name="_CityCreate" model="c" />
 				}
 			</div>
