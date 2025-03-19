@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Users;
 
 namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
-	[ModelMetadataType(typeof(VolunteerMetaData))]
-	public class Volunteer : Person
+	public class VolunteerMetaData : PersonMetaData
 	{
 		[Display(Name = "Hours Volunteered")]
 		public int HoursVolunteered

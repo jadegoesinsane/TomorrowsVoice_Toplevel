@@ -1,9 +1,4 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer>
-@{
-
-    Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
-
-}
 <form asp-action="Index" method="get">
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />

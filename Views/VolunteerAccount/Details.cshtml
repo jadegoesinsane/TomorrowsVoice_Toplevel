@@ -1,0 +1,54 @@
+﻿@model TomorrowsVoice_Toplevel.ViewModels.VolunteerVM
+
+<partial name="_ViewHeading" />
+
+<h3>Account for: @Model.NameFormatted</h3>
+
+<div>
+	<hr />
+	<div class="alert alert-danger" style="display: none;">
+		<strong>Note:</strong>
+		<ul id="errorMessage"></ul>
+	</div>
+	<dl class="row">
+		<dt class="col-sm-4">
+			@Html.DisplayNameFor(model => model.FirstName)
+		</dt>
+		<dd class="col-sm-6">
+			@Html.DisplayFor(model => model.FirstName)
+		</dd>
+		@{
+			@if(!String.IsNullOrWhiteSpace(Model.MiddleName))
+			{
+				<dt class="col-sm-4">
+					@Html.DisplayNameFor(model => model.MiddleName)
+				</dt>
+				<dd class="col-sm-6">
+					@Html.DisplayFor(model => model.MiddleName)
+				</dd>
+			}
+		}
+		
+		<dt class="col-sm-4">
+			@Html.DisplayNameFor(model => model.LastName)
+		</dt>
+		<dd class="col-sm-6">
+			@Html.DisplayFor(model => model.LastName)
+		</dd>
+		<dt class="col-sm-4">
+			@Html.DisplayNameFor(model => model.Phone)
+		</dt>
+		<dd class="col-sm-6">
+			@Html.DisplayFor(model => model.PhoneFormatted)
+		</dd>
+		<dt class="col-sm-4">
+			@Html.DisplayNameFor(model => model.YearlyVolunteerGoal)
+		</dt>
+		<dd class="col-sm-6">
+			@Html.DisplayFor(model => model.YearlyVolunteerGoal)
+		</dd>
+	</dl>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.ID">Edit Account Details</a>
+</div>

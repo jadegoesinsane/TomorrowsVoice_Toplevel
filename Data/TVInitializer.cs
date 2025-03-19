@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Collections.Generic;
 using System.Diagnostics;
+using TomorrowsVoice_Toplevel.Controllers;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
@@ -21,7 +25,7 @@ namespace TomorrowsVoice_Toplevel.Data
 		   bool DeleteDatabase = false, bool UseMigrations = true, bool SeedSampleData = true)
 		{
 			using (var context = new TVContext(
-				serviceProvider.GetRequiredService<DbContextOptions<TVContext>>()))
+			serviceProvider.GetRequiredService<DbContextOptions<TVContext>>()))
 			{
 				//Refresh the database as per the parameter options
 
@@ -783,6 +787,12 @@ namespace TomorrowsVoice_Toplevel.Data
 							}
 						}
 					}
+
+					// Add Users
+
+					//	AddUser(d.Email, "Director", serviceProvider);
+					//foreach (Volunteer v in context.Volunteers)
+					//	AddUser(v.Email, null, serviceProvider);
 				}
 				catch (Exception ex)
 				{
@@ -791,6 +801,10 @@ namespace TomorrowsVoice_Toplevel.Data
 
 				#endregion Seed Required Data
 			}
+		}
+
+		private static void AddUser(string email, string? role, IServiceProvider serviceProvider)
+		{
 		}
 	}
 }

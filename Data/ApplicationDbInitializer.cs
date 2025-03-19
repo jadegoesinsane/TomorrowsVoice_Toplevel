@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
 {
@@ -59,6 +61,8 @@ namespace TomorrowsVoice_Toplevel.Data
 
 				//Create Users
 				using (var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>())
+				using (var context = new TVContext(
+		serviceProvider.GetRequiredService<DbContextOptions<TVContext>>()))
 				{
 					try
 					{
@@ -123,6 +127,42 @@ namespace TomorrowsVoice_Toplevel.Data
 
 							IdentityResult result = userManager.CreateAsync(user, defaultPassword).Result;
 							//Not in any role
+						}
+
+						// Add Users
+
+						foreach (Director d in context.Directors)
+						{
+							if (userManager.FindByEmailAsync(d.Email).Result == null)
+							{
+								IdentityUser user = new IdentityUser
+								{
+									UserName = d.Email,
+									Email = d.Email,
+									EmailConfirmed = true
+								};
+
+								IdentityResult result = userManager.CreateAsync(user, defaultPassword).Result;
+
+								if (result.Succeeded)
+								{
+									userManager.AddToRoleAsync(user, "Director").Wait();
+								}
+							}
+						}
+						foreach (Volunteer v in context.Volunteers)
+						{
+							if (userManager.FindByEmailAsync(v.Email).Result == null)
+							{
+								IdentityUser user = new IdentityUser
+								{
+									UserName = v.Email,
+									Email = v.Email,
+									EmailConfirmed = true
+								};
+
+								IdentityResult result = userManager.CreateAsync(user, defaultPassword).Result;
+							}
 						}
 					}
 					catch (Exception ex)
