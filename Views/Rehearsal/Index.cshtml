@@ -18,10 +18,13 @@
 			<div class="collapse  @ViewData["ShowFilter"]" id="collapseFilter">
 				<div class="card card-body bg-light">
 					<div class="row">
-						<div class="form-floating col-md-3">
-							@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
-							<label class="control-label" for="DirectorID">Select by Director:</label>
-						</div>
+						@if (!User.IsInRole("Director"))
+						{
+							<div class="form-floating col-md-3">
+								@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
+								<label class="control-label" for="DirectorID">Select by Director:</label>
+							</div>
+						}
 						<div class="form-floating col-md-3">
 							@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control", id = "ChapterID" })
 							<label class="control-label" for="ChapterID">Select by Chapter:</label>
@@ -68,8 +71,10 @@
 					<th aria-label="Date">
 						<input type="submit" name="actionButton" value="Date" class="btn btn-link" />
 					</th>
-
+					@if (!User.IsInRole("Director"))
+						{
 					<th class="d-none d-lg-table-cell" aria-label="Director">Director</th>
+						}
 					<th aria-label="Chapter">Chapter</th>
 					<th aria-label="Attendances Rate">Attendances Rate</th>
 					<th class="d-none d-sm-table-cell" aria-label="Attendances">Attendances</th>
@@ -84,10 +89,12 @@
 						<td>
 							@Html.DisplayFor(modelItem => item.Summary)
 						</td>
-
-						<td class="d-none d-lg-table-cell">
-							@Html.DisplayFor(modelItem => item.Director.NameFormatted)
-						</td>
+						@if (!User.IsInRole("Director"))
+						{
+							<td class="d-none d-lg-table-cell">
+								@Html.DisplayFor(modelItem => item.Director.NameFormatted)
+							</td>
+						}
 						<td>
 							@Html.DisplayFor(modelItem => item.Chapter.City.Name)
 						</td>
@@ -97,7 +104,7 @@
 								var exercises = item.RehearsalAttendances.ToList();
 								int exerciseCount = exercises.Count;
 								@Html.Raw(exerciseCount)
-							}/ @Html.DisplayFor(modelItem => item.TotalSingers)
+							} / @Html.DisplayFor(modelItem => item.TotalSingers)
 
 						</td>
 						<td class="d-none d-sm-table-cell">

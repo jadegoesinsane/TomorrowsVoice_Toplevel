@@ -56,6 +56,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			string sortDirection = "asc",
 			string sortField = "Date")
 		{
+			Director? dUser = GetDirectorFromUser();
+
 			Enum.TryParse(StatusFilter, out Status selectedStatus);
 
 			var statusList = Enum.GetValues(typeof(Status))
@@ -97,6 +99,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate)
 				.AsNoTracking();
 
+			
+
 			// Filters
 			if (!String.IsNullOrEmpty(StatusFilter))
 			{
@@ -113,7 +117,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				rehearsals = rehearsals.Where(d => d.Status != Status.Archived);
 			}
-			if (DirectorID.HasValue)
+			if (dUser != null)
+			{
+				rehearsals = rehearsals.Where(r => r.DirectorID == dUser.ID);
+			}
+			else if (DirectorID.HasValue)
 			{
 				rehearsals = rehearsals.Where(r => r.DirectorID == DirectorID);
 				numFilters++;
