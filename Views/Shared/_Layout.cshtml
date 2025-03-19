@@ -101,16 +101,19 @@
 								</ul>
 							</li>
 						}
+						@if (User.IsInRole("Planner") || User.IsInRole("Admin"))
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle text-dark" href="#" id="eventDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Event Menu
+								</a>
+								<ul class="dropdown-menu" aria-labelledby="eventDropdown">
+									<li><a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Index">Events</a></li>
+									<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Index">Volunteers</a></li>
+								</ul>
+							</li>
+						}
 
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle text-dark" href="#" id="eventDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Event Menu
-							</a>
-							<ul class="dropdown-menu" aria-labelledby="eventDropdown">
-								<li><a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Index">Events</a></li>
-								<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Index">Volunteers</a></li>
-							</ul>
-						</li>
 						@if (User.IsInRole("Admin"))
 						{
 							<li class="nav-item dropdown">
@@ -118,9 +121,6 @@
 									Management
 								</a>
 								<ul class="dropdown-menu" aria-labelledby="managementDropdown">
-
-									<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Index">Maintain Volunteers</a></li>
-									<li><hr class="dropdown-divider"></li>
 									<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Upload">Upload Singers</a></li>
 									<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Email">Send Email Notification</a></li>
 									<li>
