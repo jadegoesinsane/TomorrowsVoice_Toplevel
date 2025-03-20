@@ -5,10 +5,12 @@
 }
 
 <h1>Index</h1>
-
-<p>
-	<a asp-action="Create">Create New</a>
-</p>
+@if (User.IsInRole("Admin"))
+{
+	<p>
+		<a asp-action="Create">Create New</a>
+	</p>
+}
 <table class="table">
 	<thead>
 		<tr>
@@ -32,7 +34,10 @@
 					@Html.DisplayFor(modelItem => item.Province)
 				</td>
 				<td>
-					<partial name="_CrudIcons" model="@item.ID" />
+					@if (User.IsInRole("Admin"))
+					{
+						<partial name="_CrudIcons" model="@item.ID" />
+					}
 				</td>
 			</tr>
 		}

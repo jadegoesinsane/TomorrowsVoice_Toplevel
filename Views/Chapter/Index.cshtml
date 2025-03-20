@@ -1,9 +1,11 @@
 @model IEnumerable<TomorrowsVoice_Toplevel.Models.Events.Chapter>
 <partial name="_ViewHeading" />
-
-<p>
-	<a asp-action="Create">Create New @ViewData["ControllerFriendlyName"]</a>
-</p>
+@if (User.IsInRole("Admin"))
+{
+	<p>
+		<a asp-action="Create">Create New @ViewData["ControllerFriendlyName"]</a>
+	</p>
+}
 
 <form asp-action="Index" method="get">
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
@@ -80,15 +82,28 @@
 						@item.Singers.Where(s => s.Status == Status.Active).Count()
 					</td>
 					<td>
-
-						@if (item.Status != Status.Archived)
-						{
-							<partial name="_CrudIcons" model="@item.ID" />
-						}
-						else
-						{
-							<partial name="_CrudIconsRecover" model="@item.ID" />
-						}
+							@if (item.Status != Status.Archived)
+							{
+								<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
+								   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+									<i class="bi bi-search"></i>
+								</a>
+								@if (User.IsInRole("Admin"))
+								{
+								<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
+									role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+										<i class="bi bi-pencil-square"></i>
+									</a>
+								<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+									role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+										<i class="bi bi-x-lg"></i>
+									</a>
+								}
+							}
+							else
+							{
+								<partial name="_CrudIconsRecover" model="@item.ID" />
+							}
 					</td>
 				</tr>
 			}

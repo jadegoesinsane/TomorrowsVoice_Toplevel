@@ -40,12 +40,15 @@
                         <h2 class="col m-0">Shifts</h2>
                     </div>
 
-                    <div class="col-md-3 ms-auto d-flex justify-content-between">
-                        <a asp-action="Create" asp-route-EventID="@events.ID" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add @ViewData["ControllerFriendlyName"]</a>
-                        <a asp-action="CreateMany" asp-route-EventID="@events.ID" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add Template Shifts </a>
-                    </div>
-                </div>
 
+                    @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+                    {
+                        <div class="col-md-3 ms-auto d-flex justify-content-between">
+                            <a asp-action="Create" asp-route-EventID="@events.ID" class="btn btn-primary col-auto h-100" style="float: right;">Add @ViewData["ControllerFriendlyName"]</a>
+                            <a asp-action="CreateMany" asp-route-EventID="@events.ID" class="btn btn-primary col-auto h-100" style="float: right;">Add Template Shifts</a>
+                        </div>
+                    }
+                </div>
 
                 <table class="table">
                     <thead>
@@ -139,7 +142,24 @@
                                 <td>
                                     @if (item.Status != Status.Archived)
                                     {
-                                        <partial name="_CrudIcons" model="@item.ID" />
+                                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
+                                           role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                                            <i class="bi bi-search"></i>
+                                        </a>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
+                                            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                        }
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+                                               role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                                                <i class="bi bi-x-lg"></i>
+                                            </a>
+                                        }
                                     }
                                     else
                                     {
@@ -147,7 +167,6 @@
                                     }
                                 </td>
                             </tr>
-
 
                         }
                     </tbody>

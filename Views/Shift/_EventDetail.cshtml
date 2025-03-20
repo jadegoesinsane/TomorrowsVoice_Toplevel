@@ -48,6 +48,10 @@
     </dl>
 </div>
 <div>
-    <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
+    @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+    {
+        <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> 
+    }
+    |
     <a asp-action="Index">Back to List</a>
 </div>

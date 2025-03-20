@@ -9,8 +9,11 @@
 	   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
 		<i class="bi bi-pencil-square"></i>
 	</a>
-	<a asp-action="Delete" asp-route-id="@Model" class="btn btn-sm btn-outline-danger"
-	   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-		<i class="bi bi-x-lg"></i>
-	</a>
+	@if (User.IsInRole("Admin"))
+	{
+		<a asp-action="Delete" asp-route-id="@Model" class="btn btn-sm btn-outline-danger" 
+			role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+			<i class="bi bi-x-lg"></i>
+		</a> 
+	}
 }

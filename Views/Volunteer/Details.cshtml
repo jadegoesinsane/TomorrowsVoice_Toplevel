@@ -60,8 +60,12 @@
     <div id="ShiftsPanel"></div>
 </div>
  <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-        <partial name="_BackToList" />
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a>
+    }
+    |
+    <partial name="_BackToList" />
         
 </div>
 

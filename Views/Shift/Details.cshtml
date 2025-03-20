@@ -15,29 +15,32 @@
 	if (Model.VolunteersNeeded > Model.UserShifts.Count())
 	{
 		<div style="display: grid;">
-
 			<form asp-action="ShiftSignUp" asp-route-shiftID="@Model.ID" asp-route-volID="VALUE_OF_VOLID" method="post" class="form-container">
-				<div class="form-area">
-					<h2>Confirm Sign-Up</h2>
-					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-					<div class="row">
-						<div class="col-md-4">
-							<label class="control-label" for="VolunteerID" style="margin-top: 7px">Select a Volunteer:</label>
+				@if (User.IsInRole("Admin"))
+				{
+					<div class="form-area">
+						<h2>Confirm Sign-Up</h2>
+						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+						<div class="row">
+							<div class="col-md-4">
+								<label class="control-label" for="VolunteerID" style="margin-top: 7px">Select a Volunteer:</label>
+							</div>
+							<div class="col-md-4">
+								@Html.DropDownList("VolunteerID", null, "- Select a Volunteer", htmlAttributes: new { @class = "form-control", id = "VolunteerID" })
+							</div>
 						</div>
-						<div class="col-md-4">
-							@Html.DropDownList("VolunteerID", null, "- Select a Volunteer", htmlAttributes: new { @class = "form-control", id = "VolunteerID" })
+						<div style="margin-top: 10px">
+							Are you sure you want to sign up for
+							<strong>@Html.DisplayFor(Model => Model.Event.Name)</strong>
+							from
+							<strong>@Html.DisplayFor(model => model.ShiftDate)</strong>
+							to
+							<strong>@Html.DisplayFor(model => model.EndAt)</strong>
+							?
 						</div>
 					</div>
-					<div style="margin-top: 10px">
-						Are you sure you want to sign up for
-						<strong>@Html.DisplayFor(Model => Model.Event.Name)</strong>
-						from
-						<strong>@Html.DisplayFor(model => model.ShiftDate)</strong>
-						to
-						<strong>@Html.DisplayFor(model => model.EndAt)</strong>
-						?
-					</div>
-				</div>
+				}
+		
 				<div class="form-footer">
 					@Html.AntiForgeryToken()
 					<input type="hidden" name="shiftID" value="@Model.ID" />
@@ -88,7 +91,11 @@
 </ul>
 
 <div style="margin-top:15px">
-	<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
+	@if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+	{
+		<a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a>
+	}
+	|
 	<a href="javascript:history.back()">Back to List</a>
 	<!--Link to sign up for this shift that only shows up if volunteers are needed-->
 
