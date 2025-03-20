@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
+	[Authorize(Roles = "Admin")]
 	public class VolunteerController : ElephantController
 	{
 		private readonly TVContext _context;
@@ -203,6 +204,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					volunteer.ID = _context.GetNextID();
 					_context.Add(volunteer);
 					await _context.SaveChangesAsync();
+
 					AddSuccessToast(volunteer.NameFormatted);
 					//_toastNotification.AddSuccessToastMessage($"{vounteer.NameFormatted} was successfully created.");
 					return RedirectToAction("Details", new { volunteer.ID });
@@ -754,7 +756,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-
+			var _user = await _userManager.FindByEmailAsync(volunteer.Email); // IdentityUser
+			if (_user != null)
+			{
+				var UserRoles = (List<string>)await _userManager.GetRolesAsync(_user); // Current roles user is in
+				ViewBag.UserRoles = UserRoles;
+			}
 			return View(volunteer);
 		}
 
@@ -1085,6 +1092,33 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return Json(new { success = false, message = "Error updating performance: " + ex.Message });
 			}
 		}
+
+		#region VolunteerRoles
+
+		[ActionName("PromoteDemote")]
+		public async Task<IActionResult> PromoteDemoteVolunteer(int id)
+		{
+			var volunteer = _context.Volunteers.FirstOrDefault(v => v.ID == id);
+			var _user = await _userManager.FindByEmailAsync(volunteer.Email); // IdentityUser
+			if (_user != null)
+			{
+				var UserRoles = (List<string>)await _userManager.GetRolesAsync(_user); // Current roles user is in
+				IList<IdentityRole> allRoles = _identityContext.Roles.ToList<IdentityRole>();
+				if (UserRoles.Contains(allRoles.FirstOrDefault(r => r.Name == "Planner").Name)) // If User is already a planner
+				{
+					await _userManager.RemoveFromRoleAsync(_user, "Planner");
+					_toastNotification.AddSuccessToastMessage($"Successfuly revoked event planner from {volunteer.NameFormatted}.");
+				}
+				else
+				{
+					await _userManager.AddToRoleAsync(_user, "Planner");
+					_toastNotification.AddSuccessToastMessage($"Successfuly assigned {volunteer.NameFormatted} to event planner.");
+				}
+			}
+			return RedirectToAction("Details", new { volunteer.ID });
+		}
+
+		#endregion VolunteerRoles
 
 		private bool VolunteerExists(int id)
 		{
