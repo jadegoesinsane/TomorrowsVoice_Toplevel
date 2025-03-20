@@ -34,6 +34,7 @@
 				<span asp-validation-for="BackgroundColour" class="text-danger"></span>
 			</div>
 		</div>
+		<div class="w-100" style="margin:0px;"></div>
 		<div class="col-md-3">
 			<div class="form-floating required">
 				<input asp-for="Location" class="form-control" placeholder="Address" />
@@ -41,23 +42,30 @@
 				<span asp-validation-for="Location" class="text-danger"></span>
 			</div>
 		</div>
-		<div class="w-100" style="margin:0px;"></div>
-		<div class="col-md-6">
-			<div class="row">
-				<div class="form-group col-md">
-					<label class="control-label"> City Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
-						<strong>-</strong>
-					</button>
-					@Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
-				</div>
-				<div class="form-group col-md">
-					<label class="control-label"> Choose City</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
-						<strong>+</strong>
-					</button>
-					@Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
-				</div>
+		<div class="col-md-3">
+			<div class="form-floating required">
+				@Html.DropDownList("CityEvents", null, new { @class = "city-select form-control", @multiple = "" })
+				<label asp-for="CityEvents" class="control-label">Cities</label>
+				<span asp-validation-for="CityEvents" class="text-danger"></span>
 			</div>
 		</div>
+
+		@* <div class="col-md-6">
+		<div class="row">
+		<div class="form-group col-md">
+		<label class="control-label"> City Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+		<strong>-</strong>
+		</button>
+		@Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
+		</div>
+		<div class="form-group col-md">
+		<label class="control-label"> Choose City</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+		<strong>+</strong>
+		</button>
+		@Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
+		</div>
+		</div>
+		</div> *@
 
 		<div class="w-100" style="margin:0px;"></div>
 		<div class="col-md-8">
@@ -85,7 +93,7 @@
 	<script src="~/js/multiselect.js"></script>
 	<script src="~/js/shiftTimeTable.js" type="module"></script>
 	<script type="text/javascript">
-		function formatColours (colour) {
+		function formatColours(colour) {
 			if (!colour.id) {
 				return colour.text;
 			}
@@ -98,7 +106,8 @@
 				templateResult: formatColours,
 				minimumResultsForSearch: Infinity
 			});
-            $('.select2-container').addClass('form-control');
+			$('.city-select').select2();
+			$('.select2-container').addClass('form-control');
 		});
 
 		function rangeCheck() {
@@ -164,5 +173,4 @@
 		display: none;
 	}
 
-	
 </style>

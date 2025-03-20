@@ -34,7 +34,7 @@ using TomorrowsVoice_Toplevel.Models.Events;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class RehearsalController : ElephantController
+	public class RehearsalController : ElephantController
 	{
 		private readonly TVContext _context;
 
@@ -98,8 +98,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(d => d.Chapter).ThenInclude(c => c.City)
 				.Where(a => a.RehearsalDate >= StartDate && a.RehearsalDate <= EndDate)
 				.AsNoTracking();
-
-			
 
 			// Filters
 			if (!String.IsNullOrEmpty(StatusFilter))

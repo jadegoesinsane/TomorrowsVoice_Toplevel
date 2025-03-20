@@ -19,7 +19,7 @@ using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class ChapterController : ElephantController
+	public class ChapterController : ElephantController
 	{
 		private readonly TVContext _context;
 
@@ -40,7 +40,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			int numberFilters = 0;
 
 			Enum.TryParse(StatusFilter, out Status selectedStatus);
-			
 
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
@@ -61,7 +60,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(c => c.Singers)
 				.Include(c => c.Directors)
 				.Include(c => c.City)
-				
+
 				.AsNoTracking();
 			if (!String.IsNullOrEmpty(StatusFilter))
 			{
@@ -182,8 +181,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(chapter);
 					await _context.SaveChangesAsync();
-                    var city = await _context.Cities.FirstOrDefaultAsync(c => c.ID == chapter.CityID);
-                    AddSuccessToast(city.Name);
+					var city = await _context.Cities.FirstOrDefaultAsync(c => c.ID == chapter.CityID);
+					AddSuccessToast(city.Name);
 					return RedirectToAction("Details", new { chapter.ID });
 				}
 			}
@@ -290,9 +289,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(chapterToUpdate);
 		}
 
-        // GET: Chapter/Delete/5
-     
-        public async Task<IActionResult> Delete(int? id)
+		// GET: Chapter/Delete/5
+
+		public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -308,7 +307,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
-			
+
 			return View(chapter);
 		}
 
@@ -326,10 +325,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					//_context.Chapters.Remove(chapter);
 					// Archive a chatper instead of deleting it
-					
+
 					chapter.Status = Status.Archived;
 
-					
 					foreach (var rehearsal in chapter.Rehearsals)
 					{
 						rehearsal.Status = Status.Archived;
@@ -342,8 +340,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					{
 						a.Status = Status.Archived;
 					}
-
-
 				}
 
 				await _context.SaveChangesAsync();
@@ -374,7 +370,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(chapter);
 		}
 
-		
 		public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
@@ -409,7 +404,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					//_context.Chapters.Remove(chapter);
 					// Archive a chatper instead of deleting it
-					
+
 					chapter.Status = Status.Active;
 
 					foreach (var rehearsal in chapter.Rehearsals)
@@ -424,7 +419,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					{
 						a.Status = Status.Active;
 					}
-
 				}
 
 				await _context.SaveChangesAsync();

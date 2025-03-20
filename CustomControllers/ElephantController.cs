@@ -68,7 +68,7 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 		#region Select Lists
 
 		// Get Cities (With chapters of a certain status?)
-		internal SelectList CitySelectList(int? id, Status? status = null)
+		internal MultiSelectList CitySelectList(object? id = null, Status? status = null)
 		{
 			IQueryable cities;
 			if (status.HasValue)
@@ -81,13 +81,18 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 						  (city, chapter) => city)
 					.Distinct()
 					.OrderBy(c => c.Name);
-
-				return new SelectList(cities, "ID", "Name", id);
 			}
-			cities = _context
+			else
+			{
+				cities = _context
 				.Cities
 				.OrderBy(c => c.Name);
-			return new SelectList(cities, "ID", "Name", id);
+			}
+
+			if (id != null && id is int[] ids)
+				return new MultiSelectList(cities, "ID", "Name", ids);
+			else
+				return new SelectList(cities, "ID", "Name", (int?)id);
 		}
 
 		// Get Directors
