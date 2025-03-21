@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NToastNotify;
 using OfficeOpenXml;
+using Org.BouncyCastle.Asn1;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
@@ -24,13 +25,23 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			_context = context;
 		}
+        private Director? GetDirectorFromUser()
+        {
+            if (!User.IsInRole("Director"))
+                return null;
 
-		// GET: Singer
-		public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID, string? StatusFilter,
+            return _context.Directors
+                    .Where(d => d.Email == User.Identity.Name.ToString())
+                    .FirstOrDefault();
+        }
+        // GET: Singer
+        public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID, string? StatusFilter,
 			string? actionButton, string sortDirection = "asc", string sortField = "Singer")
 		{
-			// Sort Options
-			string[] sortOptions = new[] { "Singer", "Chapter" };
+
+            Director? dUser = GetDirectorFromUser();
+            // Sort Options
+            string[] sortOptions = new[] { "Singer", "Chapter" };
 
 			//Count the number of filters applied - start by assuming no filters
 			ViewData["Filtering"] = "btn-outline-secondary";
@@ -67,7 +78,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				singers = singers.Where(s => s.Status != Status.Archived);
 			}
-			if (ChapterID.HasValue)
+            if (dUser != null)
+            {
+                singers = singers.Where(r => r.ChapterID == dUser.ChapterID);
+            }
+            if (ChapterID.HasValue)
 			{
 				singers = singers.Where(s => s.ChapterID == ChapterID);
 				numberFilters++;
@@ -176,6 +191,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public IActionResult Create()
 		{
 			Singer singer = new Singer();
+			Director? dUser = GetDirectorFromUser();
+			if (dUser != null)
+			{
+				
+				singer.ChapterID = dUser.ChapterID;
+				
+				
+			}
 			PopulateDropDownLists();
 			return View(singer);
 		}
@@ -228,6 +251,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(r => r.Chapter).ThenInclude(c => c.City)
 				.Include(r => r.RehearsalAttendances).ThenInclude(r => r.Rehearsal)
 				.FirstOrDefaultAsync(m => m.ID == id);
+
+		
 			if (singer == null)
 			{
 				return NotFound();
