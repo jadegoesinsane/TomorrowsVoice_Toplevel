@@ -799,10 +799,10 @@ namespace TomorrowsVoice_Toplevel.Data
 					{
 						List<Group> groups = new List<Group>
 						{
-							new Group { Name = "Highschool Students", BackgroundColour = ColourPalette.BrightColours["Red"] },
-							new Group { Name = "Brock Volunteers", BackgroundColour = ColourPalette.PastelColours["Green"] },
-							new Group { Name = "McMaster Volunteers", BackgroundColour = ColourPalette.PastelColours["Pink"] },
-							new Group { Name = "Event Planners", BackgroundColour = ColourPalette.BrightColours["Purple"] },
+							new Group { Name = "Highschool Students" },
+							new Group { Name = "Brock Volunteers" },
+							new Group { Name = "McMaster Volunteers" },
+							new Group { Name = "Event Planners" },
 						};
 						context.Groups.AddRange(groups);
 						context.SaveChanges();
