@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using TomorrowsVoice_Toplevel.Models.Users;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
+	[Authorize(Roles = "Admin")]
 	public class GroupController : ElephantController
 	{
 		private readonly TVContext _context;
@@ -24,7 +26,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Group
 		public async Task<IActionResult> Index()
 		{
-			return View(await _context.Groups.ToListAsync());
+			var groups = await _context.Groups
+				.Include(g => g.VolunteerGroups)
+					.ThenInclude(vg => vg.Volunteer)
+				.AsNoTracking()
+				.ToListAsync();
+			return View(groups);
 		}
 
 		// GET: Group/Details/5
