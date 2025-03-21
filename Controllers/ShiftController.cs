@@ -722,127 +722,140 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(data);
 		}
 
-		public IActionResult CreateMany(int EventID)
-		{
-			Shift shift = new Shift();
+        public IActionResult CreateMany(int EventID)
+        {
+            Shift shift = new Shift();
 
-			ViewData["EventID"] = EventID;
-			var eventData = _context.Events
-		.Where(e => e.ID == EventID)
-		.FirstOrDefault();
+            ViewData["EventID"] = EventID;
+            var eventData = _context.Events
+        .Where(e => e.ID == EventID)
+        .FirstOrDefault();
 
-			ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
+            ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
 
-			return View();
-		}
+            return View();
+        }
 
-		// POST: Shift/Create
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		// POST: Shift/Create
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> CreateMany([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift,
-												DateTime StartAt, DateTime EndAt, int VolunteersNeeded, DateTime StartAt2, DateTime EndAt2, int VolunteersNeeded2
-			, int VolunteersNeeded3, DateTime StartAt3, DateTime EndAt3)
-		{
-			try
-			{
-				if (ModelState.IsValid)
-				{
-					var eventRecord = _context.Events
-								.FirstOrDefault(e => e.ID == shift.EventID);
-					if (eventRecord == null)
-					{
-						// If the event does not exist, handle the error
-						ModelState.AddModelError("", "Event not found.");
-						return View(shift);
-					}
+        // POST: Shift/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Shift/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateMany(
+                                                    [Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift,
+                                                    List<Shift> templateShifts,
+                                                    List<Shift> customShifts,
+                                                    List<int> customDays)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var eventRecord = _context.Events
+                        .FirstOrDefault(e => e.ID == shift.EventID);
+                    if (eventRecord == null)
+                    {
+                        ModelState.AddModelError("", "Event not found.");
+                        return View(shift);
+                    }
 
-					// Creating shifts for each day in the event date range
-					var shiftsToCreate = new List<Shift>();
-					for (var date = eventRecord.StartDate; date <= eventRecord.EndDate; date = date.AddDays(1))
-					{
-						shiftsToCreate.Add(new Shift
-						{
-							ShiftDate = date,
-							StartAt = StartAt,
-							EndAt = EndAt,
-							EventID = shift.EventID
-							,
-							VolunteersNeeded = VolunteersNeeded
-						});
-						shiftsToCreate.Add(new Shift
-						{
-							ShiftDate = date,
-							StartAt = StartAt2,
-							EndAt = EndAt2,
-							EventID = shift.EventID,
-							VolunteersNeeded = VolunteersNeeded2
-						});
-						shiftsToCreate.Add(new Shift
-						{
-							ShiftDate = date,
-							StartAt = StartAt3,
-							EndAt = EndAt3,
-							EventID = shift.EventID,
-							VolunteersNeeded = VolunteersNeeded3
-						});
-					}
+                    var shiftsToCreate = new List<Shift>();
 
-					// Check for overlaps for the new shifts
-					foreach (var newShift in shiftsToCreate)
-					{
-						var sameshifts = _context.Shifts
-							.Where(r => r.ShiftDate == newShift.ShiftDate && r.EventID == newShift.EventID);
+                    
+                    for (var date = eventRecord.StartDate; date <= eventRecord.EndDate; date = date.AddDays(1))
+                    {
+                        var dayOfWeek = (int)date.DayOfWeek;
 
-						foreach (var existingShift in sameshifts)
-						{
-							// Overlap checking logic
-							if ((newShift.StartAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.StartAt.TimeOfDay >= existingShift.StartAt.TimeOfDay) ||
-								(newShift.EndAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.EndAt.TimeOfDay > existingShift.StartAt.TimeOfDay))
-							{
-								throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
-							}
-						}
-					}
+                      
+                        if (customDays != null && customDays.Contains(dayOfWeek))
+                        {
+                            
+                            for (int i = 0; i < customDays.Count; i++)
+                            {
+                                if (customDays[i] == dayOfWeek)
+                                {
+                                    shiftsToCreate.Add(new Shift
+                                    {
+                                        ShiftDate = date,
+                                        StartAt = customShifts[i].StartAt,
+                                        EndAt = customShifts[i].EndAt,
+                                        EventID = shift.EventID,
+                                        VolunteersNeeded = customShifts[i].VolunteersNeeded
+                                    });
+                                }
+                            }
+                        }
+                        else
+                        {
+                            
+                            foreach (var templateShift in templateShifts)
+                            {
+                                shiftsToCreate.Add(new Shift
+                                {
+                                    ShiftDate = date,
+                                    StartAt = templateShift.StartAt,
+                                    EndAt = templateShift.EndAt,
+                                    EventID = shift.EventID,
+                                    VolunteersNeeded = templateShift.VolunteersNeeded
+                                });
+                            }
+                        }
+                    }
 
-					// Save new shifts to the database
-					_context.AddRange(shiftsToCreate);
-					await _context.SaveChangesAsync();
+                    
+                    foreach (var newShift in shiftsToCreate)
+                    {
+                        var sameShifts = _context.Shifts
+                            .Where(r => r.ShiftDate == newShift.ShiftDate && r.EventID == newShift.EventID);
 
-					_toastNotification.AddSuccessToastMessage($"Shifts were successfully added to {eventRecord.Name}.");
+                        foreach (var existingShift in sameShifts)
+                        {
+                            if ((newShift.StartAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.StartAt.TimeOfDay >= existingShift.StartAt.TimeOfDay) ||
+                                (newShift.EndAt.TimeOfDay < existingShift.EndAt.TimeOfDay && newShift.EndAt.TimeOfDay > existingShift.StartAt.TimeOfDay))
+                            {
+                                throw new DbUpdateException("Unable to save changes. Remember, you cannot have overlapping shifts.");
+                            }
+                        }
+                    }
 
-					return View();
-				}
-			}
-			catch (DbUpdateException dex)
-			{
-				string message = dex.GetBaseException().Message;
-				if (message.Contains("overlapping shifts"))
-				{
-					ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
-				}
-				else if (message.Contains("Event range"))
-				{
-					ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range..");
-				}
-				else
-				{
-					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-				}
-			}
-			ViewData["EventID"] = shift.EventID;
-			var eventData = _context.Events
-		.Where(e => e.ID == shift.EventID)
-		.FirstOrDefault();
+                    
+                    _context.AddRange(shiftsToCreate);
+                    await _context.SaveChangesAsync();
 
-			ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
+                    _toastNotification.AddSuccessToastMessage($"Shifts were successfully added to {eventRecord.Name}.");
 
-			return View();
-		}
 
-		private bool ShiftExists(int id)
+                }
+            }
+            catch (DbUpdateException dex)
+            {
+                string message = dex.GetBaseException().Message;
+                if (message.Contains("overlapping shifts"))
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Shifts overlap.");
+                }
+                else if (message.Contains("Event range"))
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Your date is out of Event range.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+            }
+
+            ViewData["EventID"] = shift.EventID;
+            var eventData = _context.Events
+                .Where(e => e.ID == shift.EventID)
+                .FirstOrDefault();
+
+            ViewData["Event"] = $"{eventData.Name} ({eventData.StartDate:MM-dd-yyyy} - {eventData.EndDate:MM-dd-yyyy})";
+
+            return View();
+        }
+
+        private bool ShiftExists(int id)
 		{
 			return _context.Shifts.Any(e => e.ID == id);
 		}

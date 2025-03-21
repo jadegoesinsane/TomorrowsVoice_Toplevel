@@ -1,139 +1,169 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
+@{
+    Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
+}
 
-<h2>@ViewData["Event"]</h2>
+<h1>Create template shift</h1>
 
-<p>Create three schedules for each day of the event( morning, afternoon, and evening).</p>
+<p>Create shift for each day of the event.</p>
 <br />
 <form asp-action="CreateMany" class="form-container" method="post" enctype="multipart/form-data">
-	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" name="EventID" value="@ViewData["EventID"]" />
-	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-		<div class="w-100" style="margin:0px;"></div>
 
-		<div class="w-100" style="margin:0px;"></div>
-
-		<div class="w-100" style="margin:10px;"></div>
-
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="time" name="StartAt" class="form-control" required />
-                <label for="StartAt" class="control-label">Start Time for Morning Shift </label>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="time" name="EndAt" class="form-control" required />
-                <label for="EndAt" class="control-label">End Time for Morning Shift</label>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="number" class="form-control" id="VolunteersNeeded" name="VolunteersNeeded" min="1" required />
-                <label for="VolunteersNeeded" class="control-label">Volunteers Needed</label>
-            </div>
-        </div>
-
-        <div class="w-100" style="margin:10px;"></div>
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="time" name="StartAt2" class="form-control" required />
-                <label for="StartAt2" class="control-label">Start Time for Afternoon Shift</label>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="time" name="EndAt2" class="form-control" required />
-                <label for="EndAt2" class="control-label">End Time for Afternoon Shift </label>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="number" class="form-control" id="VolunteersNeeded2" name="VolunteersNeeded2" min="1" required />
-                <label for="VolunteersNeeded2" class="control-label">Volunteers Needed</label>
-            </div>
-        </div>
-
-        <div class="w-100" style="margin:10px;"></div>
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="time" name="StartAt3" class="form-control" required />
-                <label for="StartAt3" class="control-label">Start Time for Evening Shift </label>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="time" name="EndAt3" class="form-control" required />
-                <label for="EndAt3" class="control-label">End Time for Evening Shift</label>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-floating required">
-                <input type="number" class="form-control" id="VolunteersNeeded3" name="VolunteersNeeded3" min="1" required />
-                <label for="VolunteersNeeded3" class="control-label">Volunteers Needed</label>
+    <div class="w-100" style="margin:10px;"></div>
+   
+    <div id="templateShiftsContainer">
+        <div class="template-shift-section">
+            <div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
+                <h2>@ViewData["Event"]</h2>
+                <div class="col-md-3" style="display: flex; align-items: center;">
+                    <h4>Template Shift  </h4>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating required">
+                        <input type="time" name="templateShifts[0].StartAt" class="form-control" required />
+                        <label for="templateShifts[0].StartAt" class="control-label">Start Time</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating required">
+                        <input type="time" name="templateShifts[0].EndAt" class="form-control" required />
+                        <label for="templateShifts[0].EndAt" class="control-label">End Time</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating required">
+                        <input type="number" class="form-control" name="templateShifts[0].VolunteersNeeded" min="1" required />
+                        <label for="templateShifts[0].VolunteersNeeded" class="control-label">Volunteers Needed</label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    
+    <div class="row g-2 my-3 form-area justify-content-md-center">
+        <div class="col-md-12">
+            <button type="button" id="btnAddTemplate" class="btn btn-secondary">Add Template Shift</button>
+        </div>
+    </div>
+
+   
+    <div id="customShiftsContainer">
+       
+    </div>
+    <div class="row g-2 my-3 form-area justify-content-md-center">
+        <div class="col-md-12">
+            <button type="button" id="btnAddCustom" class="btn btn-secondary">Add Custom Shifts</button>
+        </div>
+    </div>
     <div class="row form-footer">
         <div class="form-group col-md-6">
-            <input type="submit"  value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
+            <input type="hidden" name="EventID" value="@ViewData["EventID"]" />
+            <input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
         </div>
     </div>
 </form>
 
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
+
+
         $(document).ready(function () {
-            // Set default time values
-            $("input[name='StartAt']").val("10:00");
-            $("input[name='EndAt']").val("14:00");
+            let templateShiftIndex = 1; 
+            let customShiftIndex = 0; 
 
-            $("input[name='StartAt2']").val("14:00");
-            $("input[name='EndAt2']").val("18:00");
+           
+            $("#btnAddTemplate").click(function () {
+                const templateShiftHtml = `
+                        <div class="template-shift-section">
+                            <div class="row g-2 my-3 form-area justify-content-md-center">
+                                <div class="col-md-3">
+                                    <h4>Template Shift</h4>
+                                    <button type="button" class="btn btn-danger btn-sm btn-remove-template">Remove</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-floating required">
+                                        <input type="time" name="templateShifts[${templateShiftIndex}].StartAt" class="form-control" required />
+                                        <label for="templateShifts[${templateShiftIndex}].StartAt" class="control-label">Start Time</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-floating required">
+                                        <input type="time" name="templateShifts[${templateShiftIndex}].EndAt" class="form-control" required />
+                                        <label for="templateShifts[${templateShiftIndex}].EndAt" class="control-label">End Time</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-floating required">
+                                        <input type="number" class="form-control" name="templateShifts[${templateShiftIndex}].VolunteersNeeded" min="1" required />
+                                        <label for="templateShifts[${templateShiftIndex}].VolunteersNeeded" class="control-label">Volunteers Needed</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                $("#templateShiftsContainer").append(templateShiftHtml);
+                templateShiftIndex++;
+            });
+            
+            $(document).on("click", ".btn-remove-template", function () {
+                $(this).closest(".template-shift-section").remove();
 
-            $("input[name='StartAt3']").val("18:00");
-            $("input[name='EndAt3']").val("21:00");
+            });
 
-            // Set default Volunteers Needed values
-            $("input[name='VolunteersNeeded']").val(4);
-            $("input[name='VolunteersNeeded2']").val(5);
-            $("input[name='VolunteersNeeded3']").val(5);
-        });
+            $("#btnAddCustom").click(function () {
+                const customShiftHtml = `
+                        <div class="custom-shift-section">
+                            <div class="row g-2 my-3 form-area justify-content-md-center">
+                                <div class="col-md-3">
+                                            <select name="customDays[${customShiftIndex}]" class="form-control" required>
+                                        <option value="" disabled selected>Select Day</option>
+                                        <option value="0">Sunday</option>
+                                        <option value="1">Monday</option>
+                                        <option value="2">Tuesday</option>
+                                        <option value="3">Wednesday</option>
+                                        <option value="4">Thursday</option>
+                                        <option value="5">Friday</option>
+                                        <option value="6">Saturday</option>
+                                    </select>
+                                             <div class="w-100" style="margin:10px;"></div>
+                                    <button type="button" class="btn btn-danger btn-sm btn-remove-custom">Remove</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <input type="time" name="customShifts[${customShiftIndex}].StartAt" class="form-control" required/>
+                                        <label for="customShifts[${customShiftIndex}].StartAt" class="control-label">Start Time</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <input type="time" name="customShifts[${customShiftIndex}].EndAt" class="form-control"required />
+                                        <label for="customShifts[${customShiftIndex}].EndAt" class="control-label">End Time</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" name="customShifts[${customShiftIndex}].VolunteersNeeded" min="1" required/>
+                                        <label for="customShifts[${customShiftIndex}].VolunteersNeeded" class="control-label">Volunteers Needed</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                $("#customShiftsContainer").append(customShiftHtml);
+                customShiftIndex++;
+            });
 
-        $("form").submit(function (event) {
-            var startAt = $("input[name='StartAt']").val();
-            var endAt = $("input[name='EndAt']").val();
-            var startAt2 = $("input[name='StartAt2']").val();
-            var endAt2 = $("input[name='EndAt2']").val();
-            var startAt3 = $("input[name='StartAt3']").val();
-            var endAt3 = $("input[name='EndAt3']").val();
+           
+            $(document).on("click", ".btn-remove-custom", function () {
+                $(this).closest(".custom-shift-section").remove();
 
-            // Check if any Start time is greater than End time
-            if (startAt > endAt) {
-                event.preventDefault();
-                alert("Morning shift: Start time cannot be later than End time.");
-                return false;
-            }
-
-            if (startAt2 > endAt2) {
-                event.preventDefault();
-                alert("Afternoon shift: Start time cannot be later than End time.");
-                return false;
-            }
-
-            if (startAt3 > endAt3) {
-                event.preventDefault();
-                alert("Evening shift: Start time cannot be later than End time.");
-                return false;
-            }
+            });
         });
     </script>
-
 }
