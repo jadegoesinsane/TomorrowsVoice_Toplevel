@@ -20,10 +20,25 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public IActionResult Index()
 		{
-			var model = new HomeVM
+            var activeSingers = _context.Singers.Where(s => s.Status == Status.Active);
+
+			var activeRehearsal = _context.Rehearsals.Where(r => r.Status == Status.Active);
+            if (User.IsInRole("Director"))
+            {
+                var directorCityId = _context.Directors
+                                              .Where(d => d.Email == User.Identity.Name.ToString())
+                                              .FirstOrDefault();
+
+               activeSingers = activeSingers.Where(s => s.ChapterID == directorCityId.ChapterID);
+                activeRehearsal = activeRehearsal.Where(s => s.ChapterID == directorCityId.ChapterID);
+
+            }
+
+           
+            var model = new HomeVM
 			{
-				SingerCount = _context.Singers.Where(s => s.Status == Status.Active).Count(),
-				RehearsalCount = _context.Rehearsals.Where(r => r.Status == Status.Active).Count(),
+				SingerCount = activeSingers.Count(),
+				RehearsalCount = activeRehearsal.Count(),
 				DirectorCount = _context.Directors.Where(s => s.Status == Status.Active).Count(),
 				ChapterCount = _context.Chapters.Where(c => c.Status == Status.Active).Count(),
 				EventCount = _context.Events.Where(c => c.Status == Status.Active).Count(),
@@ -48,7 +63,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public string SingerCount()
 		{
-			return $"{_context.Singers.Where(s => s.Status == Status.Active).Count()} Singers";
+            
+
+            return $"{_context.Singers.Where(s => s.Status == Status.Active).Count()} Singers";
 		}
 
 		public string RehearsalCount()
