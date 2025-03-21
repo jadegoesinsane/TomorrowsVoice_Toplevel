@@ -23,7 +23,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-	[Authorize(Roles = "Admin")]
+	[Authorize(Roles = "Admin,Planner")]
 	public class VolunteerController : ElephantController
 	{
 		private readonly TVContext _context;
