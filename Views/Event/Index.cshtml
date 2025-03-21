@@ -3,7 +3,10 @@
 	<div class="form-horizontal my-3">
 		<div class="row align-items-center">
 			<h1 class="col m-0">Events</h1>
-			<a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;"></i> Add @ViewData["ControllerFriendlyName"]</a>
+			@if (User.IsInRole("Planner") || User.IsInRole("Admin"))
+			{
+				<a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;">Add @ViewData["ControllerFriendlyName"]</a>	
+			}
 		</div>
 	</div>
 	<button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"

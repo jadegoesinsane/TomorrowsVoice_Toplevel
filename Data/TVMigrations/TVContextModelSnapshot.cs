@@ -17,7 +17,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Chapter", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -64,7 +64,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Chapters");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.City", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.City", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -86,7 +86,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Director", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -151,20 +151,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Directors");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.FileContent", b =>
-                {
-                    b.Property<int>("FileContentID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte[]>("Content")
-                        .HasColumnType("BLOB");
-
-                    b.HasKey("FileContentID");
-
-                    b.ToTable("FileContent");
-                });
-
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Rehearsal", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -225,7 +212,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Rehearsals");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.RehearsalAttendance", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.RehearsalAttendance", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -246,7 +233,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("RehearsalAttendances");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Singer", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Singer", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -319,6 +306,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Singers");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.FileContent", b =>
+                {
+                    b.Property<int>("FileContentID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.HasKey("FileContentID");
+
+                    b.ToTable("FileContent");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.UploadedFile", b =>
                 {
                     b.Property<int>("ID")
@@ -347,7 +347,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.Tag", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.Group", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -357,13 +357,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.UserID", b =>
@@ -588,28 +588,25 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Volunteers");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerTags", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerGroup", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TagID")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("VolunteerID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ID");
+                    b.Property<int>("GroupID")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("TagID");
+                    b.Property<int>("ID")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("VolunteerID");
+                    b.HasKey("VolunteerID", "GroupID");
 
-                    b.ToTable("VolunteerTags");
+                    b.HasIndex("GroupID");
+
+                    b.ToTable("VolunteerGroups");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorDocument", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.DirectorDocument", b =>
                 {
                     b.HasBaseType("TomorrowsVoice_Toplevel.Models.UploadedFile");
 
@@ -621,9 +618,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasDiscriminator().HasValue("DirectorDocument");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Chapter", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.City", "City")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.City", "City")
                         .WithMany("Chapters")
                         .HasForeignKey("CityID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -632,10 +629,59 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("City");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Director", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.Chapter", "Chapter")
                         .WithMany("Directors")
+                        .HasForeignKey("ChapterID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Rehearsal", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.Chapter", "Chapter")
+                        .WithMany("Rehearsals")
+                        .HasForeignKey("ChapterID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.Director", "Director")
+                        .WithMany("Rehearsals")
+                        .HasForeignKey("DirectorID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Chapter");
+
+                    b.Navigation("Director");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.RehearsalAttendance", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.Rehearsal", "Rehearsal")
+                        .WithMany("RehearsalAttendances")
+                        .HasForeignKey("RehearsalID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.Singer", "Singer")
+                        .WithMany("RehearsalAttendances")
+                        .HasForeignKey("SingerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rehearsal");
+
+                    b.Navigation("Singer");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Singer", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.Chapter", "Chapter")
+                        .WithMany("Singers")
                         .HasForeignKey("ChapterID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -654,58 +700,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("UploadedFile");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
-                {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
-                        .WithMany("Rehearsals")
-                        .HasForeignKey("ChapterID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
-                        .WithMany("Rehearsals")
-                        .HasForeignKey("DirectorID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Chapter");
-
-                    b.Navigation("Director");
-                });
-
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.RehearsalAttendance", b =>
-                {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Rehearsal", "Rehearsal")
-                        .WithMany("RehearsalAttendances")
-                        .HasForeignKey("RehearsalID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Singer", "Singer")
-                        .WithMany("RehearsalAttendances")
-                        .HasForeignKey("SingerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Rehearsal");
-
-                    b.Navigation("Singer");
-                });
-
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Singer", b =>
-                {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Chapter", "Chapter")
-                        .WithMany("Singers")
-                        .HasForeignKey("ChapterID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Chapter");
-                });
-
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.CityEvent", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.City", "City")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.City", "City")
                         .WithMany("CityEvents")
                         .HasForeignKey("CityID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -735,7 +732,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.UserShift", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", null)
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.Director", null)
                         .WithMany("UserShifts")
                         .HasForeignKey("DirectorID");
 
@@ -756,28 +753,28 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerTags", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.VolunteerGroup", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Users.Tag", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagID")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Users.Group", "Group")
+                        .WithMany("VolunteerGroups")
+                        .HasForeignKey("GroupID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", "Volunteer")
-                        .WithMany("Tags")
+                        .WithMany("VolunteerGroups")
                         .HasForeignKey("VolunteerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Tag");
+                    b.Navigation("Group");
 
                     b.Navigation("Volunteer");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.DirectorDocument", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.DirectorDocument", b =>
                 {
-                    b.HasOne("TomorrowsVoice_Toplevel.Models.Director", "Director")
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.Events.Director", "Director")
                         .WithMany("Documents")
                         .HasForeignKey("DirectorID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -786,7 +783,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Director");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Chapter", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Chapter", b =>
                 {
                     b.Navigation("Directors");
 
@@ -795,14 +792,14 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Singers");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.City", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.City", b =>
                 {
                     b.Navigation("Chapters");
 
                     b.Navigation("CityEvents");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Director", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Director", b =>
                 {
                     b.Navigation("Documents");
 
@@ -811,12 +808,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("UserShifts");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Rehearsal", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Rehearsal", b =>
                 {
                     b.Navigation("RehearsalAttendances");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Singer", b =>
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Singer", b =>
                 {
                     b.Navigation("RehearsalAttendances");
                 });
@@ -824,6 +821,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.UploadedFile", b =>
                 {
                     b.Navigation("FileContent");
+                });
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.Group", b =>
+                {
+                    b.Navigation("VolunteerGroups");
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Event", b =>
@@ -840,9 +842,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer", b =>
                 {
-                    b.Navigation("Tags");
-
                     b.Navigation("UserShifts");
+
+                    b.Navigation("VolunteerGroups");
                 });
 #pragma warning restore 612, 618
         }

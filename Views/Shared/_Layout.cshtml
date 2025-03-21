@@ -61,82 +61,86 @@
 </head>
 <body>
 	<header>
-		<nav class="navbar navbar-expand-md navbar-toggleable-sm navbar-light mb-3">
-			<!-- bg-white border-bottom box-shadow -->
-			<div class="container-md">
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-						aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-					<ul class="navbar-nav flex-grow-1 align-items-md-center">
-						<li class="nav-item">
-							<!--<a class="navbar-brand d-none d-md-flex" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" style="height: 80px;" /></a>-->
-							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-								<img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" class="navbar-brand d-none d-md-inline-block" style="height: 80px;" /> Dashboard
-							</a>
-						</li>
-						@if (User.IsInRole("Director") || User.IsInRole("Admin"))
-						{
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									Chapter Menu
+			<nav class="navbar navbar-expand-md navbar-toggleable-sm navbar-light mb-3">
+				<!-- bg-white border-bottom box-shadow -->
+				<div class="container-md">
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+							aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+						<ul class="navbar-nav flex-grow-1 align-items-md-center">
+							<li class="nav-item">
+								<!--<a class="navbar-brand d-none d-md-flex" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" style="height: 80px;" /></a>-->
+								<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+									<img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" class="navbar-brand d-none d-md-inline-block" style="height: 80px;" /> Dashboard
 								</a>
-								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-									@* <li><a class="dropdown-item" asp-area="" asp-controller="City" asp-action="Index">City</a></li> *@
-
-									@* <li><a class="dropdown-item" asp-area="" asp-controller="Director" asp-action="Index">Directors</a></li> *@
-									<li><a class="dropdown-item" asp-area="" asp-controller="Rehearsal" asp-action="Index">Rehearsals</a></li>
-									<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Index">Singers</a></li>
-
-									@if (User.IsInRole("Admin"))
-									{
-										<li><hr class="dropdown-divider"></li>
-										<li><a class="dropdown-item" asp-area="" asp-controller="City" asp-action="Index">Maintain Cities</a></li>
-										<li><a class="dropdown-item" asp-area="" asp-controller="Chapter" asp-action="Index">Maintain Chapters</a></li>
-										<li><a class="dropdown-item" asp-area="" asp-controller="Director" asp-action="Index">Maintain Directors</a></li>
-										<li><hr class="dropdown-divider"></li>
-										<li><a class="dropdown-item" asp-area="" asp-controller="Rehearsal" asp-action="RehearsalsSummary">Rehearsal Summary</a></li>
-									}
-								</ul>
 							</li>
-						}
-						@if (User.IsInRole("Planner") || User.IsInRole("Admin"))
+							@if (User.IsInRole("Director") || User.IsInRole("Admin"))
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										Chapter Menu
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+										@* <li><a class="dropdown-item" asp-area="" asp-controller="City" asp-action="Index">City</a></li> *@
+
+										@* <li><a class="dropdown-item" asp-area="" asp-controller="Director" asp-action="Index">Directors</a></li> *@
+										<li><a class="dropdown-item" asp-area="" asp-controller="Rehearsal" asp-action="Index">Rehearsals</a></li>
+										<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Index">Singers</a></li>
+
+										@if (User.IsInRole("Admin"))
+										{
+											<li><hr class="dropdown-divider"></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="City" asp-action="Index">Maintain Cities</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Chapter" asp-action="Index">Maintain Chapters</a></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Director" asp-action="Index">Maintain Directors</a></li>
+											<li><hr class="dropdown-divider"></li>
+											<li><a class="dropdown-item" asp-area="" asp-controller="Rehearsal" asp-action="RehearsalsSummary">Rehearsal Summary</a></li>
+										}
+									</ul>
+								</li>
+							}
+							@if (User.IsInRole("Planner") || User.IsInRole("Admin"))
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle text-dark" href="#" id="eventDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										Event Menu
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="eventDropdown">
+										<li><a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Index">Events</a></li>
+										<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Index">Volunteers</a></li>
+										<li><a class="dropdown-item" asp-area="" asp-controller="Group" asp-action="Index">Groups</a></li>
+									</ul>
+							</li>
+						} else if (User.IsInRole("Volunteer"))
 						{
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle text-dark" href="#" id="eventDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									Event Menu
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="eventDropdown">
-									<li><a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Index">Events</a></li>
-									<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Index">Volunteers</a></li>
-								</ul>
-							</li>
+							<li class="nav-item"><a asp-area="" asp-controller="Event" asp-action="Index">Events</a></li>
 						}
 
-						@if (User.IsInRole("Admin"))
-						{
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle text-dark" href="#" id="managementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									Management
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="managementDropdown">
-									<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Upload">Upload Singers</a></li>
-									<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Email">Send Email Notification</a></li>
-									<li>
-										<a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="VolunteerSelect">
-											Profile
-										</a>
-									</li>
-								</ul>
-							</li>
-						}
-					</ul>
+							@if (User.IsInRole("Admin"))
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle text-dark" href="#" id="managementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+										Management
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="managementDropdown">
+										<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Upload">Upload Singers</a></li>
+										<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Email">Send Email Notification</a></li>
+										<li>
+											<a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="VolunteerSelect">
+												Profile
+											</a>
+										</li>
+									</ul>
+								</li>
+							}
+						</ul>
 
-					<partial name="_LoginPartial" />
+						<partial name="_LoginPartial" />
+					</div>
 				</div>
-			</div>
-		</nav>
+			</nav>
 	</header>
 	<div class="container">
 		<main role="main" class="pb-3">

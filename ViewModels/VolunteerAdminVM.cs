@@ -15,6 +15,6 @@ namespace TomorrowsVoice_Toplevel.ViewModels
 		public List<string> UserRoles { get; set; } = new List<string>();
 
 		[Display(Name = "Tags")]
-		public ICollection<VolunteerTags> Tags { get; set; } = new List<VolunteerTags>();
+		public ICollection<VolunteerGroup> Tags { get; set; } = new List<VolunteerGroup>();
 	}
 }

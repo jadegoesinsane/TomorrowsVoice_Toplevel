@@ -1,0 +1,68 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Users.Group>
+
+<form asp-action="Index" method="get">
+	<div class="form-horizontal my-3">
+		<div class="row align-items-center">
+			<h1 class="col m-0">Groups</h1>
+			<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-folder-plus"></i><span class="px-2">Add @ViewData["ControllerFriendlyName"]</span></a>
+		</div>
+	</div>
+	<div class="row">
+		<a asp-action="Message" class="btn btn-sm btn-outline-detail w-auto rounded-pill" role="button">
+			<i class="bi bi-chat-left-text"></i>
+			<span class="px-2">
+				Message
+			</span>
+		</a>
+		<a asp-action="Export" class="btn btn-sm btn-outline-detail w-auto rounded-pill" role="button">
+			<i class="bi bi-download"></i>
+			<span class="px-2">
+				Export
+			</span>
+		</a>
+	</div>
+	<table class="table">
+		<thead class="thead-light">
+			<tr>
+				<th>
+					<input class="form-check-input" type="checkbox" value="" id="chk-all">
+					<span class="px-3">
+						@Html.DisplayNameFor(model => model.Name)
+					</span>
+				</th>
+				<th>
+					Members
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						<input class="form-check-input" type="checkbox" value="" id="chk-@item.ID">
+						<a asp-action="Details" asp-route-id="@item.ID" class="px-3">
+							@Html.DisplayFor(modelItem => item.Name)
+						</a>
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.VolunteerGroups.Count)
+					</td>
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
+						   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+							<i class="bi bi-pencil-square"></i>
+						</a>
+						<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+						   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+							<i class="bi bi-x-lg"></i>
+						</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</form>
+<style>
+</style>

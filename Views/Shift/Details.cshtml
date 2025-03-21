@@ -1,9 +1,4 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
-@{
-
-	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
-
-}
 
 <h1>@Model.Event.Name Shift</h1>
 <strong>@Model.TimeSummary</strong>
@@ -40,7 +35,7 @@
 						</div>
 					</div>
 				}
-		
+
 				<div class="form-footer">
 					@Html.AntiForgeryToken()
 					<input type="hidden" name="shiftID" value="@Model.ID" />
@@ -63,7 +58,7 @@
 					}
 					else
 					{
-						<button type="submit" class="btn btn-primary" disabled id="btnSubmit">Sign Up</button>
+						<button type="submit" class="btn btn-primary" id="btnSubmit">Sign Up</button>
 
 					}
 				</div>

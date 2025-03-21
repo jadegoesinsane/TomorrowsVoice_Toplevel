@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
@@ -17,10 +19,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	public class VolunteerAccountController : CognizantController
 	{
 		private readonly TVContext _context;
+		private readonly IToastNotification _toastNotification;
+		private readonly UserManager<IdentityUser> _userManager;
 
-		public VolunteerAccountController(TVContext context)
+		public VolunteerAccountController(TVContext context, IToastNotification toastNotification, UserManager<IdentityUser> userManager)
 		{
 			_context = context;
+			_toastNotification = toastNotification;
+			_userManager = userManager;
 		}
 
 		// GET: VolunteerAccount
@@ -46,10 +52,74 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			   .FirstOrDefaultAsync();
 			if (volunteer == null)
 			{
+				return RedirectToAction("Create");
 				return NotFound();
 			}
 
 			return View(volunteer);
+		}
+
+		// GET: Volunteer/Create
+		public IActionResult Create()
+		{
+			return View();
+		}
+
+		// POST: Volunteer/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Phone,YearlyVolunteerGoal")] VolunteerVM vVM)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					Volunteer volunteer = new Volunteer
+					{
+						FirstName = vVM.FirstName,
+						MiddleName = vVM.MiddleName,
+						LastName = vVM.LastName,
+						Phone = vVM.Phone,
+						YearlyVolunteerGoal = vVM.YearlyVolunteerGoal,
+						Email = User.Identity.Name
+					};
+					volunteer.ID = _context.GetNextID();
+					_context.Add(volunteer);
+					await _context.SaveChangesAsync();
+
+					var _user = await _userManager.FindByEmailAsync(volunteer.Email);
+					if (_user != null)
+					{
+						var UserRoles = (List<string>)await _userManager.GetRolesAsync(_user);
+						if (!UserRoles.Contains("Volunteer"))
+						{
+							await _userManager.AddToRoleAsync(_user, "Volunteer");
+						}
+
+						UserRoles = (List<string>)await _userManager.GetRolesAsync(_user);
+					}
+
+					_toastNotification.AddSuccessToastMessage($"Finished setting up account, welcome {volunteer.FirstName}!");
+					return RedirectToAction("Details", new { volunteer.ID });
+				}
+			}
+			catch (DbUpdateException dex)
+			{
+				string message = dex.GetBaseException().Message;
+				if (message.Contains("UNIQUE") && message.Contains("Email"))
+				{
+					ModelState.AddModelError("", "Unable to save changes. Remember, " +
+						"you cannot have duplicate Email.");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+				}
+			}
+
+			return View(vVM);
 		}
 
 		// GET: VolunteerAccount/Edit/5

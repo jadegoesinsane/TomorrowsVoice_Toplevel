@@ -7,7 +7,7 @@ using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
 {
-    public class TVContext : DbContext
+	public class TVContext : DbContext
 	{
 		//To give access to IHttpContextAccessor for Audit Data with IAuditable
 		private readonly IHttpContextAccessor _httpContextAccessor;
@@ -47,7 +47,6 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<UserID> UserIDs { get; set; }
 
 		//public DbSet<User> Users { get; set; }
-		public DbSet<Tag> Roles { get; set; }
 
 		// Chapters
 		public DbSet<Director> Directors { get; set; }
@@ -67,6 +66,8 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<Shift> Shifts { get; set; }
 		public DbSet<Volunteer> Volunteers { get; set; }
 		public DbSet<UserShift> UserShifts { get; set; }
+		public DbSet<Group> Groups { get; set; }
+		public DbSet<VolunteerGroup> VolunteerGroups { get; set; }
 
 		// Messaging DbSets
 
@@ -148,6 +149,10 @@ namespace TomorrowsVoice_Toplevel.Data
 			// Many to Many User Shift PK
 			modelBuilder.Entity<UserShift>()
 				.HasKey(us => new { us.UserID, us.ShiftID });
+
+			// Many to Many User Shift PK
+			modelBuilder.Entity<VolunteerGroup>()
+				.HasKey(vg => new { vg.VolunteerID, vg.GroupID });
 
 			modelBuilder.Entity<Event>()
 			.HasMany<Shift>(s => s.Shifts)

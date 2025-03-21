@@ -1,9 +1,5 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
-@{
 
-	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
-
-}
 @{
     ViewData["Title"] = "Edit";
 }
@@ -40,12 +36,11 @@
 
 		<div class="col-md-2">
 			<div class="form-floating required ">
-				
+
 				<input asp-for="VolunteersNeeded" class="form-control" />
 				<label asp-for="VolunteersNeeded" class="control-label"></label>
 				<span asp-validation-for="VolunteersNeeded" class="text-danger"></span>
 			</div>
-		
 
 		</div>
 		<div class="col-md-2">
@@ -86,8 +81,6 @@
 	<partial name="_FormFooter" />
 </form>
 
-
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
@@ -100,11 +93,9 @@
 			var startAt = $("#StartAt").val();
 			var endAt = $("#EndAt").val();
 
-
 			if (startAt > endAt) {
 
 				event.preventDefault();
-
 
 				alert("Start time cannot be later than End time.");
 			}

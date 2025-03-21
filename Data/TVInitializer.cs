@@ -1,18 +1,23 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using TomorrowsVoice_Toplevel.Controllers;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Events;
 using TomorrowsVoice_Toplevel.Models.Users;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
+using TomorrowsVoice_Toplevel.Utilities;
+using TomorrowsVoice_Toplevel.ViewModels;
+using Group = TomorrowsVoice_Toplevel.Models.Users.Group;
 
 namespace TomorrowsVoice_Toplevel.Data
 {
-    public class TVInitializer
+	public class TVInitializer
 	{
 		/// <summary>
 		/// Prepares the Database and seeds data as required
@@ -789,11 +794,53 @@ namespace TomorrowsVoice_Toplevel.Data
 						}
 					}
 
-					// Add Users
+					// Add Groups
+					if (!context.Groups.Any())
+					{
+						List<Group> groups = new List<Group>
+						{
+							new Group { Name = "Highschool Students", BackgroundColour = ColourPalette.BrightColours["Red"] },
+							new Group { Name = "Brock Volunteers", BackgroundColour = ColourPalette.PastelColours["Green"] },
+							new Group { Name = "McMaster Volunteers", BackgroundColour = ColourPalette.PastelColours["Pink"] },
+							new Group { Name = "Event Planners", BackgroundColour = ColourPalette.BrightColours["Purple"] },
+						};
+						context.Groups.AddRange(groups);
+						context.SaveChanges();
+					}
+					// Add VolunteerGroups
+					if (!context.VolunteerGroups.Any())
+					{
+						var volunteerGroups = new List<VolunteerGroup>();
+						var volunteers = context.Volunteers.ToArray();
 
-					//	AddUser(d.Email, "Director", serviceProvider);
-					//foreach (Volunteer v in context.Volunteers)
-					//	AddUser(v.Email, null, serviceProvider);
+						foreach (var group in context.Groups.Where(g => g.Name != "Event Planner"))
+						{
+							rnd.Shuffle<Volunteer>(volunteers);
+
+							for (int i = 0; i < rnd.Next(5, 15); i++)
+							{
+								var volunteerGroup = new VolunteerGroup
+								{
+									Group = group,
+									GroupID = group.ID,
+									Volunteer = volunteers[i],
+									VolunteerID = volunteers[i].ID
+								};
+
+								try
+								{
+									group.VolunteerGroups.Add(volunteerGroup);
+									volunteers[i].VolunteerGroups.Add(volunteerGroup);
+									context.VolunteerGroups.Add(volunteerGroup);
+									context.SaveChanges();
+								}
+								catch (Exception)
+								{
+									context.VolunteerGroups.Remove(volunteerGroup);
+								}
+							}
+						}
+					}
 				}
 				catch (Exception ex)
 				{

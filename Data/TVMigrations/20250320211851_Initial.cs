@@ -45,17 +45,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Roles",
+                name: "Groups",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
                     BackgroundColour = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.ID);
+                    table.PrimaryKey("PK_Groups", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -178,25 +178,24 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VolunteerTags",
+                name: "VolunteerGroups",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
                     VolunteerID = table.Column<int>(type: "INTEGER", nullable: false),
-                    TagID = table.Column<int>(type: "INTEGER", nullable: false)
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VolunteerTags", x => x.ID);
+                    table.PrimaryKey("PK_VolunteerGroups", x => new { x.VolunteerID, x.GroupID });
                     table.ForeignKey(
-                        name: "FK_VolunteerTags_Roles_TagID",
-                        column: x => x.TagID,
-                        principalTable: "Roles",
+                        name: "FK_VolunteerGroups_Groups_GroupID",
+                        column: x => x.GroupID,
+                        principalTable: "Groups",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_VolunteerTags_Volunteers_VolunteerID",
+                        name: "FK_VolunteerGroups_Volunteers_VolunteerID",
                         column: x => x.VolunteerID,
                         principalTable: "Volunteers",
                         principalColumn: "ID",
@@ -488,20 +487,15 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "ShiftID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_VolunteerGroups_GroupID",
+                table: "VolunteerGroups",
+                column: "GroupID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Volunteers_Email",
                 table: "Volunteers",
                 column: "Email",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VolunteerTags_TagID",
-                table: "VolunteerTags",
-                column: "TagID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VolunteerTags_VolunteerID",
-                table: "VolunteerTags",
-                column: "VolunteerID");
         }
 
         /// <inheritdoc />
@@ -523,7 +517,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "UserShifts");
 
             migrationBuilder.DropTable(
-                name: "VolunteerTags");
+                name: "VolunteerGroups");
 
             migrationBuilder.DropTable(
                 name: "UploadedFiles");
@@ -538,7 +532,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 name: "Shifts");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "Volunteers");

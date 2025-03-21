@@ -652,6 +652,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> ShiftSignUp(int shiftID, int volID)
 		{
+			if (User.IsInRole("Volunteer"))
+			{
+				volID = _context.Volunteers.FirstOrDefault(v => v.Email == User.Identity.Name).ID;
+			}
 			bool userShiftExists = _context.UserShifts
 		.Any(us => us.UserID == volID && us.ShiftID == shiftID);
 

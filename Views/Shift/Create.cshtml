@@ -1,9 +1,5 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
-@{
 
-	Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
-
-}
 <partial name="_ViewHeading" />
 <form asp-action="Create" class="form-container" method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -44,10 +40,6 @@
 				<span asp-validation-for="EndAt" class="text-danger"></span>
 			</div>
 		</div>
-		
-	
-
-		
 
 		@* Input for total number of active singers per chapter *@
 
@@ -61,21 +53,19 @@
     <script src="~/js/multiselect.js"></script>
 
 	<script>
-	
+
 		$("form").submit(function (event) {
-		
+
 			var startAt = $("#StartAt").val();
 			var endAt = $("#EndAt").val();
 
-			
 			if (startAt > endAt) {
-				
+
 					event.preventDefault();
 
-					
 					alert("Start time cannot be later than End time.");
 				}
-			
+
 		});
 	</script>
 

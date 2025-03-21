@@ -19,11 +19,12 @@ namespace  TomorrowsVoice_Toplevel.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public static string Index => "Index";
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public static string Email => "Email";
+
+		/// <summary>
+		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+		///     directly from your code. This API may change or be removed in future releases.
+		/// </summary>
+		public static string Email => "Email";
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -67,11 +68,11 @@ namespace  TomorrowsVoice_Toplevel.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
+		/// <summary>
+		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+		///     directly from your code. This API may change or be removed in future releases.
+		/// </summary>
+		public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used

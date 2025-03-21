@@ -1,7 +1,5 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Shift>
 @{
-
-    Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
     TomorrowsVoice_Toplevel.Models.Volunteering.Event events = (TomorrowsVoice_Toplevel.Models.Volunteering.Event)ViewBag.Event;
     ViewData["Title"] = ViewData["ControllerFriendlyName"];
 
@@ -39,7 +37,6 @@
                     <div class="row align-items-center">
                         <h2 class="col m-0">Shifts</h2>
                     </div>
-
 
                     @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
                     {
@@ -194,9 +191,7 @@
     </div>
 </div>
 
-
 @section Scripts {
-
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -221,8 +216,6 @@
                 });
             });
 
-
-
             $(document).on("click", "#savePerformance", function () {
                 console.log("🔹 Save button clicked!");
 
@@ -244,10 +237,8 @@
                         EndAt: row.find("input[name='EndAt']").val() + ":00"
                     };
 
-
                     enrollments.push(enrollment);
                 });
-
 
                 $.ajax({
                     url: "/Shift/UpdatePerformance",

@@ -41,7 +41,7 @@ namespace TomorrowsVoice_Toplevel.Data
 				{
 					try
 					{
-						string[] roleNames = { "Admin", "Director", "Planner" };
+						string[] roleNames = { "Admin", "Director", "Planner", "Volunteer" };
 
 						IdentityResult roleResult;
 						foreach (var roleName in roleNames)

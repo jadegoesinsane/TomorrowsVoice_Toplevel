@@ -27,6 +27,6 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public int? YearlyVolunteerGoal { get; set; } = 0;
 
 		public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
-		public ICollection<VolunteerTags> Tags { get; set; } = new List<VolunteerTags>();
+		public ICollection<VolunteerGroup> VolunteerGroups { get; set; } = new List<VolunteerGroup>();
 	}
 }

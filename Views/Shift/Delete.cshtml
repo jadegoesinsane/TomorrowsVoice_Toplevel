@@ -1,9 +1,5 @@
 ﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
-@{
 
-    Layout = "~/Views/Shared/_EventAdminLayout.cshtml";
-
-}
 @{
     ViewData["Title"] = "Delete";
 }
@@ -40,7 +36,7 @@
             @Html.DisplayFor(model => model.Event.ID)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
