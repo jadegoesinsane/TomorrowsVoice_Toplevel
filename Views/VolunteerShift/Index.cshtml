@@ -137,7 +137,7 @@
             Action
         </span>
         <br />
-        @if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any())
+        @if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any()||item.ShiftDate>DateTime.Today)
                                     {
                                         <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
                                                 data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
@@ -193,7 +193,7 @@
 		</div>
 	</div>
      <p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
-                Note: If your shift is cancelled within 2 days of the shift date, an email will be sent to the event manager.
+                Note: Your shift can not be cancelled within 2 days of the shift date.
             </p>
             <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
