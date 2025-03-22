@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NToastNotify;
+using System.Configuration;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Utilities;
 using TomorrowsVoice_Toplevel.ViewModels;
+using static TomorrowsVoice_Toplevel.Utilities.EmailService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,11 +59,16 @@ builder.Services.ConfigureApplicationCookie(options =>
 	options.SlidingExpiration = true;
 });
 
-builder.Services.AddControllersWithViews();
+
+
+
 
 builder.Services.AddSingleton<IEmailConfiguration>(builder.Configuration
 	.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddControllersWithViews();
 //Email with methods for production use.
 builder.Services.AddTransient<IMyEmailSender, MyEmailSender>();
 
