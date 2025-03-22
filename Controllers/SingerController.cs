@@ -489,7 +489,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public PartialViewResult ListOfRehearsalDetails(int id)
 		{
 			var rehearsals = _context.Rehearsals
-				.Include(r => r.Director).ThenInclude(d => d.Chapter)
+				.Include(r => r.Director).ThenInclude(d => d.Chapter).ThenInclude(c=>c.City)
 				.Where(r => r.RehearsalAttendances.Any(ra => ra.SingerID == id))
 				.OrderBy(r => r.RehearsalDate)
 				.ToList();

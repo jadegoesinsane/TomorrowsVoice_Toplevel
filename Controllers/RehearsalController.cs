@@ -258,7 +258,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					_context.Add(rehearsal);
 					await _context.SaveChangesAsync();
-					AddSuccessToast("Rehearsal on " + rehearsal.TimeSummary);
+					AddSuccessToast("Rehearsal on " + rehearsal.RehearsalDate.ToShortDateString());
 					return RedirectToAction(nameof(Index));
 				}
 			}
