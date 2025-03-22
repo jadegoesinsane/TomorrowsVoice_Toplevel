@@ -24,14 +24,24 @@
 								@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
 								<label class="control-label" for="DirectorID">Select by Director:</label>
 							</div>
-						}
+						
 						<div class="form-floating col-md-3">
 							@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control", id = "ChapterID" })
 							<label class="control-label" for="ChapterID">Select by Chapter:</label>
 						</div>
+						}
 						<div class="form-floating col-md-3">
 							@Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
 							<label class="control-label" for="SearchString">Search Attendance Notes:</label>
+						</div>
+						<div class="col-md-2">
+							<div class="form-floating">
+								@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
+																	"All Status", htmlAttributes: new { @class = "form-control" })
+								<label class="control-label" for="StatusFilter">Select by Status:</label>
+
+							</div>
+
 						</div>
 					</div>
 					<div class="row mt-4">
@@ -45,15 +55,7 @@
 							<label class="control-label" for="EndDate">End Date:</label>
 
 						</div>
-						<div class="col-md-2">
-							<div class="form-floating">
-								@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
-																	"All Status", htmlAttributes: new { @class = "form-control" })
-								<label class="control-label" for="StatusFilter">Select by Status:</label>
-
-							</div>
-
-						</div>
+						
 						<div class="col-md-3 d-flex justify-content-evenly">
 							<input type="submit" name="actionButton" value="Filter"
 								   class="btn btn-outline-primary" />

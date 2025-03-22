@@ -19,10 +19,13 @@
 				<strong><label class="control-label" for="SearchString">Singer Name</label></strong>
 				@Html.TextBox("SearchString", null, new { @class = "form-control" })
 			</div>
+			@if (!User.IsInRole("Director"))
+			{
 			<div class="p-2">
 				<strong><label class="control-label" for="ChapterID">Chapter</label></strong>
 				@Html.DropDownList("ChapterID", null, "Any", new { @class = "form-control" })
 			</div>
+			}
 			<div class="p-2">
 				<strong><label class="control-label" for="StatusFilter">Status</label></strong>
 				@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
