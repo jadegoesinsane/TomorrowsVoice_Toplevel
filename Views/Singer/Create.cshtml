@@ -48,14 +48,30 @@
 				<span asp-validation-for="Phone" class="text-danger"></span>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<div class="form-floating required">
+		@if (!User.IsInRole("Director"))
+		{
+			<div class="col-md-4">
+				<div class="form-floating required">
 
-				@Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as SelectList, "Select a Chapter", new { @class = "form-control" })
-				<label asp-for="ChapterID" class="control-label"></label>
-				<span asp-validation-for="ChapterID" class="text-danger"></span>
+					@Html.DropDownListFor(model => model.ChapterID, ViewBag.Chapters as SelectList, "Select a Chapter", new { @class = "form-control" })
+					<label asp-for="ChapterID" class="control-label"></label>
+					<span asp-validation-for="ChapterID" class="text-danger"></span>
+				</div>
 			</div>
-		</div>
+			
+		}
+		else
+		{
+			<select hidden="hidden" asp-for="ChapterID" class="form-control" id="Filter" onchange="filterByCity()" asp-items="ViewBag.ChapterID"></select>
+			
+		}
+
+
+
+
+
+
+		
 		<div class="form-group col-md-4 required">
 			<div class="form-floating required">
 				<select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
