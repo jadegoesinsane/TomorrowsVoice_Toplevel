@@ -49,57 +49,89 @@
 					<h3>@year.Key</h3>
 					foreach (var item in year)
 					{
-					<div class="row bd-callout" style="border-left-color: @item.BackgroundColor;">
-						<div class="col-3">
-							<span class="fw-bold m-0">
-								@item.Event?.Name
-							</span>
+					<div class="row bd-callout d-flex align-items-center" style="border-left-color: @item.BackgroundColor;">
+    <div class="col-3">
+        <span class="fw-bold m-0">
+            @item.Event?.Name
+        </span>
 
-							@if (String.IsNullOrWhiteSpace(item.Title))
-							{
-								<br/>
-								@Html.DisplayFor(ModelItem => item.Title)
-							}
-						</div>
-						@{
-							string start = item.StartAt.ToString(item.StartAt.Minute == 0 ? "%h" : "h:mm");
-							string end = item.EndAt.ToString(item.EndAt.Minute == 0 ? "%h" : "h:mm");
-							string startTT = item.StartAt.ToString("tt").ToLower();
-							string endTT = item.EndAt.ToString("tt").ToLower();
-						}
-						<div class="col-2">
-							<span class="fw-light">
-								On
-							</span>
-							<br />
-							@item.DateFormat
-						</div>
-						<div class="col-1">
-							<span class="fw-light">
-								Starts at
-							</span>
-							<br />
-							@start @startTT
-						</div>
-						<div class="col-1">
-							<span class="fw-light">
-								Ends at
-							</span>
-							<br />
-							@end @endTT
-						</div>
-						<div class="col-4">
-							<span class="fw-light">
-								Location
-							</span>
-							<br />
-							@if (!String.IsNullOrWhiteSpace(item.Location))
-							{
-								@Html.Raw(item.Location + " ⋅ ")
-							}
-							@item.Event?.Location
-						</div>
-					</div>
+        @if (String.IsNullOrWhiteSpace(item.Title))
+        {
+            <br/>
+            @Html.DisplayFor(ModelItem => item.Title)
+        }
+    </div>
+    @{
+        string start = item.StartAt.ToString(item.StartAt.Minute == 0 ? "%h" : "h:mm");
+        string end = item.EndAt.ToString(item.EndAt.Minute == 0 ? "%h" : "h:mm");
+        string startTT = item.StartAt.ToString("tt").ToLower();
+        string endTT = item.EndAt.ToString("tt").ToLower();
+    }
+    <div class="col-2">
+        <span class="fw-light">
+            On
+        </span>
+        <br />
+        @item.DateFormat
+    </div>
+    <div class="col-1">
+        <span class="fw-light">
+            Starts at
+        </span>
+        <br />
+        @start @startTT
+    </div>
+    <div class="col-1">
+        <span class="fw-light">
+            Ends at
+        </span>
+        <br />
+        @end @endTT
+    </div>
+    <div class="col-4">
+        <span class="fw-light">
+            Location
+        </span>
+        <br />
+        @if (!String.IsNullOrWhiteSpace(item.Location))
+        {
+            @Html.Raw(item.Location + " ⋅ ")
+        }
+        @item.Event?.Location
+    </div>
+
+    <!-- Action button -->
+    <div class="col-1">
+        <span class="fw-light">
+            Action
+        </span>
+        <br />
+        <a class="btn btn-primary add"
+           id="btnCancel"
+           asp-controller="Volunteer"
+           asp-action="SignOffShift"
+           asp-route-volunteerId="@volunteer?.ID"
+           asp-route-shiftId="@item.ID">
+           Cancel Shift
+        </a>
+    </div>
+
+    <div class="col-1">
+        <span class="fw-light">
+            Action
+        </span>
+        <br />
+        <a class="btn btn-primary add"
+           id="btnCancel"
+           asp-controller="Volunteer"
+           asp-action="SignOffShift"
+           asp-route-volunteerId="@volunteer?.ID"
+           asp-route-shiftId="@item.ID">
+           Cancel Shift
+        </a>
+    </div>
+</div>
+
 					@* <div class="row bd-callout" style="border-left-color: @item.BackgroundColor;">
 						<div class="row fw-bold">
 							<div class="col">
