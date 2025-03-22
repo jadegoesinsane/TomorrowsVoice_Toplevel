@@ -106,14 +106,30 @@
             Action
         </span>
         <br />
-        <a class="btn btn-primary add"
-           id="btnCancel"
-                       asp-controller="VolunteerShift"
-           asp-action="SignOffShift"
-           asp-route-volunteerId="@volunteer?.ID"
-           asp-route-shiftId="@item.ID">
-           Cancel Shift
-        </a>
+        @if (item.ShiftDate < DateTime.Today.AddDays(2))
+                            {
+                                    <a class="btn btn-primary add btn-secondary disabled"
+                                       asp-controller="Volunteer"
+                                       asp-action="EmailNotice"
+                                       asp-route-volunteerId="@volunteer?.ID"
+                                       asp-route-shiftId="@item.ID"
+                                       style="pointer-events: none; opacity: 0.5;">
+                                        Cancel Shift
+                                    </a>
+
+                            }
+                            else
+                            { 
+                                    <!-- Otherwise, render the active button -->
+                                    <a class="btn btn-primary add"
+                                       id="btnCancel"
+                                       asp-controller="Volunteer"
+                                       asp-action="SignOffShift"
+                                       asp-route-volunteerId="@volunteer?.ID"
+                                       asp-route-shiftId="@item.ID">
+                                        Cancel Shift
+                                    </a>
+                                                                    } 
     </div>
 
     <div class="col-1">
