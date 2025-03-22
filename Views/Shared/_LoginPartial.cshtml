@@ -14,6 +14,19 @@
 			</a>
 			<ul class="dropdown-menu" aria-labelledby="navbarIDDropdown">
 				<li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" title="Manage">Manage Account</a></li>
+				@{
+					if (User.Identity.IsAuthenticated)
+					{
+						if (User.IsInRole("Director"))
+						{
+							<li><a class="dropdown-item" asp-area="" asp-controller="DirectorAccount" asp-action="Details">Account Details</a></li>
+						}
+						else if (!User.IsInRole("Admin"))
+						{
+							<li><a class="dropdown-item" asp-area="" asp-controller="VolunteerAccount" asp-action="Details">Account Details</a></li>
+						}
+					}
+				}
 				<li><hr class="dropdown-divider"></li>
 				<form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
 					<button type="submit" class="nav-link btn btn-link text-dark">Logout</button>

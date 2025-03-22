@@ -1,11 +1,12 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Event>
+
 <form asp-action="Index" method="get">
 	<div class="form-horizontal my-3">
 		<div class="row align-items-center">
 			<h1 class="col m-0">Events</h1>
 			@if (User.IsInRole("Planner") || User.IsInRole("Admin"))
 			{
-				<a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;">Add @ViewData["ControllerFriendlyName"]</a>	
+				<a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;">Add @ViewData["ControllerFriendlyName"]</a>
 			}
 		</div>
 	</div>
@@ -80,25 +81,25 @@
 										@if (User.IsInRole("Admin") || User.IsInRole("Planner") || User.IsInRole("Volunteer"))
 										{
 											<a asp-controller="Shift" asp-action="Index" asp-route-EventID="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
-											role="button" data-bs-toggle="tooltip" title="Details">
+											   role="button" data-bs-toggle="tooltip" title="Details">
 												<i class="bi bi-search"></i>
 											</a>
 										}
 										@if (User.IsInRole("Admin") || User.IsInRole("Planner"))
 										{
 											<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
-											role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+											   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
 												<i class="bi bi-pencil-square"></i>
 											</a>
 										}
 										@if (User.IsInRole("Admin"))
 										{
 											<a asp-action="Close" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-											role="button" data-bs-toggle="tooltip" title="Close @ViewData["ControllerFriendlyName"]">
+											   role="button" data-bs-toggle="tooltip" title="Close @ViewData["ControllerFriendlyName"]">
 												<i class="bi bi-stop-circle"></i>
 											</a>
 											<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-											role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+											   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
 												<i class="bi bi-x-lg"></i>
 											</a>
 										}
@@ -108,15 +109,15 @@
 										@if (User.IsInRole("Admin"))
 										{
 											<a asp-controller="Shift" asp-action="Index" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
-											role="button" data-bs-toggle="tooltip" Details">
+											   role="button" data-bs-toggle="tooltip" Details">
 												<i class="bi bi-search"></i>
 											</a>
 											<a asp-action="Recover" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-											role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
+											   role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
 												<i class="bi bi-arrow-clockwise"></i>
 											</a>
 											<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-											role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+											   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
 												<i class="bi bi-x-lg"></i>
 											</a>
 										}
@@ -152,16 +153,19 @@
 												string title = shift.Title ?? "(no title)";
 												<div class="row bd-callout" style="border-left-color: @shift.BackgroundColor;">
 													<div class="position-relative row col-11">
-													<div class="col">
-														@shift.TimeFormat
-													</div>
-													<div class="col">
-														@title
-													</div>
-													<div class="col">
-														<small>Signed Up: @shift.UserShifts.Count() / @shift.VolunteersNeeded</small>
-													</div>
-														<a asp-action="Details" class="stretched-link" asp-route-id="@shift.ID" asp-controller="Shift"></a>
+														<div class="col">
+															@shift.TimeFormat
+														</div>
+														<div class="col">
+															@title
+														</div>
+														<div class="col">
+															<small>Signed Up: @shift.UserShifts.Count() / @shift.VolunteersNeeded</small>
+														</div>
+														<a data-bs-toggle="modal" data-bs-target="#joinShiftModal-@shift.ID"
+														   @* asp-action="GetShiftModal" asp-controller="Event"
+														   asp-route-id="@shift.ID"  *@class="stretched-link"></a>
+														@* <a asp-action="Details" class="stretched-link" asp-route-id="@shift.ID" asp-controller="Shift"></a> *@
 													</div>
 													<div class="col">
 														<a asp-action="Edit" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-success"
@@ -173,9 +177,9 @@
 															<i class="bi bi-x-lg"></i>
 														</a>
 													</div>
-													
-												</div>
 
+												</div>
+												@await Html.PartialAsync("_JoinShiftModal", shift)
 											}
 										</div>
 									</div>

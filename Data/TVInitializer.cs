@@ -511,8 +511,8 @@ namespace TomorrowsVoice_Toplevel.Data
 							new Event
 							{
 								Name = "Ham Bake Sale - 2025",
-								StartDate = new DateTime(2025, 03, 10),
-								EndDate = new DateTime(2025, 03, 15),
+								StartDate = new DateTime(2025, 03, 20),
+								EndDate = new DateTime(2025, 03, 25),
 								Descripion = "We will be selling homemade baked goods",
 								Location = "Eastgate Square, Hamilton",
 								Status = Status.Active
@@ -638,12 +638,12 @@ namespace TomorrowsVoice_Toplevel.Data
 							{
 								List<DateTime> dates = new List<DateTime>
 							{
-								new DateTime(2025, 03, 10),
-								new DateTime(2025, 03, 11),
-								new DateTime(2025, 03, 12),
-								new DateTime(2025, 03, 13),
-								new DateTime(2025, 03, 14),
-								new DateTime(2025, 03, 15),
+								new DateTime(2025, 03, 20),
+								new DateTime(2025, 03, 21),
+								new DateTime(2025, 03, 22),
+								new DateTime(2025, 03, 23),
+								new DateTime(2025, 03, 24),
+								new DateTime(2025, 03, 25),
 							};
 
 								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>

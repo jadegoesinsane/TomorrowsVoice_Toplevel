@@ -758,129 +758,128 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(pagedData);
 		}
 
-        public IActionResult DownloadEvents(int? id, string? name)
-        {
-            // Get Event Details
-            var events = from e in _context.Events
-                         .Where(e => e.ID == id)
-                         select new
-                         {
-                             Date = e.DateSummary,
-                             Location = e.Location,
-                             Description = e.Descripion
-                         };
+		public IActionResult DownloadEvents(int? id, string? name)
+		{
+			// Get Event Details
+			var events = from e in _context.Events
+						 .Where(e => e.ID == id)
+						 select new
+						 {
+							 Date = e.DateSummary,
+							 Location = e.Location,
+							 Description = e.Descripion
+						 };
 
-            // Get Shift Details
-            var shifts = from s in _context.Shifts
-                         .Include(s => s.UserShifts)
-                         .Where(s => s.EventID == id)
-                         select new
-                         {
-                             Date = s.ShiftDate.ToShortDateString(),
-                             Times = s.TimeFormat,
-                             Volunteers = $"{s.UserShifts.Count()} / {s.VolunteersNeeded}"
-                         };
+			// Get Shift Details
+			var shifts = from s in _context.Shifts
+						 .Include(s => s.UserShifts)
+						 .Where(s => s.EventID == id)
+						 select new
+						 {
+							 Date = s.ShiftDate.ToShortDateString(),
+							 Times = s.TimeFormat,
+							 Volunteers = $"{s.UserShifts.Count()} / {s.VolunteersNeeded}"
+						 };
 
-            // How many rows?
-            int eventNumRows = events.Count();
-            int shiftNumRows = shifts.Count();
+			// How many rows?
+			int eventNumRows = events.Count();
+			int shiftNumRows = shifts.Count();
 
-            if (eventNumRows > 0) // We have data
-            {
-                // Create a new spreadsheet from scratch.
-                using (ExcelPackage excel = new ExcelPackage())
-                {
-                    var workSheet = excel.Workbook.Worksheets.Add("Events");
+			if (eventNumRows > 0) // We have data
+			{
+				// Create a new spreadsheet from scratch.
+				using (ExcelPackage excel = new ExcelPackage())
+				{
+					var workSheet = excel.Workbook.Worksheets.Add("Events");
 
-                    // Note: Cells[row, column]
-                    workSheet.Cells[3, 1].LoadFromCollection(events, true);
-                    workSheet.Cells[9, 1].LoadFromCollection(shifts, true);
+					// Note: Cells[row, column]
+					workSheet.Cells[3, 1].LoadFromCollection(events, true);
+					workSheet.Cells[9, 1].LoadFromCollection(shifts, true);
 
-                    // Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
-                    workSheet.Cells[4, 1, eventNumRows + 3, 3].Style.Font.Bold = true;
-                    workSheet.Cells[10, 1, shiftNumRows + 10, 3].Style.Font.Bold = true;
+					// Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
+					workSheet.Cells[4, 1, eventNumRows + 3, 3].Style.Font.Bold = true;
+					workSheet.Cells[10, 1, shiftNumRows + 10, 3].Style.Font.Bold = true;
 
-                    // Set Style and background color of headings
-                    // Event Headings
-                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 3])
-                    {
-                        headings.Style.Font.Bold = true;
-                        var fill = headings.Style.Fill;
-                        fill.PatternType = ExcelFillStyle.Solid;
-                        fill.BackgroundColor.SetColor(Color.LightBlue);
-                    }
-                    // Shift Headings
-                    using (ExcelRange headings = workSheet.Cells[9, 1, 9, 3])
-                    {
-                        headings.Style.Font.Bold = true;
-                        var fill = headings.Style.Fill;
-                        fill.PatternType = ExcelFillStyle.Solid;
-                        fill.BackgroundColor.SetColor(Color.LightGreen);
-                    }
+					// Set Style and background color of headings
+					// Event Headings
+					using (ExcelRange headings = workSheet.Cells[3, 1, 3, 3])
+					{
+						headings.Style.Font.Bold = true;
+						var fill = headings.Style.Fill;
+						fill.PatternType = ExcelFillStyle.Solid;
+						fill.BackgroundColor.SetColor(Color.LightBlue);
+					}
+					// Shift Headings
+					using (ExcelRange headings = workSheet.Cells[9, 1, 9, 3])
+					{
+						headings.Style.Font.Bold = true;
+						var fill = headings.Style.Fill;
+						fill.PatternType = ExcelFillStyle.Solid;
+						fill.BackgroundColor.SetColor(Color.LightGreen);
+					}
 
-                    // Autofit columns
-                    workSheet.Cells.AutoFitColumns();
+					// Autofit columns
+					workSheet.Cells.AutoFitColumns();
 
-                    // Add a title and timestamp at the top of the report
-                    // Event Title
-                    workSheet.Cells[1, 1].Value = $"{name} Event Report";
-                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
-                    {
-                        Rng.Merge = true; // Merge columns start and end range
-                        Rng.Style.Font.Bold = true; // Font should be bold
-                        Rng.Style.Font.Size = 18;
-                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    }
-                    // Shift Title
-                    workSheet.Cells[8, 1].Value = "Shift Report";
-                    using (ExcelRange Rng = workSheet.Cells[8, 1, 8  , 3])
-                    {
-                        Rng.Merge = true; // Merge columns start and end range
-                        Rng.Style.Font.Bold = true; // Font should be bold
-                        Rng.Style.Font.Size = 14;
-                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    }
+					// Add a title and timestamp at the top of the report
+					// Event Title
+					workSheet.Cells[1, 1].Value = $"{name} Event Report";
+					using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
+					{
+						Rng.Merge = true; // Merge columns start and end range
+						Rng.Style.Font.Bold = true; // Font should be bold
+						Rng.Style.Font.Size = 18;
+						Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+					}
+					// Shift Title
+					workSheet.Cells[8, 1].Value = "Shift Report";
+					using (ExcelRange Rng = workSheet.Cells[8, 1, 8, 3])
+					{
+						Rng.Merge = true; // Merge columns start and end range
+						Rng.Style.Font.Bold = true; // Font should be bold
+						Rng.Style.Font.Size = 14;
+						Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+					}
 
-                    // Since the time zone where the server is running can be different, adjust to
-                    // Local for us.
-                    DateTime utcDate = DateTime.UtcNow;
-                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
-                    using (ExcelRange Rng = workSheet.Cells[2, 3])
-                    {
-                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
-                            localDate.ToShortDateString();
-                        Rng.Style.Font.Bold = true; // Font should be bold
-                        Rng.Style.Font.Size = 12;
-                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                    }
+					// Since the time zone where the server is running can be different, adjust to
+					// Local for us.
+					DateTime utcDate = DateTime.UtcNow;
+					TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+					DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+					using (ExcelRange Rng = workSheet.Cells[2, 3])
+					{
+						Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+							localDate.ToShortDateString();
+						Rng.Style.Font.Bold = true; // Font should be bold
+						Rng.Style.Font.Size = 12;
+						Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+					}
 
-                    // Ok, time to download the Excel
-                    try
-                    {
-                        Byte[] theData = excel.GetAsByteArray();
-                        string filename = $"{name} Report.xlsx";
-                        string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                        return File(theData, mimeType, filename);
-                    }
-                    catch (Exception)
-                    {
-                        return BadRequest("Could not build and download the file.");
-                    }
-                }
-            }
-            return NotFound("No data.");
-        }
+					// Ok, time to download the Excel
+					try
+					{
+						Byte[] theData = excel.GetAsByteArray();
+						string filename = $"{name} Report.xlsx";
+						string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+						return File(theData, mimeType, filename);
+					}
+					catch (Exception)
+					{
+						return BadRequest("Could not build and download the file.");
+					}
+				}
+			}
+			return NotFound("No data.");
+		}
 
+		//private SelectList CitySelectList()
+		//{
+		//	return new SelectList(_context
+		//		.Cities
+		//		.OrderBy(c => c.Name), "ID", "Name");
+		//}
 
-        //private SelectList CitySelectList()
-        //{
-        //	return new SelectList(_context
-        //		.Cities
-        //		.OrderBy(c => c.Name), "ID", "Name");
-        //}
-
-        public JsonResult AddShift(string? thing)
+		public JsonResult AddShift(string? thing)
 		{
 			return Json(new { success = true, message = "Shift added successfully" });
 		}

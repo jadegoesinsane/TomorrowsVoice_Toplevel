@@ -162,6 +162,11 @@ namespace TomorrowsVoice_Toplevel.Data
 								};
 
 								IdentityResult result = userManager.CreateAsync(user, defaultPassword).Result;
+
+								if (result.Succeeded)
+								{
+									userManager.AddToRoleAsync(user, "Volunteer").Wait();
+								}
 							}
 						}
 					}

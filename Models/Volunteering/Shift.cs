@@ -34,7 +34,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
         public String TimeSummary => $"{DateFormat} ⋅ {TimeFormat}";
 
         [StringLength(55)]
-        [DisplayFormat(NullDisplayText = "(No title)")]
+        [DisplayFormat(NullDisplayText = "(No Title)")]
         public string? Title { get; set; }
 
         public string? Location { get; set; }

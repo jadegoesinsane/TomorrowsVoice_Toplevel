@@ -1,0 +1,148 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Volunteering.Shift>
+@{
+	TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer volunteer = (TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer)ViewBag.Volunteer;
+	ViewData["Title"] = ViewData["ControllerFriendlyName"];
+}
+
+<h4>My Shifts</h4>
+<small>View and manage upcoming shifts.</small>
+<hr/>
+<form asp-action="Index" method="get">
+	@* <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+	<input type="hidden" name="sortField" value="@ViewData["sortField"]" /> *@
+	<input type="hidden" name="VolunteerID" value="@volunteer.ID" />
+	<div class="form-horizontal">
+		@* <button class="btn @(ViewData["Filtering"])" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+		Filter/Search @ViewData["numberFilters"]
+		</button><br />
+		<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+		<div class="collapse card card-body bg-light" style="padding-top: 10px; padding-bottom: 5px;" id="collapseFilter">
+		<div class="row">
+		<div class="form-group col-md-4 ml-md-3">
+		<label class="control-label">Reason:</label>
+		@Html.DropDownList("AppointmentReasonID", null, "All Reasons", htmlAttributes: new { @class = "form-control" })
+		</div>
+		<div class="form-group col-md-4">
+		<label class="control-label">Search Notes:</label>
+		@Html.TextBox("SearchString", null, new { @class = "form-control" })
+		</div>
+		<div class="form-group col-md-4 align-self-end">
+		<input type="submit" name="actionButton" value="Apply" class="btn btn-primary" />
+		<a asp-action="Index" asp-route-VolunteerID="@volunteer.ID">Clear</a>
+		</div>
+		</div>
+		</div>
+		</div> *@
+		<div>
+			@if (Model.Count() == 0)
+			{
+				<tr>
+					<td>
+						No Upcoming Shifts
+					</td>
+				</tr>
+			}
+			else
+			{
+				@foreach (var year in Model.GroupBy(s => s.StartAt.Year))
+				{
+					<h3>@year.Key</h3>
+					foreach (var item in year)
+					{
+					<div class="row bd-callout" style="border-left-color: @item.BackgroundColor;">
+						<div class="col-3">
+							<span class="fw-bold m-0">
+								@item.Event?.Name
+							</span>
+
+							@if (String.IsNullOrWhiteSpace(item.Title))
+							{
+								<br/>
+								@Html.DisplayFor(ModelItem => item.Title)
+							}
+						</div>
+						@{
+							string start = item.StartAt.ToString(item.StartAt.Minute == 0 ? "%h" : "h:mm");
+							string end = item.EndAt.ToString(item.EndAt.Minute == 0 ? "%h" : "h:mm");
+							string startTT = item.StartAt.ToString("tt").ToLower();
+							string endTT = item.EndAt.ToString("tt").ToLower();
+						}
+						<div class="col-2">
+							<span class="fw-light">
+								On
+							</span>
+							<br />
+							@item.DateFormat
+						</div>
+						<div class="col-1">
+							<span class="fw-light">
+								Starts at
+							</span>
+							<br />
+							@start @startTT
+						</div>
+						<div class="col-1">
+							<span class="fw-light">
+								Ends at
+							</span>
+							<br />
+							@end @endTT
+						</div>
+						<div class="col-4">
+							<span class="fw-light">
+								Location
+							</span>
+							<br />
+							@if (!String.IsNullOrWhiteSpace(item.Location))
+							{
+								@Html.Raw(item.Location + " ⋅ ")
+							}
+							@item.Event?.Location
+						</div>
+					</div>
+					@* <div class="row bd-callout" style="border-left-color: @item.BackgroundColor;">
+						<div class="row fw-bold">
+							<div class="col">
+								@item.Event?.Name
+							</div>
+							@if (!String.IsNullOrWhiteSpace(item.Title))
+							{
+								<div class="col-auto">
+									@item.Title
+								</div>
+							}
+						</div>
+						<div class="row">
+							<div class="col-3">
+								@item.DateFormat
+							</div>
+							<div class="col-2">
+								@item.TimeFormat
+							</div>
+							<div class="col-auto">
+								@if (!String.IsNullOrWhiteSpace(item.Location))
+								{
+									@item.Location
+								}
+								else
+								{
+									@item.Event?.Location
+								}
+							</div>
+						</div>
+					</div> *@
+					}
+				}
+			}
+		</div>
+	</div>
+	@* <partial name="_PagingNavBar" /> *@
+</form>
+@section Scripts {
+	<script type="text/javascript">
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+			return new bootstrap.Tooltip(tooltipTriggerEl)
+		})
+	</script>
+}
