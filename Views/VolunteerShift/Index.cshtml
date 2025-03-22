@@ -108,7 +108,7 @@
         <br />
         <a class="btn btn-primary add"
            id="btnCancel"
-           asp-controller="Volunteer"
+                       asp-controller="VolunteerShift"
            asp-action="SignOffShift"
            asp-route-volunteerId="@volunteer?.ID"
            asp-route-shiftId="@item.ID">
@@ -121,14 +121,22 @@
             Action
         </span>
         <br />
-        <a class="btn btn-primary add"
-           id="btnCancel"
-           asp-controller="Volunteer"
-           asp-action="SignOffShift"
-           asp-route-volunteerId="@volunteer?.ID"
-           asp-route-shiftId="@item.ID">
-           Cancel Shift
-        </a>
+        @if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any())
+                                    {
+                                        <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
+                                                data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
+                                                disabled>
+                                            Record Hours
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
+                                                data-shiftid="@item.ID" data-volunteerid="@volunteer.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                                            Record Hours
+
+                                        </button>
+                                    }
     </div>
 </div>
 
@@ -168,6 +176,24 @@
 			}
 		</div>
 	</div>
+     <p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
+                Note: If your shift is cancelled within 2 days of the shift date, an email will be sent to the event manager.
+            </p>
+            <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="performanceModalLabel">Track Performance</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="performanceModalContent">
+                                <p class="text-center text-muted">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 	@* <partial name="_PagingNavBar" /> *@
 </form>
 @section Scripts {
@@ -177,4 +203,81 @@
 			return new bootstrap.Tooltip(tooltipTriggerEl)
 		})
 	</script>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $(document).on("click", ".trackPerformanceBtn", function () {
+                let shiftId = $(this).data("shiftid");
+                let volunteerId = $(this).data("volunteerid");
+                    console.log("Shift ID:", shiftId);
+        console.log("Volunteer ID:", volunteerId);
+                $("#performanceModalContent").html('<p class="text-center text-muted">Loading...</p>');
+
+               $.get(`/VolunteerShift/TrackPerformance/${shiftId}`, { volunteerId: volunteerId }, function (data) {
+                $("#performanceModalContent").html(data);
+
+                    if ($("#performanceModalContent #ShiftID").length === 0) {
+                        $("#performanceModalContent").append(`<input type="hidden" id="ShiftID" value="${shiftId}" />`);
+                    } else {
+                        $("#performanceModalContent #ShiftID").val(shiftId);
+                    }
+
+                }).fail(function () {
+                    console.error("❌ Error loading performance data.");
+                    $("#performanceModalContent").html('<p class="text-danger">Error loading performance data. Please try again.</p>');
+                });
+            });
+
+
+
+            $(document).on("click", "#savePerformance", function () {
+                console.log("🔹 Save button clicked!");
+
+                let shiftId = $("#ShiftID").val();
+                if (!shiftId) {
+                    console.error("❌ ShiftID is missing!");
+                    alert("Error: ShiftID is missing.");
+                    return;
+                }
+
+                let enrollments = [];
+                $("#performanceTable tbody tr").each(function () {
+                    let row = $(this);
+                    let enrollment = {
+                        UserID: row.find("input[name='UserID']").val(),
+                        ShiftID: shiftId,
+                        ShowOrNot: row.find("input[name='ShowOrNot']").prop("checked"),
+                        StartAt: row.find("input[name='StartAt']").val() + ":00",
+                        EndAt: row.find("input[name='EndAt']").val() + ":00"
+                    };
+
+
+                    enrollments.push(enrollment);
+                });
+
+
+                $.ajax({
+                        url: "/VolunteerShift/UpdatePerformance",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(enrollments),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Performance updated successfully.");
+                            location.reload();
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("❌ AJAX Error:", xhr.responseText);
+                        alert("An error occurred while updating performance.");
+                    }
+                });
+            });
+
+        });
+    </script>
 }
