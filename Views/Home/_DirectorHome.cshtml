@@ -1,4 +1,4 @@
-﻿@model TomorrowsVoice_Toplevel.ViewModels.HomeVM
+﻿@model TomorrowsVoice_Toplevel.ViewModels.HomeDirectorVM
 @* @{
 
 	Layout = "~/Views/Shared/_RehearsalLayout.cshtml";
@@ -61,12 +61,7 @@
 		</div>
 	</a>
 
-
 </div>
-
-
-
-
 
 <div class="row g-4 my-3">
 	<div class="col-md-9">
@@ -77,61 +72,4 @@
 			<div id='calendar'></div>
 		</div>
 	</div>
-
 </div>
-
-@section Scripts {
-	<script src="~/js/rehearsalCalendar.js"></script>
-
-	<script type="text/javascript">
-		document.addEventListener('DOMContentLoaded', function () {
-			var duration = 2000;
-
-			var chapter = document.getElementById('chapter');
-			var chapterCount = @Model.ChapterCount;
-			chapter.animate([
-				{ '--num': 0 },
-				{ '--num': chapterCount }
-			], {
-				duration: duration,
-				fill: 'forwards',
-				iterations: 1
-			});
-
-			var director = document.getElementById('director');
-			var directorCount = @Model.DirectorCount;
-			director.animate([
-				{ '--num': 0 },
-				{ '--num': directorCount }
-			], {
-				duration: duration,
-				fill: 'forwards',
-				iterations: 1
-			});
-
-			var singer = document.getElementById('singer');
-			var singerCount = @Model.SingerCount;
-			singer.animate([
-				{ '--num': 0 },
-				{ '--num': singerCount }
-			], {
-				duration: duration,
-				fill: 'forwards',
-				iterations: 1
-			});
-
-			var rehearsal = document.getElementById('rehearsal');
-			var rehearsalCount = @Model.RehearsalCount;
-			rehearsal.animate([
-				{ '--num': 0 },
-				{ '--num': rehearsalCount }
-			], {
-				duration: duration,
-				fill: 'forwards',
-				iterations: 1
-			});
-
-
-		});
-	</script>
-}

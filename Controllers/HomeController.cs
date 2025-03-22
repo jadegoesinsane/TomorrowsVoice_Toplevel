@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using NToastNotify;
 using System.Diagnostics;
 using TomorrowsVoice_Toplevel.Data;
@@ -20,34 +22,26 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public IActionResult Index()
 		{
-            var activeSingers = _context.Singers.Where(s => s.Status == Status.Active);
-
-			var activeRehearsal = _context.Rehearsals.Where(r => r.Status == Status.Active);
-            if (User.IsInRole("Director"))
-            {
-                var directorCityId = _context.Directors
-                                              .Where(d => d.Email == User.Identity.Name.ToString())
-                                              .FirstOrDefault();
-
-               activeSingers = activeSingers.Where(s => s.ChapterID == directorCityId.ChapterID);
-                activeRehearsal = activeRehearsal.Where(s => s.ChapterID == directorCityId.ChapterID);
-
-            }
-
-           
-            var model = new HomeVM
+			if (User.Identity.IsAuthenticated)
 			{
-				SingerCount = activeSingers.Count(),
-				RehearsalCount = activeRehearsal.Count(),
-				DirectorCount = _context.Directors.Where(s => s.Status == Status.Active).Count(),
-				ChapterCount = _context.Chapters.Where(c => c.Status == Status.Active).Count(),
-				EventCount = _context.Events.Where(c => c.Status == Status.Active).Count(),
+				if (User.IsInRole("Volunteer"))
+				{
+					var model = GetVolunteerHome();
+					return View("Index", model);
+				}
+				else if (User.IsInRole("Director"))
+				{
+					var model = GetDirectorHome();
+					return View("Index", model);
+				}
+				else if (User.IsInRole("Planner"))
+				{
+					var model = GetPlannerHome();
+					return View("Index", model);
+				}
 
-				VolunteerCount = _context.Volunteers.Where(c => c.Status == Status.Active).Count(),
-				ShiftCount = _context.Shifts.Where(c => c.Status == Status.Active).Count(),
-				CityCount = _context.Cities.Count()
-			};
-			return View(model);
+			}
+			return View();
 		}
 
 		public IActionResult Privacy()
@@ -61,46 +55,52 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 
-		public string SingerCount()
+		private HomeDirectorVM GetDirectorHome()
 		{
-            
+			var dID = _context.Directors
+				.Where(d => d.Email == User.Identity.Name.ToString())
+				.FirstOrDefault();
 
-            return $"{_context.Singers.Where(s => s.Status == Status.Active).Count()} Singers";
+			var activeSingers = _context.Singers.Where(s => s.Status == Status.Active && s.ChapterID == dID.ChapterID);
+			var activeRehearsal = _context.Rehearsals.Where(r => r.Status == Status.Active && r.ChapterID == dID.ChapterID);
+
+			return new HomeDirectorVM
+			{
+				SingerCount = activeSingers.Count(),
+				RehearsalCount = activeRehearsal.Count(),
+				DirectorCount = _context.Directors.Where(s => s.Status == Status.Active).Count(),
+				ChapterCount = _context.Chapters.Where(c => c.Status == Status.Active).Count()
+			};
 		}
 
-		public string RehearsalCount()
+		private HomePlannerVM GetPlannerHome()
 		{
-			return $"{_context.Rehearsals.Where(r => r.Status == Status.Active).Count()} Rehearsals";
+			return new HomePlannerVM
+			{
+				EventCount = _context.Events.Where(c => c.Status == Status.Active).Count(),
+				VolunteerCount = _context.Volunteers.Where(c => c.Status == Status.Active).Count(),
+				ShiftCount = _context.Shifts.Where(c => c.Status == Status.Active).Count(),
+				CityCount = _context.Cities.Count()
+			};
 		}
 
-		public string DirectorCount()
+		public HomeVolunteerVM GetVolunteerHome()
 		{
-			return $"{_context.Directors.Where(s => s.Status == Status.Active).Count()} Directors";
-		}
+			var volunteer = _context.Volunteers
+					.Where(v => v.Email == User.Identity.Name.ToString())
+					.AsNoTracking()
+					.FirstOrDefault();
 
-		public string ChapterCount()
-		{
-			return $"{_context.Chapters.Where(c => c.Status == Status.Active).Count()} Chapters";
-		}
-
-		public string VolunteerCount()
-		{
-			return $"{_context.Volunteers.Where(s => s.Status == Status.Active).Count()} Volunteers";
-		}
-
-		public string ShiftCount()
-		{
-			return $"{_context.Shifts.Where(c => c.Status == Status.Active).Count()} Shifts";
-		}
-
-		public string EventCount()
-		{
-			return $"{_context.Events.Where(c => c.Status == Status.Active).Count()} Events";
-		}
-
-		public string CityCount()
-		{
-			return $"{_context.Cities.Count()} Cities";
+			return new HomeVolunteerVM
+			{
+				Name = volunteer.NameFormatted,
+				HourlyGoal = volunteer.YearlyVolunteerGoal ?? 0,
+				TimeWorked = volunteer.TotalWorkDuration,
+				Shifts = _context.Shifts
+				.Where(s => s.UserShifts.Any(us => us.UserID == volunteer.ID) && s.Status == Status.Active)
+				.AsNoTracking()
+				.ToList()
+			};
 		}
 	}
 }

@@ -1,9 +1,4 @@
-﻿@model TomorrowsVoice_Toplevel.ViewModels.HomeVM
-@* @{
-	Layout = "_EventAdminLayout";
-	ViewData["Title"] = "Home Page";
-}
-<h1>Dashboard</h1> *@
+﻿@model TomorrowsVoice_Toplevel.ViewModels.HomePlannerVM
 
 <div class="card-deck">
 
@@ -54,49 +49,4 @@
 			<div id='calendar'></div>
 		</div>
 	</div>
-
 </div>
-
-@section Scripts {
-	<script src="~/js/eventCalendar.js"></script>
-
-	<script type="text/javascript">
-		document.addEventListener('DOMContentLoaded', function () {
-			var duration = 2000;
-
-			var event = document.getElementById('event');
-			var eventCount = @Model.EventCount;
-			event.animate([
-				{ '--num': 0 },
-				{ '--num': eventCount }
-			], {
-				duration: duration,
-				fill: 'forwards',
-				iterations: 1
-			});
-
-			var city = document.getElementById('city');
-			var cityCount = @Model.CityCount;
-			city.animate([
-				{ '--num': 0 },
-				{ '--num': cityCount }
-			], {
-				duration: duration,
-				fill: 'forwards',
-				iterations: 1
-			});
-
-			var volunteer = document.getElementById('volunteer');
-			var volunteerCount = @Model.VolunteerCount;
-			volunteer.animate([
-				{ '--num': 0 },
-				{ '--num': volunteerCount }
-			], {
-				duration: duration,
-				fill: 'forwards',
-				iterations: 1
-			});
-
-		});
-	</script>
-}

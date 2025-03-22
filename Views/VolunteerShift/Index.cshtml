@@ -6,7 +6,7 @@
 
 <h4>My Shifts</h4>
 <small>View and manage upcoming shifts.</small>
-<hr/>
+<hr />
 <form asp-action="Index" method="get">
 	@* <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
 	<input type="hidden" name="sortField" value="@ViewData["sortField"]" /> *@
@@ -49,167 +49,127 @@
 					<h3>@year.Key</h3>
 					foreach (var item in year)
 					{
-					<div class="row bd-callout d-flex align-items-center" style="border-left-color: @item.BackgroundColor;">
-    <div class="col-3">
-        <span class="fw-bold m-0">
-            @item.Event?.Name
-        </span>
-
-        @if (String.IsNullOrWhiteSpace(item.Title))
-        {
-            <br/>
-            @Html.DisplayFor(ModelItem => item.Title)
-        }
-    </div>
-    @{
-        string start = item.StartAt.ToString(item.StartAt.Minute == 0 ? "%h" : "h:mm");
-        string end = item.EndAt.ToString(item.EndAt.Minute == 0 ? "%h" : "h:mm");
-        string startTT = item.StartAt.ToString("tt").ToLower();
-        string endTT = item.EndAt.ToString("tt").ToLower();
-    }
-    <div class="col-2">
-        <span class="fw-light">
-            On
-        </span>
-        <br />
-        @item.DateFormat
-    </div>
-    <div class="col-1">
-        <span class="fw-light">
-            Starts at
-        </span>
-        <br />
-        @start @startTT
-    </div>
-    <div class="col-1">
-        <span class="fw-light">
-            Ends at
-        </span>
-        <br />
-        @end @endTT
-    </div>
-    <div class="col-4">
-        <span class="fw-light">
-            Location
-        </span>
-        <br />
-        @if (!String.IsNullOrWhiteSpace(item.Location))
-        {
-            @Html.Raw(item.Location + " ⋅ ")
-        }
-        @item.Event?.Location
-    </div>
-
-    <!-- Action button -->
-    <div class="col-1">
-        <span class="fw-light">
-            Action
-        </span>
-        <br />
-        @if (item.ShiftDate < DateTime.Today.AddDays(2))
-                            {
-                                    <a class="btn btn-primary add btn-secondary disabled"
-                                       asp-controller="Volunteer"
-                                       asp-action="EmailNotice"
-                                       asp-route-volunteerId="@volunteer?.ID"
-                                       asp-route-shiftId="@item.ID"
-                                       style="pointer-events: none; opacity: 0.5;">
-                                        Cancel Shift
-                                    </a>
-
-                            }
-                            else
-                            { 
-                                    <!-- Otherwise, render the active button -->
-                                    <a class="btn btn-primary add"
-                                       id="btnCancel"
-                                       asp-controller="Volunteer"
-                                       asp-action="SignOffShift"
-                                       asp-route-volunteerId="@volunteer?.ID"
-                                       asp-route-shiftId="@item.ID">
-                                        Cancel Shift
-                                    </a>
-                                                                    } 
-    </div>
-
-    <div class="col-1">
-        <span class="fw-light">
-            Action
-        </span>
-        <br />
-        @if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any()||item.ShiftDate>DateTime.Today)
-                                    {
-                                        <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
-                                                data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
-                                                disabled>
-                                            Record Hours
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
-                                                data-shiftid="@item.ID" data-volunteerid="@volunteer.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-                                            Record Hours
-
-                                        </button>
-                                    }
-    </div>
-</div>
-
-					@* <div class="row bd-callout" style="border-left-color: @item.BackgroundColor;">
-						<div class="row fw-bold">
-							<div class="col">
-								@item.Event?.Name
-							</div>
-							@if (!String.IsNullOrWhiteSpace(item.Title))
-							{
-								<div class="col-auto">
-									@item.Title
-								</div>
-							}
-						</div>
-						<div class="row">
+						<div class="row bd-callout d-flex align-items-center" style="border-left-color: @item.BackgroundColor;">
 							<div class="col-3">
+								<span class="fw-bold m-0">
+									@item.Event?.Name
+								</span>
+
+								@if (String.IsNullOrWhiteSpace(item.Title))
+								{
+									<br />
+									@Html.DisplayFor(ModelItem => item.Title)
+								}
+							</div>
+							@{
+								string start = item.StartAt.ToString(item.StartAt.Minute == 0 ? "%h" : "h:mm");
+								string end = item.EndAt.ToString(item.EndAt.Minute == 0 ? "%h" : "h:mm");
+								string startTT = item.StartAt.ToString("tt").ToLower();
+								string endTT = item.EndAt.ToString("tt").ToLower();
+							}
+							<div class="col-2">
+								<span class="fw-light">
+									On
+								</span>
+								<br />
 								@item.DateFormat
 							</div>
-							<div class="col-2">
-								@item.TimeFormat
+							<div class="col-1">
+								<span class="fw-light">
+									Starts at
+								</span>
+								<br />
+								@start @startTT
 							</div>
-							<div class="col-auto">
+							<div class="col-1">
+								<span class="fw-light">
+									Ends at
+								</span>
+								<br />
+								@end @endTT
+							</div>
+							<div class="col-4">
+								<span class="fw-light">
+									Location
+								</span>
+								<br />
 								@if (!String.IsNullOrWhiteSpace(item.Location))
 								{
-									@item.Location
+									@Html.Raw(item.Location + " ⋅ ")
+								}
+								@item.Event?.Location
+							</div>
+							<!-- Action button -->
+							<div class="col-1">
+								<br />
+								@if (item.ShiftDate < DateTime.Today.AddDays(2))
+								{
+									<a class="btn btn-primary add btn-secondary disabled"
+									   asp-controller="Volunteer"
+									   asp-action="EmailNotice"
+									   asp-route-volunteerId="@volunteer?.ID"
+									   asp-route-shiftId="@item.ID"
+									   style="pointer-events: none; opacity: 0.5;">
+										Cancel Shift
+									</a>
+
 								}
 								else
 								{
-									@item.Event?.Location
+									<!-- Otherwise, render the active button -->
+									<a class="btn btn-primary add"
+									   id="btnCancel"
+									   asp-controller="Volunteer"
+									   asp-action="SignOffShift"
+									   asp-route-volunteerId="@volunteer?.ID"
+									   asp-route-shiftId="@item.ID">
+										Cancel Shift
+									</a>
+								}
+							</div>
+
+							<div class="col-1">
+								<br />
+								@if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any() || item.ShiftDate > DateTime.Today)
+								{
+									<button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
+											data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
+											disabled>
+										Record Hours
+									</button>
+								}
+								else
+								{
+									<button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
+											data-shiftid="@item.ID" data-volunteerid="@volunteer.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+										Record Hours
+									</button>
 								}
 							</div>
 						</div>
-					</div> *@
 					}
 				}
 			}
 		</div>
 	</div>
-     <p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
-                Note: Your shift can not be cancelled within 2 days of the shift date.
-            </p>
-            <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="performanceModalLabel">Track Performance</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="performanceModalContent">
-                                <p class="text-center text-muted">Loading...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+	<p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
+		Note: Your shift can not be cancelled within 2 days of the shift date.
+	</p>
+	<div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="performanceModalLabel">Track Performance</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="performanceModalContent">
+						<p class="text-center text-muted">Loading...</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	@* <partial name="_PagingNavBar" /> *@
 </form>
 @section Scripts {
@@ -220,80 +180,76 @@
 		})
 	</script>
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
 
-            $(document).on("click", ".trackPerformanceBtn", function () {
-                let shiftId = $(this).data("shiftid");
-                let volunteerId = $(this).data("volunteerid");
-                    console.log("Shift ID:", shiftId);
-        console.log("Volunteer ID:", volunteerId);
-                $("#performanceModalContent").html('<p class="text-center text-muted">Loading...</p>');
+			$(document).on("click", ".trackPerformanceBtn", function () {
+				let shiftId = $(this).data("shiftid");
+				let volunteerId = $(this).data("volunteerid");
+				console.log("Shift ID:", shiftId);
+				console.log("Volunteer ID:", volunteerId);
+				$("#performanceModalContent").html('<p class="text-center text-muted">Loading...</p>');
 
-               $.get(`/VolunteerShift/TrackPerformance/${shiftId}`, { volunteerId: volunteerId }, function (data) {
-                $("#performanceModalContent").html(data);
+				$.get(`/VolunteerShift/TrackPerformance/${shiftId}`, { volunteerId: volunteerId }, function (data) {
+					$("#performanceModalContent").html(data);
 
-                    if ($("#performanceModalContent #ShiftID").length === 0) {
-                        $("#performanceModalContent").append(`<input type="hidden" id="ShiftID" value="${shiftId}" />`);
-                    } else {
-                        $("#performanceModalContent #ShiftID").val(shiftId);
-                    }
+					if ($("#performanceModalContent #ShiftID").length === 0) {
+						$("#performanceModalContent").append(`<input type="hidden" id="ShiftID" value="${shiftId}" />`);
+					} else {
+						$("#performanceModalContent #ShiftID").val(shiftId);
+					}
 
-                }).fail(function () {
-                    console.error("❌ Error loading performance data.");
-                    $("#performanceModalContent").html('<p class="text-danger">Error loading performance data. Please try again.</p>');
-                });
-            });
+				}).fail(function () {
+					console.error("❌ Error loading performance data.");
+					$("#performanceModalContent").html('<p class="text-danger">Error loading performance data. Please try again.</p>');
+				});
+			});
 
+			$(document).on("click", "#savePerformance", function () {
+				console.log("🔹 Save button clicked!");
 
+				let shiftId = $("#ShiftID").val();
+				if (!shiftId) {
+					console.error("❌ ShiftID is missing!");
+					alert("Error: ShiftID is missing.");
+					return;
+				}
 
-            $(document).on("click", "#savePerformance", function () {
-                console.log("🔹 Save button clicked!");
+				let enrollments = [];
+				$("#performanceTable tbody tr").each(function () {
+					let row = $(this);
+					let enrollment = {
+						UserID: row.find("input[name='UserID']").val(),
+						ShiftID: shiftId,
+						ShowOrNot: row.find("input[name='ShowOrNot']").prop("checked"),
+						StartAt: row.find("input[name='StartAt']").val() + ":00",
+						EndAt: row.find("input[name='EndAt']").val() + ":00"
+					};
 
-                let shiftId = $("#ShiftID").val();
-                if (!shiftId) {
-                    console.error("❌ ShiftID is missing!");
-                    alert("Error: ShiftID is missing.");
-                    return;
-                }
+					enrollments.push(enrollment);
+				});
 
-                let enrollments = [];
-                $("#performanceTable tbody tr").each(function () {
-                    let row = $(this);
-                    let enrollment = {
-                        UserID: row.find("input[name='UserID']").val(),
-                        ShiftID: shiftId,
-                        ShowOrNot: row.find("input[name='ShowOrNot']").prop("checked"),
-                        StartAt: row.find("input[name='StartAt']").val() + ":00",
-                        EndAt: row.find("input[name='EndAt']").val() + ":00"
-                    };
+				$.ajax({
+					url: "/VolunteerShift/UpdatePerformance",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify(enrollments),
+					success: function (response) {
+						if (response.success) {
+							alert("Performance updated successfully.");
+							location.reload();
+						} else {
+							alert("Error: " + response.message);
+						}
+					},
+					error: function (xhr) {
+						console.error("❌ AJAX Error:", xhr.responseText);
+						alert("An error occurred while updating performance.");
+					}
+				});
+			});
 
-
-                    enrollments.push(enrollment);
-                });
-
-
-                $.ajax({
-                        url: "/VolunteerShift/UpdatePerformance",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(enrollments),
-                    success: function (response) {
-                        if (response.success) {
-                            alert("Performance updated successfully.");
-                            location.reload();
-                        } else {
-                            alert("Error: " + response.message);
-                        }
-                    },
-                    error: function (xhr) {
-                        console.error("❌ AJAX Error:", xhr.responseText);
-                        alert("An error occurred while updating performance.");
-                    }
-                });
-            });
-
-        });
-    </script>
+		});
+	</script>
 }
