@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Events;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
@@ -21,10 +23,13 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	public class DirectorController : ElephantController
 	{
 		private readonly TVContext _context;
-
-		public DirectorController(TVContext context, IToastNotification toastNotification) : base(context, toastNotification)
+		private readonly UserManager<IdentityUser> _userManager;
+		private readonly ApplicationDbContext _identityContext;
+		public DirectorController(TVContext context, ApplicationDbContext identityContext, UserManager<IdentityUser> userManager, IToastNotification toastNotification) : base(context, toastNotification)
 		{
 			_context = context;
+			_userManager = userManager;
+			_identityContext = identityContext;
 		}
 
 		// GET: Director
@@ -176,6 +181,19 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			Director director = new Director();
 			PopulateDropDownLists(director);
+
+			
+			var usersInDirectorRole = _userManager.GetUsersInRoleAsync("Director").Result;
+			var directorEmails = _context.Directors.Select(d => d.Email).ToList();
+			var filteredUsers = usersInDirectorRole
+				.Where(u => !directorEmails.Contains(u.Email)) 
+				.Select(u => new SelectListItem
+				{
+					Text = u.UserName,  
+					Value = u.UserName  
+				})
+				.ToList();
+			ViewBag.UsersInDirectorRole = filteredUsers;
 			return View(director);
 		}
 
@@ -211,7 +229,17 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
 				}
 			}
-
+			var usersInDirectorRole = _userManager.GetUsersInRoleAsync("Director").Result;
+			var directorEmails = _context.Directors.Select(d => d.Email).ToList();
+			var filteredUsers = usersInDirectorRole
+				.Where(u => !directorEmails.Contains(u.Email))
+				.Select(u => new SelectListItem
+				{
+					Text = u.UserName,
+					Value = u.UserName
+				})
+				.ToList();
+			ViewBag.UsersInDirectorRole = filteredUsers;
 			PopulateDropDownLists(director);
 			return View(director);
 		}

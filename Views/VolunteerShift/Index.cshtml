@@ -50,7 +50,8 @@
 					foreach (var item in year)
 					{
 						<div class="row bd-callout d-flex align-items-center" style="border-left-color: @item.BackgroundColor;">
-							<div class="col-3">
+							<!-- Event Name and Title -->
+							<div class="col-2">
 								<span class="fw-bold m-0">
 									@item.Event?.Name
 								</span>
@@ -67,6 +68,7 @@
 								string startTT = item.StartAt.ToString("tt").ToLower();
 								string endTT = item.EndAt.ToString("tt").ToLower();
 							}
+							<!-- Date Format -->
 							<div class="col-2">
 								<span class="fw-light">
 									On
@@ -74,21 +76,18 @@
 								<br />
 								@item.DateFormat
 							</div>
-							<div class="col-1">
+
+							<!-- Start and End Time -->
+							<div class="col-2">
 								<span class="fw-light">
-									Starts at
+									Starts at-Ends at
 								</span>
 								<br />
-								@start @startTT
+								@start @startTT-@end @endTT
 							</div>
-							<div class="col-1">
-								<span class="fw-light">
-									Ends at
-								</span>
-								<br />
-								@end @endTT
-							</div>
-							<div class="col-4">
+
+							<!-- Location -->
+							<div class="col-2">
 								<span class="fw-light">
 									Location
 								</span>
@@ -99,8 +98,9 @@
 								}
 								@item.Event?.Location
 							</div>
-							<!-- Action button -->
-							<div class="col-1">
+
+							<!-- Cancel Shift Button -->
+							<div class="col-2 text-center">
 								<br />
 								@if (item.ShiftDate < DateTime.Today.AddDays(2))
 								{
@@ -112,11 +112,9 @@
 									   style="pointer-events: none; opacity: 0.5;">
 										Cancel Shift
 									</a>
-
 								}
 								else
 								{
-									<!-- Otherwise, render the active button -->
 									<a class="btn btn-primary add"
 									   id="btnCancel"
 									   asp-controller="Volunteer"
@@ -128,7 +126,8 @@
 								}
 							</div>
 
-							<div class="col-1">
+							<!-- Record Hours Button -->
+							<div class="col-2 text-center">
 								<br />
 								@if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any() || item.ShiftDate > DateTime.Today)
 								{
@@ -147,6 +146,7 @@
 								}
 							</div>
 						</div>
+
 					}
 				}
 			}

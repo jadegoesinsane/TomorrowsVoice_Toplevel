@@ -159,6 +159,20 @@ namespace TomorrowsVoice_Toplevel.Data
 			.WithOne(s => s.Event)
 			.HasForeignKey(s => s.EventID)
 			.OnDelete(DeleteBehavior.Cascade);
+
+			// Delete UserShifts if a volunteer is deleted
+			modelBuilder.Entity<Volunteer>()
+				.HasMany<UserShift>(s => s.UserShifts)
+				.WithOne(s => s.User)
+				.HasForeignKey(s => s.UserID)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			// Delete UserShifts if a shift is deleted
+			modelBuilder.Entity<Shift>()
+				.HasMany<UserShift>(s => s.UserShifts)
+				.WithOne(s => s.Shift)
+				.HasForeignKey(s => s.ShiftID)
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)
