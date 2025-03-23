@@ -176,8 +176,8 @@ h2 {
 
 .bd-callout {
     padding: 0.5rem;
-    margin-left:1rem;
-    margin-right:1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     border: 1px solid #e9ecef;
@@ -635,6 +635,7 @@ a {
         stroke-dasharray: calc(var(--max) * var(--circumference) / 100) calc(var(--circumference) - (var(--max) * var(--circumference) / 100));
     }
 }
+
 .circular-progress {
     --size: 250px;
     --half-size: calc(var(--size) / 2);
@@ -642,7 +643,6 @@ a {
     --radius: calc((var(--size) - var(--stroke-width)) / 2);
     --circumference: calc(var(--radius) * 3.141592653589793 * 2);
     --dash: calc((var(--progress) * var(--circumference)) / 100);
-    animation: progress-animation 5s linear 0s 1 forwards;
 }
 
     .circular-progress circle {
@@ -661,8 +661,20 @@ a {
         .circular-progress circle.fg {
             transform: rotate(-90deg);
             transform-origin: var(--half-size) var(--half-size);
-          /*  stroke-dasharray: var(--dash) calc(var(--circumference) - var(--dash));
+            /*  stroke-dasharray: var(--dash) calc(var(--circumference) - var(--dash));
             transition: stroke-dasharray 0.3s linear 0s;*/
-            stroke: #5394fd;
+            stroke: #8f3796;
+            animation: progress-animation 5s linear 0s 1 forwards;
         }
+.circle-text {
+    width:250px;
+    height:250px;
+    font-size: 4rem;
+    font-weight: bold;
+    fill: #5394fd;
+    top: 50%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
 /* Circle Fill */

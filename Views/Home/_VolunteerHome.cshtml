@@ -3,12 +3,16 @@
 <div class="row">
 	<div class="col-5">
 		<div class="card">
-			<div class="card-header">
-				<svg id="progress-circle" width="250" height="250" viewBox="0 0 250 250"
-					 class="circular-progress" style="--max:0;">
-					<circle class="bg"></circle>
-					<circle class="fg"></circle>
+			<div class="card-header position-relative">
+                <svg id="progress-circle" width="250" height="250" viewBox="0 0 250 250"
+                     class="circular-progress" style="--max:0;">
+                    <circle class="bg"></circle>
+                    <circle class="fg"></circle>
+					@* <text  x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="circle-text">0%</text> *@
 				</svg>
+			@* 	<span id="circle-text" class="circle-text count position-absolute">
+					%
+				</span> *@
 			</div>
 			<div class="card-body">
 				<h5 class="card-title">
@@ -23,9 +27,6 @@
 		</div>
 	</div>
 
-	
-		
-	
 	<div class="col-5 offset-2">
 		<div class="card">
 			<div class="card-body">
