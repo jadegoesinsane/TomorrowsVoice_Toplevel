@@ -491,13 +491,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int?>("DirectorID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndAt")
+                    b.Property<TimeSpan>("EndAt")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("NoShow")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("StartAt")
+                    b.Property<TimeSpan>("StartAt")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("WorkingHourRecorded")

@@ -754,8 +754,8 @@ namespace TomorrowsVoice_Toplevel.Data
 											User = user,
 											ShiftID = shift.ID,
 											Shift = shift,
-											StartAt = shift.StartAt,
-											EndAt = shift.EndAt,
+											StartAt = shift.StartAt - shift.StartAt.Date,
+											EndAt = shift.EndAt - shift.EndAt.Date,
 											WorkingHourRecorded = true
 										};
 										if (rnd.Next(100) > 85)

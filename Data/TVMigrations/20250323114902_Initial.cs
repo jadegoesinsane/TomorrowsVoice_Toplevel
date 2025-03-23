@@ -326,8 +326,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     UserID = table.Column<int>(type: "INTEGER", nullable: false),
                     ShiftID = table.Column<int>(type: "INTEGER", nullable: false),
                     NoShow = table.Column<bool>(type: "INTEGER", nullable: false),
-                    StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StartAt = table.Column<TimeSpan>(type: "TEXT", nullable: false),
+                    EndAt = table.Column<TimeSpan>(type: "TEXT", nullable: false),
                     WorkingHourRecorded = table.Column<bool>(type: "INTEGER", nullable: false),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
