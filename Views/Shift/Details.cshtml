@@ -6,7 +6,7 @@
 @{
 	var errorMessage = TempData["ErrorMessage"] as string;
 }
-@{
+@*@{
 	if (Model.VolunteersNeeded > Model.UserShifts.Count())
 	{
 		<div style="display: grid;">
@@ -69,7 +69,7 @@
 	{
 		<a disabled>No more volunteers needed</a>
 	}
-}
+}*@
 
 <label style="margin-top:15px">@Model.UserShifts.Count()/@Model.VolunteersNeeded Volunteer(s) Signed Up:</label>
 <ul>

@@ -13,10 +13,13 @@
                     type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
                 Basic Details
             </button>
-            <button class="nav-link" id="Shifts-Tab" data-bs-toggle="tab" data-bs-target="#ShiftsPanel"
-                    type="button" role="tab" aria-controls="ShiftsPanel" aria-selected="false">
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+            {
+                <button class="nav-link" id="Shifts-Tab" data-bs-toggle="tab" data-bs-target="#ShiftsPanel"
+                type="button" role="tab" aria-controls="ShiftsPanel" aria-selected="false">
                 Shifts
-            </button>
+            </button>}
         </div>
     </nav>
 
