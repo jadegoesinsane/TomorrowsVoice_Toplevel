@@ -250,7 +250,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-        [Authorize(Roles = "Admin")]
         // GET: Director/Edit/5
         public async Task<IActionResult> Edit(int? id)
 		{
@@ -276,7 +275,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, List<IFormFile> theFiles)
 		{
 			var directorToUpdate = await _context.Directors

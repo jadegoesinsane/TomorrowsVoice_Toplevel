@@ -235,7 +235,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(volunteer);
 		}
 
-		[Authorize(Roles = "Admin")]
 		// GET: Volunteer/Edit/5
 		public async Task<IActionResult> Edit(int? id)
 		{
@@ -259,7 +258,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Edit(int id, string[] selectedOptions)
 		{
 			var volunteerToUpdate = await _context.Volunteers.Include(g => g.UserShifts).ThenInclude(e => e.Shift)
