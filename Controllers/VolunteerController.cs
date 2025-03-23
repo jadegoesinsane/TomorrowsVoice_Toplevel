@@ -757,6 +757,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var volunteer = await _context.Volunteers
+				.Include(v => v.UserShifts)
+				.ThenInclude(v => v.Shift)
 				.FirstOrDefaultAsync(m => m.ID == id);
 			if (volunteer == null)
 			{

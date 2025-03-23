@@ -22,14 +22,16 @@ namespace TomorrowsVoice_Toplevel.ViewModels
 		public string? MiddleName { get; set; }
 		public string LastName { get; set; } = "";
 		public virtual string Phone { get; set; } = "";
+		public string? Email { get; set; }
 
 		#endregion Person Data
 
 		#region Volunteer Data
 
 		public int? YearlyVolunteerGoal { get; set; } = 0;
-		//public virtual ICollection<UserShift> UserShifts { get; set; } = new HashSet<UserShift>();
-		//public ICollection<VolunteerTags> Tags { get; set; } = new List<VolunteerTags>();
+		public TimeSpan TotalWorkDuration;
+		public int? ParticipationCount;
+		public int? absences;
 
 		#endregion Volunteer Data
 	}

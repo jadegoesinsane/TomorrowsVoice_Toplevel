@@ -6,48 +6,64 @@
 
 <div>
 	<hr />
-	<div class="alert alert-danger" style="display: none;">
-		<strong>Note:</strong>
-		<ul id="errorMessage"></ul>
-	</div>
 	<dl class="row">
-		<dt class="col-sm-4">
-			@Html.DisplayNameFor(model => model.FirstName)
-		</dt>
-		<dd class="col-sm-6">
-			@Html.DisplayFor(model => model.FirstName)
-		</dd>
-		@{
-			@if(!String.IsNullOrWhiteSpace(Model.MiddleName))
-			{
-				<dt class="col-sm-4">
-					@Html.DisplayNameFor(model => model.MiddleName)
-				</dt>
-				<dd class="col-sm-6">
-					@Html.DisplayFor(model => model.MiddleName)
-				</dd>
-			}
-		}
-		
-		<dt class="col-sm-4">
-			@Html.DisplayNameFor(model => model.LastName)
-		</dt>
-		<dd class="col-sm-6">
-			@Html.DisplayFor(model => model.LastName)
-		</dd>
-		<dt class="col-sm-4">
-			@Html.DisplayNameFor(model => model.Phone)
-		</dt>
-		<dd class="col-sm-6">
-			@Html.DisplayFor(model => model.PhoneFormatted)
-		</dd>
-		<dt class="col-sm-4">
-			@Html.DisplayNameFor(model => model.YearlyVolunteerGoal)
-		</dt>
-		<dd class="col-sm-6">
-			@Html.DisplayFor(model => model.YearlyVolunteerGoal)
-		</dd>
+		<div class="col">
+			<dt class="text-muted fw-normal m-0">
+				Full Name
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.MiddleName) @Html.DisplayFor(model => model.LastName)
+			</dd>
+		</div>
+		<div class="col">
+			<dt class="text-muted fw-normal m-0">
+				Email
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Email)
+			</dd>
+		</div>
+		<div class="col">
+			<dt class="text-muted fw-normal m-0">
+				Phone
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.PhoneFormatted)
+			</dd>
+		</div>
 	</dl>
+	<dl class="row">
+		<div class="col">
+			<dt class="text-muted fw-normal m-0">
+				Total Time Worked
+			</dt>
+			<dd>
+				@{
+					if (Model.TotalWorkDuration.TotalMinutes <= 0)
+						@Html.Raw("None")
+					else
+						@Html.Raw($"{Model.TotalWorkDuration.TotalHours} Hours")
+				}
+			</dd>
+		</div>
+		<div class="col">
+			<dt class="text-muted fw-normal m-0">
+				Shifts Attended
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.ParticipationCount)
+			</dd>
+		</div>
+		<div class="col">
+			<dt class="text-muted fw-normal m-0">
+				Shifts Missed
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.absences)
+			</dd>
+		</div>
+	</dl>
+	<hr />
 </div>
 <div>
 	<a asp-action="Edit" asp-route-id="@Model.ID">Edit Account Details</a>

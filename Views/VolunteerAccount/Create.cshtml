@@ -1,43 +1,60 @@
 ﻿@model TomorrowsVoice_Toplevel.ViewModels.VolunteerVM
 
-<h4>Finalize Account Details for @User.Identity.Name</h4>
+<h4>Finalize Account Details</h4>
+<span class="text-muted">We just need a little more information before we begin!</span>
 
-<div class="text-danger">@TempData["message"]</div>
-<hr />
-<form asp-action="Create">
+<div class="text-danger mt-3">@TempData["message"]</div>
+<form asp-action="Create" class="form-container">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-	<div class="row">
-		<div class="col-md-4">
-			<input type="hidden" asp-for="ID" />
-			<input type="hidden" name="Email" value="@User.Identity.Name" />
-			<div class="form-group">
-				<label asp-for="FirstName" class="control-label"></label>
-				<input asp-for="FirstName" class="form-control" />
-				<span asp-validation-for="FirstName" class="text-danger"></span>
+	<input type="hidden" asp-for="ID" />
+	<div class="form-area">
+		<div class="row g-3">
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="FirstName" class="form-control" placeholder="First Name" />
+					<label asp-for="FirstName" class="control-label"></label>
+					<span asp-validation-for="FirstName" class="text-danger"></span>
+				</div>
 			</div>
-			<div class="form-group">
-				<label asp-for="MiddleName" class="control-label"></label>
-				<input asp-for="MiddleName" class="form-control" />
-				<span asp-validation-for="MiddleName" class="text-danger"></span>
+			<div class="col-md-4">
+				<div class="form-floating optional">
+					<input asp-for="MiddleName" class="form-control" placeholder="Middle Name (optional)" />
+					<label asp-for="MiddleName" class="control-label"></label>
+					<span asp-validation-for="MiddleName" class="text-danger"></span>
+				</div>
 			</div>
-			<div class="form-group">
-				<label asp-for="LastName" class="control-label"></label>
-				<input asp-for="LastName" class="form-control" />
-				<span asp-validation-for="LastName" class="text-danger"></span>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="LastName" class="form-control" placeholder="Last Name" />
+					<label asp-for="LastName" class="control-label"></label>
+					<span asp-validation-for="LastName" class="text-danger"></span>
+				</div>
 			</div>
-			<div class="form-group">
-				<label asp-for="Phone" class="control-label"></label>
-				<input asp-for="Phone" class="form-control" />
-				<span asp-validation-for="Phone" class="text-danger"></span>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="Email" class="form-control" placeholder="Email" value="@User.Identity.Name" readonly />
+					<label asp-for="Email" class="control-label"></label>
+					<span asp-validation-for="Email" class="text-danger"></span>
+				</div>
 			</div>
-			<div class="form-group">
-				<label asp-for="YearlyVolunteerGoal" class="control-label"></label>
-				<input asp-for="YearlyVolunteerGoal" class="form-control" />
-				<span asp-validation-for="YearlyVolunteerGoal" class="text-danger"></span>
+			<div class="col-md-4">
+				<div class="form-floating required">
+					<input asp-for="Phone" class="form-control" placeholder="Emergency Contact Number" />
+					<label asp-for="Phone" class="control-label"></label>
+					<span asp-validation-for="Phone" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating optional">
+					<input asp-for="YearlyVolunteerGoal" class="form-control" placeholder="Yearly Volunteer Goal" min="0" />
+					<label asp-for="YearlyVolunteerGoal" class="control-label"></label>
+					<span asp-validation-for="YearlyVolunteerGoal" class="text-danger"></span>
+				</div>
 			</div>
 			<div class="form-group">
 				<input type="submit" value="Save" class="btn btn-primary" />
 			</div>
+
 		</div>
 	</div>
 </form>

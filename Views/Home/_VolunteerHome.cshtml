@@ -31,13 +31,20 @@
 		<div class="card">
 			<div class="card-body">
 				<h5 class="card-title">
-					Shifts
+					Your Upcoming Shifts
 				</h5>
 				<ul class="list-group list-group-flush">
 					@{
-						foreach (var shift in Model.Shifts.OrderByDescending(s => s.StartAt).Where(s => s.StartAt > DateTime.Today))
+						if (Model.Shifts.Where(s => s.StartAt > DateTime.Today).Count() == 0)
 						{
-							<li class="list-group-item">@Html.Raw($"{shift?.Event?.Name ?? shift?.Title ?? "(no title)"} on {shift?.DateFormat}")</li>
+							<li class="list-group-item"><a class="card-link" asp-area="" asp-controller="Event" asp-action="Index">There's nothing here, click this to see available shifts!</a></li>
+						}
+						else
+						{
+							foreach (var shift in Model.Shifts.OrderByDescending(s => s.StartAt).Where(s => s.StartAt > DateTime.Today))
+							{
+								<li class="list-group-item">@Html.Raw($"{shift?.Event?.Name ?? shift?.Title ?? "(no title)"} on {shift?.DateFormat}")</li>
+							}
 						}
 					}
 				</ul>

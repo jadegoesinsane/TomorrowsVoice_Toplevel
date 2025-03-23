@@ -59,7 +59,7 @@
 					if (Model.TotalWorkDuration.TotalMinutes <= 0)
 						@Html.Raw("None")
 					else
-						@Html.Raw($"{Model.TotalWorkDuration.Days} Days {Model.TotalWorkDuration.Hours} Hours {Model.TotalWorkDuration.Minutes} Minutes ")
+						@Html.Raw($"{Model.TotalWorkDuration.TotalHours} Hours")
 				}
 			</dd>
 		</div>
@@ -79,33 +79,7 @@
 				@Html.DisplayFor(model => model.absences)
 			</dd>
 		</div>
-	</dl>
-		@* 
-			<div class="col-sm-2">
-				<dt>
-					@Html.DisplayNameFor(model => model.HoursVolunteered)
-				</dt>
-				<dd>
-					@Html.DisplayFor(model => model.HoursVolunteered)
-				</dd>
-			</div>
-			<div class="col-sm-2">
-				<dt>
-					@Html.DisplayNameFor(model => model.ParticipationCount)
-				</dt>
-				<dd>
-					@Html.DisplayFor(model => model.ParticipationCount)
-				</dd>
-			</div>
-			<div class="col-sm-2">
-				<dt>
-					@Html.DisplayNameFor(model => model.absences)
-				</dt>
-				<dd>
-					@Html.DisplayFor(model => model.absences)
-				</dd>
-			</div> *@
-	
+	</dl>	
 	<hr />
 	<div id="ShiftsPanel"></div>
 </div>

@@ -47,13 +47,16 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				   MiddleName = v.MiddleName,
 				   LastName = v.LastName,
 				   Phone = v.Phone,
-				   YearlyVolunteerGoal = v.YearlyVolunteerGoal
+				   YearlyVolunteerGoal = v.YearlyVolunteerGoal,
+				   Email = v.Email,
+				   absences = v.absences,
+				   ParticipationCount = v.ParticipationCount,
+				   TotalWorkDuration = v.TotalWorkDuration
 			   })
 			   .FirstOrDefaultAsync();
 			if (volunteer == null)
 			{
 				return RedirectToAction("Create");
-				return NotFound();
 			}
 
 			return View(volunteer);
@@ -62,7 +65,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Volunteer/Create
 		public IActionResult Create()
 		{
-			return View();
+			var volunteer = new VolunteerVM {Email = User.Identity.Name };
+			return View(volunteer);
 		}
 
 		// POST: Volunteer/Create
@@ -70,7 +74,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Phone,YearlyVolunteerGoal")] VolunteerVM vVM)
+		public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Phone,Email,YearlyVolunteerGoal")] VolunteerVM vVM)
 		{
 			try
 			{

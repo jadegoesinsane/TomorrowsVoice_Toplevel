@@ -39,6 +39,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					var model = GetPlannerHome();
 					return View("Index", model);
 				}
+				else if (!User.IsInRole("Admin"))
+				{
+					return RedirectToAction("Create", "VolunteerAccount");
+				}
 			}
 			return View();
 		}

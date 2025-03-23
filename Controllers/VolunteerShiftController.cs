@@ -45,7 +45,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				.Include(s => s.Event)
 				.Where(s => s.UserShifts.Any(us => us.UserID == VolunteerID.GetValueOrDefault()))
 				.OrderByDescending(s => s.StartAt)
-				.Where(s => s.Status == Status.Active)
 				.AsNoTracking()
 				.ToListAsync();
 
@@ -59,6 +58,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Event");
 
 			Volunteer? volunteer = await GetVolunteerFromUser();
+			Shift? shift = _context.Shifts.Where(s => s.ID == ShiftID).FirstOrDefault();
 
 			if (volunteer == null)
 				return Redirect(ViewData["returnURL"].ToString());
@@ -72,7 +72,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			var userShift = new UserShift
 			{
 				UserID = volunteer.ID,
-				ShiftID = (int)ShiftID
+				ShiftID = (int)ShiftID,
+				StartAt = shift.StartAt,
+				EndAt = shift.EndAt
 			};
 
 			_context.Add(userShift);
@@ -84,17 +86,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 		public async Task<IActionResult> TrackPerformance(int id, int volunteerId)
 		{
-			var groupClass = await _context.Shifts
+			var shift = await _context.Shifts
 				.Include(g => g.UserShifts).ThenInclude(e => e.User)
 				.FirstOrDefaultAsync(m => m.ID == id);
 
-			if (groupClass == null)
+			if (shift == null)
 			{
 				return NotFound();
 			}
 
-			var enrollmentsVM = groupClass.UserShifts.Where(e => e.User.ID == volunteerId).Select(e => new EnrollmentVM
+			var enrollmentsVM = shift.UserShifts.Where(e => e.UserID == volunteerId).ToList().Select(e => new EnrollmentVM
 			{
+				ShiftID = e.ShiftID,
 				UserID = e.UserID,
 				Volunteer = e.User.NameFormatted,
 				ShowOrNot = e.NoShow,
