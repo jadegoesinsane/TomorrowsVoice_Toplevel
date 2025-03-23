@@ -20,9 +20,11 @@ using TomorrowsVoice_Toplevel.Models.Events;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Utilities;
 using TomorrowsVoice_Toplevel.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
+	[Authorize(Roles = "Admin, Planner, Volunteer")]
 	public class EventController : ElephantController
 	{
 		private readonly TVContext _context;
@@ -32,8 +34,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_context = context;
 		}
 
-		// GET: Event
-		public async Task<IActionResult> Index(string? SearchString, int? CityID, DateTime FilterStartDate,
+        [Authorize(Roles = "Admin, Planner, Volunteer")]
+        // GET: Event
+        public async Task<IActionResult> Index(string? SearchString, int? CityID, DateTime FilterStartDate,
 			DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
 		{
 			//Count the number of filters applied - start by assuming no filters
@@ -122,8 +125,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(pagedData);
 		}
 
-		// GET: Event/Details/5
-		public async Task<IActionResult> Details(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Event/Details/5
+        public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)
 			{
@@ -141,8 +145,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(@event);
 		}
 
-		// GET: Event/Create
-		public IActionResult Create()
+        [Authorize(Roles = "Admin, Planner")]
+        // GET: Event/Create
+        public IActionResult Create()
 		{
 			Event @event = new Event();
 			//PopulateAssignedEnrollmentData(@event);
@@ -155,7 +160,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("Name,StartDate,EndDate,Descripion,Location,CityEvents,BackgroundColour")] Event @event, string[] selectedOptions, string Shifts)
+        [Authorize(Roles = "Admin, Planner")]
+        public async Task<IActionResult> Create([Bind("Name,StartDate,EndDate,Descripion,Location,CityEvents,BackgroundColour")] Event @event, string[] selectedOptions, string Shifts)
 		{
 			try
 			{
@@ -214,8 +220,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(@event);
 		}
 
-		// GET: Event/Edit/5
-		public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Admin, Planner")]
+        // GET: Event/Edit/5
+        public async Task<IActionResult> Edit(int? id)
 		{
 			if (id == null)
 			{
@@ -241,7 +248,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, string[] CityEvents, string Shifts)
+        [Authorize(Roles = "Admin, Planner")]
+        public async Task<IActionResult> Edit(int id, string[] CityEvents, string Shifts)
 		{
 			var @eventToUpdate = await _context.Events
 			  .Include(g => g.CityEvents).ThenInclude(e => e.City)
@@ -331,8 +339,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(@eventToUpdate);
 		}
 
-		// GET: Event/Delete/5
-		public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Event/Delete/5
+        public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -352,7 +361,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Event/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var @event = await _context.Events.Include(c => c.Shifts)
 
@@ -383,8 +393,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(@event);
 		}
 
-		// GET: Event/Delete/5
-		public async Task<IActionResult> Close(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Event/Delete/5
+        public async Task<IActionResult> Close(int? id)
 		{
 			if (id == null)
 			{
@@ -404,7 +415,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Event/Delete/5
 		[HttpPost, ActionName("Close")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> CloseConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CloseConfirmed(int id)
 		{
 			var @event = await _context.Events.Include(c => c.Shifts)
 
@@ -435,7 +447,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(@event);
 		}
 
-		public async Task<IActionResult> Recover(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
 			{
@@ -455,7 +468,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Event/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> RecoverConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var @event = await _context.Events.Include(c => c.Shifts)
 
@@ -673,7 +687,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(data);
 		}
 
-		public async Task<IActionResult> IndexVolunteer(int? id, string? SearchString, string? Location, DateTime FilterStartDate,
+        [Authorize(Roles = "Admin, Planner, Volunteer")]
+        public async Task<IActionResult> IndexVolunteer(int? id, string? SearchString, string? Location, DateTime FilterStartDate,
 			DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
 		{
 			//Count the number of filters applied - start by assuming no filters

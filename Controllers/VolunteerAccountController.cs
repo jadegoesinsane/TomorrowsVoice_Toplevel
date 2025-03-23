@@ -21,12 +21,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private readonly TVContext _context;
 		private readonly IToastNotification _toastNotification;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly SignInManager<IdentityUser> _signInManager;
 
-		public VolunteerAccountController(TVContext context, IToastNotification toastNotification, UserManager<IdentityUser> userManager)
+		public VolunteerAccountController(
+	   TVContext context,
+	   IToastNotification toastNotification,
+	   UserManager<IdentityUser> userManager,
+	   SignInManager<IdentityUser> signInManager)  // 注入 SignInManager
 		{
 			_context = context;
 			_toastNotification = toastNotification;
 			_userManager = userManager;
+			_signInManager = signInManager;  // 赋值
 		}
 
 		// GET: VolunteerAccount
@@ -59,6 +65,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return RedirectToAction("Create");
 			}
 
+
+
 			return View(volunteer);
 		}
 
@@ -80,6 +88,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (ModelState.IsValid)
 				{
+					
 					Volunteer volunteer = new Volunteer
 					{
 						FirstName = vVM.FirstName,
@@ -89,28 +98,36 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						YearlyVolunteerGoal = vVM.YearlyVolunteerGoal,
 						Email = User.Identity.Name
 					};
+
+					
 					volunteer.ID = _context.GetNextID();
 					_context.Add(volunteer);
 					await _context.SaveChangesAsync();
 
+					
 					var _user = await _userManager.FindByEmailAsync(volunteer.Email);
 					if (_user != null)
 					{
-						var UserRoles = (List<string>)await _userManager.GetRolesAsync(_user);
-						if (!UserRoles.Contains("Volunteer"))
+						
+						var userRoles = await _userManager.GetRolesAsync(_user);
+						if (!userRoles.Contains("Volunteer"))
 						{
+							
 							await _userManager.AddToRoleAsync(_user, "Volunteer");
 						}
 
-						UserRoles = (List<string>)await _userManager.GetRolesAsync(_user);
+					
+						await _signInManager.RefreshSignInAsync(_user);
 					}
 
+					
 					_toastNotification.AddSuccessToastMessage($"Finished setting up account, welcome {volunteer.FirstName}!");
 					return RedirectToAction("Details", new { volunteer.ID });
 				}
 			}
 			catch (DbUpdateException dex)
 			{
+				
 				string message = dex.GetBaseException().Message;
 				if (message.Contains("UNIQUE") && message.Contains("Email"))
 				{
@@ -125,6 +142,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return View(vVM);
 		}
+
 
 		// GET: VolunteerAccount/Edit/5
 		public async Task<IActionResult> Edit()

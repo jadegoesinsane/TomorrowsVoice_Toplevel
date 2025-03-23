@@ -11,10 +11,13 @@ using TomorrowsVoice_Toplevel.CustomControllers;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class ShiftSignUpController : ElephantController
+	[Authorize(Roles = "Admin, Planner, Volunteer")]
+	public class ShiftSignUpController : ElephantController
     {
         private readonly TVContext _context;
 
@@ -23,8 +26,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
             _context = context;
         }
 
-        // GET: ShiftSignUp
-        public async Task<IActionResult> Index( int? EventID, int? CityID, string? actionButton, int? page, int? pageSizeID,
+        [Authorize(Roles ="Admin. Planner, Volunteer")]
+		// GET: ShiftSignUp
+		public async Task<IActionResult> Index( int? EventID, int? CityID, string? actionButton, int? page, int? pageSizeID,
             DateTime StartDate, DateTime EndDate, string sortDirection = "asc", string sortField = "Date" )
         {
             if (EndDate == DateTime.MinValue)
@@ -125,10 +129,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
             var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
 
             return View(pagedData);
-        }
+		}
 
-        // GET: ShiftSignUp/Details/5
-        public async Task<IActionResult> Details(int? id)
+		[Authorize(Roles = "Admin. Planner, Volunteer")]
+		// GET: ShiftSignUp/Details/5
+		public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {

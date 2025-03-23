@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -739,7 +740,7 @@ namespace TomorrowsVoice_Toplevel.Data
 						{
 							var users = context.Volunteers.ToList().Cast<Volunteer>().ToArray();
 
-							foreach (Shift shift in context.Shifts)
+							foreach (Shift shift in context.Shifts.Where(s => s.ShiftDate < DateTime.Today))
 							{
 								int need = rnd.Next(shift.VolunteersNeeded + 1);
 								while (need > 0)
@@ -759,7 +760,8 @@ namespace TomorrowsVoice_Toplevel.Data
 											ShiftID = shift.ID,
 											Shift = shift,
 											StartAt = shift.StartAt,
-											EndAt = shift.EndAt
+											EndAt = shift.EndAt,
+											WorkingHourRecorded=true
 										};
 										if (rnd.Next(100) > 85)
 											userShift.NoShow = true;
