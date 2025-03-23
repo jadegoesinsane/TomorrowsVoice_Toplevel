@@ -4,6 +4,7 @@
 	<div class="form-horizontal my-3">
 		<div class="row align-items-center">
 			<h1 class="col m-0">Events</h1>
+			<span class="text-muted">View events and click a shift to join!</span>
 			@if (User.IsInRole("Planner") || User.IsInRole("Admin"))
 			{
 				<a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;">Add @ViewData["ControllerFriendlyName"]</a>
@@ -167,6 +168,8 @@
 														   asp-route-id="@shift.ID"  *@class="stretched-link"></a>
 														@* <a asp-action="Details" class="stretched-link" asp-route-id="@shift.ID" asp-controller="Shift"></a> *@
 													</div>
+													@if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+													{
 													<div class="col">
 														<a asp-action="Edit" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-success"
 														   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
@@ -177,7 +180,7 @@
 															<i class="bi bi-x-lg"></i>
 														</a>
 													</div>
-
+													}
 												</div>
 												@await Html.PartialAsync("_JoinShiftModal", shift)
 											}
