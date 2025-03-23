@@ -497,8 +497,8 @@ namespace TomorrowsVoice_Toplevel.Data
 							new Event
 							{
 								Name = "St.C Gift Wrapping - 2025",
-								StartDate = new DateTime(2025, 11, 30),
-								EndDate = new DateTime(2025, 12, 21),
+								StartDate = new DateTime(2025, 11, 29),
+								EndDate = new DateTime(2025, 12, 22),
 								Descripion = "Join us to help wrap gifts for those in need!",
 								Location = "Pen Center, St. Catharines",
 								Status = Status.Active
@@ -514,9 +514,45 @@ namespace TomorrowsVoice_Toplevel.Data
 							},
 							new Event
 							{
+								Name = "Ham Bake Sale - 2024",
+								StartDate = new DateTime(2024, 03, 20),
+								EndDate = new DateTime(2024, 03, 25),
+								Descripion = "We will be selling homemade baked goods",
+								Location = "Eastgate Square, Hamilton",
+								Status = Status.Active
+							},
+							new Event
+							{
+								Name = "Ham Bake Sale - 2023",
+								StartDate = new DateTime(2023, 03, 20),
+								EndDate = new DateTime(2023, 03, 25),
+								Descripion = "We will be selling homemade baked goods",
+								Location = "Eastgate Square, Hamilton",
+								Status = Status.Active
+							},
+							new Event
+							{
 								Name = "Tor Bake Sale - 2024",
 								StartDate = new DateTime(2024, 7, 10),
 								EndDate = new DateTime(2024, 7, 15),
+								Descripion = "We will be selling homemade baked goods",
+								Location = "Eaton Centre, Toronto",
+								Status = Status.Active
+							},
+							new Event
+							{
+								Name = "Tor Bake Sale - 2023",
+								StartDate = new DateTime(2023, 7, 10),
+								EndDate = new DateTime(2023, 7, 15),
+								Descripion = "We will be selling homemade baked goods",
+								Location = "Eaton Centre, Toronto",
+								Status = Status.Active
+							},
+							new Event
+							{
+								Name = "Tor Bake Sale - 2025",
+								StartDate = new DateTime(2025, 7, 10),
+								EndDate = new DateTime(2025, 7, 15),
 								Descripion = "We will be selling homemade baked goods",
 								Location = "Eaton Centre, Toronto",
 								Status = Status.Active
@@ -543,23 +579,25 @@ namespace TomorrowsVoice_Toplevel.Data
 						var shifts = new List<Shift>();
 						foreach (var @event in context.Events)
 						{
-							if (@event.Name == "St.C Gift Wrapping - 2024")
+							int year = int.Parse(@event.Name.TakeLast(4).ToArray());
+							if (@event.Name.Contains("St.C"))
+							//if (@event.Name == "St.C Gift Wrapping - 2024" || @event.Name == "St.C Gift Wrapping - 2025")
 							{
 								List<DateTime> dates = new List<DateTime>
 							{
-								new DateTime(2024, 11, 29),
-								new DateTime(2024, 12, 2),
-								new DateTime(2024, 12, 3),
-								new DateTime(2024, 12, 6),
-								new DateTime(2024, 12, 7),
-								new DateTime(2024, 12, 8),
-								new DateTime(2024, 12, 11),
-								new DateTime(2024, 12, 12),
-								new DateTime(2024, 12, 16),
-								new DateTime(2024, 12, 17),
-								new DateTime(2024, 12, 20),
-								new DateTime(2024, 12, 21),
-								new DateTime(2024, 12, 22)
+								new DateTime(year, 11, 29),
+								new DateTime(year, 12, 2),
+								new DateTime(year, 12, 3),
+								new DateTime(year, 12, 6),
+								new DateTime(year, 12, 7),
+								new DateTime(year, 12, 8),
+								new DateTime(year, 12, 11),
+								new DateTime(year, 12, 12),
+								new DateTime(year, 12, 16),
+								new DateTime(year, 12, 17),
+								new DateTime(year, 12, 20),
+								new DateTime(year, 12, 21),
+								new DateTime(year, 12, 22)
 							};
 
 								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
@@ -586,59 +624,16 @@ namespace TomorrowsVoice_Toplevel.Data
 									}
 								}
 							}
-							else if (@event.Name == "St.C Gift Wrapping - 2025")
+							else if (@event.Name.Contains("Ham"))
 							{
 								List<DateTime> dates = new List<DateTime>
 							{
-								new DateTime(2025, 11, 30),
-								new DateTime(2025, 12, 2),
-								new DateTime(2025, 12, 3),
-								new DateTime(2025, 12, 6),
-								new DateTime(2025, 12, 7),
-								new DateTime(2025, 12, 8),
-								new DateTime(2025, 12, 11),
-								new DateTime(2025, 12, 12),
-								new DateTime(2025, 12, 16),
-								new DateTime(2025, 12, 17),
-								new DateTime(2025, 12, 20),
-								new DateTime(2025, 12, 21),
-								new DateTime(2025, 12, 22)
-							};
-
-								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
-							{
-								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
-							};
-
-								foreach (var date in dates)
-								{
-									foreach (var time in times)
-									{
-										if (@event.Shifts.Any(s => s.StartAt == date.Add(time.Start)))
-											continue;
-
-										Shift shift = new Shift
-										{
-											ShiftDate = date,
-											EventID = @event.ID,
-											StartAt = date.Add(time.Start),
-											EndAt = date.Add(time.End),
-											VolunteersNeeded = 5
-										};
-										shifts.Add(shift);
-									}
-								}
-							}
-							else if (@event.Name == "Ham Bake Sale - 2025")
-							{
-								List<DateTime> dates = new List<DateTime>
-							{
-								new DateTime(2025, 03, 20),
-								new DateTime(2025, 03, 21),
-								new DateTime(2025, 03, 22),
-								new DateTime(2025, 03, 23),
-								new DateTime(2025, 03, 24),
-								new DateTime(2025, 03, 25),
+								new DateTime(year, 03, 20),
+								new DateTime(year, 03, 21),
+								new DateTime(year, 03, 22),
+								new DateTime(year, 03, 23),
+								new DateTime(year, 03, 24),
+								new DateTime(year, 03, 25),
 							};
 
 								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
@@ -663,16 +658,16 @@ namespace TomorrowsVoice_Toplevel.Data
 									}
 								}
 							}
-							else if (@event.Name == "Tor Bake Sale - 2024")
+							else if (@event.Name.Contains("Tor"))
 							{
 								List<DateTime> dates = new List<DateTime>
 							{
-								new DateTime(2024, 07, 10),
-								new DateTime(2024, 07, 11),
-								new DateTime(2024, 07, 12),
-								new DateTime(2024, 07, 13),
-								new DateTime(2024, 07, 14),
-								new DateTime(2024, 07, 15),
+								new DateTime(year, 07, 10),
+								new DateTime(year, 07, 11),
+								new DateTime(year, 07, 12),
+								new DateTime(year, 07, 13),
+								new DateTime(year, 07, 14),
+								new DateTime(year, 07, 15),
 							};
 
 								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
@@ -700,12 +695,12 @@ namespace TomorrowsVoice_Toplevel.Data
 							{
 								List<DateTime> dates = new List<DateTime>
 							{
-								new DateTime(2025, 07, 10),
-								new DateTime(2025, 07, 11),
-								new DateTime(2025, 07, 12),
-								new DateTime(2025, 07, 13),
-								new DateTime(2025, 07, 14),
-								new DateTime(2025, 07, 15),
+								new DateTime(year, 07, 10),
+								new DateTime(year, 07, 11),
+								new DateTime(year, 07, 12),
+								new DateTime(year, 07, 13),
+								new DateTime(year, 07, 14),
+								new DateTime(year, 07, 15),
 							};
 
 								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
@@ -761,7 +756,7 @@ namespace TomorrowsVoice_Toplevel.Data
 											Shift = shift,
 											StartAt = shift.StartAt,
 											EndAt = shift.EndAt,
-											WorkingHourRecorded=true
+											WorkingHourRecorded = true
 										};
 										if (rnd.Next(100) > 85)
 											userShift.NoShow = true;
