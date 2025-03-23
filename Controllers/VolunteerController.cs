@@ -135,12 +135,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ViewData["absenceSort"] = "fa fa-solid fa-sort";
 				if (sortDirection == "asc")
 				{
-					volunteers = volunteers.OrderBy(v => v.TotalWorkDuration.TotalMilliseconds);
+					volunteers = volunteers.OrderBy(v => v.UserShifts.Sum(us => us.EndAt.Ticks - us.StartAt.Ticks));
 					ViewData["hourVolSort"] = "fa fa-solid fa-sort-up";
 				}
 				else
 				{
-					volunteers = volunteers.OrderByDescending(v => v.TotalWorkDuration.TotalMilliseconds);
+					volunteers = volunteers.OrderByDescending(v => v.UserShifts.Sum(us => us.EndAt.Ticks - us.StartAt.Ticks));
 					ViewData["hourVolSort"] = "fa fa-solid fa-sort-down";
 				}
 			}
@@ -151,12 +151,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ViewData["absenceSort"] = "fa fa-solid fa-sort";
 				if (sortDirection == "asc")
 				{
-					volunteers = volunteers.OrderBy(v => v.ParticipationCount);
+					volunteers = volunteers.OrderBy(v => v.UserShifts.Count(us => us.NoShow == false));
 					ViewData["partiSort"] = "fa fa-solid fa-sort-up";
 				}
 				else
 				{
-					volunteers = volunteers.OrderByDescending(v => v.ParticipationCount);
+					volunteers = volunteers.OrderByDescending(v => v.UserShifts.Count(us => us.NoShow == false));
 					ViewData["partiSort"] = "fa fa-solid fa-sort-down";
 				}
 			}
@@ -166,12 +166,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ViewData["hourVolSort"] = "fa fa-solid fa-sort";
 				if (sortDirection == "asc")
 				{
-					volunteers = volunteers.OrderBy(v => v.absences);
+					volunteers = volunteers.OrderBy(v => v.UserShifts.Count(us => us.NoShow == true));
 					ViewData["absenceSort"] = "fa fa-solid fa-sort-up";
 				}
 				else
 				{
-					volunteers = volunteers.OrderByDescending(v => v.absences);
+					volunteers = volunteers.OrderByDescending(v => v.UserShifts.Count(us => us.NoShow == true));
 					ViewData["absenceSort"] = "fa fa-solid fa-sort-down";
 				}
 			}
