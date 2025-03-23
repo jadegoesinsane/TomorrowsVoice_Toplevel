@@ -6,9 +6,13 @@ namespace TomorrowsVoice_Toplevel.ViewModels
 	{
 		public string Name;
 
+		// Times
 		public int HourlyGoal;
-		public TimeSpan TimeWorked;
 
-		public List<Shift> Shifts;
+		public TimeSpan TimeWorked;
+		public int Progress;
+
+		// Shifts
+		public List<Shift> Shifts = new List<Shift>();
 	}
 }

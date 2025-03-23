@@ -446,10 +446,6 @@ namespace TomorrowsVoice_Toplevel.Data
 								LastName = "Johnson",
 								Email = $"planner@outlook.com",
 								Phone = $"2221112222",
-								//HoursVolunteered = 0,
-								ParticipationCount = 0,
-								absences = 0,
-								TotalWorkDuration = TimeSpan.Zero,
 								ID = 1000
 							});
 
@@ -464,12 +460,10 @@ namespace TomorrowsVoice_Toplevel.Data
 								Phone = $"{rnd.Next(100, 1000)}{rnd.Next(100, 1000)}{rnd.Next(1000, 10000)}",
 								FirstName = first,
 								LastName = last,
-								//HoursVolunteered = 0,
-								ParticipationCount = 0,
-								absences = 0,
-								TotalWorkDuration = TimeSpan.Zero,
 								ID = context.GetNextID()
 							};
+							if (rnd.Next(100) < 25)
+								volunteer.YearlyVolunteerGoal = rnd.Next(80, 120);
 							if (i % 2 == 0)
 								volunteer.MiddleName = lastNames[rnd.Next(lastNameCount)][1].ToString().ToUpper();
 
@@ -764,9 +758,11 @@ namespace TomorrowsVoice_Toplevel.Data
 											User = user,
 											ShiftID = shift.ID,
 											Shift = shift,
-											StartAt = TimeSpan.Zero,
-											EndAt = TimeSpan.Zero
+											StartAt = shift.StartAt,
+											EndAt = shift.EndAt
 										};
+										if (rnd.Next(100) > 85)
+											userShift.NoShow = true;
 
 										var volunteer = context.Volunteers.FirstOrDefault(v => v.ID == user.ID);
 										if (volunteer != null)

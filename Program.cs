@@ -59,10 +59,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 	options.SlidingExpiration = true;
 });
 
-
-
-
-
 builder.Services.AddSingleton<IEmailConfiguration>(builder.Configuration
 	.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 

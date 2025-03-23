@@ -20,6 +20,16 @@
 }
 
 @section Scripts {
+	@if (User.IsInRole("Volunteer"))
+	{
+			<script>
+						document.addEventListener("DOMContentLoaded", function() {
+					var progress = @Model.Progress;
+					var progressCircle = document.getElementById("progress-circle");
+					progressCircle.style.setProperty("--max", progress);
+				});
+</script>
+	}
 	@if (User.IsInRole("Director"))
 	{
 		<script src="~/js/rehearsalCalendar.js"></script>

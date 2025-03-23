@@ -1,4 +1,5 @@
-﻿using TomorrowsVoice_Toplevel.Models.Users;
+﻿using System.ComponentModel.DataAnnotations;
+using TomorrowsVoice_Toplevel.Models.Users;
 
 namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
@@ -11,9 +12,9 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		public Shift? Shift { get; set; }
 		public bool NoShow { get; set; } = false;
 
-		public TimeSpan StartAt { get; set; }
-		public TimeSpan EndAt { get; set; }
-
-        public bool WorkingHourRecorded { get; set; } = false;
-    }
+		public DateTime StartAt { get; set; }
+		public DateTime EndAt { get; set; }
+		public TimeSpan Duration => EndAt - StartAt;
+		public bool WorkingHourRecorded { get; set; } = false;
+	}
 }

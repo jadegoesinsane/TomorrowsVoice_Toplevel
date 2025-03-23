@@ -39,7 +39,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					var model = GetPlannerHome();
 					return View("Index", model);
 				}
-
 			}
 			return View();
 		}
@@ -88,16 +87,25 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			var volunteer = _context.Volunteers
 					.Where(v => v.Email == User.Identity.Name.ToString())
+					.Include(v => v.UserShifts)
+					.ThenInclude(us => us.Shift)
 					.AsNoTracking()
 					.FirstOrDefault();
 
+			decimal progress = 0;
+			if (volunteer.YearlyVolunteerGoal.HasValue && volunteer.YearlyVolunteerGoal > 0)
+			{
+				progress = (decimal)volunteer.HoursVolunteered / volunteer.YearlyVolunteerGoal.Value * 100;
+			}
 			return new HomeVolunteerVM
 			{
 				Name = volunteer.NameFormatted,
 				HourlyGoal = volunteer.YearlyVolunteerGoal ?? 0,
 				TimeWorked = volunteer.TotalWorkDuration,
+				Progress = (int)progress,
 				Shifts = _context.Shifts
 				.Where(s => s.UserShifts.Any(us => us.UserID == volunteer.ID) && s.Status == Status.Active)
+				.Include(s => s.Event)
 				.AsNoTracking()
 				.ToList()
 			};

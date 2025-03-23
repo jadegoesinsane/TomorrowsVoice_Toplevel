@@ -56,7 +56,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			ViewBag.StatusList = new SelectList(statusList);
 
-			var volunteers = _context.Volunteers.AsNoTracking();
+			var volunteers = _context.Volunteers
+				.Include(v => v.UserShifts)
+					.ThenInclude(us => us.Shift)
+				.AsNoTracking();
 
 			if (!String.IsNullOrEmpty(StatusFilter))
 			{
@@ -79,6 +82,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 									   || p.FirstName.ToUpper().Contains(SearchString.ToUpper()));
 				numberFilters++;
 			}
+
 			//Give feedback about the state of the filters
 			if (numberFilters != 0)
 			{
@@ -131,12 +135,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ViewData["absenceSort"] = "fa fa-solid fa-sort";
 				if (sortDirection == "asc")
 				{
-					volunteers = volunteers.OrderBy(v => (int)v.HoursVolunteered);
+					volunteers = volunteers.OrderBy(v => v.TotalWorkDuration.TotalMilliseconds);
 					ViewData["hourVolSort"] = "fa fa-solid fa-sort-up";
 				}
 				else
 				{
-					volunteers = volunteers.OrderByDescending(v => v.HoursVolunteered);
+					volunteers = volunteers.OrderByDescending(v => v.TotalWorkDuration.TotalMilliseconds);
 					ViewData["hourVolSort"] = "fa fa-solid fa-sort-down";
 				}
 			}
@@ -180,6 +184,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
 			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
 			var pagedData = await PaginatedList<Volunteer>.CreateAsync(volunteers.AsNoTracking(), page ?? 1, pageSize);
+
+			//var pagedVolunteers = volList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
 			return View(pagedData);
 		}
