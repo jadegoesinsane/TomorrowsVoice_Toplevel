@@ -473,20 +473,21 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		public IActionResult DownloadVolunteers()
 		{
 			//Get the appointments
-			var appts = from a in _context.Volunteers
+			var appts = _context.Volunteers
+	.Include(v => v.UserShifts)  
+	.AsEnumerable()  
+	.OrderByDescending(v => v.HoursVolunteered)  
+	.Select(a => new
+	{
+		Name = a.NameFormatted,
+		Hours = a.HoursVolunteered,
+		Participation = a.ParticipationCount,
+		Absences = a.absences,
+		Phone = a.PhoneFormatted,
+		Email = a.Email,
+	});
 
-						orderby a.ParticipationCount descending
-						select new
-						{
-							Name = a.NameFormatted,
-							Hours = a.HoursVolunteered,
-							Participation = a.ParticipationCount,
-							Absences = a.absences,
-							Phone = a.PhoneFormatted,
-							Email = a.Email,
-						};
-			//How many rows?
-			int numRows = appts.Count();
+			int numRows = appts.Count();  
 
 			if (numRows > 0) //We have data
 			{
