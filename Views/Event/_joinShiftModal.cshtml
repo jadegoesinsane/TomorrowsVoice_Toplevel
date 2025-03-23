@@ -40,7 +40,16 @@
 						
 					</div>
 					<hr />
-					<button type="submit" class="btn btn-primary" id="btnSubmit">Sign Up</button>
+					@if (Model.ShiftDate < DateTime.Today)
+					{
+					
+						<button type="submit" class="btn btn-primary" id="btnSubmit" disabled="disabled" >Sign Up</button>
+					}
+					else
+					{
+						
+						<button type="submit" class="btn btn-primary" id="btnSubmit">Sign Up</button>
+					}
 				</form>
 			</div>
 		</div>
