@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,8 @@ using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class SingerController : ElephantController
+	[Authorize(Roles = "Admin, Director")]
+	public class SingerController : ElephantController
 	{
 		private readonly TVContext _context;
 
@@ -25,7 +27,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			_context = context;
 		}
-        private Director? GetDirectorFromUser()
+
+		private Director? GetDirectorFromUser()
         {
             if (!User.IsInRole("Director"))
                 return null;
@@ -34,8 +37,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
                     .Where(d => d.Email == User.Identity.Name.ToString())
                     .FirstOrDefault();
         }
-        // GET: Singer
-        public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID, string? StatusFilter,
+
+		[Authorize(Roles = "Admin, Director")]
+		// GET: Singer
+		public async Task<IActionResult> Index(string? SearchString, int? ChapterID, int? page, int? pageSizeID, string? StatusFilter,
 			string? actionButton, string sortDirection = "asc", string sortField = "Singer")
 		{
 
@@ -166,6 +171,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(pagedData);
 		}
 
+		[Authorize(Roles = "Admin, Director")]
 		// GET: Singer/Details/5
 		public async Task<IActionResult> Details(int? id, int? chapterID)
 		{
@@ -187,6 +193,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(singer);
 		}
 
+		[Authorize(Roles = "Admin, Director")]
 		// GET: Singer/Create
 		public IActionResult Create()
 		{
@@ -208,6 +215,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin, Director")]
 		public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,ContactName,Phone,Email,Note,ChapterID,Status")] Singer singer)
 		{
 			try
@@ -239,6 +247,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(singer);
 		}
 
+		[Authorize(Roles = "Admin, Director")]
 		// GET: Singer/Edit/5
 		public async Task<IActionResult> Edit(int? id)
 		{
@@ -266,6 +275,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin, Director")]
 		public async Task<IActionResult> Edit(int id)
 		{
 			var singerToUpdate = await _context.Singers
@@ -376,6 +386,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(singerToUpdate);
 		}
 
+		[Authorize(Roles = "Admin")]
 		// GET: Singer/Delete/5
 		public async Task<IActionResult> Delete(int? id)
 		{
@@ -400,6 +411,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Singer/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var singer = await _context.Singers
@@ -427,9 +439,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(singer);
 		}
 
-
-
-
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
@@ -453,6 +463,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Rehearsal/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var singer = await _context.Singers
@@ -480,6 +491,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(singer);
 		}
 
+		[Authorize(Roles = "Admin")]
 		// GET: Singer/Upload/
 		public async Task<IActionResult> Upload()
 		{

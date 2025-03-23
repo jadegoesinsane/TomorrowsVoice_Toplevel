@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,6 +21,7 @@ using TomorrowsVoice_Toplevel.Utilities;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
+	[Authorize(Roles = "Admin, Director")]
 	public class DirectorController : ElephantController
 	{
 		private readonly TVContext _context;
@@ -32,8 +34,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_identityContext = identityContext;
 		}
 
-		// GET: Director
-		public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
+        [Authorize(Roles = "Admin, Director")]
+        // GET: Director
+        public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
 			string? actionButton, string? StatusFilter, string sortDirection = "asc", string sortField = "Director")
 		{
 			string[] sortOptions = new[] { "Director", "Chapter" };
@@ -154,8 +157,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(pagedData);
 		}
 
-		// GET: Director/Details/5
-		public async Task<IActionResult> Details(int? id, int? chapterID)
+        [Authorize(Roles = "Admin, Director")]
+        // GET: Director/Details/5
+        public async Task<IActionResult> Details(int? id, int? chapterID)
 		{
 			if (id == null)
 			{
@@ -176,8 +180,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-		// GET: Director/Create
-		public IActionResult Create()
+        [Authorize(Roles = "Admin")]
+        // GET: Director/Create
+        public IActionResult Create()
 		{
 			Director director = new Director();
 			PopulateDropDownLists(director);
@@ -202,7 +207,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director,
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director,
 			List<IFormFile> theFiles)
 		{
 			try
@@ -244,8 +250,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-		// GET: Director/Edit/5
-		public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Director/Edit/5
+        public async Task<IActionResult> Edit(int? id)
 		{
 			if (id == null)
 			{
@@ -269,7 +276,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, List<IFormFile> theFiles)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, List<IFormFile> theFiles)
 		{
 			var directorToUpdate = await _context.Directors
 				.Include(d => d.Chapter)
@@ -328,8 +336,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(directorToUpdate);
 		}
 
-		// GET: Director/Delete/5
-		public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Director/Delete/5
+        public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -353,7 +362,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Director/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var director = await _context.Directors
 				.Include(d => d.Documents)
@@ -391,7 +401,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-		public async Task<IActionResult> Recover(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
 			{
@@ -415,7 +426,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Director/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> RecoverConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var director = await _context.Directors
 				.Include(d => d.Documents)
@@ -527,6 +539,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 		}
 
+		//Auto Fill Button
 		public JsonResult GetDirectorData()
 		{
 			var data = new Director

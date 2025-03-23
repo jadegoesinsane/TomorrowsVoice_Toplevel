@@ -34,6 +34,7 @@ using TomorrowsVoice_Toplevel.Models.Events;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
+	[Authorize(Roles = "Admin, Director")]
 	public class RehearsalController : ElephantController
 	{
 		private readonly TVContext _context;
@@ -42,9 +43,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			_context = context;
 		}
-
-		// GET: Rehearsal
-		public async Task<IActionResult> Index(
+        
+		[Authorize(Roles = "Admin, Director")]
+        // GET: Rehearsal
+        public async Task<IActionResult> Index(
 			string? SearchString,
 			int? DirectorID,
 			int? ChapterID,
@@ -186,8 +188,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(pagedData);
 		}
 
-		// GET: Rehearsal/Details/5
-		public async Task<IActionResult> Details(int? id, int? directorID, int? singerID)
+        [Authorize(Roles = "Admin, Director")]
+        // GET: Rehearsal/Details/5
+        public async Task<IActionResult> Details(int? id, int? directorID, int? singerID)
 		{
 			if (id == null)
 			{
@@ -208,8 +211,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(rehearsal);
 		}
 
-		// GET: Rehearsal/Create
-		public IActionResult Create(int? chapterSelect)
+        [Authorize(Roles = "Admin, Director")]
+        // GET: Rehearsal/Create
+        public IActionResult Create(int? chapterSelect)
 		{
 			Rehearsal rehearsal = new Rehearsal();
 			Director? dUser = GetDirectorFromUser();
@@ -248,7 +252,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("RehearsalDate,StartAt,EndAt,Note,DirectorID,ChapterID")] string[] selectedOptions, Rehearsal rehearsal, int? chapterSelect)
+        [Authorize(Roles = "Admin, Director")]
+        public async Task<IActionResult> Create([Bind("RehearsalDate,StartAt,EndAt,Note,DirectorID,ChapterID")] string[] selectedOptions, Rehearsal rehearsal, int? chapterSelect)
 		{
 			try
 			{
@@ -290,8 +295,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(rehearsal);
 		}
 
-		// GET: Rehearsal/Edit/5
-		public async Task<IActionResult> Edit(int? id, int? chapterSelect)
+        [Authorize(Roles = "Admin, Director")]
+        // GET: Rehearsal/Edit/5
+        public async Task<IActionResult> Edit(int? id, int? chapterSelect)
 		{
 			if (id == null)
 			{
@@ -319,7 +325,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartAt,EndAt,Note,ChapterID"
+        [Authorize(Roles = "Admin, Director")]
+        public async Task<IActionResult> Edit(int id, string[] selectedOptions, int? chapterSelect) //"ID,RehearsalDate,StartAt,EndAt,Note,ChapterID"
 		{
 			var rehearsalToUpdate = await _context.Rehearsals
 				.Include(r => r.Director)
@@ -388,8 +395,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(rehearsalToUpdate);
 		}
 
-		// GET: Rehearsal/Delete/5
-		public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Rehearsal/Delete/5
+        public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -412,7 +420,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Rehearsal/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var rehearsal = await _context.Rehearsals
 				.Include(r => r.Director)
@@ -439,7 +448,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(rehearsal);
 		}
 
-		public async Task<IActionResult> Recover(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
 			{
@@ -462,7 +472,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Rehearsal/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> RecoverConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var rehearsal = await _context.Rehearsals
 				.Include(r => r.Director)
@@ -691,8 +702,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			return RedirectToAction(nameof(Create), DateTime.Parse(date).Date);
 		}
-
-		public async Task<IActionResult> RehearsalsSummary(DateTime? startDate, DateTime? endDate)
+        
+		[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RehearsalsSummary(DateTime? startDate, DateTime? endDate)
 		{
 			startDate ??= new DateTime(2020, 1, 1);  // Default to January 1st, 1st year
 			endDate ??= DateTime.Now;  // Default to today's date
@@ -718,7 +730,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(sumQ);
 		}
 
-		public async Task<IActionResult> RehearsalDetails(string city, DateTime? startDate, DateTime? endDate)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RehearsalDetails(string city, DateTime? startDate, DateTime? endDate)
 		{
 			startDate ??= new DateTime(2020, 1, 1);
 			endDate ??= DateTime.Now;
@@ -739,7 +752,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(details);
 		}
 
-		public IActionResult RehearsalsSummaryReport(DateTime? startDate, DateTime? endDate)
+        [Authorize(Roles = "Admin")]
+        public IActionResult RehearsalsSummaryReport(DateTime? startDate, DateTime? endDate)
 		{
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
 				  .Include(c => c.Director)
@@ -842,7 +856,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return NotFound("No data.");
 		}
 
-		public IActionResult RehearsalsDetailReport(DateTime? startDate, DateTime? endDate)
+        [Authorize(Roles = "Admin")]
+        public IActionResult RehearsalsDetailReport(DateTime? startDate, DateTime? endDate)
 		{
 			var appts = _context.RehearsalAttendances
 				.Include(c => c.Rehearsal)

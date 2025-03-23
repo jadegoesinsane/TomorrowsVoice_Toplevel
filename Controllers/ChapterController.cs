@@ -28,6 +28,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_context = context;
 		}
 
+		[Authorize(Roles ="Admin, Director")]
 		// GET: Chapter
 		public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID, string? StatusFilter, string? ProvinceFilter,
 
@@ -140,8 +141,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(pagedData);
 		}
 
-		// GET: Chapter/Details/5
-		public async Task<IActionResult> Details(int? id)
+        [Authorize(Roles = "Admin, Director")]
+        // GET: Chapter/Details/5
+        public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)
 			{
@@ -159,9 +161,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			PopulateDropDownLists(chapter);
 			return View(chapter);
 		}
-
-		// GET: Chapter/Create
-		public IActionResult Create()
+        
+		[Authorize(Roles = "Admin")]
+        // GET: Chapter/Create
+        public IActionResult Create()
 		{
 			Chapter chapter = new Chapter();
 			PopulateDropDownLists(chapter);
@@ -173,7 +176,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,Address,PostalCode,Province,CityID")] Chapter chapter)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create([Bind("ID,Name,Address,PostalCode,Province,CityID")] Chapter chapter)
 		{
 			try
 			{
@@ -202,8 +206,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(chapter);
 		}
 
-		// GET: Chapter/Edit/5
-		public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Chapter/Edit/5
+        public async Task<IActionResult> Edit(int? id)
 		{
 			if (id == null)
 			{
@@ -227,7 +232,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, Byte[] RowVersion)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, Byte[] RowVersion)
 		{
 			// Get the Chapter to update
 			var chapterToUpdate = await _context.Chapters
@@ -289,9 +295,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(chapterToUpdate);
 		}
 
-		// GET: Chapter/Delete/5
 
-		public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Chapter/Delete/5
+        public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -314,7 +321,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Chapter/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var chapter = await _context.Chapters
 				.Include(c => c.Directors).Include(c => c.City).Include(c => c.Singers).Include(c => c.Rehearsals)
@@ -370,7 +378,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(chapter);
 		}
 
-		public async Task<IActionResult> Recover(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
 			{
@@ -393,7 +402,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Chapter/Delete/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> RecoverConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var chapter = await _context.Chapters
 				.Include(c => c.Directors).Include(c => c.City).Include(c => c.Singers).Include(c => c.Rehearsals)

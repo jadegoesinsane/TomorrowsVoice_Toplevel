@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,7 +14,8 @@ using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-    public class CityController : Controller
+	[Authorize(Roles = "Admin, Planner, Volunteer")]
+	public class CityController : Controller
     {
         private readonly TVContext _context;
 
@@ -22,12 +24,14 @@ namespace TomorrowsVoice_Toplevel.Controllers
             _context = context;
         }
 
-        // GET: City
-        public async Task<IActionResult> Index()
+		[Authorize(Roles = "Admin, Planner, Volunteer")]
+		// GET: City
+		public async Task<IActionResult> Index()
         {
             return View(await _context.Cities.ToListAsync());
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: City/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -45,7 +49,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
             return View(city);
         }
-
+        
+        [Authorize(Roles = "Admin")]
         // GET: City/Create
         public IActionResult Create()
         {
@@ -57,6 +62,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,Name,Province")] City city)
         {
             try
@@ -94,6 +100,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(city);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: City/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -115,6 +122,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var cityToUpdate = await _context.Cities
@@ -155,7 +163,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
             return View(cityToUpdate);
         }
 
-
+        [Authorize(Roles = "Admin")]
         // GET: City/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -177,6 +185,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
         // POST: City/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var city = await _context.Cities

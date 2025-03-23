@@ -23,7 +23,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
-	[Authorize(Roles = "Admin,Planner")]
+	[Authorize(Roles = "Admin, Planner, Volunteer")]
 	public class VolunteerController : ElephantController
 	{
 		private readonly TVContext _context;
@@ -39,6 +39,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_userManager = userManager;
 		}
 
+		[Authorize(Roles = "Admin, Planner, Volunteer")]
 		// GET: Volunteer
 		public async Task<IActionResult> Index(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
 		{
@@ -189,7 +190,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return View(pagedData);
 		}
-
+		[Authorize(Roles = "Admin")]
 		// GET: Volunteer/Create
 		public IActionResult Create()
 		{
@@ -201,6 +202,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Email,Phone,Status")] Volunteer volunteer)
 		{
 			try
@@ -233,6 +235,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(volunteer);
 		}
 
+		[Authorize(Roles = "Admin")]
 		// GET: Volunteer/Edit/5
 		public async Task<IActionResult> Edit(int? id)
 		{
@@ -256,6 +259,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Edit(int id, string[] selectedOptions)
 		{
 			var volunteerToUpdate = await _context.Volunteers.Include(g => g.UserShifts).ThenInclude(e => e.Shift)
@@ -305,6 +309,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(volunteerToUpdate);
 		}
 
+		[Authorize(Roles = "Admin")]
 		// GET: Volunteer/Delete/5
 		public async Task<IActionResult> Delete(int? id)
 		{
@@ -326,6 +331,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Volunteer/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var volunteer = await _context.Volunteers
@@ -353,6 +359,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(volunteer);
 		}
 
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
@@ -373,6 +380,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Volunteer/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var volunteer = await _context.Volunteers
@@ -432,6 +440,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
 		}
 
+		[Authorize(Roles = "Admin, Planner, Volunteer")]
 		private void UpdateEnrollments(string[] selectedOptions, Volunteer volunteerToUpdate)
 		{
 			if (selectedOptions == null)
@@ -470,6 +479,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 		}
 
+		[Authorize(Roles = "Admin")]
 		public IActionResult DownloadVolunteers()
 		{
 			//Get the appointments
@@ -583,6 +593,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return NotFound("No data.");
 		}
 
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Email(string[] selectedOptions, string Subject, string emailContent)
 		{
 			var allOptions = _context.Volunteers;
@@ -749,6 +760,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return RedirectToAction("SignOffShift", new { volunteerID = volunteerID, shiftID = shiftID });
 		}
 
+		[Authorize(Roles = "Admin, Planner, Volunteer")]
 		// GET: Volunteer/Details/5
 		public async Task<IActionResult> Details(int? id)
 		{
@@ -787,6 +799,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return PartialView("_ListOfShiftDetails", shifts);
 		}
+
 
 		public async Task<IActionResult> ShiftIndex(int id)
 		{
@@ -879,6 +892,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(data);
 		}
 
+		
 		public async Task<IActionResult> IndexVolunteer(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
 		{
 			string[] sortOptions = new[] { "Volunteer", "Hours Volunteered", "Participation", "Absences" };
@@ -1022,6 +1036,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// Page for Selecting a volunteer
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> VolunteerSelect()
 		{
 			ViewData["VolunteerID"] = new SelectList(_context

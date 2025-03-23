@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
+	[Authorize(Roles = "Admin, Planner, Volunteer")]
 	public class ShiftController : ElephantController
 	{
 		private readonly TVContext _context;
@@ -33,8 +35,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_context = context;
 		}
 
-		// GET: Shift
-		public async Task<IActionResult> Index(int? EventID, string? Location, DateTime FilterStartDate,
+        [Authorize(Roles = "Admin, Planner, Volunteer")]
+        // GET: Shift
+        public async Task<IActionResult> Index(int? EventID, string? Location, DateTime FilterStartDate,
 			int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
 
 		{
@@ -116,8 +119,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(shifts);
 		}
 
-		// GET: Shift/Details/5
-		public async Task<IActionResult> Details(int? id)
+        [Authorize(Roles = "Admin, Planner, Volunteer")]
+        // GET: Shift/Details/5
+        public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)
 			{
@@ -140,8 +144,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(shift);
 		}
 
-		// GET: Shift/Create
-		public IActionResult Create(int EventID)
+        [Authorize(Roles = "Admin, Planner")]
+        // GET: Shift/Create
+        public IActionResult Create(int EventID)
 		{
 			Shift shift = new Shift();
 
@@ -160,7 +165,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, string[] selectedOptions)
+        [Authorize(Roles = "Admin, Planner")]
+        public async Task<IActionResult> Create([Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift, string[] selectedOptions)
 		{
 			try
 			{
@@ -238,8 +244,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View();
 		}
 
-		// GET: Shift/Edit/5
-		public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Admin, Planner")]
+        // GET: Shift/Edit/5
+        public async Task<IActionResult> Edit(int? id)
 		{
 			if (id == null)
 			{
@@ -263,7 +270,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, string[] selectedOptions)
+        [Authorize(Roles = "Admin, Planner")]
+        public async Task<IActionResult> Edit(int id, string[] selectedOptions)
 		{
 			var shiftToUpdate = await _context.Shifts
 			   .Include(g => g.UserShifts).ThenInclude(e => e.User)
@@ -355,8 +363,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(shiftToUpdate);
 		}
 
-		// GET: Shift/Delete/5
-		public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin")]
+        // GET: Shift/Delete/5
+        public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -377,7 +386,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Shift/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var shift = await _context.Shifts
 			   .FirstOrDefaultAsync(m => m.ID == id);
@@ -403,7 +413,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(shift);
 		}
 
-		public async Task<IActionResult> Recover(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
 			{
@@ -424,7 +435,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Shift/Delete/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> RecoverConfirmed(int id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var shift = await _context.Shifts
 
@@ -521,7 +533,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 		}
 
-		public async Task<IActionResult> TrackPerformance(int id)
+        [Authorize(Roles = "Admin, Planner, Volunteer")]
+        public async Task<IActionResult> TrackPerformance(int id)
 		{
 			var groupClass = await _context.Shifts
 				.Include(g => g.UserShifts).ThenInclude(e => e.User)
@@ -545,7 +558,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
 		{
 			if (enrollments == null || enrollments.Count == 0)
 			{
@@ -636,7 +650,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// Sign a volunteer up for a shift
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> ShiftSignUp(int shiftID, int volID)
+        [Authorize(Roles = "Admin, Planner, Volunteer")]
+        public async Task<IActionResult> ShiftSignUp(int shiftID, int volID)
 		{
 			if (User.IsInRole("Volunteer"))
 			{
@@ -708,7 +723,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(data);
 		}
 
-		public IActionResult CreateMany(int EventID)
+        [Authorize(Roles = "Admin, Planner")]
+        public IActionResult CreateMany(int EventID)
 		{
 			Shift shift = new Shift();
 
@@ -728,7 +744,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Shift/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> CreateMany(
+        [Authorize(Roles = "Admin, Planner")]
+        public async Task<IActionResult> CreateMany(
 													[Bind("ID,ShiftDate,StartAt,EndAt,VolunteersNeeded,EventID")] Shift shift,
 													List<Shift> templateShifts,
 													List<Shift> customShifts,

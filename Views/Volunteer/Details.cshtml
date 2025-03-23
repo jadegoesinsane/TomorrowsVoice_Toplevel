@@ -4,7 +4,8 @@
 }
 <div class="d-flex align-items-center">
 	<h1 class="me-auto">@Model.NameFormatted</h1>
-	@{
+	@if (User.IsInRole("Admin"))
+	{
 		List<string>? UserRoles = ViewBag.UserRoles;
 		<a asp-action="PromoteDemote" asp-route-id="@Model?.ID" class="btn btn-sm h-100 @((UserRoles.Contains("Planner") ? "btn-outline-danger" : "btn-outline-success"))">
 			@if (UserRoles.Contains("Planner"))
