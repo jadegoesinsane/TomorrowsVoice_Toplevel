@@ -27,7 +27,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		//private string _TotalWorkDuration = TimeSpan.Zero.ToString();
 
 		[Display(Name = "Time Worked This Year")]
-		public TimeSpan YearlyWorkDuration => UserShifts.Select(us => us.Duration).Aggregate(TimeSpan.Zero, (total, next) => total.Add(next));
+		public TimeSpan YearlyWorkDuration => UserShifts.Where(us => us.StartAt.Year == DateTime.Now.Year).Select(us => us.Duration).Aggregate(TimeSpan.Zero, (total, next) => total.Add(next));
 
 		[Display(Name = "Shifts Attended")]
 		public int ParticipationCount => UserShifts.Where(us => us.NoShow == false).Count();
