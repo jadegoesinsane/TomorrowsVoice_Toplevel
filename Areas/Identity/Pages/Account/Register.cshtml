@@ -30,9 +30,23 @@
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Password Requirements.</h3>
+            <hr />
+              <div>
+                <ul>
+                    <li><p>Must have at least one non alphanumeric character.</p></li>
+                    <li><p>Must have at least one digit ('0' - '9').</p></li>
+                    <li><p>Must have at least one uppercase letter ('A' - 'Z').</p></li>
+                    <li><p>Must be a minimum of 6 and a maximum of 100 character long.</p></li>
+                </ul>
+              </div>
+        </section>
+    </div>
 @*     <div class="col-md-6 col-md-offset-2">
         <section>
-            <h3>Use another service to register.</h3>
+            <h4>Use another service to register.</h4>
             <hr />
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
