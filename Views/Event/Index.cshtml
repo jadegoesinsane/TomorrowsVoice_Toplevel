@@ -136,8 +136,8 @@
 										dateFormat = date.Key.ToString("MMMM d");
 									else
 										dateFormat = date.Key.ToString("MMMM d, yyyy");
-									string dateID = $"i{item.ID}h{date.Key.ToShortDateString()}";
-									string cShifts = $"i{item.ID}s{date.Key.ToShortDateString()}";
+									string dateID = $"i{item.ID}h{date.Key.ToString("yyyy-MM-dd")}";
+									string cShifts = $"i{item.ID}s{date.Key.ToString("yyyy-MM-dd")}";
 									<div class="card">
 										<div class="card-header" id="@dateID">
 											<h5 class="mb-0">
@@ -164,22 +164,22 @@
 															<small>Signed Up: @shift.UserShifts.Count() / @shift.VolunteersNeeded</small>
 														</div>
 														<a data-bs-toggle="modal" data-bs-target="#joinShiftModal-@shift.ID"
-														   @* asp-action="GetShiftModal" asp-controller="Event"
-														   asp-route-id="@shift.ID"  *@class="stretched-link"></a>
+														@* asp-action="GetShiftModal" asp-controller="Event"
+											   asp-route-id="@shift.ID" *@class="stretched-link"></a>
 														@* <a asp-action="Details" class="stretched-link" asp-route-id="@shift.ID" asp-controller="Shift"></a> *@
 													</div>
 													@if (User.IsInRole("Admin") || User.IsInRole("Planner"))
 													{
-													<div class="col">
-														<a asp-action="Edit" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-success"
-														   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-															<i class="bi bi-pencil-square"></i>
-														</a>
-														<a asp-action="Delete" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-danger"
-														   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-															<i class="bi bi-x-lg"></i>
-														</a>
-													</div>
+														<div class="col">
+															<a asp-action="Edit" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-success"
+															   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+																<i class="bi bi-pencil-square"></i>
+															</a>
+															<a asp-action="Delete" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-danger"
+															   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+																<i class="bi bi-x-lg"></i>
+															</a>
+														</div>
 													}
 												</div>
 												@await Html.PartialAsync("_JoinShiftModal", shift)

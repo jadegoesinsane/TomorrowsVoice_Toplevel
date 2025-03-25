@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -109,16 +111,20 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
+		public async Task<IActionResult> UpdatePerformance([FromBody] List<Object> enrollments)
 		{
 			if (enrollments == null || enrollments.Count == 0)
 			{
 				return Json(new { success = false, message = "No data received." });
 			}
 
+			var enrollmentVMs = enrollments
+				.Select(e => JsonConvert.DeserializeObject<EnrollmentVM>(e.ToString()))
+				.ToList();
+
 			try
 			{
-				foreach (var enrollmentVM in enrollments)
+				foreach (var enrollmentVM in enrollmentVMs)
 				{
 					var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == enrollmentVM.UserID);
 

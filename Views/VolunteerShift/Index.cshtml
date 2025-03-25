@@ -202,13 +202,13 @@
 						UserID: row.find("input[name='UserID']").val(),
 						ShiftID: shiftId,
 						ShowOrNot: row.find("input[name='ShowOrNot']").prop("checked"),
-						StartAt: row.find("input[name='StartAt']").val() + ":00",
-						EndAt: row.find("input[name='EndAt']").val() + ":00"
+						StartAt: row.find("input[name='StartAt']").val(),
+						EndAt: row.find("input[name='EndAt']").val()
 					};
 
 					enrollments.push(enrollment);
 				});
-
+				console.log(JSON.stringify(enrollments));
 				$.ajax({
 					url: "/VolunteerShift/UpdatePerformance",
 					type: "POST",
