@@ -112,11 +112,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			ViewBag.Event = events;
 
 			//Handle Paging
-			//int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
-			//ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
-			//var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
+			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+			var pagedData = await PaginatedList<Shift>.CreateAsync(shifts.AsNoTracking(), page ?? 1, pageSize);
 
-			return View(shifts);
+			return View(pagedData);
 		}
 
         [Authorize(Roles = "Admin, Planner, Volunteer")]

@@ -6,37 +6,11 @@
 }
 
 <div>
-    <!-- Nav tabs -->
-    <nav>
-        <div class="nav nav-pills" id="myTabs" role="tablist">
-            <button class="nav-link active" id="Basic-Tab" data-bs-toggle="tab" data-bs-target="#BasicPanel"
-                    type="button" role="tab" aria-controls="BasicPanel" aria-selected="true">
-                Basic Details
-            </button>
-
-            @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
-            {
-                <button class="nav-link" id="Shifts-Tab" data-bs-toggle="tab" data-bs-target="#ShiftsPanel"
-                type="button" role="tab" aria-controls="ShiftsPanel" aria-selected="false">
-                Shifts
-            </button>}
-        </div>
-    </nav>
-
-    <!-- Tab panes -->
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" role="tabpanel" id="BasicPanel">
-            <br />
-            <partial name="_EventDetail" model="events" />
-        </div>
-        <div class="tab-pane fade ml-3" role="tabpanel" id="ShiftsPanel" aria-labelledby="Shifts-tab">
-            <br />
-            <form asp-action="Index" method="get">
-                <input type="hidden" name="EventID" value="@events.ID" />
-                <div class="form-horizontal my-3">
-                    <div class="row align-items-center">
-                        <h1 class="col m-0">@events.Name</h1>
-                    </div>
+    <partial name="_EventDetail" model="events" />
+    <hr/>
+    <form asp-action="Index" method="get">
+        <input type="hidden" name="EventID" value="@events.ID" />
+        <div class="form-horizontal my-3">
                     <div class="row align-items-center">
                         <h2 class="col m-0">Shifts</h2>
                     </div>
@@ -48,8 +22,7 @@
                             <a asp-action="CreateMany" asp-route-EventID="@events.ID" class="btn btn-primary col-auto h-100" style="float: right;">Add Template Shifts</a>
                         </div>
                     }
-                </div>
-
+        </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -187,10 +160,15 @@
                         </div>
                     </div>
                 </div>
-
-            </form>
-
-        </div>
+        <partial name="_PagingNavBar" />
+    </form>
+    <div>
+        @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+        {
+            <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model?.Select(s=>s.Event.ID).FirstOrDefault()">Edit</a>
+        }
+        |
+        <a asp-controller="Event" asp-action="Index">Back to Events</a>
     </div>
 </div>
 

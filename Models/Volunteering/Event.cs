@@ -22,13 +22,13 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 			}
 		}
 
-		[Display(Name = "Start")]
+		[Display(Name = "Start Date")]
 		[Required(ErrorMessage = "Event requires a start date.")]
 		[DataType(DataType.Date)]
 		[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
 		public DateTime StartDate { get; set; }
 
-		[Display(Name = "End")]
+		[Display(Name = "End Date")]
 		[Required(ErrorMessage = "Event requires a end date.")]
 		[DataType(DataType.Date)]
 		[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]

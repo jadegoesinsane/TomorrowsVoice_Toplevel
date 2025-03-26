@@ -3,55 +3,55 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>@Model.Name</h1>
 
 <div>
-    <h4>Event</h4>
+    <h2>Details</h2>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripion)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Descripion)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
+        <div class="col">
+            <dt class="">
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+            <dd class="">
+                @Html.DisplayFor(model => model.StartDate)
+            </dd>
+        </div>
+        <div class="col">
+            <dt class="">
+                @Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+            <dd class="">
+                @Html.DisplayFor(model => model.EndDate)
+            </dd>
+        </div>
+        <div class="col">
+            <dt class="">
+                @Html.DisplayNameFor(model => model.Location)
+            </dt>
+            <dd class="">
+                @Html.DisplayFor(model => model.Location)
+            </dd>
+        </div>
+    </dl>
+    <dl class="row">
+        <div class="col">
+            <dt class="">
+                @Html.DisplayNameFor(model => model.Descripion)
+            </dt>
+            <dd class="">
+                @Html.DisplayFor(model => model.Descripion)
+            </dd>
+        </div>
+        <div class="col"></div>
+        <div class="col">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+        </div>    
     </dl>
 </div>
-<div>
-    @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
-    {
-        <a asp-controller="Event" asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> 
-    }
-    |
-    <a asp-action="Index">Back to List</a>
-</div>
+
