@@ -1,44 +1,51 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Users.Group>
 
-<form asp-action="Index" method="get">
-	<div class="form-horizontal my-3">
-		<div class="row align-items-center">
-			<h1 class="col m-0">Groups</h1>
-			<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-folder-plus"></i><span class="px-2">Add @ViewData["ControllerFriendlyName"]</span></a>
-		</div>
-	</div>
-	<br />
-	<div class="row">
-		<div class="col-auto">
-			<input type="text" class="form-control rounded-pill" placeholder="Search Groups" />
-		</div>
-		<div class="col-auto">
-			<a asp-action="Message" class="btn btn-sm btn-outline-detail w-auto rounded-pill" role="button">
-			<i class="bi bi-chat-left-text"></i>
-			<span class="px-2">
-				Message
-			</span>
-		</a>
-		</div>
-		<div class="col-auto">
-			<a asp-action="Export" class="btn btn-sm btn-outline-detail w-auto rounded-pill" role="button">
-			<i class="bi bi-download"></i>
-			<span class="px-2">
-				Export
-			</span>
-		</a>
-		</div>
-	</div>
-	<table class="table">
-		<thead class="thead-light">
-			<tr>
-				<th>
-					<input class="form-check-input" type="checkbox" value="" id="chk-all">
-					<span class="px-3">
-						@Html.DisplayNameFor(model => model.Name)
-					</span>
+<div id="toolbar">
+	<a asp-action="Create"
+	   class="btn btn-primary col-auto h-100">
+		<i class="bi bi-folder-plus"></i> New Group
+	</a>
+	<button type="submit">submit</button>
+</div>
+
+<form id="form" method="post">
+	<input type="hidden" name="selectedItems" id="selectedItems" />
+
+	<table class="table"
+		   id="table"
+		   data-toolbar="#toolbar"
+		   data-toggle="table"
+		   data-search="true"
+		   data-click-to-select="true"
+		   data-id-field="id"
+		   data-buttons="buttons"
+		   data-buttons-class="outline-detail"
+		   data-show-button-text="true"
+		   data-cookie="true"
+		   data-cookie-id-table="groupTable"
+		   data-select-item-name="group">
+		<thead class="bg-light">
+			<tr class="align-middle">
+				<th class="bs-checkbox"
+					style="width:36px;"
+					data-field="state"
+					data-checkbox="true">
 				</th>
-				<th>
+				<th data-field="id"
+					data-visible="false"
+					data-switchable="false"
+					class="hidden">
+					ID
+				</th>
+				<th data-field="name"
+					data-sortable="true"
+					data-click-to-select="true">
+					@Html.DisplayNameFor(model => model.Name)
+				</th>
+				<th data-field="members"
+					data-sortable="true"
+					data-click-to-select="true"
+					data-searchable="false">
 					Members
 				</th>
 				<th></th>
@@ -47,30 +54,73 @@
 		<tbody>
 			@foreach (var item in Model)
 			{
-								<tr>
-									<td>
-										<input class="form-check-input" type="checkbox" value="" id="chk-@item.ID">
-										<a asp-action="Details" asp-route-id="@item.ID" class="px-3">
+				<tr>
+					<td class="bs-checkbox"
+						style="width:36px;">
+					</td>
+					<td class="hidden">
+						@item.ID
+					</td>
+					<td>
+						<a asp-action="Details" asp-route-id="@item.ID" class="px-3">
 							@Html.DisplayFor(modelItem => item.Name)
-										</a>
-									</td>
-									<td>
+						</a>
+					</td>
+					<td>
 						@Html.DisplayFor(modelItem => item.VolunteerGroups.Count)
-									</td>
-									<td>
-										<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
-										   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-											<i class="bi bi-pencil-square"></i>
-										</a>
-										<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-										   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-											<i class="bi bi-x-lg"></i>
-										</a>
-									</td>
-								</tr>
+					</td>
+					<td>
+						<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
+						   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+							<i class="bi bi-pencil-square"></i>
+						</a>
+						<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
+						   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+							<i class="bi bi-x-lg"></i>
+						</a>
+					</td>
+				</tr>
 			}
 		</tbody>
 	</table>
 </form>
-<style>
-</style>
+<script type="text/javascript">
+	const $table = $('#table')
+	const $selected = $('#selectedItems')
+	const $form = $('#form');
+
+	function submitForm(action) {
+		const selectedIds = $table.bootstrapTable('getSelections').map(item => item.id).join(',');
+		$selected.val(selectedIds);
+		$form.attr('action', action);
+		$form.submit();
+	}
+
+	window.buttons = () => ({
+		btnEmail: {
+			text: 'Email',
+			icon: 'bi-chat-left-text',
+			event() {
+				submitForm('@Url.Action("Email", "Group")');
+			},
+			attributes: {
+				title: 'Email all members in the group(s)'
+			}
+		},
+		btnExport: {
+			text: 'Export',
+			icon: 'bi-download',
+			event() {
+				submitForm('@Url.Action("Export", "Group")');
+			},
+			attributes: {
+				title: 'Export group(s)'
+			}
+		}
+	})
+	$(function () {
+		$table.bootstrapTable({
+			cookieStorage: 'localStorage'
+		})
+	})
+</script>

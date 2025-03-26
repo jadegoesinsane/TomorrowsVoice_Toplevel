@@ -20,54 +20,42 @@
 			<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
 				Filter/Search @ViewData["numberFilters"]
 			</button><br />
-			<div class="collapse  @ViewData["ShowFilter"]" id="collapseFilter">
-				<div class="card card-body bg-light">
-					<div class="row">
-						@if (!User.IsInRole("Director"))
-						{
-							<div class="form-floating col-md-3">
-								@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
-								<label class="control-label" for="DirectorID">Select by Director:</label>
-							</div>
+			<div class="card collapse @ViewData["ShowFilter"]" id="collapseFilter">
+				<div class="card-body w-100 bg-light row">
+					@if (!User.IsInRole("Director"))
+					{
+						<div class="col-auto">
+							<label class="control-label" for="DirectorID">Director:</label>
+							@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
+						</div>
 						
-						<div class="form-floating col-md-3">
+						<div class="col-auto">
+							<label class="control-label" for="ChapterID">Chapter:</label>
 							@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control", id = "ChapterID" })
-							<label class="control-label" for="ChapterID">Select by Chapter:</label>
 						</div>
-						}
-						<div class="form-floating col-md-3">
-							@Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
-							<label class="control-label" for="SearchString">Search Attendance Notes:</label>
-						</div>
-						<div class="col-md-2">
-							<div class="form-floating">
-								@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
-																	"All Status", htmlAttributes: new { @class = "form-control" })
-								<label class="control-label" for="StatusFilter">Select by Status:</label>
 
-							</div>
-
+						<div class="col-auto">
+							<label class="control-label" for="StatusFilter">Status:</label>
+							@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList, "All Status", htmlAttributes: new { @class = "form-control" })
 						</div>
+					}
+					<div class="col-auto">
+						<label class="control-label" for="SearchString">Search Attendance Notes:</label>
+						@Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
 					</div>
-					<div class="row mt-4">
-						<div class="form-floating col-md-3">
-							<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
-							<label class="control-label" for="StartDate">Start Date:</label>
-
-						</div>
-						<div class="form-floating col-md-3">
-							<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
-							<label class="control-label" for="EndDate">End Date:</label>
-
-						</div>
-						
-						<div class="col-md-3 d-flex justify-content-evenly">
-							<input type="submit" name="actionButton" value="Filter"
-								   class="btn btn-outline-primary" />
-							<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-						</div>
+					<div class="col-auto">
+						<label class="control-label" for="StartDate">Start Date:</label>
+						<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
 					</div>
-
+					<div class="col-auto">
+						<label class="control-label" for="EndDate">End Date:</label>
+						<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
+					</div>
+					<div class="col-auto">
+						<br/>
+						<input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+						<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+					</div>
 				</div>
 			</div>
 		</div>

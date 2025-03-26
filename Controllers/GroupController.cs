@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -155,6 +156,24 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			await _context.SaveChangesAsync();
+			return RedirectToAction(nameof(Index));
+		}
+
+		// POST: Group/Email/
+		[HttpPost, ActionName("Email")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Email(string selectedItems)
+		{
+			Debug.WriteLine(selectedItems);
+			return RedirectToAction(nameof(Index));
+		}
+
+		// POST: Group/Export/
+		[HttpPost, ActionName("Export")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Export(string selectedItems)
+		{
+			Debug.WriteLine(selectedItems);
 			return RedirectToAction(nameof(Index));
 		}
 
