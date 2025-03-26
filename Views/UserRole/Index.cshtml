@@ -11,36 +11,61 @@
     <a class="btn btn-primary add"
        asp-controller="Director" asp-action="Create">Create New Director</a>
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.UserName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UserRoles)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+<form asp-action="Index" method="get">
+    <!--Filtering-->
+    <button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+            data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+        <i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
+    </button>
+    <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+        <div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
+            <div class="p-2">
+                <strong><label class="control-label" for="SearchString">Singer Name</label></strong>
+                @Html.TextBox("SearchString", null, new { @class = "form-control" })
+            </div>
+            <div class="p-2 ms-auto">
+                <button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
+                    <i class=" bi bi-funnel-fill"></i>Apply
+                </button>
+            </div>
+            <div class="p-2">
+                <a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
+            </div>
+        </div>
+    </div>
+    <table class="table">
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @{
-                    foreach (var r in item.UserRoles)
-                    {
-                        @:  @r <br />
-                    }
-                }
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserRoles)
+            </th>
+            <th></th>
         </tr>
-    }
 
-</table>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @{
+                        foreach (var r in item.UserRoles)
+                        {
+                            @:  @r <br />
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+    <partial name="_PagingNavBar" />  
+</form>
+
 

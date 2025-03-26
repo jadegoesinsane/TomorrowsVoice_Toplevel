@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
+using TomorrowsVoice_Toplevel.Models.Events;
+using TomorrowsVoice_Toplevel.Utilities;
 using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
@@ -21,22 +23,41 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		// GET: User
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(string? searchString, int? page, int? pageSizeID)
 		{
-			var users = await (from u in _context.Users
+			var users = (from u in _context.Users
 							   .OrderBy(u => u.UserName)
-							   select new UserVM
-							   {
-								   Id = u.Id,
-								   UserName = u.UserName
-							   }).ToListAsync();
-			foreach (var u in users)
+						 select new UserVM
+						 {
+							 Id = u.Id,
+							 UserName = u.UserName,
+							 // getting the users roles manually here to keep users as a queryable to work with paging
+                             UserRoles = (from r in _context.Roles
+                                          join ur in _context.UserRoles on r.Id equals ur.RoleId
+                                          where ur.UserId == u.Id
+                                          select r.Name).ToList()
+
+                         });
+
+			// filter
+			if (!String.IsNullOrEmpty(searchString))
 			{
-				var user = await _userManager.FindByIdAsync(u.Id);
-				u.UserRoles = (List<string>)await _userManager.GetRolesAsync(user);
-				//Note: we needed the explicit cast above because GetRolesAsync() returns an IList<string>
-			};
-			return View(users);
+				users = users.Where(u => u.UserName.ToUpper().Contains(searchString.ToUpper()));
+			}
+
+			//foreach (var u in users)
+			//{
+			//	var user = await _userManager.FindByIdAsync(u.Id);
+			//	u.UserRoles = (List<string>)await _userManager.GetRolesAsync(user);
+			//	//Note: we needed the explicit cast above because GetRolesAsync() returns an IList<string>
+			//};
+
+			// paging
+			int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+			ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+			var pagedData = await PaginatedList<UserVM>.CreateAsync(users.AsNoTracking(), page ?? 1, pageSize);
+
+			return View(pagedData);
 		}
 
 		// GET: Users/Edit/5
