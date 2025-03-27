@@ -3,7 +3,7 @@ using TomorrowsVoice_Toplevel.Models.Users;
 
 namespace TomorrowsVoice_Toplevel.Models.Volunteering
 {
-	public class UserShift
+	public class UserShift : IValidatableObject
 	{
 		public int UserID { get; set; }
 		public Volunteer? User { get; set; }
@@ -17,7 +17,14 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		[DataType(DataType.Time)]
 		public DateTime EndAt { get; set; }
+
 		public TimeSpan Duration => EndAt - StartAt;
 		public bool WorkingHourRecorded { get; set; } = false;
+
+		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+		{
+			if (EndAt < StartAt)
+				yield return new ValidationResult("Shift cannot end before it starts.", new[] { "EndAt" });
+		}
 	}
 }
