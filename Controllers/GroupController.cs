@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -44,7 +45,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 
 			var @group = await _context.Groups
-				.FirstOrDefaultAsync(m => m.ID == id);
+				.Include(g => g.VolunteerGroups)
+				.ThenInclude(vg => vg.Volunteer)
+				.AsNoTracking()
+				.FirstOrDefaultAsync(g => g.ID == id);
+
 			if (@group == null)
 			{
 				return NotFound();
@@ -64,7 +69,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,BackgroundColour")] Group @group)
+		public async Task<IActionResult> Create([Bind("ID,Name,Description,GroupType,Status,BackgroundColour")] Group @group)
 		{
 			if (ModelState.IsValid)
 			{
@@ -96,34 +101,49 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(int id, [Bind("ID,Name,BackgroundColour")] Group @group)
+		public async Task<IActionResult> Edit(int id)
 		{
-			if (id != @group.ID)
-			{
+			var groupToUpdate = await _context.Groups
+				.FirstOrDefaultAsync(g => g.ID == id);
+
+			if (groupToUpdate == null)
 				return NotFound();
+
+			try
+			{
+				if (await TryUpdateModelAsync(groupToUpdate,
+					"",
+					g => g.Name,
+					g => g.Description,
+					g => g.GroupType,
+					g => g.Status,
+					g => g.BackgroundColour))
+				{
+					try
+					{
+						await _context.SaveChangesAsync();
+						AddSuccessToast(groupToUpdate.Name);
+						return RedirectToAction("Details", new { groupToUpdate.ID });
+					}
+					catch (RetryLimitExceededException)
+					{
+						ModelState.AddModelError("", "Unable to save changes after multiple attempts. Please Try Again.");
+					}
+					catch (DbUpdateConcurrencyException)
+					{
+						if (!GroupExists(groupToUpdate.ID))
+						{
+							return NotFound();
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.GetBaseException().ToString());
 			}
 
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_context.Update(@group);
-					await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (!GroupExists(@group.ID))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
-				}
-				return RedirectToAction(nameof(Index));
-			}
-			return View(@group);
+			return View(groupToUpdate);
 		}
 
 		// GET: Group/Delete/5

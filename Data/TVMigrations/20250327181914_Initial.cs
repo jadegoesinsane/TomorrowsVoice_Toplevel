@@ -50,7 +50,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", maxLength: 55, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    GroupType = table.Column<string>(type: "TEXT", maxLength: 55, nullable: true),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    BackgroundColour = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
