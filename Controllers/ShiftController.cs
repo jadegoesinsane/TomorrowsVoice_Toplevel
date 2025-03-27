@@ -29,9 +29,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	public class ShiftController : ElephantController
 	{
 		private readonly TVContext _context;
-
-		public ShiftController(TVContext context, IToastNotification toastNotification) : base(context, toastNotification)
+		private readonly IMyEmailSender _emailSender;
+		public ShiftController(TVContext context, IMyEmailSender emailSender, IToastNotification toastNotification) : base(context, toastNotification)
 		{
+			_emailSender = emailSender;
 			_context = context;
 		}
 
@@ -603,9 +604,96 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						}
 					}
 				}
+				foreach (var enrollmentVM in enrollments)
+				{
+					var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == enrollmentVM.UserID);
+
+					var userShifts = await _context.UserShifts.FirstOrDefaultAsync(e => e.ShiftID == enrollmentVM.ShiftID);
+					var shift = await _context.Shifts.FirstOrDefaultAsync(e => e.ID == enrollmentVM.ShiftID);
+
+					var enrollment = await _context.UserShifts.Include(g => g.User)
+						.FirstOrDefaultAsync(e => e.UserID == enrollmentVM.UserID && e.ShiftID == enrollmentVM.ShiftID);
+
+					var shift2 = await _context.Shifts
+						.Include(d => d.Event)
+						.AsNoTracking()
+						.FirstOrDefaultAsync(d => d.ID == shift.ID);
+					string Subject = "Volunteer working hours";
+
+					string emailContent = $"Your working hours in shift {shift.TimeSummary} of event {shift2.Event.Name} are from {enrollment.StartAt} to {enrollment.EndAt}. ";
+
+					var volunteers = _context.Volunteers;
+
+					int folksCount = 0;
+					try
+					{
+						//Send a Notice.
+						List<EmailAddress> folks = (from p in volunteers
+
+													where p.ID == volunteer.ID
+													select new EmailAddress
+													{
+														Name = p.NameFormatted,
+														Address = p.Email
+													}).ToList();
+						folksCount = folks.Count;
+						if (folksCount > 0)
+						{
+							var msg = new EmailMessage()
+							{
+								ToAddresses = folks,
+								Subject = Subject,
+								Content = "<p>" + emailContent
+							};
+							await _emailSender.SendToManyAsync(msg);
+							ViewData["Message"] = "Message sent to " + folksCount + " Manager"
+								+ ((folksCount == 1) ? "." : "s.");
+						}
+						else
+						{
+							ViewData["Message"] = "Message NOT sent!  No Manager.";
+						}
+					}
+					catch (Exception ex)
+					{
+						string errMsg = ex.GetBaseException().Message;
+						ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
+							+ ((folksCount == 1) ? "" : "s") + " in the list.";
+					}
+
+
+
+
+
+
+
+
+
+
+
+				}
+
+
 
 				await _context.SaveChangesAsync();
+
+				
+
+
+
+
+
+
 				return Json(new { success = true, message = "Performance updated successfully." });
+
+
+
+
+
+
+
+
+
 			}
 			catch (Exception ex)
 			{
