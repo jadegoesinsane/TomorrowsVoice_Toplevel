@@ -844,6 +844,27 @@ namespace TomorrowsVoice_Toplevel.Data
 			}
 		}
 
+		private static List<Event> GetEvents(string name, DateTime start, DateTime end, string desc, string location)
+		{
+			var events = new List<Event>();
+			Random rnd = new();
+			int past = rnd.Next(0, 2);
+			int num = rnd.Next(1, 3);
+			for (int i = 0 - past; i < num; i++)
+			{
+				events.Add(new Event
+				{
+					Name = $"{name} - {start.Year + i}",
+					StartDate = start.AddYears(i),
+					EndDate = end.AddYears(i),
+					Descripion = desc,
+					Location = location,
+					Status = Status.Active
+				});
+			}
+			return events;
+		}
+
 		private static void AddUser(string email, string? role, IServiceProvider serviceProvider)
 		{
 		}

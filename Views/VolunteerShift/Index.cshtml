@@ -2,11 +2,25 @@
 @{
 	TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer volunteer = (TomorrowsVoice_Toplevel.Models.Volunteering.Volunteer)ViewBag.Volunteer;
 	ViewData["Title"] = ViewData["ControllerFriendlyName"];
+
+	var thisWeekStart = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+	var thisWeekEnd = thisWeekStart.AddDays(7).AddSeconds(-1);
+	var nextWeekStart = thisWeekEnd.AddSeconds(1);
+	var nextWeekEnd = nextWeekStart.AddDays(7).AddSeconds(-1);
+	var fourWeeksEnd = thisWeekStart.AddDays(28).AddSeconds(-1);
 }
 
-<h4>My Shifts</h4>
-<small>View and manage upcoming shifts.</small>
+<h1>My Shifts</h1>
+<p class="text-muted">View, cancel, or record hours for your shifts.</p>
 <hr />
+
+@if (Model.Any(s => s.StartAt < DateTime.Today.AddDays(7) && s.StartAt >= DateTime.Today))
+{
+	<div class="alert alert-warning" role="alert">
+		Note: Your shift cannot be cancelled within 2 days of the shift date.
+	</div>
+}
+
 <form asp-action="Index" method="get">
 	<input type="hidden" name="VolunteerID" value="@volunteer.ID" />
 	<div class="form-horizontal">
@@ -21,119 +35,40 @@
 			}
 			else
 			{
-				@foreach (var year in Model.GroupBy(s => s.StartAt.Year))
+				var shiftsThisWeek = Model.Where(s => s.StartAt >= thisWeekStart && s.StartAt <= thisWeekEnd);
+				var shiftsNextWeek = Model.Where(s => s.StartAt >= nextWeekStart && s.StartAt <= nextWeekEnd);
+				var shiftsWithinFourWeeks = Model.Where(s => s.StartAt > nextWeekEnd && s.StartAt <= fourWeeksEnd);
+				var futureShifts = Model.Where(s => s.StartAt > fourWeeksEnd);
+				var pastShifts = Model.Where(s => s.StartAt < thisWeekStart);
+
+				@if (shiftsThisWeek.Any())
 				{
-					<h3>@year.Key</h3>
-					foreach (var item in year)
-					{
-						<div class="row bd-callout d-flex align-items-center" style="border-left-color: @item.BackgroundColor;">
-							<div class="col-2">
-								<span class="fw-bold m-0">
-									@item.Event?.Name
-								</span>
-
-								@if (String.IsNullOrWhiteSpace(item.Title))
-								{
-									<br />
-									@Html.DisplayFor(ModelItem => item.Title)
-								}
-							</div>
-							@{
-								string start = item.StartAt.ToString(item.StartAt.Minute == 0 ? "%h" : "h:mm");
-								string end = item.EndAt.ToString(item.EndAt.Minute == 0 ? "%h" : "h:mm");
-								string startTT = item.StartAt.ToString("tt").ToLower();
-								string endTT = item.EndAt.ToString("tt").ToLower();
-							}
-							<div class="col-2">
-								<span class="fw-light">
-									On
-								</span>
-								<br />
-								@item.DateFormat
-							</div>
-
-							<div class="col-1">
-								<span class="fw-light">
-									Starts at
-								</span>
-								<br />
-								@start @startTT
-							</div>
-							<div class="col-1">
-								<span class="fw-light">
-									Ends at
-								</span>
-								<br />
-								@end @endTT
-							</div>
-							<div class="col-3">
-								<span class="fw-light">
-									Location
-								</span>
-								<br />
-								@if (!String.IsNullOrWhiteSpace(item.Location))
-								{
-									@Html.Raw(item.Location + " ⋅ ")
-								}
-								@item.Event?.Location
-							</div>
-
-							<div class="col-3 text-center">
-								<div class="row">
-									<div class="col-auto">
-									@if (item.ShiftDate < DateTime.Today.AddDays(2))
-									{
-										<a class="btn btn-primary add btn-secondary disabled"
-										   asp-controller="Volunteer"
-										   asp-action="EmailNotice"
-										   asp-route-volunteerId="@volunteer?.ID"
-										   asp-route-shiftId="@item.ID"
-										   style="pointer-events: none; opacity: 0.5;">
-											Cancel Shift
-										</a>
-									}
-									else
-									{
-										<a class="btn btn-primary add"
-										   id="btnCancel"
-										   asp-controller="Volunteer"
-										   asp-action="SignOffShift"
-										   asp-route-volunteerId="@volunteer?.ID"
-										   asp-route-shiftId="@item.ID">
-											Cancel Shift
-										</a>
-									}
-									</div>
-									<div class="col-auto">
-									@if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any() || item.ShiftDate > DateTime.Today)
-									{
-										<button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
-												data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
-												disabled>
-											Record Hours
-										</button>
-									}
-									else
-									{
-										<button type="button" class="btn btn-primary h-100 trackPerformanceBtn"
-												data-shiftid="@item.ID" data-volunteerid="@volunteer.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-											Record Hours
-										</button>
-									}
-									</div>
-								</div>
-								
-							</div>
-						</div>
-
-					}
+					<h2 class="text-muted">This Week</h2>
+					<partial name="_ShiftList" model="shiftsThisWeek" />
+				}
+				@if (shiftsNextWeek.Any())
+				{
+					<h2 class="text-muted">Next Week</h2>
+					<partial name="_ShiftList" model="shiftsNextWeek" />
+				}
+				@if (shiftsWithinFourWeeks.Any())
+				{
+					<h2 class="text-muted">Within 4 Weeks</h2>
+					<partial name="_ShiftList" model="shiftsWithinFourWeeks" />
+				}
+				@if (futureShifts.Any())
+				{
+					<h2 class="text-muted">Future</h2>
+					<partial name="_ShiftList" model="futureShifts" />
+				}
+				@if (pastShifts.Any())
+				{
+					<h2 class="text-muted">Past</h2>
+					<partial name="_ShiftList" model="pastShifts" />
 				}
 			}
 		</div>
 	</div>
-	<p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
-		Note: Your shift can not be cancelled within 2 days of the shift date.
-	</p>
 	<div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -151,6 +86,113 @@
 	</div>
 	@* <partial name="_PagingNavBar" /> *@
 </form>
+@* 	<div class="row bd-callout d-flex align-items-center" style="border-left-color: @item.BackgroundColor;">
+				<div class="col-2">
+				<span class="fw-bold m-0">
+@item.Event?.Name
+				</span>
+
+@if (String.IsNullOrWhiteSpace(item.Title))
+{
+						<br />
+	@Html.DisplayFor(ModelItem => item.Title)
+}
+				</div>
+@{
+	string start = item.StartAt.ToString(item.StartAt.Minute == 0 ? "%h" : "h:mm");
+	string end = item.EndAt.ToString(item.EndAt.Minute == 0 ? "%h" : "h:mm");
+	string startTT = item.StartAt.ToString("tt").ToLower();
+	string endTT = item.EndAt.ToString("tt").ToLower();
+}
+				<div class="col-2">
+				<span class="fw-light">
+				On
+				</span>
+				<br />
+@item.DateFormat
+				</div>
+
+				<div class="col-1">
+				<span class="fw-light">
+				Starts at
+				</span>
+				<br />
+@start @startTT
+				</div>
+				<div class="col-1">
+				<span class="fw-light">
+				Ends at
+				</span>
+				<br />
+@end @endTT
+				</div>
+				<div class="col-3">
+				<span class="fw-light">
+				Location
+				</span>
+				<br />
+@if (!String.IsNullOrWhiteSpace(item.Location))
+{
+	@Html.Raw(item.Location + " ⋅ ")
+}
+@item.Event?.Location
+				</div>
+
+				<div class="col-3 text-center">
+				<div class="row">
+				<div class="col-auto">
+@if (item.ShiftDate < DateTime.Today.AddDays(2))
+{
+						<a class="btn btn-primary add btn-secondary disabled"
+						asp-controller="Volunteer"
+						asp-action="EmailNotice"
+						asp-route-volunteerId="@volunteer?.ID"
+						asp-route-shiftId="@item.ID"
+						style="pointer-events: none; opacity: 0.5;">
+						Cancel Shift
+						</a>
+}
+else
+{
+						<a class="btn btn-primary add"
+						id="btnCancel"
+						asp-controller="Volunteer"
+						asp-action="SignOffShift"
+						asp-route-volunteerId="@volunteer?.ID"
+						asp-route-shiftId="@item.ID">
+						Cancel Shift
+						</a>
+}
+				</div>
+				<div class="col-auto">
+@if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any() || item.ShiftDate > DateTime.Today)
+{
+						<button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
+						data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
+						disabled>
+						Record Hours
+						</button>
+}
+else
+{
+						<button type="button" class="btn btn-primary h-100 trackPerformanceBtn"
+						data-shiftid="@item.ID" data-volunteerid="@volunteer.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+						Record Hours
+						</button>
+}
+				</div>
+				</div>
+
+				</div>
+								</div>-->*@
+<style>
+	h2 {
+		margin: 1.875em 0 0 0;
+		font-size: 0.875em;
+		font-weight: 500;
+		text-transform: uppercase;
+	}
+</style>
 @section Scripts {
 	<script type="text/javascript">
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
