@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -483,93 +484,60 @@ namespace TomorrowsVoice_Toplevel.Data
 					// Events
 					if (!context.Events.Any())
 					{
-						var events = new List<Event>
-						{
-							new Event
-							{
-								Name = "St.C Gift Wrapping - 2024",
-								StartDate = new DateTime(2024, 11, 29),
-								EndDate = new DateTime(2024, 12, 22),
-								Descripion = "Join us to help wrap gifts for those in need!",
-								Location = "Pen Center, St. Catharines",
-								Status = Status.Active
-							},
-							new Event
-							{
-								Name = "St.C Gift Wrapping - 2025",
-								StartDate = new DateTime(2025, 11, 29),
-								EndDate = new DateTime(2025, 12, 22),
-								Descripion = "Join us to help wrap gifts for those in need!",
-								Location = "Pen Center, St. Catharines",
-								Status = Status.Active
-							},
-							new Event
-							{
-								Name = "Ham Bake Sale - 2025",
-								StartDate = new DateTime(2025, 03, 20),
-								EndDate = new DateTime(2025, 03, 25),
-								Descripion = "We will be selling homemade baked goods",
-								Location = "Eastgate Square, Hamilton",
-								Status = Status.Active
-							},
-							new Event
-							{
-								Name = "Ham Bake Sale - 2024",
-								StartDate = new DateTime(2024, 03, 20),
-								EndDate = new DateTime(2024, 03, 25),
-								Descripion = "We will be selling homemade baked goods",
-								Location = "Eastgate Square, Hamilton",
-								Status = Status.Active
-							},
-							new Event
-							{
-								Name = "Ham Bake Sale - 2023",
-								StartDate = new DateTime(2023, 03, 20),
-								EndDate = new DateTime(2023, 03, 25),
-								Descripion = "We will be selling homemade baked goods",
-								Location = "Eastgate Square, Hamilton",
-								Status = Status.Active
-							},
-							new Event
-							{
-								Name = "Tor Bake Sale - 2024",
-								StartDate = new DateTime(2024, 7, 10),
-								EndDate = new DateTime(2024, 7, 15),
-								Descripion = "We will be selling homemade baked goods",
-								Location = "Eaton Centre, Toronto",
-								Status = Status.Active
-							},
-							new Event
-							{
-								Name = "Tor Bake Sale - 2023",
-								StartDate = new DateTime(2023, 7, 10),
-								EndDate = new DateTime(2023, 7, 15),
-								Descripion = "We will be selling homemade baked goods",
-								Location = "Eaton Centre, Toronto",
-								Status = Status.Active
-							},
-							new Event
-							{
-								Name = "Tor Bake Sale - 2025",
-								StartDate = new DateTime(2025, 7, 10),
-								EndDate = new DateTime(2025, 7, 15),
-								Descripion = "We will be selling homemade baked goods",
-								Location = "Eaton Centre, Toronto",
-								Status = Status.Active
-							}
-						};
+						var events = new List<Event>();
+						events.AddRange
+							(
+								GetEvents
+								("St. C Gift Wrapping",
+								new DateTime(2024, 11, 29),
+								new DateTime(2024, 12, 22),
+								"Join us to help wrap gifts for those in need!",
+								"Pen Center, St.Catharines")
+							);
+						events.AddRange
+							(
+								GetEvents
+								("Ham Bake Sale",
+								new DateTime(2024, 03, 20),
+								new DateTime(2024, 03, 25),
+								"We will be selling homemade baked goods",
+								"Eastgate Square, Hamilton")
+							);
+						events.AddRange
+							(
+								GetEvents
+								("Tor Bake Sale",
+								new DateTime(2024, 07, 10),
+								new DateTime(2024, 07, 15),
+								"We will be selling homemade baked goods",
+								"Eaton Centre, Toronto")
+							);
 						context.Events.AddRange(events);
 						context.SaveChanges();
 
 						//CityEvents
-						context.CityEvents.AddRange(new List<CityEvent>
+						var cityevents = new List<CityEvent>();
+						foreach (Event @event in context.Events)
 						{
-							new CityEvent { EventID = events[0].ID, CityID = context.Cities.FirstOrDefault(c => c.Name == "St. Catharines").ID },
-							new CityEvent { EventID = events[3].ID, CityID = context.Cities.FirstOrDefault(c => c.Name == "Toronto").ID },
-							new CityEvent { EventID = events[2].ID, CityID = context.Cities.FirstOrDefault(c => c.Name == "Hamilton").ID },
-							new CityEvent { EventID = events[1].ID, CityID = context.Cities.FirstOrDefault(c => c.Name == "St. Catharines").ID },
-						});
-
+							City? city = @event.Name.Contains("St. C")
+								? context.Cities.FirstOrDefault(c => c.Name == "St. Catharines")
+								: @event.Name.Contains("Ham")
+								? context.Cities.FirstOrDefault(c => c.Name == "Hamilton")
+								: @event.Name.Contains("Tor")
+								? context.Cities.FirstOrDefault(c => c.Name == "Toronto")
+								: null;
+							if (city != null)
+							{
+								cityevents.Add(new CityEvent
+								{
+									City = city,
+									CityID = city.ID,
+									Event = @event,
+									EventID = @event.ID
+								});
+							}
+						}
+						context.CityEvents.AddRange(cityevents);
 						context.SaveChanges();
 					}
 
@@ -580,151 +548,10 @@ namespace TomorrowsVoice_Toplevel.Data
 						foreach (var @event in context.Events)
 						{
 							int year = int.Parse(@event.Name.TakeLast(4).ToArray());
-							if (@event.Name.Contains("St.C"))
-							//if (@event.Name == "St.C Gift Wrapping - 2024" || @event.Name == "St.C Gift Wrapping - 2025")
-							{
-								List<DateTime> dates = new List<DateTime>
-							{
-								new DateTime(year, 11, 29),
-								new DateTime(year, 12, 2),
-								new DateTime(year, 12, 3),
-								new DateTime(year, 12, 6),
-								new DateTime(year, 12, 7),
-								new DateTime(year, 12, 8),
-								new DateTime(year, 12, 11),
-								new DateTime(year, 12, 12),
-								new DateTime(year, 12, 16),
-								new DateTime(year, 12, 17),
-								new DateTime(year, 12, 20),
-								new DateTime(year, 12, 21),
-								new DateTime(year, 12, 22)
-							};
-
-								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
-							{
-								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 10am to 2pm
-							};
-
-								foreach (var date in dates)
-								{
-									foreach (var time in times)
-									{
-										if (date.DayOfWeek == DayOfWeek.Sunday && time.Start.Hours >= 18)
-											continue;
-
-										Shift shift = new Shift
-										{
-											ShiftDate = date,
-											EventID = @event.ID,
-											StartAt = date.Add(time.Start),
-											EndAt = date.Add(time.End),
-											VolunteersNeeded = 5
-										};
-										shifts.Add(shift);
-									}
-								}
-							}
-							else if (@event.Name.Contains("Ham"))
-							{
-								List<DateTime> dates = new List<DateTime>
-							{
-								new DateTime(year, 03, 20),
-								new DateTime(year, 03, 21),
-								new DateTime(year, 03, 22),
-								new DateTime(year, 03, 23),
-								new DateTime(year, 03, 24),
-								new DateTime(year, 03, 25),
-							};
-
-								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
-							{
-								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 8am to 12pm
-								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
-							};
-
-								foreach (var date in dates)
-								{
-									foreach (var time in times)
-									{
-										Shift shift = new Shift
-										{
-											ShiftDate = date,
-											EventID = @event.ID,
-											StartAt = date.Add(time.Start),
-											EndAt = date.Add(time.End),
-											VolunteersNeeded = 2
-										};
-										shifts.Add(shift);
-									}
-								}
-							}
-							else if (@event.Name.Contains("Tor"))
-							{
-								List<DateTime> dates = new List<DateTime>
-							{
-								new DateTime(year, 07, 10),
-								new DateTime(year, 07, 11),
-								new DateTime(year, 07, 12),
-								new DateTime(year, 07, 13),
-								new DateTime(year, 07, 14),
-								new DateTime(year, 07, 15),
-							};
-
-								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
-							{
-								(new TimeSpan(11, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
-							};
-
-								foreach (var date in dates)
-								{
-									foreach (var time in times)
-									{
-										Shift shift = new Shift
-										{
-											ShiftDate = date,
-											EventID = @event.ID,
-											StartAt = date.Add(time.Start),
-											EndAt = date.Add(time.End),
-											VolunteersNeeded = 2
-										};
-										shifts.Add(shift);
-									}
-								}
-							}
-							else if (@event.ID == 4)
-							{
-								List<DateTime> dates = new List<DateTime>
-							{
-								new DateTime(year, 07, 10),
-								new DateTime(year, 07, 11),
-								new DateTime(year, 07, 12),
-								new DateTime(year, 07, 13),
-								new DateTime(year, 07, 14),
-								new DateTime(year, 07, 15),
-							};
-
-								List<(TimeSpan Start, TimeSpan End)> times = new List<(TimeSpan, TimeSpan)>
-							{
-								(new TimeSpan(10, 0, 0), new TimeSpan(14, 0, 0)),   // 8am to 12pm
-								(new TimeSpan(14, 0, 0), new TimeSpan(18, 0, 0)),  // 12pm to 4pm
-							};
-
-								foreach (var date in dates)
-								{
-									foreach (var time in times)
-									{
-										Shift shift = new Shift
-										{
-											ShiftDate = date,
-											EventID = @event.ID,
-											StartAt = date.Add(time.Start),
-											EndAt = date.Add(time.End),
-											VolunteersNeeded = 2
-										};
-										shifts.Add(shift);
-									}
-								}
-							}
+							List<DateTime> dates = GetDates(@event);
+							var times = GetTimes();
+							int need = @event.Name.Contains("St. C") ? 5 : 2;
+							shifts.AddRange(GetShifts(@event, dates, times, need));
 						}
 
 						context.Shifts.AddRange(shifts);
@@ -735,9 +562,12 @@ namespace TomorrowsVoice_Toplevel.Data
 						{
 							var users = context.Volunteers.ToList().Cast<Volunteer>().ToArray();
 
-							foreach (Shift shift in context.Shifts.Where(s => s.ShiftDate < DateTime.Today))
+							foreach (Shift shift in context.Shifts)
 							{
-								int need = rnd.Next(shift.VolunteersNeeded + 1);
+								int need = shift.VolunteersNeeded;
+								if (shift.ShiftDate > DateTime.Now)
+									need = rnd.Next(shift.VolunteersNeeded + 1);
+
 								while (need > 0)
 								{
 									rnd.Shuffle<Volunteer>(users);
@@ -848,10 +678,14 @@ namespace TomorrowsVoice_Toplevel.Data
 		{
 			var events = new List<Event>();
 			Random rnd = new();
-			int past = rnd.Next(0, 2);
-			int num = rnd.Next(1, 3);
-			for (int i = 0 - past; i < num; i++)
+			int past = -rnd.Next(0, 3);
+			int num = rnd.Next(2, 4);
+			for (int i = past; i < num; i++)
 			{
+				Status status = Status.Active;
+				if (end.AddYears(i) < DateTime.Today)
+					status = Status.Inactive;
+
 				events.Add(new Event
 				{
 					Name = $"{name} - {start.Year + i}",
@@ -859,10 +693,71 @@ namespace TomorrowsVoice_Toplevel.Data
 					EndDate = end.AddYears(i),
 					Descripion = desc,
 					Location = location,
-					Status = Status.Active
+					Status = status
 				});
 			}
 			return events;
+		}
+
+		private static List<Shift> GetShifts(Event e, List<DateTime> dates, List<TimeSpan> times, int volunteersNeeded)
+		{
+			Random rnd = new Random();
+
+			var shifts = new List<Shift>();
+			foreach (var date in dates)
+			{
+				double timeTotal = rnd.Next(6, 11);
+				foreach (var time in times)
+				{
+					if (e.Location.Contains("Pen") && date.DayOfWeek == DayOfWeek.Sunday && timeTotal >= 18)
+						continue;
+					if ((timeTotal + time.TotalHours) >= 24)
+						continue;
+
+					Shift shift = new Shift
+					{
+						ShiftDate = date,
+						EventID = e.ID,
+						Event = e,
+						StartAt = date.Add(TimeSpan.FromHours(timeTotal)),
+						EndAt = date.Add(TimeSpan.FromHours(timeTotal + time.TotalHours)),
+						VolunteersNeeded = volunteersNeeded
+					};
+					timeTotal += time.TotalHours;
+					shifts.Add(shift);
+				}
+			}
+
+			return shifts;
+		}
+
+		private static List<DateTime> GetDates(Event e)
+		{
+			var dates = new List<DateTime>();
+			for (var date = e.StartDate; date <= e.EndDate; date = date.AddDays(1))
+				dates.Add(date);
+			return dates;
+		}
+
+		public static List<TimeSpan> GetTimes()
+		{
+			Random rnd = new Random();
+
+			var timeRanges = new List<TimeSpan>();
+			int numOfTimes = rnd.Next(1, 5);
+
+			for (int i = 0; i < numOfTimes; i++)
+			{
+				int h = rnd.Next(1, 6);
+				int m = 0;
+				if (rnd.Next(0, 2) == 1)
+					m = 30;
+				TimeSpan range = new TimeSpan(h, m, 0);
+
+				timeRanges.Add(range);
+			}
+
+			return timeRanges;
 		}
 
 		private static void AddUser(string email, string? role, IServiceProvider serviceProvider)

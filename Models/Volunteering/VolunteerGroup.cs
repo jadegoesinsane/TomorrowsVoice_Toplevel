@@ -11,5 +11,7 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public int GroupID { get; set; }
 		public Group? Group { get; set; }
+
+		public DateTime JoinedOn { get; } = DateTime.Now;
 	}
 }
