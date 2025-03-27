@@ -7,6 +7,7 @@ using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Events;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Utilities;
 using TomorrowsVoice_Toplevel.ViewModels;
@@ -17,9 +18,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	public class VolunteerShiftController : ElephantController
 	{
 		private readonly TVContext _context;
-
-		public VolunteerShiftController(TVContext context, IToastNotification toastNotification) : base(context, toastNotification)
+		private readonly IMyEmailSender _emailSender;
+		public VolunteerShiftController(TVContext context, IMyEmailSender emailSender, IToastNotification toastNotification) : base(context, toastNotification)
 		{
+			_emailSender = emailSender;
 			_context = context;
 		}
 
@@ -82,6 +84,65 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_context.Add(userShift);
 			await _context.SaveChangesAsync();
 			_toastNotification.AddSuccessToastMessage("Signed up for shift!");
+
+
+
+
+			//var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == volunteerID);
+
+			//var shift = await _context.Shifts.Include(a => a.Event).FirstOrDefaultAsync(m => m.ID == shiftID);
+			var shift2 = await _context.Shifts
+						.Include(d => d.Event)      
+						.AsNoTracking()
+						.FirstOrDefaultAsync(d => d.ID == shift.ID);
+			string Subject = "Sign Up shift ";
+
+			string emailContent = $"You have Signed Up  for the shift {shift.TimeSummary}  of event {shift2.Event.Name}.  ";
+
+			var volunteers = _context.Volunteers;
+
+			int folksCount = 0;
+			try
+			{
+				//Send a Notice.
+				List<EmailAddress> folks = (from p in volunteers
+
+											where p.ID == volunteer.ID
+											select new EmailAddress
+											{
+												Name = p.NameFormatted,
+												Address = p.Email
+											}).ToList();
+				folksCount = folks.Count;
+				if (folksCount > 0)
+				{
+					var msg = new EmailMessage()
+					{
+						ToAddresses = folks,
+						Subject = Subject,
+						Content = "<p>" + emailContent
+					};
+					await _emailSender.SendToManyAsync(msg);
+					ViewData["Message"] = "Message sent to " + folksCount + " Manager"
+						+ ((folksCount == 1) ? "." : "s.");
+				}
+				else
+				{
+					ViewData["Message"] = "Message NOT sent!  No Manager.";
+				}
+			}
+			catch (Exception ex)
+			{
+				string errMsg = ex.GetBaseException().Message;
+				ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
+					+ ((folksCount == 1) ? "" : "s") + " in the list.";
+			}
+
+
+
+
+
+
 
 			return Redirect(ViewData["returnURL"].ToString());
 		}
