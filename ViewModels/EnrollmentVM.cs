@@ -10,7 +10,10 @@ namespace TomorrowsVoice_Toplevel.ViewModels
 		[Display(Name = "Shows up")]
 		public bool ShowOrNot { get; set; } = false;
 
+		[DataType(DataType.Time)]
 		public DateTime StartAt { get; set; }
+
+		[DataType(DataType.Time)]
 		public DateTime EndAt { get; set; }
 
 		public int ShiftID { get; set; }

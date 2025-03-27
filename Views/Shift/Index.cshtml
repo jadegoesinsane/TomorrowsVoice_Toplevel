@@ -210,16 +210,27 @@
                 let enrollments = [];
                 $("#performanceTable tbody tr").each(function () {
                     let row = $(this);
+
+                    let startAt = row.find("input[name='StartAt']").val();
+                    let endAt = row.find("input[name='EndAt']").val();
+
+                    
+                    let currentDate = new Date().toISOString().split('T')[0]; 
+                    let startAtDateTime = `${currentDate}T${startAt}:00`; 
+                    let endAtDateTime = `${currentDate}T${endAt}:00`;
                     let enrollment = {
                         UserID: row.find("input[name='UserID']").val(),
                         ShiftID: shiftId,
                         ShowOrNot: row.find("input[name='ShowOrNot']").prop("checked"),
-                        StartAt: row.find("input[name='StartAt']").val() + ":00",
-                        EndAt: row.find("input[name='EndAt']").val() + ":00"
+                        StartAt: startAtDateTime,  
+                        EndAt: endAtDateTime       
                     };
 
                     enrollments.push(enrollment);
                 });
+
+           
+
 
                 $.ajax({
                     url: "/Shift/UpdatePerformance",

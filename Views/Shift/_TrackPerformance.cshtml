@@ -22,12 +22,12 @@
                     <input type="checkbox" name="ShowOrNot" @(Model[i].ShowOrNot ? "checked" : "") />
                 </td>
                 <td>
-                   
-                    <input type="time" name="StartAt" class="form-control" value="@Model[i].StartAt.ToString("hh\\:mm")" />
+
+                    <input type="time" name="StartAt" class="form-control" value="@Model[i].StartAt.ToString("HH:mm")" />
                 </td>
                 <td>
-                    
-                    <input type="time" name="EndAt" class="form-control" value="@Model[i].EndAt.ToString("hh\\:mm")" />
+
+                    <input type="time" name="EndAt" class="form-control" value="@Model[i].EndAt.ToString("HH:mm")" />
                 </td>
             </tr>
         }
