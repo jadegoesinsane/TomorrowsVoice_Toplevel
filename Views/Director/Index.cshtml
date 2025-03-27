@@ -3,7 +3,11 @@
 <partial name="_ViewHeading" />
 @if (User.IsInRole("Admin"))
 {
+	<p>
 
+		<a class="btn btn-primary add"
+		   asp-controller="Director" asp-action="Create">Add New Director</a>
+	</p>
 }
 <form asp-action="Index" method="get">
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
