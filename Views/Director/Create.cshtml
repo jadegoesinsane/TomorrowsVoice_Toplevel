@@ -29,12 +29,7 @@
 			</div>
 			<div class="col-md-4">
 				<div class="form-floating required">
-					@Html.DropDownListFor(
-											model => model.Email, 
-											(IEnumerable<SelectListItem>)ViewBag.UsersInDirectorRole, 
-											"Select Email", 
-											new { @class = "form-control" } 
-											)
+					<input asp-for="Email" class="form-control" placeholder="Email" />
 					<label asp-for="Email" class="control-label"></label>
 					<span asp-validation-for="Email" class="text-danger"></span>
 				</div>

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -29,6 +30,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private readonly TVContext _context;
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly ApplicationDbContext _identityContext;
+
 		public DirectorController(TVContext context, ApplicationDbContext identityContext, IMyEmailSender emailSender, UserManager<IdentityUser> userManager, IToastNotification toastNotification) : base(context, toastNotification)
 		{
 			_emailSender = emailSender;
@@ -37,9 +39,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_identityContext = identityContext;
 		}
 
-        [Authorize(Roles = "Admin, Director")]
-        // GET: Director
-        public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
+		[Authorize(Roles = "Admin, Director")]
+		public async Task<IActionResult> Index(string? SearchString, List<int?> ChapterID, int? page, int? pageSizeID,
 			string? actionButton, string? StatusFilter, string sortDirection = "asc", string sortField = "Director")
 		{
 			string[] sortOptions = new[] { "Director", "Chapter" };
@@ -160,9 +161,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(pagedData);
 		}
 
-        [Authorize(Roles = "Admin, Director")]
-        // GET: Director/Details/5
-        public async Task<IActionResult> Details(int? id, int? chapterID)
+		[Authorize(Roles = "Admin, Director")]
+		public async Task<IActionResult> Details(int? id, int? chapterID)
 		{
 			if (id == null)
 			{
@@ -183,25 +183,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-        [Authorize(Roles = "Admin")]
-        // GET: Director/Create
-        public IActionResult Create()
+		[Authorize(Roles = "Admin")]
+		public IActionResult Create()
 		{
 			Director director = new Director();
 			PopulateDropDownLists(director);
-
-			
-			var usersInDirectorRole = _userManager.GetUsersInRoleAsync("Director").Result;
-			var directorEmails = _context.Directors.Select(d => d.Email).ToList();
-			var filteredUsers = usersInDirectorRole
-				.Where(u => !directorEmails.Contains(u.Email)) 
-				.Select(u => new SelectListItem
-				{
-					Text = u.UserName,  
-					Value = u.UserName  
-				})
-				.ToList();
-			ViewBag.UsersInDirectorRole = filteredUsers;
 			return View(director);
 		}
 
@@ -210,8 +196,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director,
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,Email,Phone,ChapterID,Status")] Director director,
 			List<IFormFile> theFiles)
 		{
 			try
@@ -224,59 +210,57 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					await _context.SaveChangesAsync();
 					AddSuccessToast(director.NameFormatted);
 
-				
+					InsertIdentityUser(director.Email, new string[] { "Director" });
+					await InviteUserToResetPassword(director, null);
 
-					var directors =  _context.Directors.Include(v => v.Chapter).AsNoTracking();
+					//var directors =  _context.Directors.Include(v => v.Chapter).AsNoTracking();
 
-					var director2 = await _context.Directors
-						.Include(d => d.Chapter)       // Include the Chapter entity
-						.ThenInclude(c => c.City)      // Include the City entity under Chapter
-						.AsNoTracking()
-						.FirstOrDefaultAsync(d => d.ID == director.ID);
-					string Subject = "New Director";
-			
-					string emailContent = $" Congratulations { director2.NameFormatted}, you have become the director of {director2.Chapter.City.Name}  ";
+					//var director2 = await _context.Directors
+					//	.Include(d => d.Chapter)       // Include the Chapter entity
+					//	.ThenInclude(c => c.City)      // Include the City entity under Chapter
+					//	.AsNoTracking()
+					//	.FirstOrDefaultAsync(d => d.ID == director.ID);
+					//string Subject = "New Director";
 
-					var volunteers = _context.Volunteers;
+					//string emailContent = $" Congratulations { director2.NameFormatted}, you have become the director of {director2.Chapter.City.Name}  ";
 
-					int folksCount = 0;
-					try
-					{
-						//Send a Notice.
-						List<EmailAddress> folks = (from p in directors
+					//var volunteers = _context.Volunteers;
 
-													where p.ID == director.ID
-													select new EmailAddress
-													{
-														Name = p.NameFormatted,
-														Address = p.Email
-													}).ToList();
-						folksCount = folks.Count;
-						if (folksCount > 0)
-						{
-							var msg = new EmailMessage()
-							{
-								ToAddresses = folks,
-								Subject = Subject,
-								Content = "<p>" + emailContent
-							};
-							await _emailSender.SendToManyAsync(msg);
-							ViewData["Message"] = "Message sent to " + folksCount + " Manager"
-								+ ((folksCount == 1) ? "." : "s.");
-						}
-						else
-						{
-							ViewData["Message"] = "Message NOT sent!  No Manager.";
-						}
-					}
-					catch (Exception ex)
-					{
-						string errMsg = ex.GetBaseException().Message;
-						ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
-							+ ((folksCount == 1) ? "" : "s") + " in the list.";
-					}
-
-
+					//int folksCount = 0;
+					//try
+					//{
+					//	//Send a Notice.
+					//	List<EmailAddress> folks = (from p in directors
+					//								where p.ID == director.ID
+					//								select new EmailAddress
+					//								{
+					//									Name = p.NameFormatted,
+					//									Address = p.Email
+					//								}).ToList();
+					//	folksCount = folks.Count;
+					//	if (folksCount > 0)
+					//	{
+					//		var msg = new EmailMessage()
+					//		{
+					//			ToAddresses = folks,
+					//			Subject = Subject,
+					//			Content = "<p>" + emailContent
+					//		};
+					//		await _emailSender.SendToManyAsync(msg);
+					//		ViewData["Message"] = "Message sent to " + folksCount + " Manager"
+					//			+ ((folksCount == 1) ? "." : "s.");
+					//	}
+					//	else
+					//	{
+					//		ViewData["Message"] = "Message NOT sent!  No Manager.";
+					//	}
+					//}
+					//catch (Exception ex)
+					//{
+					//	string errMsg = ex.GetBaseException().Message;
+					//	ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
+					//		+ ((folksCount == 1) ? "" : "s") + " in the list.";
+					//}
 
 					return RedirectToAction("Details", new { director.ID });
 				}
@@ -308,8 +292,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-        // GET: Director/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+		// GET: Director/Edit/5
+		public async Task<IActionResult> Edit(int? id)
 		{
 			if (id == null)
 			{
@@ -333,7 +317,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, List<IFormFile> theFiles)
+		public async Task<IActionResult> Edit(int id, List<IFormFile> theFiles)
 		{
 			var directorToUpdate = await _context.Directors
 				.Include(d => d.Chapter)
@@ -392,9 +376,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(directorToUpdate);
 		}
 
-        [Authorize(Roles = "Admin")]
-        // GET: Director/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -418,8 +401,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Director/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var director = await _context.Directors
 				.Include(d => d.Documents)
@@ -457,8 +440,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(director);
 		}
 
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Recover(int? id)
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
 			{
@@ -482,8 +465,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Director/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RecoverConfirmed(int id)
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var director = await _context.Directors
 				.Include(d => d.Documents)
@@ -607,6 +590,54 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				ChapterID = 7
 			};
 			return Json(data);
+		}
+
+		private void InsertIdentityUser(string Email, string[] selectedRoles)
+		{
+			//Create the IdentityUser in the IdentitySystem
+			if (_userManager.FindByEmailAsync(Email).Result == null)
+			{
+				IdentityUser user = new IdentityUser
+				{
+					UserName = Email,
+					Email = Email,
+					EmailConfirmed = true
+				};
+				//Create a random password with a default 8 characters
+				string password = MakePassword.Generate();
+				password = "Pa55w@rD";
+				IdentityResult result = _userManager.CreateAsync(user, password).Result;
+
+				if (result.Succeeded)
+				{
+					foreach (string role in selectedRoles)
+					{
+						_userManager.AddToRoleAsync(user, role).Wait();
+					}
+				}
+			}
+			else
+			{
+				TempData["message"] = "The Login Account for " + Email + " was already in the system.";
+			}
+		}
+
+		private async Task InviteUserToResetPassword(Director director, string message)
+		{
+			message ??= "Hello " + director.FirstName + "<br /><p>Please navigate to:<br />" +
+						"<a href='https://theapp.azurewebsites.net/' title='https://theapp.azurewebsites.net/' target='_blank' rel='noopener'>" +
+						"https://theapp.azurewebsites.net</a><br />" +
+						" and create a new password for " + director.Email + " using Forgot Password.</p>";
+			try
+			{
+				await _emailSender.SendOneAsync(director.NameFormatted, director.Email,
+				"Account Registration", message);
+				_toastNotification.AddSuccessToastMessage("Invitation email sent to " + director.NameFormatted + " at " + director.Email);
+			}
+			catch (Exception)
+			{
+				_toastNotification.AddErrorToastMessage("Could not send Invitation email to " + director.NameFormatted + " at " + director.Email);
+			}
 		}
 
 		private bool DirectorExists(int id)
