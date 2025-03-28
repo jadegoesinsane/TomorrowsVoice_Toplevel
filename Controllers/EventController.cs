@@ -129,7 +129,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(pagedData);
 		}
 
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin, Planner")]
 		public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)
@@ -393,7 +393,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(@event);
 		}
 
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin, Planner")]
 		public async Task<IActionResult> Close(int? id)
 		{
 			if (id == null)
@@ -414,7 +414,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Event/Delete/5
 		[HttpPost, ActionName("Close")]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin, Planner")]
 		public async Task<IActionResult> CloseConfirmed(int id)
 		{
 			var @event = await _context.Events.Include(c => c.Shifts)
@@ -470,8 +470,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 
-		[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Recover(int? id)
+		[Authorize(Roles = "Admin, Planner")]
+		public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
 			{
@@ -491,7 +491,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Event/Recover/5
 		[HttpPost, ActionName("Recover")]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin, Planner")]
 		public async Task<IActionResult> RecoverConfirmed(int id)
 		{
 			var @event = await _context.Events.Include(c => c.Shifts)
