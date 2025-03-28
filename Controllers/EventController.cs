@@ -58,6 +58,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					.ThenInclude(s => s.UserShifts)
 				.Include(e => e.Shifts)
 					.ThenInclude(s => s.Colour)
+					.OrderBy(e=>e.StartDate)
 				.AsNoTracking();
 
 			if (!String.IsNullOrEmpty(StatusFilter))
