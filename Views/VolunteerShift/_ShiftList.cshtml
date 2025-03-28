@@ -5,12 +5,12 @@
 
 @foreach (var item in Model)
 {
-	<li class="p-1 row align-items-center m-2 rounded-3" style="border:1px solid #e9ecef;">
-		<label class="text-center fw-bold fs-5 col-auto" style="border-right:2px solid @item.BackgroundColor;">
-			<span class="d-block">@item.ShiftDate.ToString("ddd")</span>
-			<span class="d-block">@item.ShiftDate.Day</span>
-		</label>
-		<h3 class="col-auto">
+		<li class="p-1 row align-items-center m-2 rounded-3" style="border:1px solid #e9ecef;">
+			<label class="text-center fw-bold fs-5 col-auto" style="border-right:2px solid @item.Colour.BackgroundColour;">
+				<span class="d-block">@item.ShiftDate.ToString("ddd")</span>
+				<span class="d-block">@item.ShiftDate.Day</span>
+			</label>
+			<h3 class="col-auto">
 			@if (!String.IsNullOrWhiteSpace(item.Title))
 			{
 				@Html.Raw($"{item.Event?.Name} ({item.Title})")
@@ -19,68 +19,68 @@
 			{
 				@item.Event?.Name
 			}
-		</h3>
+			</h3>
 
-		<div class="col-auto ms-auto row">
+			<div class="col-auto ms-auto row">
 			@if (item.EndAt > DateTime.Now)
 			{
-				<div class="col-auto">
+						<div class="col-auto">
 					@if (item.ShiftDate < DateTime.Today.AddDays(2))
 					{
-						<a class="btn btn-primary add btn-secondary disabled"
-						   asp-controller="Volunteer"
-						   asp-action="EmailNotice"
-						   asp-route-volunteerId="@volunteer?.ID"
-						   asp-route-shiftId="@item.ID"
-						   style="pointer-events: none; opacity: 0.5;">
-							Cancel Shift
-						</a>
+									<a class="btn btn-primary add btn-secondary disabled"
+									   asp-controller="Volunteer"
+									   asp-action="EmailNotice"
+									   asp-route-volunteerId="@volunteer?.ID"
+									   asp-route-shiftId="@item.ID"
+									   style="pointer-events: none; opacity: 0.5;">
+										Cancel Shift
+									</a>
 					}
 					else
 					{
-						<a class="btn btn-primary add"
-						   id="btnCancel"
-						   asp-controller="Volunteer"
-						   asp-action="SignOffShift"
-						   asp-route-volunteerId="@volunteer?.ID"
-						   asp-route-shiftId="@item.ID">
-							Cancel Shift
-						</a>
+									<a class="btn btn-primary add"
+									   id="btnCancel"
+									   asp-controller="Volunteer"
+									   asp-action="SignOffShift"
+									   asp-route-volunteerId="@volunteer?.ID"
+									   asp-route-shiftId="@item.ID">
+										Cancel Shift
+									</a>
 					}
-				</div>
+						</div>
 			}
 
-			<div class="col-auto">
+				<div class="col-auto">
 				@if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any() || item.ShiftDate > DateTime.Today)
 				{
-					<button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
-							data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
-							disabled>
-						Record Hours
-					</button>
+							<button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
+									data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
+									disabled>
+								Record Hours
+							</button>
 				}
 				else
 				{
-					<button type="button" class="btn btn-primary h-100 trackPerformanceBtn"
-							data-shiftid="@item.ID" data-volunteerid="@volunteer.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-						Record Hours
-					</button>
+							<button type="button" class="btn btn-primary h-100 trackPerformanceBtn"
+									data-shiftid="@item.ID" data-volunteerid="@volunteer.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+								Record Hours
+							</button>
 				}
+				</div>
 			</div>
-		</div>
 
-		<p style="margin-left: 4rem; margin-bottom: 0px !important;">
-			<span class="pe-3" style="border-right:2px solid #467ECE;">
-				<i class="bi bi-clock"></i> @Html.Raw($"{item.StartAt.ToString(item.StartAt.Minute == 0 ? "%htt" : "h:mmtt").ToLower()} to {item.EndAt.ToString(item.EndAt.Minute == 0 ? "%htt" : "h:mmtt").ToLower()}")
-			</span>
-			<span class="ps-3">
-				<i class="bi bi-geo-alt"></i>
+			<p style="margin-left: 4rem; margin-bottom: 0px !important;">
+				<span class="pe-3" style="border-right:2px solid #467ECE;">
+					<i class="bi bi-clock"></i> @Html.Raw($"{item.StartAt.ToString(item.StartAt.Minute == 0 ? "%htt" : "h:mmtt").ToLower()} to {item.EndAt.ToString(item.EndAt.Minute == 0 ? "%htt" : "h:mmtt").ToLower()}")
+				</span>
+				<span class="ps-3">
+					<i class="bi bi-geo-alt"></i>
 				@if (!String.IsNullOrWhiteSpace(item.Location))
 				{
 					@Html.Raw(item.Location + " ⋅ ")
 				}
 				@item.Event?.Location
-			</span>
-		</p>
-	</li>
+				</span>
+			</p>
+		</li>
 }

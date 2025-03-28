@@ -3,6 +3,7 @@
     "@floating-ui/dom": "^1.6.13",
     "bootstrap-icons": "^1.11.3",
     "fullcalendar": "^6.1.15",
-    "select2": "^4.1.0-rc.0"
+    "select2": "^4.1.0-rc.0",
+    "virtual-select-plugin": "^1.0.47"
   }
 }

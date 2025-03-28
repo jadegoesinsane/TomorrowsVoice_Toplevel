@@ -1,0 +1,40 @@
+﻿@model TomorrowsVoice_Toplevel.Models.ColourScheme
+
+<div class="d-flex align-items-center">
+    <h1 class="me-auto">Are you sure you want to delete @Model.Name</h1>
+</div>
+<div class="row g-2 my-3 justify-content-center">
+    <hr />
+    <dl class="row">
+        <div class="col">
+            <dt class="text-muted fw-normal m-0">
+                @Html.DisplayNameFor(model => model.BackgroundColour)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.BackgroundColour)
+            </dd>
+        </div>
+        <div class="col">
+            <dt class="text-muted fw-normal m-0">
+                @Html.DisplayNameFor(model => model.TextColour)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.TextColour)
+            </dd>
+        </div>
+        <div class="col">
+            <dt class="text-muted fw-normal m-0">
+                @Html.DisplayNameFor(model => model.BorderColour)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.BorderColour)
+            </dd>
+        </div>
+    </dl>
+    <partial name="_ContrastExample" model="@Model" />
+</div>
+<form asp-action="Delete">
+    <input type="hidden" asp-for="ID" />
+    <input type="submit" value="Delete" class="btn btn-danger" /> |
+    <a asp-action="Index">Back to Colour Scheme List</a>
+</form>

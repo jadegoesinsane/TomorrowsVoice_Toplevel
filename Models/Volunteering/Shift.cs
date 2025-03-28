@@ -44,8 +44,11 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		[DataType(DataType.MultilineText)]
 		public string? Note { get; set; }
 
-		public string BackgroundColor { get; set; } = ColourPalette.BrightColours["Blue"];
-		public string TextColor => ColourPalette.GetTextColour(BackgroundColor);
+		public ColourScheme? Colour { get; set; }
+
+		[Required(ErrorMessage = "Choose event colour palette.")]
+		[Display(Name = "Colour Palette")]
+		public int ColourID { get; set; } = 1;
 
 		[Display(Name = "Date")]
 		[Required(ErrorMessage = "Please select a date for this Shift")]

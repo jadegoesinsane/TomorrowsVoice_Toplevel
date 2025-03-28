@@ -11,7 +11,7 @@
 
 	<!-- Bootstrap Table CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.css">
-	
+
 	<!-- Select2 CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
@@ -25,6 +25,9 @@
 
 	<!-- JQuery -->
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+	<!-- Mutlti Select -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@4.0.1/dist/css/multi-select-tag.min.css">
 
 	<style>
 
@@ -131,8 +134,8 @@
 									<li><a class="dropdown-item" asp-area="" asp-controller="Singer" asp-action="Upload">Upload Singers</a></li>
 									<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Email">Send Email Notification</a></li>
 									<li>
-										<a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="VolunteerSelect">
-											Profile
+										<a class="dropdown-item" asp-area="" asp-controller="ColourScheme" asp-action="Index">
+											Manage Colours
 										</a>
 									</li>
 									<li><a class="dropdown-item" asp-area="" asp-controller="UserRole" asp-action="Index">Role Assignments</a></li>
@@ -173,6 +176,9 @@
 	<!-- Bootstrap Table JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/bootstrap-table.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.1/dist/extensions/cookie/bootstrap-table-cookie.min.js"></script>
+
+	<!-- Multi Select -->
+	<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@4.0.1/dist/js/multi-select-tag.min.js"></script>
 
 	<!-- Site JS -->
 	<script src="~/js/site.js" asp-append-version="true"></script>

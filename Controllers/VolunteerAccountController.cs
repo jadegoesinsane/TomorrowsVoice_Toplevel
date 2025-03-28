@@ -64,9 +64,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return RedirectToAction("Create");
 			}
-
-
-
 			return View(volunteer);
 		}
 
@@ -99,12 +96,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						Email = User.Identity.Name
 					};
 
-					
 					volunteer.ID = _context.GetNextID();
 					_context.Add(volunteer);
 					await _context.SaveChangesAsync();
 
-					
 					var _user = await _userManager.FindByEmailAsync(volunteer.Email);
 					if (_user != null)
 					{
@@ -112,15 +107,12 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						var userRoles = await _userManager.GetRolesAsync(_user);
 						if (!userRoles.Contains("Volunteer"))
 						{
-							
 							await _userManager.AddToRoleAsync(_user, "Volunteer");
 						}
-
 					
 						await _signInManager.RefreshSignInAsync(_user);
 					}
 
-					
 					_toastNotification.AddSuccessToastMessage($"Finished setting up account, welcome {volunteer.FirstName}!");
 					return RedirectToAction("Details", new { volunteer.ID });
 				}

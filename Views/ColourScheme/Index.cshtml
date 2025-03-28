@@ -1,0 +1,56 @@
+﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.ColourScheme>
+<a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;">Add Colour Scheme</a>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.BackgroundColour)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.TextColour)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.BorderColour)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					<div class="badge" style="background-color: @item.BackgroundColour; color: @item.TextColour; border: 2px solid @item.BorderColour;">
+						@Html.DisplayFor(modelItem => item.Name)
+					</div>
+				</td>
+				<td>
+					<div class="d-flex align-items-center">
+						<div style="background-color: @item.BackgroundColour; width: 20px; height: 20px; display: inline-block; border: 1px solid #000; margin-right:0.5rem;"></div>
+							@Html.DisplayFor(modelItem => item.BackgroundColour)
+						</div>
+				</td>
+				<td>
+					<div class="d-flex align-items-center">
+						<div style="background-color: @item.TextColour; width: 20px; height: 20px; display: inline-block; border: 1px solid #000; margin-right:0.5rem;"></div>
+						@Html.DisplayFor(modelItem => item.TextColour)
+					</div>
+				</td>
+				<td>
+					<div class="d-flex align-items-center">
+						<div style="background-color: @item.BorderColour; width: 20px; height: 20px; display: inline-block; border: 1px solid #000; margin-right:0.5rem;"></div>
+						@Html.DisplayFor(modelItem => item.BorderColour)
+					</div>
+				</td>
+				<td>
+					<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+					<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+					<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

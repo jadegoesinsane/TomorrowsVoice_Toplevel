@@ -40,11 +40,11 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 		[Display(Name = "Address")]
 		public string Location { get; set; }
 
-		[Display(Name = "Background Colour")]
-		public string BackgroundColour { get; set; } = ColourPalette.BrightColours["Blue"];
+		public ColourScheme? Colour { get; set; }
 
-		[Display(Name = "Text Colour")]
-		public string TextColour => ColourPalette.GetTextColour(BackgroundColour);
+		[Required(ErrorMessage = "Choose event colour palette.")]
+		[Display(Name = "Colour Palette")]
+		public int ColourID { get; set; } = 1;
 
 		[Display(Name = "Status")]
 		public Status Status { get; set; } = Status.Active;

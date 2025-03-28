@@ -30,8 +30,8 @@
 		<div class="col-md-3">
 			<div class="form-floating required">
 				@Html.DropDownList("BackgroundColour", null, new { @class = "bg-select form-control" })
-				<label asp-for="BackgroundColour" class="control-label"></label>
-				<span asp-validation-for="BackgroundColour" class="text-danger"></span>
+				<label asp-for="ColourID" class="control-label"></label>
+				<span asp-validation-for="ColourID" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="w-100" style="margin:0px;"></div>
@@ -44,29 +44,11 @@
 		</div>
 		<div class="col-md-3">
 			<div class="form-floating required">
-				@Html.DropDownList("CityEvents", null, new { @class = "city-select form-control", @multiple = "" })
 				<label asp-for="CityEvents" class="control-label">Cities</label>
+				<select id="CityEvents" asp-for="CityEvents" class="form-control" multiple></select>
 				<span asp-validation-for="CityEvents" class="text-danger"></span>
 			</div>
 		</div>
-
-		@* <div class="col-md-6">
-		<div class="row">
-		<div class="form-group col-md">
-		<label class="control-label"> City Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
-		<strong>-</strong>
-		</button>
-		@Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
-		</div>
-		<div class="form-group col-md">
-		<label class="control-label"> Choose City</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
-		<strong>+</strong>
-		</button>
-		@Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
-		</div>
-		</div>
-		</div> *@
-
 		<div class="w-100" style="margin:0px;"></div>
 		<div class="col-md-8">
 			<div class="form-floating my-4">
@@ -90,24 +72,21 @@
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
 
-	<script src="~/js/multiselect.js"></script>
+	<script src="~/js/colourDDL.js"></script>
+	@* <script src="~/js/multiselect.js"></script> *@
 	<script src="~/js/shiftTimeTable.js" type="module"></script>
 	<script type="text/javascript">
-		function formatColours(colour) {
-			if (!colour.id) {
-				return colour.text;
-			}
-			var $colour = $(`<span><span class="dot form-check-input ` + colour.text.replace(/\s+/g, '').toLowerCase() + `"></span> ` + colour.text + `</span>`);
-			return $colour;
-		};
-
 		$(document).ready(function () {
-			$('.bg-select').select2({
-				templateResult: formatColours,
-				minimumResultsForSearch: Infinity
-			});
-			$('.city-select').select2();
 			$('.select2-container').addClass('form-control');
+
+			var cityOptions = @Html.Raw(Json.Serialize(ViewBag.CityOptions));
+			cityOptions.forEach(function (option) {
+				$('#CityEvents').append(new Option(option.text, option.value, option.selected));
+			});
+			var tagSelector = new MultiSelectTag('CityEvents', {
+				required: true,
+				placeholder: 'Select associated cities'
+			});
 		});
 
 		function rangeCheck() {
@@ -172,5 +151,4 @@
 		z-index: 1000 !important;
 		display: none;
 	}
-
 </style>

@@ -26,39 +26,19 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Events",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Descripion = table.Column<string>(type: "TEXT", nullable: false),
-                    Location = table.Column<string>(type: "TEXT", nullable: false),
-                    BackgroundColour = table.Column<string>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Events", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Groups",
+                name: "ColourSchemes",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 55, nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    GroupType = table.Column<string>(type: "TEXT", maxLength: 55, nullable: true),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    BackgroundColour = table.Column<string>(type: "TEXT", nullable: false)
+                    BackgroundColour = table.Column<string>(type: "TEXT", nullable: false),
+                    TextColour = table.Column<string>(type: "TEXT", nullable: false),
+                    BorderColour = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Groups", x => x.ID);
+                    table.PrimaryKey("PK_ColourSchemes", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -126,78 +106,49 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CityEvents",
-                columns: table => new
-                {
-                    CityID = table.Column<int>(type: "INTEGER", nullable: false),
-                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CityEvents", x => new { x.CityID, x.EventID });
-                    table.ForeignKey(
-                        name: "FK_CityEvents_Cities_CityID",
-                        column: x => x.CityID,
-                        principalTable: "Cities",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CityEvents_Events_EventID",
-                        column: x => x.EventID,
-                        principalTable: "Events",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Shifts",
+                name: "Events",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", maxLength: 55, nullable: true),
-                    Location = table.Column<string>(type: "TEXT", nullable: true),
-                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
-                    BackgroundColor = table.Column<string>(type: "TEXT", nullable: false),
-                    ShiftDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    VolunteersNeeded = table.Column<int>(type: "INTEGER", nullable: false),
-                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Descripion = table.Column<string>(type: "TEXT", nullable: false),
+                    Location = table.Column<string>(type: "TEXT", nullable: false),
+                    ColourID = table.Column<int>(type: "INTEGER", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Shifts", x => x.ID);
+                    table.PrimaryKey("PK_Events", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Shifts_Events_EventID",
-                        column: x => x.EventID,
-                        principalTable: "Events",
+                        name: "FK_Events_ColourSchemes_ColourID",
+                        column: x => x.ColourID,
+                        principalTable: "ColourSchemes",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "VolunteerGroups",
+                name: "Groups",
                 columns: table => new
                 {
-                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: false),
-                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
                     ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 55, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    GroupType = table.Column<string>(type: "TEXT", maxLength: 55, nullable: true),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    ColourID = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VolunteerGroups", x => new { x.VolunteerID, x.GroupID });
+                    table.PrimaryKey("PK_Groups", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_VolunteerGroups_Groups_GroupID",
-                        column: x => x.GroupID,
-                        principalTable: "Groups",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VolunteerGroups_Volunteers_VolunteerID",
-                        column: x => x.VolunteerID,
-                        principalTable: "Volunteers",
+                        name: "FK_Groups_ColourSchemes_ColourID",
+                        column: x => x.ColourID,
+                        principalTable: "ColourSchemes",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -262,6 +213,89 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         principalTable: "Chapters",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CityEvents",
+                columns: table => new
+                {
+                    CityID = table.Column<int>(type: "INTEGER", nullable: false),
+                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CityEvents", x => new { x.CityID, x.EventID });
+                    table.ForeignKey(
+                        name: "FK_CityEvents_Cities_CityID",
+                        column: x => x.CityID,
+                        principalTable: "Cities",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CityEvents_Events_EventID",
+                        column: x => x.EventID,
+                        principalTable: "Events",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Shifts",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 55, nullable: true),
+                    Location = table.Column<string>(type: "TEXT", nullable: true),
+                    Note = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true),
+                    ColourID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ShiftDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    VolunteersNeeded = table.Column<int>(type: "INTEGER", nullable: false),
+                    EventID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shifts", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Shifts_ColourSchemes_ColourID",
+                        column: x => x.ColourID,
+                        principalTable: "ColourSchemes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Shifts_Events_EventID",
+                        column: x => x.EventID,
+                        principalTable: "Events",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VolunteerGroups",
+                columns: table => new
+                {
+                    VolunteerID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GroupID = table.Column<int>(type: "INTEGER", nullable: false),
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VolunteerGroups", x => new { x.VolunteerID, x.GroupID });
+                    table.ForeignKey(
+                        name: "FK_VolunteerGroups_Groups_GroupID",
+                        column: x => x.GroupID,
+                        principalTable: "Groups",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VolunteerGroups_Volunteers_VolunteerID",
+                        column: x => x.VolunteerID,
+                        principalTable: "Volunteers",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -423,6 +457,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 column: "EventID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ColourSchemes_Name",
+                table: "ColourSchemes",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Directors_ChapterID",
                 table: "Directors",
                 column: "ChapterID");
@@ -432,6 +472,16 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 table: "Directors",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_ColourID",
+                table: "Events",
+                column: "ColourID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_ColourID",
+                table: "Groups",
+                column: "ColourID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RehearsalAttendances_RehearsalID",
@@ -454,6 +504,11 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 columns: new[] { "DirectorID", "RehearsalDate", "Status" },
                 unique: true,
                 filter: "[Status] = 0");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shifts_ColourID",
+                table: "Shifts",
+                column: "ColourID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shifts_EventID",
@@ -545,6 +600,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             migrationBuilder.DropTable(
                 name: "Chapters");
+
+            migrationBuilder.DropTable(
+                name: "ColourSchemes");
 
             migrationBuilder.DropTable(
                 name: "Cities");

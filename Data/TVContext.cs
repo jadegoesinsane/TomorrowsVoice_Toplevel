@@ -43,6 +43,8 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		#region DbSets
 
+		public DbSet<ColourScheme> ColourSchemes { get; set; }
+
 		// Accounts
 		public DbSet<UserID> UserIDs { get; set; }
 
@@ -173,6 +175,11 @@ namespace TomorrowsVoice_Toplevel.Data
 				.WithOne(s => s.Shift)
 				.HasForeignKey(s => s.ShiftID)
 				.OnDelete(DeleteBehavior.Cascade);
+
+			// Cannot have duplicate colour names
+			modelBuilder.Entity<ColourScheme>()
+				.HasIndex(cs => cs.Name)
+				.IsUnique();
 		}
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)

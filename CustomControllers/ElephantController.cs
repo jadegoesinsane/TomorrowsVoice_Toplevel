@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -167,26 +168,33 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 			return locations.ToList();
 		}
 
-		internal SelectList ColourSelectList(object? selectedValue)
+		internal SelectList ColourSelectList(int? id)
 		{
-			SelectListGroup BrightColours = new SelectListGroup() { Name = "Bright Colours" };
-			SelectListGroup PastelColours = new SelectListGroup() { Name = "Pastel Colours" };
-			IEnumerable<SelectListItem> brightColours = ColourPalette.BrightColours.Select(c => new SelectListItem
-			{
-				Value = c.Value,
-				Text = c.Key,
-				Group = BrightColours
-			});
-
-			IEnumerable<SelectListItem> pastelColours = ColourPalette.PastelColours.Select(c => new SelectListItem
-			{
-				Value = c.Value,
-				Text = c.Key,
-				Group = PastelColours
-			});
-
-			return new SelectList(pastelColours.Concat(brightColours).ToList(), "Value", "Text", selectedValue, "Group.Name");
+			var colours = _context.ColourSchemes
+				.OrderBy(cs => cs.Name)
+				.AsNoTracking();
+			return new SelectList(colours, "ID", "Name", id);
 		}
+		//internal SelectList ColourSelectList(object? selectedValue)
+		//{
+		//	SelectListGroup BrightColours = new SelectListGroup() { Name = "Bright Colours" };
+		//	SelectListGroup PastelColours = new SelectListGroup() { Name = "Pastel Colours" };
+		//	IEnumerable<SelectListItem> brightColours = ColourPalette.BrightColours.Select(c => new SelectListItem
+		//	{
+		//		Value = c.Value,
+		//		Text = c.Key,
+		//		Group = BrightColours
+		//	});
+
+		//	IEnumerable<SelectListItem> pastelColours = ColourPalette.PastelColours.Select(c => new SelectListItem
+		//	{
+		//		Value = c.Value,
+		//		Text = c.Key,
+		//		Group = PastelColours
+		//	});
+
+		//	return new SelectList(pastelColours.Concat(brightColours).ToList(), "Value", "Text", selectedValue, "Group.Name");
+		//}
 
 		#endregion Select Lists
 

@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250327181914_Initial")]
+    [Migration("20250328151150_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -19,6 +19,37 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
+
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.ColourScheme", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("BackgroundColour")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BorderColour")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(55)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TextColour")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ColourSchemes");
+                });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Events.Chapter", b =>
                 {
@@ -356,9 +387,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BackgroundColour")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ColourID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -378,6 +408,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ColourID");
 
                     b.ToTable("Groups");
                 });
@@ -424,9 +456,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BackgroundColour")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ColourID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripion")
                         .IsRequired()
@@ -451,6 +482,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("ColourID");
+
                     b.ToTable("Events");
                 });
 
@@ -460,9 +493,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("BackgroundColor")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ColourID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("EndAt")
                         .HasColumnType("TEXT");
@@ -494,6 +526,8 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ColourID");
 
                     b.HasIndex("EventID");
 
@@ -707,6 +741,17 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("UploadedFile");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.Group", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.ColourScheme", "Colour")
+                        .WithMany()
+                        .HasForeignKey("ColourID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Colour");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.CityEvent", b =>
                 {
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Events.City", "City")
@@ -726,13 +771,32 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Navigation("Event");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Event", b =>
+                {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.ColourScheme", "Colour")
+                        .WithMany()
+                        .HasForeignKey("ColourID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Colour");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.Shift", b =>
                 {
+                    b.HasOne("TomorrowsVoice_Toplevel.Models.ColourScheme", "Colour")
+                        .WithMany()
+                        .HasForeignKey("ColourID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TomorrowsVoice_Toplevel.Models.Volunteering.Event", "Event")
                         .WithMany("Shifts")
                         .HasForeignKey("EventID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Colour");
 
                     b.Navigation("Event");
                 });

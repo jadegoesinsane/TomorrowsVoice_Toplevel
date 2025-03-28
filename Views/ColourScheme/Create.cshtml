@@ -1,0 +1,56 @@
+﻿@model TomorrowsVoice_Toplevel.Models.ColourScheme
+@using System.Drawing
+@using TomorrowsVoice_Toplevel.Utilities
+
+<partial name="_ViewHeading" />
+
+@{
+	string AA = ViewBag.AA as string;
+	string AAA = ViewBag.AAA as string;
+	string bigAA = ViewBag.BigAA as string;
+	string bigAAA = ViewBag.BigAAA as string;
+}
+
+<form asp-action="Create" class="form-container w-100">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="row g-2 my-3 form-area justify-content-md-center" style="margin-top: 0px !important;">
+		<div class="col-3">
+			<div class="form-floating required">
+				<input asp-for="Name" class="form-control" />
+				<label asp-for="Name" class="control-label"></label>
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-3">
+			<div class="form-floating required">
+				<input asp-for="BackgroundColour" class="form-control" type="color" id="BackgroundColour" />
+				<label asp-for="BackgroundColour" class="control-label"></label>
+				<span asp-validation-for="BackgroundColour" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-3">
+			<div class="form-floating required">
+				<input asp-for="TextColour" class="form-control" type="color" id="TextColour" />
+				<label asp-for="TextColour" class="control-label"></label>
+				<span asp-validation-for="TextColour" class="text-danger"></span>
+			</div>
+		</div>
+		<div class="col-3">
+			<div class="form-floating required">
+				<input asp-for="BorderColour" class="form-control" type="color" id="BorderColour" />
+				<label asp-for="BorderColour" class="control-label"></label>
+				<span asp-validation-for="BorderColour" class="text-danger"></span>
+			</div>
+		</div>
+		<partial name="_ContrastExample" model="@Model" />
+	</div>
+
+	<partial name="_FormFooter" />
+</form>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	<script src="~/js/colourExample.js"></script>
+}

@@ -4,9 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using Org.BouncyCastle.Crypto.Digests;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using TomorrowsVoice_Toplevel.Controllers;
 using TomorrowsVoice_Toplevel.Models;
@@ -169,6 +171,24 @@ namespace TomorrowsVoice_Toplevel.Data
 
 				try
 				{
+					if (!context.ColourSchemes.Any())
+					{
+						string white = "#FFFFFF";
+						string black = "#000000";
+						//467ECE
+						context.ColourSchemes.AddRange(
+							new ColourScheme { Name = "Blue", BackgroundColour = "#295899", TextColour = white, BorderColour = "#467ECE" },
+							new ColourScheme { Name = "Purple", BackgroundColour = "#9944BC", TextColour = white, BorderColour = "#B87CD0" },
+							new ColourScheme { Name = "Red", BackgroundColour = "#D3162B", TextColour = white, BorderColour = "#F06676" },
+							new ColourScheme { Name = "Brown", BackgroundColour = "#804205", TextColour = white, BorderColour = "#804205" },
+							new ColourScheme { Name = "Magenta", BackgroundColour = "#AA394F", TextColour = white, BorderColour = "#D2798B" },
+							new ColourScheme { Name = "Pink", BackgroundColour = "#F6CBDF", TextColour = black, BorderColour = "#F6CBDF" },
+							new ColourScheme { Name = "Green", BackgroundColour = "#D7E3C0", TextColour = black, BorderColour = "#D7E3C0" },
+							new ColourScheme { Name = "Yellow", BackgroundColour = "#F5E0AC", TextColour = black, BorderColour = "#F5E0AC" },
+							new ColourScheme { Name = "Light Blue", BackgroundColour = "#BFD6E9", TextColour = black, BorderColour = "#BFD6E9" },
+							new ColourScheme { Name = "Light Purple", BackgroundColour = "#D8CBE7", TextColour = black, BorderColour = "#D8CBE7" });
+						context.SaveChanges();
+					}
 					// Add cities using data from TV's Website
 					if (!context.Cities.Any())
 					{
@@ -484,6 +504,7 @@ namespace TomorrowsVoice_Toplevel.Data
 					// Events
 					if (!context.Events.Any())
 					{
+						Random ran = new Random();
 						var events = new List<Event>();
 						events.AddRange
 							(
@@ -492,7 +513,8 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2024, 11, 29),
 								new DateTime(2024, 12, 22),
 								"Join us to help wrap gifts for those in need!",
-								"Pen Center, St.Catharines")
+								"Pen Center, St.Catharines",
+								ran.Next(context.ColourSchemes.Count()))
 							);
 						events.AddRange
 							(
@@ -501,7 +523,8 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2024, 03, 20),
 								new DateTime(2024, 03, 25),
 								"We will be selling homemade baked goods",
-								"Eastgate Square, Hamilton")
+								"Eastgate Square, Hamilton",
+								ran.Next(context.ColourSchemes.Count()))
 							);
 						events.AddRange
 							(
@@ -510,7 +533,8 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2024, 07, 10),
 								new DateTime(2024, 07, 15),
 								"We will be selling homemade baked goods",
-								"Eaton Centre, Toronto")
+								"Eaton Centre, Toronto",
+								ran.Next(context.ColourSchemes.Count()))
 							);
 						context.Events.AddRange(events);
 						context.SaveChanges();
@@ -674,7 +698,7 @@ namespace TomorrowsVoice_Toplevel.Data
 			}
 		}
 
-		private static List<Event> GetEvents(string name, DateTime start, DateTime end, string desc, string location)
+		private static List<Event> GetEvents(string name, DateTime start, DateTime end, string desc, string location, int colourID)
 		{
 			var events = new List<Event>();
 			Random rnd = new();
@@ -693,7 +717,8 @@ namespace TomorrowsVoice_Toplevel.Data
 					EndDate = end.AddYears(i),
 					Descripion = desc,
 					Location = location,
-					Status = status
+					Status = status,
+					ColourID = colourID
 				});
 			}
 			return events;

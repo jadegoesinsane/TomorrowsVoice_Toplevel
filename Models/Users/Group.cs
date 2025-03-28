@@ -26,10 +26,11 @@ namespace TomorrowsVoice_Toplevel.Models.Users
 		public string? GroupType { get; set; }
 
 		public Status Status { get; set; } = Status.Active;
-		public string BackgroundColour { get; set; } = ColourPalette.BrightColours["Blue"];
+		public ColourScheme? Colour { get; set; }
 
-		public string TextColour
-		{ get { return ColourPalette.GetTextColour(BackgroundColour); } }
+		[Required(ErrorMessage = "Choose event colour palette.")]
+		[Display(Name = "Colour Palette")]
+		public int ColourID { get; set; } = 1;
 
 		public ICollection<VolunteerGroup> VolunteerGroups { get; set; } = new List<VolunteerGroup>();
 	}

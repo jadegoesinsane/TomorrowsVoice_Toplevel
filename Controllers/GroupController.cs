@@ -11,7 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using NToastNotify;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
+using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Users;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
@@ -61,7 +63,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Group/Create
 		public IActionResult Create()
 		{
-			return View();
+			Group group = new Group();
+			PopulateDropDownLists(group);
+			return View(group);
 		}
 
 		// POST: Group/Create
@@ -69,7 +73,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("ID,Name,Description,GroupType,Status,BackgroundColour")] Group @group)
+		public async Task<IActionResult> Create([Bind("ID,Name,Description,GroupType,Status,ColourID")] Group @group)
 		{
 			if (ModelState.IsValid)
 			{
@@ -93,6 +97,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				return NotFound();
 			}
+			PopulateDropDownLists(@group);
 			return View(@group);
 		}
 
@@ -117,7 +122,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					g => g.Description,
 					g => g.GroupType,
 					g => g.Status,
-					g => g.BackgroundColour))
+					g => g.ColourID))
 				{
 					try
 					{
@@ -142,7 +147,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				Console.WriteLine(ex.GetBaseException().ToString());
 			}
-
+			PopulateDropDownLists(groupToUpdate);
 			return View(groupToUpdate);
 		}
 
@@ -195,6 +200,11 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			Debug.WriteLine(selectedItems);
 			return RedirectToAction(nameof(Index));
+		}
+
+		private void PopulateDropDownLists(Group? group = null)
+		{
+			ViewData["BackgroundColour"] = ColourSelectList(group?.ColourID);
 		}
 
 		private bool GroupExists(int id)

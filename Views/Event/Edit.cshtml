@@ -30,9 +30,9 @@
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
-				@Html.DropDownList("BackgroundColour", null, new { @class = "bg-select form-select" })
-				<label asp-for="BackgroundColour" class="control-label"></label>
-				<span asp-validation-for="BackgroundColour" class="text-danger"></span>
+				@Html.DropDownList("BackgroundColour", null, new { @class = "bg-select form-control" })
+				<label asp-for="ColourID" class="control-label"></label>
+				<span asp-validation-for="ColourID" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="w-100" style="margin:0px;"></div>
@@ -45,29 +45,11 @@
 		</div>
 		<div class="col-md-4">
 			<div class="form-floating required">
-				@Html.DropDownList("CityEvents", null, new { @class = "city-select form-select", @multiple = "" })
+				<select id="CityEvents" asp-for="CityEvents" class="form-control" multiple></select>
 				<label asp-for="CityEvents" class="control-label">Cities</label>
 				<span asp-validation-for="CityEvents" class="text-danger"></span>
 			</div>
 		</div>
-
-		@* <div class="w-100" style="margin:0px;"></div>
-		<div class="col-md-6">
-		<div class="row">
-		<div class="form-group col-md">
-		<label class="control-label"> City Enrolled</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
-		<strong>-</strong>
-		</button>
-		@Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
-		</div>
-		<div class="form-group col-md">
-		<label class="control-label"> Choose City</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
-		<strong>+</strong>
-		</button>
-		@Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
-		</div>
-		</div>
-		</div> *@
 
 		<div class="w-100" style="margin:0px;"></div>
 		<div class="col-md-8">
@@ -91,47 +73,24 @@
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
 
+	<script src="~/js/colourDDL.js"></script>
 	<script src="~/js/multiselect.js"></script>
 	<script type="text/javascript">
 		var id = @ViewBag.ID;
 	</script>
 	<script src="~/js/shiftTimeTable.js" type="module"></script>
 	<script type="text/javascript">
-		function formatColours(colour) {
-			if (!colour.id) {
-				return colour.text;
-			}
-			var $colour = $(`<span><span class="dot form-check-input ` + colour.text.replace(/\s+/g, '').toLowerCase() + `"></span> ` + colour.text + `</span>`);
-			return $colour;
-		};
-
 		$(document).ready(function () {
-			$('.bg-select').select2({
-				templateResult: formatColours,
-				minimumResultsForSearch: Infinity,
-				theme: "bootstrap-5"
+			$('.select2-container').addClass('form-control');
+
+			var cityOptions = @Html.Raw(Json.Serialize(ViewBag.CityOptions));
+			cityOptions.forEach(function (option) {
+				$('#CityEvents').append(new Option(option.text, option.value, option.selected));
 			});
-			$('.city-select').select2({
-				theme: "bootstrap-5"
+			var tagSelector = new MultiSelectTag('CityEvents', {
+				required: true,
+				placeholder: 'Select associated cities'
 			});
-			$('.bg-select')
-				.parent('div')
-				.children('span')
-				.children('span')
-				.children('span')
-				.css('height', ' calc(3.5rem + 2px)');
-			$('.bg-select')
-				.parent('div')
-				.children('span')
-				.children('span')
-				.children('span')
-				.children('span')
-				.css('margin-top', '18px');
-			$('.bg-select')
-				.parent('div')
-				.find('label')
-				.css('z-index', '1');
-			// $('.select2-container').addClass('form-control');
 		});
 
 		function rangeCheck() {
@@ -181,19 +140,6 @@
 	</script>
 }
 <style>
-	.select2-selection--multiple {
-		max-height: calc(3.5rem + (1rem + 2px));
-		overflow: scroll !important;
-	}
-
-	.select2-selection--single {
-		border: 1px solid #ced4da !important;
-	}
-
-	.select2-container--focus {
-		box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #8f3796 !important;
-	}
-
 	#tooltip {
 		width: 30%;
 		position: absolute;

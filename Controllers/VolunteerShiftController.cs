@@ -42,6 +42,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return Redirect(ViewData["returnURL"].ToString());
 			}
 			var shifts = await _context.Shifts
+				.Include(s => s.Colour)
 				.Include(s => s.UserShifts)
 					.ThenInclude(us => us.User)
 				.Include(s => s.Event)

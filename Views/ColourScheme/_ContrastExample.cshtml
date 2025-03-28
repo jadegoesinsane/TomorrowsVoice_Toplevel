@@ -1,0 +1,71 @@
+﻿@model TomorrowsVoice_Toplevel.Models.ColourScheme
+
+@{
+	string AA = ViewBag.AA as string;
+	string AAA = ViewBag.AAA as string;
+	string bigAA = ViewBag.BigAA as string;
+	string bigAAA = ViewBag.BigAAA as string;
+}
+
+<hr />
+<div class="row">
+	<div class="col-8 row row-cols-3">
+		<!-- Ratio Container -->
+		<div id="ratio-container" class="rounded-3 align-content-center border border-success" style="border-width: 5px !important">
+			<div class="align-self-center p-1 w-auto fs-5 text-center">
+				Contrast Ratio
+				<br />
+				<span class="d-block fs-1">
+					<b id="ratio">@Math.Round(Model.GetContrastRatio(), 2)</b> :1
+				</span>
+			</div>
+		</div>
+		<!-- Normal Text Test -->
+		<div>
+			<h4 class="text-danger fw-bold">Normal Text</h4>
+			<hr class="text-danger" style="margin: 0.5rem 0;" />
+			<p class="d-flex justify-content-between align-items-center">
+				<span>WCAG AA:</span>
+				<span id="AA" class="badge @(AA == "FAIL" ? "bg-danger" : "bg-success")">@AA</span>
+			</p>
+			<p class="d-flex justify-content-between align-items-center">
+				<span>WCAG AAA:</span>
+				<span id="AAA" class="badge @(AAA == "FAIL" ? "bg-danger" : "bg-success")">@AAA</span>
+			</p>
+		</div>
+
+		<!-- Big Text Test -->
+		<div>
+			<h4 class="text-danger fw-bold">Large Text</h4>
+			<hr class="text-danger" style="margin: 0.5rem 0;" />
+			<p class="d-flex justify-content-between align-items-center">
+				<span>WCAG AA:</span>
+				<span id="bigAA" class="badge @(bigAA == "FAIL" ? "bg-danger" : "bg-success")">@bigAA</span>
+			</p>
+			<p class="d-flex justify-content-between align-items-center">
+				<span>WCAG AAA:</span>
+				<span id="bigAAA" class="badge @(bigAAA == "FAIL" ? "bg-danger" : "bg-success")">@bigAAA</span>
+			</p>
+		</div>
+	</div>
+
+	<!-- Examples -->
+	<div class="row col-4">
+		<!-- Normal -->
+		<div class="bd-callout" id="normalExample" style="border-left-color: @Model.BackgroundColour">
+			The quick brown fox jumps over a lazy dog.
+		</div>
+		<!-- Big -->
+		<div id="fcBg" class="fc-event fc-event-start fc-event-past fc-daygrid-event fc-daygrid-block-event fc-h-event" style="background-color: @Model.BackgroundColour; margin-left:1rem; margin-top: 0.5rem; margin-bottom: 0.5rem; border: 2px solid @Model.BorderColour">
+			<div id="fcTxt" class="fc-event-main" style="color: @Model.TextColour;">
+				<div class="fc-event-main-frame">
+					<div class="fc-event-title-container">
+						<div class="fc-event-title fc-sticky">
+							The quick brown fox jumps over a lazy dog.
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
