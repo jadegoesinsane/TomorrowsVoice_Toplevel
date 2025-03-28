@@ -74,7 +74,7 @@
 	}
 
 	<script src="~/js/colourDDL.js"></script>
-	<script src="~/js/multiselect.js"></script>
+@* 	<script src="~/js/multiselect.js"></script> *@
 	<script type="text/javascript">
 		var id = @ViewBag.ID;
 	</script>
@@ -85,8 +85,9 @@
 
 			var cityOptions = @Html.Raw(Json.Serialize(ViewBag.CityOptions));
 			cityOptions.forEach(function (option) {
-				$('#CityEvents').append(new Option(option.text, option.value, option.selected));
+				$('#CityEvents').append(new Option(option.text, option.value, option.selected, option.selected));
 			});
+			
 			var tagSelector = new MultiSelectTag('CityEvents', {
 				required: true,
 				placeholder: 'Select associated cities'

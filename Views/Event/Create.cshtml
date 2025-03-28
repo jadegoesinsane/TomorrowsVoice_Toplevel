@@ -81,8 +81,9 @@
 
 			var cityOptions = @Html.Raw(Json.Serialize(ViewBag.CityOptions));
 			cityOptions.forEach(function (option) {
-				$('#CityEvents').append(new Option(option.text, option.value, option.selected));
+				$('#CityEvents').append(new Option(option.text, option.value, option.selected, option.selected));
 			});
+
 			var tagSelector = new MultiSelectTag('CityEvents', {
 				required: true,
 				placeholder: 'Select associated cities'
