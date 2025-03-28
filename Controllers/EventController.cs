@@ -58,7 +58,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					.ThenInclude(s => s.UserShifts)
 				.Include(e => e.Shifts)
 					.ThenInclude(s => s.Colour)
-					.OrderBy(e=>e.StartDate)
+					.OrderBy(e=>e.StartDate)		// If you choose to change how events are sorted please change "eventList" in shift index to be sorted the same way
 				.AsNoTracking();
 
 			if (!String.IsNullOrEmpty(StatusFilter))
