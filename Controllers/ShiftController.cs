@@ -109,6 +109,31 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			// MASTER Record, Events
 			Event? events = await _context.Events.FirstOrDefaultAsync(e => e.ID == EventID.GetValueOrDefault());
 
+			// Pass ID of Next and Previous Event into viewdata
+			int currentEvent = events.ID;
+            var eventList = _context.Events.OrderBy(e=>e.StartDate).Where(e=>e.Status == Status.Active).Select(e => e.ID).ToList(); // If event index sorting is changed, will have to change OrderBy clause here too
+            int index = eventList.FindIndex(x=>x == currentEvent);
+			// Check to see if we have reached either end of the event list
+			try
+			{
+                ViewData["previousEvent"] = eventList[index - 1];
+            }
+			catch (Exception)
+			{
+				ViewData["previousEvent"] = "Invalid";
+            }
+			try
+			{
+                ViewData["nextEvent"] = eventList[index + 1];
+            }
+			catch (Exception)
+			{
+				ViewData["nextEvent"] = "Invalid";
+            }
+			
+			
+			
+			
 			ViewBag.Event = events;
 
 			//Handle Paging

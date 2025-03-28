@@ -6,10 +6,28 @@
 }
 
 <div>
-    <partial name="_EventDetail" model="events" />
+    <!--Select previous or next event-->
+    @if (@ViewData["previousEvent"] == "Invalid")
+    {
+        <a class="btn" data-bs-toggle="tooltip" title="No More Events" disabled>&lt</a>
+    }
+    else
+    {
+        <a class="btn btn-primary" data-bs-toggle="tooltip" title="Previous Event" id="previousEvent" asp-action="Index" asp-route-EventID="@ViewData["previousEvent"]">&lt</a>
+    }
+    @if (@ViewData["nextEvent"] == "Invalid")
+    {
+        <a class="btn" disabled data-bs-toggle="tooltip" title="No More Events">&gt</a>
+    }
+    else
+    {
+        <a class="btn btn-primary" data-bs-toggle="tooltip" title="Next Event" id="nextEvent" asp-action="Index" asp-route-EventID="@ViewData["nextEvent"]">&gt</a>
+    }
+    <h1 style="margin-top:10px;">@events.Name</h1><partial name="_EventDetail" model="events" />
     <hr/>
     <form asp-action="Index" method="get">
         <input type="hidden" name="EventID" value="@events.ID" />
+
         <div class="form-horizontal my-3">
                     <div class="row align-items-center">
                         <h2 class="col m-0">Shifts</h2>
@@ -23,6 +41,7 @@
                         </div>
                     }
         </div>
+        
                 <table class="table">
                     <thead>
                         <tr>
