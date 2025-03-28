@@ -548,6 +548,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<bool>("NoShow")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("SentNotice")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("StartAt")
                         .HasColumnType("TEXT");
 
