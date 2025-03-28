@@ -171,8 +171,8 @@ namespace TomorrowsVoice_Toplevel.CustomControllers
 		internal SelectList ColourSelectList(int? id)
 		{
 			var colours = _context.ColourSchemes
-				.OrderBy(cs => cs.Name)
-				.AsNoTracking();
+				.OrderBy(cs => cs.Name);
+
 			return new SelectList(colours, "ID", "Name", id);
 		}
 		//internal SelectList ColourSelectList(object? selectedValue)

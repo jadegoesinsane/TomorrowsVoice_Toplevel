@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250328193807_Initial")]
+    [Migration("20250328194508_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
