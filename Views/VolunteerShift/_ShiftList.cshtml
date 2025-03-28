@@ -38,14 +38,15 @@
 					}
 					else
 					{
-						<a class="btn btn-primary add"
+						@*<a class="btn btn-primary add"
 						   id="btnCancel"
 						   asp-controller="Volunteer"
 						   asp-action="SignOffShift"
 						   asp-route-volunteerId="@volunteer?.ID"
 						   asp-route-shiftId="@item.ID">
 							Cancel Shift
-						</a>
+							</a>*@
+						<a class="btn btn-primary add" data-bs-toggle="modal" data-bs-target="#joinShiftModal-@item.ID">Cancel Shift</a>
 					}
 				</div>
 			}
@@ -67,6 +68,7 @@
 					</button>
 				}
 			</div>
+			@await Html.PartialAsync("_SignOffShiftModal", item)
 		</div>
 
 		<p style="margin-left: 4rem; margin-bottom: 0px !important;">

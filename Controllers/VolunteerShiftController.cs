@@ -221,6 +221,39 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 		}
 
+
+		public async Task<IActionResult> Signoff(int? ShiftID)
+		{
+			ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "VolunteerShift");
+
+			Volunteer? volunteer = await GetVolunteerFromUser();
+			Shift? shift = _context.Shifts.Where(s => s.ID == ShiftID).FirstOrDefault();
+
+			if (volunteer == null)
+				return Redirect(ViewData["returnURL"].ToString());
+
+			
+
+			var userShift = new UserShift
+			{
+				UserID = volunteer.ID,
+				ShiftID = (int)ShiftID,
+				StartAt = shift.StartAt,
+				EndAt = shift.EndAt
+			};
+
+			_context.Remove(userShift);
+			await _context.SaveChangesAsync();
+			_toastNotification.AddSuccessToastMessage("Signed off for shift!");
+
+
+
+			return Redirect(ViewData["returnURL"].ToString());
+		}
+
+
+
+
 		public async Task<IActionResult> SignOffShift(int volunteerId, int shiftId)
 		{
 			if (shiftId == null)
