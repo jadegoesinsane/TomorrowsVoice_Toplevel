@@ -367,6 +367,7 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     WorkingHourRecorded = table.Column<bool>(type: "INTEGER", nullable: false),
+                    SentNotice = table.Column<bool>(type: "INTEGER", nullable: false),
                     DirectorID = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
