@@ -79,6 +79,8 @@ builder.Services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
 	ProgressBar = true
 });
 
+
+builder.Services.AddHostedService<AutoTaskService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
