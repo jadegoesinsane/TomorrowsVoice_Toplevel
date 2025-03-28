@@ -52,6 +52,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			ViewBag.StatusList = new SelectList(statusList);
 
+			await AutoClose();
 			var events = _context.Events
 				.Include(e => e.Shifts)
 				.ThenInclude(s => s.UserShifts)
@@ -447,7 +448,31 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(@event);
 		}
 
-        [Authorize(Roles = "Admin")]
+		public async Task<IActionResult> AutoClose()
+		{
+			var today = DateTime.Now;
+
+			var events = _context.Events
+				.Include(e => e.Shifts)
+				.Where(e => e.EndDate < today)
+				.ToList();
+
+			foreach (var e in events)
+			{
+				e.Status = Status.Closed;
+
+				foreach (var s in e.Shifts)
+				{
+					s.Status = Status.Closed; 
+				}
+			}
+
+			await _context.SaveChangesAsync();
+			return View(events);
+		}
+
+
+		[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Recover(int? id)
 		{
 			if (id == null)
