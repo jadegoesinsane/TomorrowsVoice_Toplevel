@@ -514,7 +514,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2024, 12, 22),
 								"Join us to help wrap gifts for those in need!",
 								"Pen Center, St.Catharines",
-								ran.Next(context.ColourSchemes.Count()))
+								context.ColourSchemes.ElementAtOrDefault(ran.Next(context.ColourSchemes.Count())).ID)
 							);
 						events.AddRange
 							(
@@ -524,7 +524,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2024, 03, 25),
 								"We will be selling homemade baked goods",
 								"Eastgate Square, Hamilton",
-								ran.Next(context.ColourSchemes.Count()))
+								context.ColourSchemes.ElementAtOrDefault(ran.Next(context.ColourSchemes.Count())).ID)
 							);
 						events.AddRange
 							(
@@ -534,7 +534,27 @@ namespace TomorrowsVoice_Toplevel.Data
 								new DateTime(2024, 07, 15),
 								"We will be selling homemade baked goods",
 								"Eaton Centre, Toronto",
-								ran.Next(context.ColourSchemes.Count()))
+								context.ColourSchemes.ElementAtOrDefault(ran.Next(context.ColourSchemes.Count())).ID)
+							);
+						events.AddRange
+							(
+								GetEvents
+								("Community Cleanup Tor",
+								new DateTime(2024, 05, 10),
+								new DateTime(2024, 05, 13),
+								"Help us clean the city!",
+								"Toronto",
+								context.ColourSchemes.ElementAtOrDefault(ran.Next(context.ColourSchemes.Count())).ID)
+							);
+						events.AddRange
+							(
+								GetEvents
+								("St. C Concert",
+								new DateTime(2024, 09, 18),
+								new DateTime(2024, 09, 19),
+								"Listen to the kids sing and support the brock badgers!",
+								"Brock University",
+								context.ColourSchemes.ElementAtOrDefault(ran.Next(context.ColourSchemes.Count())).ID)
 							);
 						context.Events.AddRange(events);
 						context.SaveChanges();
