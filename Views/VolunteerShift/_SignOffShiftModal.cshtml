@@ -1,0 +1,57 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Volunteering.Shift
+<!-- Modal-->
+<div class="modal fade" id="joinShiftModal-@Model.ID" tabindex="-1" role="dialog" aria-labelledby="ShiftmyModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="ShiftmyModalLabel-@Model.ID">Cancel Shift</h4>
+				<button type="button" class="btn btn-small close btn-danger" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<form asp-controller="VolunteerShift" asp-action="Signoff" method="post" asp-route-shiftID="@Model.ID">
+					<div class="col">
+
+						<span class="fw-bold m-0">
+							@Model.Event?.Name
+						</span>
+						<br />
+						@Html.DisplayFor(model => model.Title)
+						<br />
+
+						<i class="bi bi-calendar"></i> @Model.DateFormat
+						<br />
+						<i class="bi bi-clock"></i> @Model.TimeFormat
+						<br />
+						<i class="bi bi-geo-alt"></i>
+						@{
+							if (!String.IsNullOrWhiteSpace(Model.Location))
+								@Html.Raw($"{Model.Location} - ")
+							@Model.Event?.Location
+						}
+						<br />
+						<i class="bi bi-pencil"></i> Notes
+						<br />
+						@{
+							if (String.IsNullOrWhiteSpace(Model.Note))
+								@Html.Raw("No Notes")
+							else
+								@Model.Note
+						}
+
+					</div>
+					<hr />
+					@if (Model.ShiftDate < DateTime.Today)
+					{
+
+						<button type="submit" class="btn btn-primary" id="btnSubmit" disabled="disabled">Sign Off</button>
+					}
+					else
+					{
+
+						<button type="submit" class="btn btn-primary" id="btnSubmit">Sign off</button>
+					}
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

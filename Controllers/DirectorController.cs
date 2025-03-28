@@ -18,17 +18,20 @@ using TomorrowsVoice_Toplevel.Models;
 using TomorrowsVoice_Toplevel.Models.Events;
 using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.Utilities;
+using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
 {
 	[Authorize(Roles = "Admin, Director")]
 	public class DirectorController : ElephantController
 	{
+		private readonly IMyEmailSender _emailSender;
 		private readonly TVContext _context;
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly ApplicationDbContext _identityContext;
-		public DirectorController(TVContext context, ApplicationDbContext identityContext, UserManager<IdentityUser> userManager, IToastNotification toastNotification) : base(context, toastNotification)
+		public DirectorController(TVContext context, ApplicationDbContext identityContext, IMyEmailSender emailSender, UserManager<IdentityUser> userManager, IToastNotification toastNotification) : base(context, toastNotification)
 		{
+			_emailSender = emailSender;
 			_context = context;
 			_userManager = userManager;
 			_identityContext = identityContext;
@@ -220,6 +223,61 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					await AddDocumentsAsync(director, theFiles);
 					await _context.SaveChangesAsync();
 					AddSuccessToast(director.NameFormatted);
+
+				
+
+					var directors =  _context.Directors.Include(v => v.Chapter).AsNoTracking();
+
+					var director2 = await _context.Directors
+						.Include(d => d.Chapter)       // Include the Chapter entity
+						.ThenInclude(c => c.City)      // Include the City entity under Chapter
+						.AsNoTracking()
+						.FirstOrDefaultAsync(d => d.ID == director.ID);
+					string Subject = "New Director";
+			
+					string emailContent = $" Congratulations { director2.NameFormatted}, you have become the director of {director2.Chapter.City.Name}  ";
+
+					var volunteers = _context.Volunteers;
+
+					int folksCount = 0;
+					try
+					{
+						//Send a Notice.
+						List<EmailAddress> folks = (from p in directors
+
+													where p.ID == director.ID
+													select new EmailAddress
+													{
+														Name = p.NameFormatted,
+														Address = p.Email
+													}).ToList();
+						folksCount = folks.Count;
+						if (folksCount > 0)
+						{
+							var msg = new EmailMessage()
+							{
+								ToAddresses = folks,
+								Subject = Subject,
+								Content = "<p>" + emailContent
+							};
+							await _emailSender.SendToManyAsync(msg);
+							ViewData["Message"] = "Message sent to " + folksCount + " Manager"
+								+ ((folksCount == 1) ? "." : "s.");
+						}
+						else
+						{
+							ViewData["Message"] = "Message NOT sent!  No Manager.";
+						}
+					}
+					catch (Exception ex)
+					{
+						string errMsg = ex.GetBaseException().Message;
+						ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
+							+ ((folksCount == 1) ? "" : "s") + " in the list.";
+					}
+
+
+
 					return RedirectToAction("Details", new { director.ID });
 				}
 			}
