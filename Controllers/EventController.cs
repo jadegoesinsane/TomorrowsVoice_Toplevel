@@ -690,7 +690,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private void PopulateDropDownLists(Event? events = null)
 		{
 			ViewData["CityEvents"] = CitySelectList(events?.CityEvents.Select(c => c.CityID).ToArray(), Status.Active);
-			ViewData["BackgroundColour"] = ColourSelectList(events?.ColourID);
+			ViewData["ColourID"] = ColourSelectList(events?.ColourID);
 
 			var statusList = Enum.GetValues(typeof(Status))
 						 .Cast<Status>()
