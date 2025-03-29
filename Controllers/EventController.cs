@@ -35,7 +35,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		[Authorize(Roles = "Admin, Planner, Volunteer")]
-		public async Task<IActionResult> Index(string? SearchString, int? CityID, DateTime FilterStartDate,
+		public async Task<IActionResult> Index(string? SearchString, int? CityEvents, DateTime FilterStartDate,
 			DateTime FilterEndDate, int? page, int? pageSizeID, string? actionButton, string? StatusFilter)
 		{
 			//Count the number of filters applied - start by assuming no filters
@@ -98,9 +98,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				events = events.Where(p => p.Name.ToUpper().Contains(SearchString.ToUpper()));
 				numberFilters++;
 			}
-			if (CityID.HasValue)
+			if (CityEvents.HasValue)
 			{
-				events = events.Where(p => p.CityEvents.Any(ce => ce.CityID == CityID));
+				events = events.Where(p => p.CityEvents.Any(ce => ce.CityID == CityEvents));
 
 				numberFilters++;
 			}
