@@ -1,0 +1,9 @@
+﻿@model int
+<button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+		data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+	<i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
+</button>
+<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+
+	<div class="d-block bg-light p-2">
+		<div class="row @($"row-cols-lg-{Model}")">

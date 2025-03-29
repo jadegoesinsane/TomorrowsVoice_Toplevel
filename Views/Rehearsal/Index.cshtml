@@ -1,64 +1,54 @@
 ﻿@model IEnumerable<TomorrowsVoice_Toplevel.Models.Events.Rehearsal>
 
-@* <partial name="_ViewHeading" />
-
-<p>
-	<a asp-action="Create">Create New @ViewData["ControllerFriendlyName"]</a>
-</p>
- *@
 <div>
 	<form asp-action="Index" method="get">
+		<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+		<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
 		<div class="form-horizontal my-3">
 			<div class="row align-items-center">
 				<h1 class="col m-0">Rehearsal</h1>
 				<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a>
 			</div>
 		</div>
-		<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
-		<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-		<div class="form-horizontal">
-			<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-				Filter/Search @ViewData["numberFilters"]
-			</button><br />
-			<div class="card collapse @ViewData["ShowFilter"]" id="collapseFilter">
-				<div class="card-body w-100 bg-light row">
-					@if (!User.IsInRole("Director"))
-					{
-						<div class="col-auto">
-							<label class="control-label" for="DirectorID">Director:</label>
-							@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
-						</div>
-						
-						<div class="col-auto">
-							<label class="control-label" for="ChapterID">Chapter:</label>
-							@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control", id = "ChapterID" })
-						</div>
 
-						<div class="col-auto">
-							<label class="control-label" for="StatusFilter">Status:</label>
-							@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList, "All Status", htmlAttributes: new { @class = "form-control" })
-						</div>
-					}
-					<div class="col-auto">
-						<label class="control-label" for="SearchString">Search Attendance Notes:</label>
-						@Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
-					</div>
-					<div class="col-auto">
-						<label class="control-label" for="StartDate">Start Date:</label>
-						<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
-					</div>
-					<div class="col-auto">
-						<label class="control-label" for="EndDate">End Date:</label>
-						<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
-					</div>
-					<div class="col-auto">
-						<br/>
-						<input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
-						<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-					</div>
-				</div>
+		<!-- Filter -->
+		<partial name="_FilterStart" model="4" />
+		@if (!User.IsInRole("Director"))
+		{
+			<div class="form-group">
+				<label class="control-label" for="DirectorID">Director:</label>
+				@Html.DropDownList("DirectorID", null, "All Directors", htmlAttributes: new { @class = "form-control", id = "DirectorID" })
 			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="ChapterID">Chapter:</label>
+				@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-control", id = "ChapterID" })
+			</div>
+
+			<div class="form-group">
+				<label class="control-label" for="StatusFilter">Status:</label>
+				@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList, "All Status", htmlAttributes: new { @class = "form-control" })
+			</div>
+		}
+		<div class="form-group">
+			<label class="control-label" for="SearchString">Search Attendance Notes:</label>
+			@Html.TextBox("SearchString", null, new { @class = "form-control", id = "SearchString" })
 		</div>
+		<div class="form-group col-6">
+			<label class="control-label" for="StartDate">Start Date:</label>
+			<input class="form-control" type="date" id="StartDate" name="StartDate" max="9999-12-12" value="@ViewData["StartDate"]" aria-invalid="false">
+		</div>
+		<div class="form-group col-6">
+			<label class="control-label" for="EndDate">End Date:</label>
+			<input class="form-control" type="date" id="EndDate" name="EndDate" max="9999-12-12" value="@ViewData["EndDate"]" aria-invalid="false">
+		</div>
+		@if (!User.IsInRole("Director"))
+		{
+			<div class=""></div>
+		}
+		<partial name="_FilterEnd" />
+
 		<h5 style="margin-top: 10px">@ViewData["AptCount"] results between @ViewData["StartDate"] and @ViewData["EndDate"]</h5>
 		<table class="table">
 			<thead>
@@ -67,9 +57,9 @@
 						<input type="submit" name="actionButton" value="Date" class="btn btn-link" />
 					</th>
 					@if (!User.IsInRole("Director"))
-						{
-					<th class="d-none d-lg-table-cell" aria-label="Director">Director</th>
-						}
+					{
+						<th class="d-none d-lg-table-cell" aria-label="Director">Director</th>
+					}
 					<th aria-label="Chapter">Chapter</th>
 					<th aria-label="Attendances Rate">Attendances Rate</th>
 					<th class="d-none d-sm-table-cell" aria-label="Attendances">Attendances</th>

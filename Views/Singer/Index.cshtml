@@ -3,44 +3,33 @@
 <form asp-action="Index" method="get">
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
 	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
 	<div class="form-horizontal my-3">
 		<div class="row align-items-center">
 			<h1 class="col m-0">Singers</h1>
 			<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a>
 		</div>
 	</div>
-	<button class="btn col-auto h-100 @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
-			data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-		<i class="bi bi-filter"></i> Filter @ViewData["numberFilters"]
-	</button>
-	<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-		<div class="card d-inline-flex w-100 align-items-end bg-light" style="flex-direction:row !important;">
-			<div class="p-2">
-				<strong><label class="control-label" for="SearchString">Singer Name</label></strong>
-				@Html.TextBox("SearchString", null, new { @class = "form-control" })
-			</div>
-			@if (!User.IsInRole("Director"))
-			{
-			<div class="p-2">
-				<strong><label class="control-label" for="ChapterID">Chapter</label></strong>
-				@Html.DropDownList("ChapterID", null, "Any", new { @class = "form-control" })
-			</div>
-			}
-			<div class="p-2">
-				<strong><label class="control-label" for="StatusFilter">Status</label></strong>
-				@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
-									"Any", htmlAttributes: new { @class = "form-control" })
-			</div>
-			<div class="p-2 ms-auto">
-				<button type="submit" name="actionButton" value="Apply" class="btn btn-outline-primary">
-					<i class=" bi bi-funnel-fill"></i>Apply
-				</button>
-			</div>
-			<div class="p-2">
-				<a asp-action="Index" class="btn btn-outline-dark"><i class="bi bi-eraser-fill"></i> Clear</a>
-			</div>
-		</div>
+
+	<!-- Filter -->
+	<partial name="_FilterStart" model="@(User.IsInRole("Director") == true ? 3 : 4)" />
+	<div class="form-group">
+		<label class="control-label" for="SearchString">Singer Name</label>
+		@Html.TextBox("SearchString", null, new { @class = "form-control" })
 	</div>
+	@if(!User.IsInRole("Director"))
+	{
+	<div class="form-group">
+		<label class="control-label" for="ChapterID">Select by Chapter(s):</label>
+		@Html.DropDownList("ChapterID", null, "All Chapters", htmlAttributes: new { @class = "form-select" })
+	</div>
+	}
+	<div class="form-group">
+		<label class="control-label" for="StatusFilter">Status</label>
+		@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusList,
+					"Any", htmlAttributes: new { @class = "form-select" })
+	</div>
+	<partial name="_FilterEnd" />
 
 	<table class="table my-2">
 		<thead>
