@@ -340,8 +340,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(@eventToUpdate);
 		}
 
-		[Authorize(Roles = "Admin")]
-		public async Task<IActionResult> Delete(int? id)
+        [Authorize(Roles = "Admin, Planner")]
+        public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
 			{
@@ -361,8 +361,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// POST: Event/Delete/5
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = "Admin")]
-		public async Task<IActionResult> DeleteConfirmed(int id)
+        [Authorize(Roles = "Admin, Planner")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			var @event = await _context.Events.Include(c => c.Shifts)
 
