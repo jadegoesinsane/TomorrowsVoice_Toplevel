@@ -3,11 +3,13 @@
 <form asp-action="Index" method="get">
 	<div class="form-horizontal my-3">
 		<div class="row align-items-center">
-			<h1 class="col m-0">Events</h1>
-			<span class="text-muted">View events and click a shift to join!</span>
+			<div class="col-auto">
+				<h1 class="col m-0">Events</h1>
+				<span class="text-muted">View events and click a shift to join!</span>
+			</div>
 			@if (User.IsInRole("Planner") || User.IsInRole("Admin"))
 			{
-				<a asp-action="Create" class="btn btn-primary col-auto h-100" style="float: right;">Add @ViewData["ControllerFriendlyName"]</a>
+				<a asp-action="Create" class="btn btn-primary col-auto h-100 ms-auto" style="float: right;">Add @ViewData["ControllerFriendlyName"]</a>
 			}
 		</div>
 	</div>
