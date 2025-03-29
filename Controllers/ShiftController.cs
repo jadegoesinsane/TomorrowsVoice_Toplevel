@@ -554,7 +554,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 		}
 
-		[Authorize(Roles = "Admin, Planner, Volunteer")]
+		[Authorize(Roles = "Admin, Planner")]
 		public async Task<IActionResult> TrackPerformance(int id)
 		{
 			var groupClass = await _context.Shifts
@@ -579,8 +579,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		[HttpPost]
-		[Authorize(Roles = "Admin")]
-		public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
+        [Authorize(Roles = "Admin, Planner")]
+        public async Task<IActionResult> UpdatePerformance([FromBody] List<EnrollmentVM> enrollments)
 		{
 			if (enrollments == null || enrollments.Count == 0)
 			{
