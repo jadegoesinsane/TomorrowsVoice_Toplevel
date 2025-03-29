@@ -80,7 +80,7 @@ builder.Services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
 });
 
 
-builder.Services.AddHostedService<AutoTaskService>();
+builder.Services.AddScoped<UserLoginEventHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -29,16 +29,18 @@ namespace TomorrowsVoice_Toplevel.Areas.Identity.Pages.Account
 		private readonly ILogger<LoginModel> _logger;
 		private readonly TVContext _context;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly UserLoginEventHandler _loginEventHandler;
 
 		public LoginModel(SignInManager<IdentityUser> signInManager,
 			ILogger<LoginModel> logger,
-			UserManager<IdentityUser> userManager,
+			UserManager<IdentityUser> userManager, UserLoginEventHandler loginEventHandler,
 			TVContext context)
 		{
 			_signInManager = signInManager;
 			_logger = logger;
 			_userManager = userManager;
 			_context = context;
+			_loginEventHandler = loginEventHandler;
 		}
 
 		/// <summary>
@@ -129,6 +131,20 @@ namespace TomorrowsVoice_Toplevel.Areas.Identity.Pages.Account
 				var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 				if (result.Succeeded)
 				{
+
+					// 获取用户信息
+					var user = await _userManager.FindByEmailAsync(Input.Email);
+
+					
+
+					// 检查用户是否属于指定角色
+					var roles = await _userManager.GetRolesAsync(user);
+					if (roles.Contains("Admin") || roles.Contains("Planner") || roles.Contains("Volunteer"))
+					{
+						// 在用户成功登录后，调用邮件发送事件
+						await _loginEventHandler.OnUserLoggedInAsync(user);
+					}
+
 					string summary = _context.Volunteers
 						.Where(e => e.Email == Input.Email)
 						.FirstOrDefault()?.NameFormatted ??
