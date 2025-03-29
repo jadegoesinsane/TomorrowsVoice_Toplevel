@@ -9,12 +9,12 @@
 <h3>Are you sure you want to close this event?</h3>
 <div>
     <h4>Event</h4>
-    @if (User.IsInRole("Admin"))
+   @* @if (User.IsInRole("Admin"))
     {
         <div class="col-md-3 ms-auto d-flex justify-content-between">
             <a asp-action="DownloadEvents" asp-route-id="@Model.ID" asp-route-name="@Model.Name" class="btn btn-primary col-auto h-100" style="float: right;">Export to Excel</a>
         </div>
-    }
+    }*@
 
     <hr />
     <dl class="row">
