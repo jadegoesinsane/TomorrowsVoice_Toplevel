@@ -4,7 +4,15 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="ShiftmyModalLabel-@Model.ID">Join Shift</h4>
+				@if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+				{
+					<h4 class="modal-title" id="ShiftmyModalLabel-@Model.ID"> Shift Details</h4>
+				}
+				else
+				{
+					<h4 class="modal-title" id="ShiftmyModalLabel-@Model.ID">Join Shift</h4>
+				}
+				
 				<button type="button" class="btn btn-small close btn-danger" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
@@ -39,17 +47,21 @@
 							}
 						
 					</div>
-					<hr />
-					@if (Model.ShiftDate < DateTime.Today)
+					<hr />@if ( User.IsInRole("Volunteer"))
 					{
+						@if (Model.ShiftDate < DateTime.Today)
+						{
+
+							<button type="submit" class="btn btn-primary" id="btnSubmit" disabled="disabled">Sign Up</button>
+						}
+						else
+						{
+
+							<button type="submit" class="btn btn-primary" id="btnSubmit">Sign Up</button>
+						}
+
+					}
 					
-						<button type="submit" class="btn btn-primary" id="btnSubmit" disabled="disabled" >Sign Up</button>
-					}
-					else
-					{
-						
-						<button type="submit" class="btn btn-primary" id="btnSubmit">Sign Up</button>
-					}
 				</form>
 			</div>
 		</div>
