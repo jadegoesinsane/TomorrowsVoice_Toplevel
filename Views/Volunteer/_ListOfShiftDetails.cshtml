@@ -8,7 +8,7 @@
     <div class="panel-heading">
         <h2 class="panel-title">Upcoming Shifts</h2>
     </div>
-    <a asp-action="Index" class="btn btn-primary" style="margin-bottom: 10px" asp-controller="ShiftSignUp">Sign Up for Shifts</a>
+    @*  <a asp-action="Index" class="btn btn-primary" style="margin-bottom: 10px" asp-controller="ShiftSignUp">Sign Up for Shifts</a>*@
     <div class="panel-body scrollable-panel">
         <form asp-action="Index" method="get">
             <table class="table table-striped">
@@ -85,7 +85,7 @@
                                     @*                                 } *@
 
                                 </td>
-                                <td>
+                               @* <td>
                                     @if (item.UserShifts.Where(a => a.UserID == volunteer.ID && a.WorkingHourRecorded == true).Any())
                                     {
                                         <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
@@ -102,15 +102,13 @@
 
                                         </button>
                                     }
-                                </td>
+                        </td>*@
                             </tr>
                         }}
                 </tbody>
             </table>
 
-            <p style="color: red; background-color: #f8d7da; padding: 5px 10px; border-radius: 5px; border: 1px solid #f5c6cb; font-weight: bold; display: inline-block;" aria-live="assertive">
-                Note: If your shift is cancelled within 7 days of the shift date, an email will be sent to the event manager.
-            </p>
+           
             <div class="modal fade" id="performanceModal" tabindex="-1" aria-labelledby="performanceModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
