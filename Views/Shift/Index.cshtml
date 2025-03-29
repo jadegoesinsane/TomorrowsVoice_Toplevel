@@ -25,6 +25,8 @@
     }
     <h1 style="margin-top:10px;">@events.Name</h1><partial name="_EventDetail" model="events" />
     <hr/>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Planner")){
     <form asp-action="Index" method="get">
         <input type="hidden" name="EventID" value="@events.ID" />
 
@@ -180,7 +182,7 @@
                     </div>
                 </div>
         <partial name="_PagingNavBar" />
-    </form>
+    </form>}
     <div>
         @if (User.IsInRole("Admin") || User.IsInRole("Planner"))
         {
