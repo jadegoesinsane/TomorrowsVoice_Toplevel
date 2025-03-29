@@ -2,10 +2,16 @@
 @{
     ViewData["Title"] = "Details";
 }
-
+@if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+{
+    <div class="col-md-3 ms-auto d-flex justify-content-between">
+        <a asp-controller="Event" asp-action="DownloadEvents" asp-route-id="@Model.ID" asp-route-name="@Model.Name" class="btn btn-primary col-auto h-100" style="float: right;">Export to Excel</a>
+    </div>
+}
 <div>
     <h2>Details</h2>
     <hr />
+   
     <dl class="row">
         <div class="col">
             <dt class="">
