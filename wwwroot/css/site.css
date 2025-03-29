@@ -678,3 +678,10 @@ a {
     text-align: center;
 }
 /* Circle Fill */
+
+.card-category {
+    margin: 0 0 0 0 !important;
+    font-size: 0.875em !important;
+    font-weight: 500 !important;
+    line-height: 3rem !important;
+}
