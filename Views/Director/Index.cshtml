@@ -6,7 +6,7 @@
 
 	<div class="form-horizontal my-3">
 		<div class="row align-items-center">
-			<h1 class="col m-0">Rehearsal</h1>
+			<h1 class="col m-0">Directors</h1>
 			<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a>
 		</div>
 	</div>
@@ -28,6 +28,7 @@
 	</div>
 	<partial name="_FilterEnd" />
 
+	<div class="table-responsive d-none d-lg-block">
 	<table class="table">
 		<thead>
 			<tr>
@@ -90,5 +91,12 @@
 			}
 		</tbody>
 	</table>
+	</div>
+	<div class="d-lg-none mt-3 mt-lg-0">
+		@foreach (var item in Model)
+		{
+			<partial name="_IndexSm" model="item" />
+		}
+	</div>
 	<partial name="_PagingNavBar" />
 </form>

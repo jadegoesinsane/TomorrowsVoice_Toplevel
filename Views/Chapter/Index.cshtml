@@ -68,6 +68,7 @@
 	</div>
 	</div>
 	</div> *@
+	<div class="table-responsive d-none d-lg-block">
 	<table class="table">
 		<thead>
 			<tr>
@@ -128,5 +129,12 @@
 			}
 		</tbody>
 	</table>
+	</div>
+	<div class="d-lg-none mt-3 mt-lg-0">
+		@foreach (var item in Model)
+		{
+			<partial name="_IndexSm" model="item" />
+		}
+	</div>
 	<partial name="_PagingNavBar" />
 </form>
