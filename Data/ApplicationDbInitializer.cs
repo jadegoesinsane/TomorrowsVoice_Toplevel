@@ -6,7 +6,7 @@ using TomorrowsVoice_Toplevel.Models.Volunteering;
 
 namespace TomorrowsVoice_Toplevel.Data
 {
-    public static class ApplicationDbInitializer
+	public static class ApplicationDbInitializer
 	{
 		public static async void Initialize(IServiceProvider serviceProvider,
 			bool UseMigrations = true, bool SeedSampleData = true)

@@ -11,7 +11,7 @@ namespace TomorrowsVoice_Toplevel.Models.Events
         {
             get
             {
-                return $"{RehearsalDate:MMMM dd, yyyy} at {StartAt:hh:mm tt}";
+                return $"{RehearsalDate.ToLongDateString()} at {StartAt.ToString("h:mm tt").ToLower()}";
             }
         }
 

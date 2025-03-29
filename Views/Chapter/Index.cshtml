@@ -1,54 +1,74 @@
 @model IEnumerable<TomorrowsVoice_Toplevel.Models.Events.Chapter>
-<partial name="_ViewHeading" />
-@if (User.IsInRole("Admin"))
-{
-	<p>
-		<a asp-action="Create">Create New @ViewData["ControllerFriendlyName"]</a>
-	</p>
-}
 
 <form asp-action="Index" method="get">
 	<input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
 	<input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-	<div class="form-horizontal">
-		<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
-				data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-			Filter/Search @ViewData["numberFilters"]
-		</button><br />
-		<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-			<div class="card card-body bg-light">
-				<div class="row">
-					<div class="col-md-3 form-floating">
 
-						@Html.DropDownList("ProvinceFilter", (SelectList)ViewBag.DOWSelectList,
-															"All Provinces", htmlAttributes: new { @class = "form-control" })
-						<label class="control-label" for="ProvinceFilter">Select by Province(s):</label>
-
-					</div>
-					<div class="col-md-3 form-floating">
-						@Html.TextBox("SearchString", null, new { @class = "form-control" })
-						<label class="control-label" for="SearchString">Search Name:</label>
-					</div>
-
-					<div class="col-md-2">
-						<div class="form-floating">
-							@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
-																"All Status", htmlAttributes: new { @class = "form-control" })
-							<label class="control-label" for="StatusFilter">Select by Status:</label>
-
-						</div>
-
-					</div>
-
-					<div class="col-md-2 d-flex justify-content-evenly">
-						<input type="submit" name="actionButton" value="Filter"
-							   class="btn btn-outline-primary" />
-						<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-					</div>
-				</div>
-			</div>
+	<div class="form-horizontal my-3">
+		<div class="row align-items-center">
+			<h1 class="col m-0">Chapter</h1>
+			@if (User.IsInRole("Admin"))
+			{
+				<a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a>
+			}
 		</div>
 	</div>
+
+	<!-- Filter -->
+	<partial name="_FilterStart" model="4" />
+	<div class="form-group">
+		<label class="control-label" for="SearchString">Search Name:</label>
+		@Html.TextBox("SearchString", null, new { @class = "form-control" })
+	</div>
+	<div class="form-group">
+		<label class="control-label" for="ProvinceFilter">Select by Province(s):</label>
+		@Html.DropDownList("ProvinceFilter", (SelectList)ViewBag.DOWSelectList, "All Provinces", htmlAttributes: new { @class = "form-control" })
+	</div>
+	<div class="form-group">
+		<label class="control-label" for="StatusFilter">Select by Status:</label>
+		@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList, "All Status", htmlAttributes: new { @class = "form-control" })
+	</div>
+	<partial name="_FilterEnd" />
+	@* <div class="form-horizontal">
+	<button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle"
+	data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+	Filter/Search @ViewData["numberFilters"]
+	</button><br />
+	<div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+	<div class="card card-body bg-light">
+	<div class="row">
+	<div class="col-md-3 form-floating">
+
+	@Html.DropDownList("ProvinceFilter", (SelectList)ViewBag.DOWSelectList,
+	"All Provinces", htmlAttributes: new { @class = "form-control" })
+	<label class="control-label" for="ProvinceFilter">Select by Province(s):</label>
+
+	</div>
+	<div class="col-md-3 form-floating">
+	@Html.TextBox("SearchString", null, new { @class = "form-control" })
+	<label class="control-label" for="SearchString">Search Name:</label>
+	</div>
+
+	<div class="col-md-2">
+	<div class="form-floating">
+	@Html.DropDownList("StatusFilter", (SelectList)ViewBag.StatusSelectList,
+	"All Status", htmlAttributes: new { @class = "form-control" })
+	<label class="control-label" for="StatusFilter">Select by Status:</label>
+
+	</div>
+
+	</div>
+
+	<div class="col-md-2 d-flex justify-content-evenly">
+	<input type="submit" name="actionButton" value="Filter"
+	class="btn btn-outline-primary" />
+	<a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div> *@
+	<div class="table-responsive d-none d-lg-block">
 	<table class="table">
 		<thead>
 			<tr>
@@ -82,32 +102,39 @@
 						@item.Singers.Where(s => s.Status == Status.Active).Count()
 					</td>
 					<td>
-							@if (item.Status != Status.Archived)
+						@if (item.Status != Status.Archived)
+						{
+							<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
+							   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+								<i class="bi bi-search"></i>
+							</a>
+							@if (User.IsInRole("Admin"))
 							{
-								<a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-detail" id="crud"
-								   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-									<i class="bi bi-search"></i>
-								</a>
-								@if (User.IsInRole("Admin"))
-								{
 								<a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-success"
-									role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-										<i class="bi bi-pencil-square"></i>
-									</a>
+								   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+									<i class="bi bi-pencil-square"></i>
+								</a>
 								<a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-									role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-										<i class="bi bi-x-lg"></i>
-									</a>
-								}
+								   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+									<i class="bi bi-x-lg"></i>
+								</a>
 							}
-							else
-							{
-								<partial name="_CrudIconsRecover" model="@item.ID" />
-							}
+						}
+						else
+						{
+							<partial name="_CrudIconsRecover" model="@item.ID" />
+						}
 					</td>
 				</tr>
 			}
 		</tbody>
 	</table>
+	</div>
+	<div class="d-lg-none mt-3 mt-lg-0">
+		@foreach (var item in Model)
+		{
+			<partial name="_IndexSm" model="item" />
+		}
+	</div>
 	<partial name="_PagingNavBar" />
 </form>

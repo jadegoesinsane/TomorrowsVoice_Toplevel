@@ -1,0 +1,48 @@
+﻿@model TomorrowsVoice_Toplevel.Models.Events.Chapter
+
+<div class="card mb-3">
+	<div class="card-header">
+		<div class="d-flex justify-content-center align-items-center">
+			<h5 class="m-0">@Model.City.Name <span class="mx-2 badge @(Model.Status == Status.Active ? "bg-success" : "bg-danger")">@Model.Status</span></h5>
+		</div>
+	</div>
+	<div class="card-body row">
+		<div class="col-12 col-md-6">
+			<h2 class="text-muted card-category">Address</h2>
+			<div class="row px-2">
+				<a class="fw-normal" href="https://www.google.com/maps?q=@Model.AddressSummary" target="_blank">
+					@Model.AddressSummary
+				</a>
+			</div>
+		</div>
+		<div class="col-12 col-md-6">
+			<h2 class="text-muted card-category">Active Members</h2>
+			<div class="row px-2">
+				<span>Directors: @Model.Directors.Where(s => s.Status == Status.Active).Count()</span>
+				<br />
+				<span>Singers: @Model.Singers.Where(s => s.Status == Status.Active).Count()</span>
+			</div>
+		</div>
+		<div class="d-flex justify-content-around mt-3">
+			@if (Model.Status != Status.Archived)
+			{
+				<a asp-action="Details" asp-route-id="@Model.ID" class="btn btn-outline-detail" id="crud"
+				   role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+					<i class="bi bi-search"></i> Details
+				</a>
+				<a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-outline-success"
+				   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+					<i class="bi bi-pencil-square"></i> Edit
+				</a>
+				<a asp-action="Delete" asp-route-id="@Model.ID" class="btn btn-outline-danger"
+				   role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+					<i class="bi bi-x-lg"></i> Delete
+				</a>
+			}
+			else
+			{
+				<partial name="_CrudIconsRecover" model="@Model.ID" />
+			}
+		</div>
+	</div>
+</div>
