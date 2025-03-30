@@ -78,8 +78,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				UserID = volunteer.ID,
 				ShiftID = (int)ShiftID,
-				StartAt = shift.StartAt,
-				EndAt = shift.EndAt
+				
 			};
 
 			_context.Add(userShift);

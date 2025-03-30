@@ -85,7 +85,7 @@
                                 <td>
                                     @{
                                         bool condition = false;
-
+                                         bool condition2 = false;
                                         foreach (var d in item.UserShifts)
                                         {
                                             if (d.NoShow == true)
@@ -106,21 +106,43 @@
                                                 break;
                                             }
                                         }
-                                    }
 
-                                    @if (condition)
+                                    foreach (var d in item.UserShifts)
+                                    {
+                                        if (d.WorkingHourRecorded == true)
+                                        {
+                                            condition2 = true;
+                                            continue;
+
+                                        }
+                                        else
+                                        {
+                                            condition2 = false;
+                                            break;
+                                        }
+                                    }
+                                    }
+                                @if (condition2)
+                                {
+                                    <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
+                                            data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
+                                        Completed
+                                    </button>
+
+                                }
+                                else if (condition)
                                     {
                                         <button type="button" class="btn btn-outline-primary trackPerformanceBtn"
                                                 data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-                                            Edit Performance
+                                        All Users Inputted
                                         </button>
                                     }
 
-                                    else if (item.ShiftDate <= DateTime.Today)
+                                else if (item.ShiftDate <= DateTime.Today && condition==false)
                                     {
                                         <button type="button" class="btn btn-primary col-auto h-100 trackPerformanceBtn"
                                                 data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal">
-                                            Track Performance
+                                        Waiting for Input
                                         </button>
                                     }
                                     else
@@ -128,7 +150,7 @@
                                         <button type="button" class="btn btn-primary btn-secondary trackPerformanceBtn"
                                                 data-shiftid="@item.ID" data-bs-toggle="modal" data-bs-target="#performanceModal"
                                                 disabled>
-                                            Track Performance
+                                        Waiting for Input
                                         </button>
                                     }
 
