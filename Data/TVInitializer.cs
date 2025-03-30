@@ -627,13 +627,21 @@ namespace TomorrowsVoice_Toplevel.Data
 											UserID = user.ID,
 											User = user,
 											ShiftID = shift.ID,
-											Shift = shift,
-											StartAt = shift.StartAt,
-											EndAt = shift.EndAt,
-											WorkingHourRecorded = true
+											Shift = shift
 										};
-										if (rnd.Next(100) > 85)
-											userShift.NoShow = true;
+
+										if (shift.ShiftDate <= DateTime.Today)
+										{
+											
+											userShift.WorkingHourRecorded = true;
+											if (rnd.Next(100) > 85)
+												userShift.NoShow = true;
+											else {
+												userShift.StartAt = shift.StartAt;
+												userShift.EndAt = shift.EndAt;
+											}
+										}
+										
 
 										var volunteer = context.Volunteers.FirstOrDefault(v => v.ID == user.ID);
 										if (volunteer != null)
