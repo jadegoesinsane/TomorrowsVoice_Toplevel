@@ -927,9 +927,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 					_context.AddRange(shiftsToCreate);
 					await _context.SaveChangesAsync();
-
-					_toastNotification.AddSuccessToastMessage($"Shifts were successfully added to {eventRecord.Name}.");
-				}
+                   
+                    _toastNotification.AddSuccessToastMessage($"Shifts were successfully added to {eventRecord.Name}.");
+                    return RedirectToAction("Index", new { EventID = shift.EventID });
+                }
 			}
 			catch (DbUpdateException dex)
 			{

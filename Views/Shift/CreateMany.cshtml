@@ -61,7 +61,12 @@
     <div class="row form-footer">
         <div class="form-group col-md-6">
             <input type="hidden" name="EventID" value="@ViewData["EventID"]" />
-            <input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> | <partial name="_BackToList" />
+            <input type="submit" value="Create" id="btnSubmit" class="btn btn-primary" /> |
+            <a asp-action="Index" asp-route-EventID="@ViewData["EventID"]" 
+              >
+                Back to the shift list
+                
+            </a>
         </div>
     </div>
 </form>

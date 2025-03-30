@@ -625,8 +625,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private async Task InviteUserToResetPassword(Director director, string message)
 		{
 			message ??= "Hello " + director.FirstName + "<br /><p>Please navigate to:<br />" +
-						"<a href='https://theapp.azurewebsites.net/' title='https://theapp.azurewebsites.net/' target='_blank' rel='noopener'>" +
-						"https://theapp.azurewebsites.net</a><br />" +
+                        "<a href='https://localhost:7142/' title='https://theapp.azurewebsites.net/' target='_blank' rel='noopener'>" +
+                        "https://localhost:7142/</a><br />" +
 						" and create a new password for " + director.Email + " using Forgot Password.</p>";
 			try
 			{
