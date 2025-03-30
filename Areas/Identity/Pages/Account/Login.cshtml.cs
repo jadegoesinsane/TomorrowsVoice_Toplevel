@@ -132,16 +132,13 @@ namespace TomorrowsVoice_Toplevel.Areas.Identity.Pages.Account
 				if (result.Succeeded)
 				{
 
-					// 获取用户信息
 					var user = await _userManager.FindByEmailAsync(Input.Email);
 
 					
-
-					// 检查用户是否属于指定角色
 					var roles = await _userManager.GetRolesAsync(user);
 					if (roles.Contains("Admin") || roles.Contains("Planner") || roles.Contains("Volunteer"))
 					{
-						// 在用户成功登录后，调用邮件发送事件
+					
 						await _loginEventHandler.OnUserLoggedInAsync(user);
 					}
 
