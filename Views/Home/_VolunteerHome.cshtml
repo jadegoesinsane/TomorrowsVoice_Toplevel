@@ -1,34 +1,40 @@
 ﻿@model TomorrowsVoice_Toplevel.ViewModels.HomeVolunteerVM
-
-<div class="row">
+<div class="row mt-5">
 	<div class="col-5">
-		<div class="card">
-			<div class="card-header position-relative">
-                <svg id="progress-circle" width="250" height="250" viewBox="0 0 250 250"
-                     class="circular-progress" style="--max:0;">
-                    <circle class="bg"></circle>
-                    <circle class="fg"></circle>
-					@* <text  x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="circle-text">0%</text> *@
-				</svg>
-			@* 	<span id="circle-text" class="circle-text count position-absolute">
-					%
-				</span> *@
-			</div>
-			<div class="card-body">
+		<div class="card_dash">
+				<div class="dash_progress">
+					<div class="outer">
+						<div class="inner">
+							<div id="number">
+							</div>
+						</div>
+					</div>
+
+					<svg id="svgHours" xmlns="http://www.w3.org/2000/svg" version="1.1" width="160px" height="160px">
+						<defs>
+							<linearGradient id="GradientColour">
+								<stop offset="0%" stop-color="#DA22FF" />
+								<stop offset="100%" stop-color="#9733EE" />
+							</linearGradient>
+						</defs>
+						<circle cx="80" cy="80" r="70" transform="rotate(-90 80 80)" stroke-linecap="round" />
+					</svg>
+				</div>
+			<p class="card-subtitle mb2 text-muted">
 				<h5 class="card-title">
-					@Html.Raw($"{Model.Progress}% Towards Your Yearly Goal of {Model.HourlyGoal} Hours!")
+					@($"You're {Model.Progress}% to your goal of {Model.HourlyGoal} hours!")
 				</h5>
-				<p class="card-subtitle mb2 text-muted">
-					@Html.Raw($"You have volunteered {Math.Round(Model.TimeWorked.TotalHours, 2)} hours this year.")
-				</p>
-				<a href="#" class="card-link">Set a New Goal</a>
-				<a href="#" class="card-link">See My Completed Shifts</a>
-			</div>
+				@($"You have volunteered {Math.Round(Model.TimeWorked.TotalHours, 2)} hours this year.")
+				<div class="hstack align-self-center">
+					<a href="#" class="card-link">Set a New Goal</a>
+					<a href="#" class="card-link ps-3" style="border-left:2px solid #000;">See My Completed Shifts</a>
+				</div>
+			</p>
 		</div>
 	</div>
 
 	<div class="col-5 offset-2">
-		<div class="card">
+		<div class="card_dash">
 			<div class="card-body">
 				<h5 class="card-title">
 					Your Upcoming Shifts
@@ -41,7 +47,7 @@
 						}
 						else
 						{
-							foreach (var shift in Model.Shifts.OrderByDescending(s => s.StartAt).Where(s => s.StartAt > DateTime.Today))
+							foreach (var shift in Model.Shifts.OrderByDescending(s => s.StartAt).Where(s => s.StartAt > DateTime.Today).Take(3))
 							{
 								<li class="list-group-item">@Html.Raw($"{shift?.Event?.Name ?? shift?.Title ?? "(no title)"} on {shift?.DateFormat}")</li>
 							}

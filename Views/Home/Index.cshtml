@@ -22,25 +22,47 @@
 @section Scripts {
 	@if (User.IsInRole("Volunteer"))
 	{
-			<script>
-						document.addEventListener("DOMContentLoaded", function() {
-					var progress = @Model.Progress;
-					var progressCircle = document.getElementById("progress-circle");
-					progressCircle.style.setProperty("--max", progress);
+		<script type="text/javascript">
+			var progress = @Model.Progress;
+			let number = document.getElementById('number');
+			let circle = document.querySelector('circle');
+			let counter = 0;
+			let maxDashOffset = 450;
+			let duration = 5000; // Duration of the animation in milliseconds
+			let startTime = null;
 
-							var duration = 5000;
+			function easeOutQuad(t) {
+				return t * (2 - t);
+			}
 
-						var text = document.getElementById('circle-text');
-								text.animate([
-							{ '--num': 0 },
-							{ '--num': progress }
-						], {
-							duration: duration,
-							fill: 'forwards',
-							iterations: 1
-						});
-				});
-</script>
+			function animate(timestamp) {
+				if (!startTime) startTime = timestamp;
+				let elapsed = timestamp - startTime;
+				let progressRatio = Math.min(elapsed / duration, 1);
+				let easedProgress = easeOutQuad(progressRatio);
+				let currentProgress = progress * easedProgress;
+				let dashOffset = maxDashOffset - (maxDashOffset * (currentProgress / 100));
+				circle.style.strokeDashoffset = dashOffset;
+				number.innerHTML = `${Math.round(currentProgress)}%`;
+
+				if (elapsed < duration) {
+					requestAnimationFrame(animate);
+				}
+			}
+
+			requestAnimationFrame(animate);
+
+			@* setInterval(() => {
+				if (counter >= progress) {
+					clearInterval;
+				} else {
+					counter += 1;
+					let dashOffset = maxDashOffset - (maxDashOffset * (counter / 100));
+					circle.style.strokeDashoffset = dashOffset;
+					number.innerHTML = `${counter}%`;
+				}
+			}, 30); *@
+		</script>
 	}
 	@if (User.IsInRole("Director"))
 	{
