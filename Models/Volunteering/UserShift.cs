@@ -20,6 +20,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public TimeSpan Duration => EndAt - StartAt;
 		public bool WorkingHourRecorded { get; set; } = false;
+
+		public bool HourRecordedVolunteer { get; set; } = false;
 		public bool SentNotice { get; set; } = false;
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
