@@ -1,39 +1,43 @@
 ﻿@model TomorrowsVoice_Toplevel.ViewModels.HomeVolunteerVM
-<div class="row mt-5">
-	<div class="col-5">
+<div class="row my-5">
+	<div class="col-12 col-lg-4 order-2 order-lg-1 mt-5 mt-lg-0">
 		<div class="card_dash">
-				<div class="dash_progress">
-					<div class="outer">
-						<div class="inner">
-							<div id="number">
-							</div>
+			<div class="dash_progress">
+				<div class="outer">
+					<div class="inner">
+						<div id="number">
 						</div>
 					</div>
-
-					<svg id="svgHours" xmlns="http://www.w3.org/2000/svg" version="1.1" width="160px" height="160px">
-						<defs>
-							<linearGradient id="GradientColour">
-								<stop offset="0%" stop-color="#DA22FF" />
-								<stop offset="100%" stop-color="#9733EE" />
-							</linearGradient>
-						</defs>
-						<circle cx="80" cy="80" r="70" transform="rotate(-90 80 80)" stroke-linecap="round" />
-					</svg>
 				</div>
+
+				<svg id="svgHours" xmlns="http://www.w3.org/2000/svg" version="1.1" width="160px" height="160px">
+					<defs>
+						<linearGradient id="GradientColour">
+							<stop offset="0%" stop-color="#DA22FF" />
+							<stop offset="100%" stop-color="#9733EE" />
+						</linearGradient>
+					</defs>
+					<circle cx="80" cy="80" r="70" transform="rotate(-90 80 80)" stroke-linecap="round" />
+				</svg>
+			</div>
 			<p class="card-subtitle mb2 text-muted">
 				<h5 class="card-title">
 					@($"You're {Model.Progress}% to your goal of {Model.HourlyGoal} hours!")
 				</h5>
 				@($"You have volunteered {Math.Round(Model.TimeWorked.TotalHours, 2)} hours this year.")
 				<div class="hstack align-self-center">
-					<a href="#" class="card-link">Set a New Goal</a>
-					<a href="#" class="card-link ps-3" style="border-left:2px solid #000;">See My Completed Shifts</a>
+					<a href="VolunteerAccount/Edit" class="card-link">Set a New Goal</a>
+					<a href="VolunteerShift" class="card-link ps-3" style="border-left:2px solid #000;">See My Completed Shifts</a>
 				</div>
 			</p>
 		</div>
 	</div>
-
-	<div class="col-5 offset-2">
+	<div class="col-12 col-lg-4 order-1 order-lg-2 align-content-center text-center">
+		<h5>
+			@($"Welcome {Model.Name}!")
+		</h5>
+	</div>
+	<div class="col-12 col-lg-4 order-3 mt-5 mt-lg-0">
 		<div class="card_dash">
 			<div class="card-body">
 				<h5 class="card-title">
