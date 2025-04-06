@@ -42,19 +42,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserIDs",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    NextID = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserIDs", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Volunteers",
                 columns: table => new
                 {
@@ -437,11 +424,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "UserIDs",
-                columns: new[] { "ID", "NextID" },
-                values: new object[] { 1, 0 });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Chapters_CityID",
                 table: "Chapters",
@@ -566,9 +548,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             migrationBuilder.DropTable(
                 name: "RehearsalAttendances");
-
-            migrationBuilder.DropTable(
-                name: "UserIDs");
 
             migrationBuilder.DropTable(
                 name: "UserShifts");

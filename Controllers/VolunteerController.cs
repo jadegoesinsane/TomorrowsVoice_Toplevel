@@ -40,7 +40,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		[Authorize(Roles = "Admin, Planner, Volunteer")]
-		// GET: Volunteer
 		public async Task<IActionResult> Index(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
 		{
 			string[] sortOptions = new[] { "Volunteer", "Hours Volunteered", "Shifts Attended", "Shifts Missed" };
@@ -190,8 +189,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return View(pagedData);
 		}
+
 		[Authorize(Roles = "Admin")]
-		// GET: Volunteer/Create
 		public IActionResult Create()
 		{
 			return View();
@@ -209,7 +208,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					volunteer.ID = _context.GetNextID();
 					_context.Add(volunteer);
 					await _context.SaveChangesAsync();
 
@@ -308,7 +306,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		[Authorize(Roles = "Admin")]
-		// GET: Volunteer/Delete/5
 		public async Task<IActionResult> Delete(int? id)
 		{
 			if (id == null)
@@ -482,9 +479,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			//Get the appointments
 			var appts = _context.Volunteers
-	.Include(v => v.UserShifts)  
-	.AsEnumerable()  
-	.OrderByDescending(v => v.HoursVolunteered)  
+	.Include(v => v.UserShifts)
+	.AsEnumerable()
+	.OrderByDescending(v => v.HoursVolunteered)
 	.Select(a => new
 	{
 		Name = a.NameFormatted,
@@ -495,7 +492,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		Email = a.Email,
 	});
 
-			int numRows = appts.Count();  
+			int numRows = appts.Count();
 
 			if (numRows > 0) //We have data
 			{
@@ -759,7 +756,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		[Authorize(Roles = "Admin, Planner, Volunteer")]
-		// GET: Volunteer/Details/5
 		public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)
@@ -799,7 +795,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return PartialView("_ListOfShiftDetails", shifts);
 		}
-
 
 		public async Task<IActionResult> ShiftIndex(int id)
 		{
@@ -892,7 +887,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return Json(data);
 		}
 
-		
 		public async Task<IActionResult> IndexVolunteer(string? SearchString, int? page, int? pageSizeID, string? actionButton, string? StatusFilter, string sortField = "Volunteer", string sortDirection = "asc")
 		{
 			string[] sortOptions = new[] { "Volunteer", "Hours Volunteered", "Participation", "Absences" };

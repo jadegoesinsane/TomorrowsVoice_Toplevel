@@ -306,6 +306,21 @@ th {
         border-color: #E05242;
     }
 
+.btn-success {
+    background-color: #5EA253;
+    border-color: #5EA253;
+}
+.btn-success:hover {
+    color: #fff;
+    background-color: #5EA253;
+    border-color: #5EA253;
+}
+
+.btn-success:active {
+    color: #fff;
+    background-color: #5EA253;
+    border-color: #5EA253;
+}
 .btn-outline-success {
     color: #5EA253;
     border-color: #5EA253;

@@ -74,11 +74,11 @@
 					@*    </div> *@
 					<div class="collapse" id="c-@item.ID">
 						<div class="card-body">
-							<div class="row">
+							<div class="row align-items-center">
 								<div class="col-md-10">
 									@item.Descripion
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-2 d-flex justify-content-evenly">
 									@if (item.Status != Status.Closed)
 									{
 										@if (User.IsInRole("Admin") || User.IsInRole("Planner") || User.IsInRole("Volunteer"))
@@ -118,7 +118,7 @@
 											if (item.EndDate > DateTime.Now)
 											{
 												<a asp-action="Recover" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger"
-													role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
+												   role="button" data-bs-toggle="tooltip" title="Recover @ViewData["ControllerFriendlyName"]">
 													<i class="bi bi-arrow-clockwise"></i>
 												</a>
 											}
@@ -143,51 +143,62 @@
 										dateFormat = date.Key.ToString("MMMM d, yyyy");
 									string dateID = $"i{item.ID}h{date.Key.ToString("yyyy-MM-dd")}";
 									string cShifts = $"i{item.ID}s{date.Key.ToString("yyyy-MM-dd")}";
-									<div class="card">
-										<div class="card-header" id="@dateID">
-											<h5 class="mb-0">
-												<button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#@cShifts" aria-expanded="true" aria-controls="@cShifts">
-													@dateFormat
-												</button>
-											</h5>
-										</div>
+									<div class="my-2">
+										<a class="btn btn-outline-secondary w-100 text-start" data-bs-toggle="collapse" href="#@dateID" role="button" aria-expanded="false"
+										   style="border-color: @item.Colour.BorderColour; background-color: whitesmoke; color: @item.Colour.TextColour">
+											@dateFormat
+											<br />
+											<span class="fst-italic fw-normal">@date.Sum(d => d.VolunteersLeft) Open</span>
+										</a>
 
-										<div id="@cShifts" class="collapse" aria-labelledby="@dateID" data-parent="#@parentID">
-											@foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
-											{
-												string title = shift.Title ?? "(no title)";
-												<div class="row bd-callout" style="border-left-color: @shift.Colour.BackgroundColour;">
-													<div class="position-relative row col-11">
-														<div class="col">
+										<div id="@dateID" class="collapse" data-parent="#@parentID">
+											<ol class="list-group">
+												@foreach (var shift in date.OrderBy(s => s.StartAt).Where(s => s.Status == Status.Active))
+												{
+													string title = shift.Title ?? "(no title)";
+													<li class="list-group-item d-flex row g-0 bd-callout align-items-center" style="border-left-color: @shift.Colour.BackgroundColour;">
+														<div class="col-2">
 															@shift.TimeFormat
 														</div>
-														<div class="col">
+														<div class="col-4 @(shift.Title == null ? " text-muted" : "")">
 															@title
 														</div>
-														<div class="col">
-															<small>Signed Up: @shift.UserShifts.Count() / @shift.VolunteersNeeded</small>
+														<div class="col-2 fw-bold">
+															@shift.VolunteersLeft Needed
 														</div>
-														<a data-bs-toggle="modal" data-bs-target="#joinShiftModal-@shift.ID"
-														@* asp-action="GetShiftModal" asp-controller="Event"
-											   asp-route-id="@shift.ID" *@class="stretched-link"></a>
-														@* <a asp-action="Details" class="stretched-link" asp-route-id="@shift.ID" asp-controller="Shift"></a> *@
-													</div>
-													@if (User.IsInRole("Admin") || User.IsInRole("Planner"))
-													{
-														<div class="col">
-															<a asp-action="Edit" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-success"
-															   role="button" data-bs-toggle="tooltip" title="Edit shift">
-																<i class="bi bi-pencil-square"></i>
-															</a>
-															<a asp-action="Delete" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-danger"
-															   role="button" data-bs-toggle="tooltip" title="Delete shift">
-																<i class="bi bi-x-lg"></i>
-															</a>
-														</div>
-													}
-												</div>
-												@await Html.PartialAsync("_JoinShiftModal", shift)
-											}
+														@if (!User.IsInRole("Admin"))
+														{
+															<div class="col-2">
+																@if (shift.VolunteersLeft == 0)
+																{
+																	<div class="badge bg-danger mb-2 w-100 fs-6">Full</div>
+																}
+																else
+																{
+																	<a data-bs-toggle="modal" data-bs-target="#joinShiftModal-@shift.ID" class="btn btn-success w-100"
+																	   title="Click to Volunteer: @($"{shift.Title ?? item.Name} - {shift.TimeSummary}")">
+																		Volunteer
+																	</a>
+																}
+															</div>
+														}
+														@if (User.IsInRole("Admin") || User.IsInRole("Planner"))
+														{
+															<div class="col d-flex justify-content-evenly">
+																<a asp-action="Edit" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-success"
+																   role="button" data-bs-toggle="tooltip" title="Edit shift">
+																	<i class="bi bi-pencil-square"></i>
+																</a>
+																<a asp-action="Delete" asp-controller="Shift" asp-route-id="@shift.ID" class="btn btn-sm btn-outline-danger"
+																   role="button" data-bs-toggle="tooltip" title="Delete shift">
+																	<i class="bi bi-x-lg"></i>
+																</a>
+															</div>
+														}
+													</li>
+													@await Html.PartialAsync("_JoinShiftModal", shift)
+												}
+											</ol>
 										</div>
 									</div>
 								}

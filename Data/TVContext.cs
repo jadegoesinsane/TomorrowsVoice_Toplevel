@@ -46,7 +46,7 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<ColourScheme> ColourSchemes { get; set; }
 
 		// Accounts
-		public DbSet<UserID> UserIDs { get; set; }
+		//public DbSet<UserID> UserIDs { get; set; }
 
 		//public DbSet<User> Users { get; set; }
 
@@ -82,7 +82,7 @@ namespace TomorrowsVoice_Toplevel.Data
 			//	.HasValue<Volunteer>("Volunteer")
 			//	.HasValue<Director>("Director");
 			// Ensure Director & Volunteer have a sequential ID
-			modelBuilder.Entity<UserID>().HasData(new UserID { ID = 1, NextID = 0 });
+			//modelBuilder.Entity<UserID>().HasData(new UserID { ID = 1, NextID = 0 });
 
 			modelBuilder.Entity<City>()
 				.HasIndex(c => new { c.Province, c.Name })
@@ -220,12 +220,12 @@ namespace TomorrowsVoice_Toplevel.Data
 			}
 		}
 
-		public int GetNextID()
-		{
-			var userID = UserIDs.First();
-			userID.NextID++;
-			SaveChanges();
-			return userID.NextID;
-		}
+		//public int GetNextID()
+		//{
+		//	var userID = UserIDs.First();
+		//	userID.NextID++;
+		//	SaveChanges();
+		//	return userID.NextID;
+		//}
 	}
 }

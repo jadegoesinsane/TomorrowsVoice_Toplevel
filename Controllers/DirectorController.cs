@@ -204,7 +204,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					director.ID = _context.GetNextID();
 					_context.Add(director);
 					await AddDocumentsAsync(director, theFiles);
 					await _context.SaveChangesAsync();
@@ -625,8 +624,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		private async Task InviteUserToResetPassword(Director director, string message)
 		{
 			message ??= "Hello " + director.FirstName + "<br /><p>Please navigate to:<br />" +
-                        "<a href='https://localhost:7142/' title='https://theapp.azurewebsites.net/' target='_blank' rel='noopener'>" +
-                        "https://localhost:7142/</a><br />" +
+						"<a href='https://localhost:7142/' title='https://theapp.azurewebsites.net/' target='_blank' rel='noopener'>" +
+						"https://localhost:7142/</a><br />" +
 						" and create a new password for " + director.Email + " using Forgot Password.</p>";
 			try
 			{

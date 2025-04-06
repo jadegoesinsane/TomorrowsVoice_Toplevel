@@ -411,27 +411,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.UserID", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NextID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("UserIDs");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            NextID = 0
-                        });
-                });
-
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.CityEvent", b =>
                 {
                     b.Property<int>("CityID")

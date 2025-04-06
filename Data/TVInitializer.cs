@@ -273,48 +273,42 @@ namespace TomorrowsVoice_Toplevel.Data
 								LastName = "Hoekstra",
 								Email = "director@outlook.com",
 								Phone = "0000000000",
-								ChapterID = 1,
-								ID = context.GetNextID()
+								ChapterID = 1
 							}, new Director
 							{
 								FirstName = "Melissa",
 								LastName = "Dutch",
 								Email = "mDutch@sample.com",
 								Phone = "1111111111",
-								ChapterID = 2,
-								ID = context.GetNextID()
+								ChapterID = 2
 							}, new Director
 							{
 								FirstName = "Anais",
 								LastName = "Kelsey-Verdecchia",
 								Email = "aKelsey-Verdecchia@sample.com",
 								Phone = "2222222222",
-								ChapterID = 3,
-								ID = context.GetNextID()
+								ChapterID = 3
 							}, new Director
 							{
 								FirstName = "Brian",
 								LastName = "Paul D.G.",
 								Email = "bPaulDG@sample.com",
 								Phone = "3333333333",
-								ChapterID = 4,
-								ID = context.GetNextID()
+								ChapterID = 4
 							}, new Director
 							{
 								FirstName = "Monique",
 								LastName = "Hoekstra",
 								Email = "mHoeskra1@sample.com",
 								Phone = "4444444444",
-								ChapterID = 5,
-								ID = context.GetNextID()
+								ChapterID = 5
 							}, new Director
 							{
 								FirstName = "Frances",
 								LastName = "Olson",
 								Email = "fOlson@sample.com",
 								Phone = "5555555555",
-								ChapterID = 6,
-								ID = context.GetNextID()
+								ChapterID = 6
 							});
 						context.SaveChanges();
 					}
@@ -481,8 +475,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								Email = $"{first.Substring(0, 1).ToLower()}{last}@gmail.com",
 								Phone = $"{rnd.Next(100, 1000)}{rnd.Next(100, 1000)}{rnd.Next(1000, 10000)}",
 								FirstName = first,
-								LastName = last,
-								ID = context.GetNextID()
+								LastName = last
 							};
 							if (rnd.Next(100) < 25)
 								volunteer.YearlyVolunteerGoal = rnd.Next(80, 120);
@@ -632,16 +625,15 @@ namespace TomorrowsVoice_Toplevel.Data
 
 										if (shift.ShiftDate <= DateTime.Today)
 										{
-											
 											userShift.WorkingHourRecorded = true;
 											if (rnd.Next(100) > 85)
 												userShift.NoShow = true;
-											else {
+											else
+											{
 												userShift.StartAt = shift.StartAt;
 												userShift.EndAt = shift.EndAt;
 											}
 										}
-										
 
 										var volunteer = context.Volunteers.FirstOrDefault(v => v.ID == user.ID);
 										if (volunteer != null)

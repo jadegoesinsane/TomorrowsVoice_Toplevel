@@ -26,6 +26,8 @@ namespace TomorrowsVoice_Toplevel.Models.Volunteering
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
+			if (Shift?.UserShifts.Count() > Shift?.VolunteersNeeded)
+				yield return new ValidationResult("Cannot have more volunteers than the maximum.", new[] { "UserID" });
 			if (EndAt < StartAt)
 				yield return new ValidationResult("Shift cannot end before it starts.", new[] { "EndAt" });
 		}

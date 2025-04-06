@@ -96,6 +96,9 @@ namespace TomorrowsVoice_Toplevel.Controllers
 					.AsNoTracking()
 					.FirstOrDefault();
 
+			if (volunteer == null)
+				return new HomeVolunteerVM();
+
 			decimal progress = 0;
 			if (volunteer.YearlyVolunteerGoal.HasValue && volunteer.YearlyVolunteerGoal > 0)
 			{

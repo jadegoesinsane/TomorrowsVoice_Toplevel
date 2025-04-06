@@ -19,6 +19,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 	{
 		private readonly TVContext _context;
 		private readonly IMyEmailSender _emailSender;
+
 		public VolunteerShiftController(TVContext context, IMyEmailSender emailSender, IToastNotification toastNotification) : base(context, toastNotification)
 		{
 			_emailSender = emailSender;
@@ -62,88 +63,105 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "Event");
 
-			Volunteer? volunteer = await GetVolunteerFromUser();
-			Shift? shift = _context.Shifts.Where(s => s.ID == ShiftID).FirstOrDefault();
-
-			if (volunteer == null)
-				return Redirect(ViewData["returnURL"].ToString());
-
-			if (_context.UserShifts.Any(us => us.UserID == volunteer.ID && us.ShiftID == ShiftID))
-			{
-				_toastNotification.AddErrorToastMessage("You are already signed up for this shift!");
-				return Redirect(ViewData["returnURL"].ToString());
-			}
-
-			var userShift = new UserShift
-			{
-				UserID = volunteer.ID,
-				ShiftID = (int)ShiftID,
-				
-			};
-
-			_context.Add(userShift);
-			await _context.SaveChangesAsync();
-			_toastNotification.AddSuccessToastMessage("Signed up for shift!");
-
-
-
-
-			//var volunteer = await _context.Volunteers.FirstOrDefaultAsync(m => m.ID == volunteerID);
-
-			//var shift = await _context.Shifts.Include(a => a.Event).FirstOrDefaultAsync(m => m.ID == shiftID);
-			var shift2 = await _context.Shifts
-						.Include(d => d.Event)      
-						.AsNoTracking()
-						.FirstOrDefaultAsync(d => d.ID == shift.ID);
-			string Subject = "Sign Up shift ";
-
-			string emailContent = $"You have Signed Up  for the shift {shift.TimeSummary}  of event {shift2.Event.Name}.  ";
-
-			var volunteers = _context.Volunteers;
-
-			int folksCount = 0;
 			try
 			{
-				//Send a Notice.
-				List<EmailAddress> folks = (from p in volunteers
+				if (!ShiftID.HasValue)
+					throw new ArgumentNullException("Shift not found.");
 
-											where p.ID == volunteer.ID
-											select new EmailAddress
-											{
-												Name = p.NameFormatted,
-												Address = p.Email
-											}).ToList();
-				folksCount = folks.Count;
-				if (folksCount > 0)
+				Volunteer? volunteer = await GetVolunteerFromUser();
+				if (volunteer == null)
+					throw new ArgumentNullException("Volunteer not found.");
+
+				Shift? shift = await _context.Shifts
+					.Include(s => s.UserShifts)
+					.Include(s => s.Event)
+					.FirstOrDefaultAsync(s => s.ID == ShiftID.Value);
+
+				if (shift == null)
+					throw new ArgumentNullException("Shift not found.");
+
+				if (_context.UserShifts.Any(us => us.UserID == volunteer.ID && us.ShiftID == ShiftID.Value))
+					throw new Exception("You are already signed up for this shift.");
+
+				if (shift.UserShifts.Count >= shift.VolunteersNeeded)
+					throw new Exception($"Sorry! That shift for {shift?.Event?.Name} is full.");
+
+				var userShift = new UserShift
 				{
-					var msg = new EmailMessage()
+					UserID = volunteer.ID,
+					ShiftID = (int)ShiftID,
+				};
+
+				_context.Add(userShift);
+				await _context.SaveChangesAsync();
+				_toastNotification.AddSuccessToastMessage("Signed up for shift!");
+
+				#region Email Volunteer
+
+				var shift2 = await _context.Shifts
+						.Include(d => d.Event)
+						.AsNoTracking()
+						.FirstOrDefaultAsync(d => d.ID == shift.ID);
+				string Subject = "Sign Up shift ";
+
+				string emailContent = $"You have Signed Up  for the shift {shift.TimeSummary}  of event {shift2.Event.Name}.  ";
+
+				var volunteers = _context.Volunteers;
+
+				int folksCount = 0;
+				try
+				{
+					//Send a Notice.
+					List<EmailAddress> folks = (from p in volunteers
+
+												where p.ID == volunteer.ID
+												select new EmailAddress
+												{
+													Name = p.NameFormatted,
+													Address = p.Email
+												}).ToList();
+					folksCount = folks.Count;
+					if (folksCount > 0)
 					{
-						ToAddresses = folks,
-						Subject = Subject,
-						Content = "<p>" + emailContent
-					};
-					await _emailSender.SendToManyAsync(msg);
-					ViewData["Message"] = "Message sent to " + folksCount + " Manager"
-						+ ((folksCount == 1) ? "." : "s.");
+						var msg = new EmailMessage()
+						{
+							ToAddresses = folks,
+							Subject = Subject,
+							Content = "<p>" + emailContent
+						};
+						await _emailSender.SendToManyAsync(msg);
+						ViewData["Message"] = "Message sent to " + folksCount + " Manager"
+							+ ((folksCount == 1) ? "." : "s.");
+					}
+					else
+					{
+						ViewData["Message"] = "Message NOT sent!  No Manager.";
+					}
 				}
-				else
+				catch (Exception ex)
 				{
-					ViewData["Message"] = "Message NOT sent!  No Manager.";
+					string errMsg = ex.GetBaseException().Message;
+					ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
+						+ ((folksCount == 1) ? "" : "s") + " in the list.";
 				}
+
+				#endregion Email Volunteer
+			}
+			catch (ArgumentNullException ex)
+			{
+				string msg = ex.GetBaseException().Message;
+				_toastNotification.AddErrorToastMessage(msg);
 			}
 			catch (Exception ex)
 			{
-				string errMsg = ex.GetBaseException().Message;
-				ViewData["Message"] = "Error: Could not send email message to the " + folksCount + " Client"
-					+ ((folksCount == 1) ? "" : "s") + " in the list.";
+				string msg = ex.GetBaseException().Message;
+				if (msg.Contains("UNIQUE") || msg.Contains("'UserID', 'ShiftID'"))
+					_toastNotification.AddErrorToastMessage("You are already signed up for this shift!");
+				else if (msg.Contains("SqliteException"))
+					_toastNotification.AddErrorToastMessage("An error occurred while signing up for the shift. Please try again.");
+				else
+					_toastNotification.AddErrorToastMessage(msg);
 			}
-
-
-
-
-
-
-
 			return Redirect(ViewData["returnURL"].ToString());
 		}
 
@@ -221,7 +239,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 		}
 
-
 		public async Task<IActionResult> Signoff(int? ShiftID)
 		{
 			ViewData["returnURL"] = MaintainURL.ReturnURL(HttpContext, "VolunteerShift");
@@ -231,8 +248,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			if (volunteer == null)
 				return Redirect(ViewData["returnURL"].ToString());
-
-			
 
 			var userShift = new UserShift
 			{
@@ -246,13 +261,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			await _context.SaveChangesAsync();
 			_toastNotification.AddSuccessToastMessage("Signed off for shift!");
 
-
-
 			return Redirect(ViewData["returnURL"].ToString());
 		}
-
-
-
 
 		public async Task<IActionResult> SignOffShift(int volunteerId, int shiftId)
 		{
@@ -314,6 +324,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			return await _context.Volunteers
 				.Where(v => v.Email == User.Identity.Name)
+				.Include(v => v.UserShifts)
 				.AsNoTracking()
 				.FirstOrDefaultAsync();
 		}

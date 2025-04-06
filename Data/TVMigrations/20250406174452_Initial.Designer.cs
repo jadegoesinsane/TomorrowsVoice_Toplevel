@@ -11,7 +11,7 @@ using TomorrowsVoice_Toplevel.Data;
 namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 {
     [DbContext(typeof(TVContext))]
-    [Migration("20250402213320_Initial")]
+    [Migration("20250406174452_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -412,27 +412,6 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.HasIndex("ColourID");
 
                     b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Users.UserID", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NextID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("UserIDs");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = 1,
-                            NextID = 0
-                        });
                 });
 
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Volunteering.CityEvent", b =>

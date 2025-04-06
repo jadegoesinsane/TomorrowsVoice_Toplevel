@@ -70,7 +70,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		// GET: Volunteer/Create
 		public IActionResult Create()
 		{
-			var volunteer = new VolunteerVM {Email = User.Identity.Name };
+			var volunteer = new VolunteerVM { Email = User.Identity.Name };
 			return View(volunteer);
 		}
 
@@ -85,7 +85,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					
 					Volunteer volunteer = new Volunteer
 					{
 						FirstName = vVM.FirstName,
@@ -96,20 +95,18 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						Email = User.Identity.Name
 					};
 
-					volunteer.ID = _context.GetNextID();
 					_context.Add(volunteer);
 					await _context.SaveChangesAsync();
 
 					var _user = await _userManager.FindByEmailAsync(volunteer.Email);
 					if (_user != null)
 					{
-						
 						var userRoles = await _userManager.GetRolesAsync(_user);
 						if (!userRoles.Contains("Volunteer"))
 						{
 							await _userManager.AddToRoleAsync(_user, "Volunteer");
 						}
-					
+
 						await _signInManager.RefreshSignInAsync(_user);
 					}
 
@@ -119,7 +116,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			}
 			catch (DbUpdateException dex)
 			{
-				
 				string message = dex.GetBaseException().Message;
 				if (message.Contains("UNIQUE") && message.Contains("Email"))
 				{
@@ -134,7 +130,6 @@ namespace TomorrowsVoice_Toplevel.Controllers
 
 			return View(vVM);
 		}
-
 
 		// GET: VolunteerAccount/Edit/5
 		public async Task<IActionResult> Edit()
