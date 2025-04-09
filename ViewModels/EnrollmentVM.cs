@@ -17,5 +17,7 @@ namespace TomorrowsVoice_Toplevel.ViewModels
 		public DateTime EndAt { get; set; }
 
 		public int ShiftID { get; set; }
+
+		public bool Recorded { get; set; }
 	}
 }

@@ -572,7 +572,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				Volunteer = e.User.NameFormatted,
 				ShowOrNot = e.NoShow,
 				StartAt = e.StartAt,
-				EndAt = e.EndAt
+				EndAt = e.EndAt,
+				Recorded = e.HourRecordedVolunteer
 			}).ToList();
 
 			return PartialView("_TrackPerformance", enrollmentsVM);

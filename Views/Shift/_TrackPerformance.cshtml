@@ -1,5 +1,23 @@
 ﻿@model List<TomorrowsVoice_Toplevel.ViewModels.EnrollmentVM>
+<style>
+    th {
+        white-space: nowrap; /* Prevents line breaks inside <th> */
+    }
 
+    td {
+        white-space: nowrap; /* Prevents line breaks inside <th> */
+    }
+
+    
+
+    .modal .modal-dialog {
+        max-width: 70%; /* 设置最大宽度为视口宽度的 90% */
+    }
+
+    .modal input[type="checkbox"] {
+        transform: scale(1.5); /* 放大 1.5 倍 */
+
+</style>
 <table class="table" id="performanceTable">
     <thead>
         <tr>
@@ -7,6 +25,7 @@
             <th>No Show</th>
             <th>Start</th>
             <th>End</th>
+            <th>Hours recorded?</th>
         </tr>
     </thead>
     <tbody>
@@ -29,7 +48,18 @@
 
                     <input type="time" name="EndAt" class="form-control" value="@Model[i].EndAt.ToString("HH:mm")" />
                 </td>
-            </tr>
+
+                <td>
+                    @if (Model[i].Recorded)
+                    {
+                        <span style="color: #006400; font-weight: bold;">recorded</span>
+                    }
+                    else
+                    {
+                        <span style="color: #B22222; font-weight: bold;">No record</span>
+                    }
+                </td>
+                </tr>
         }
     </tbody>
 </table>
