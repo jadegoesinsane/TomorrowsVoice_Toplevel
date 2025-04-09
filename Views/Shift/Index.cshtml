@@ -280,13 +280,20 @@
                             alert("Performance updated successfully.");
                             location.reload();
                         } else {
-                            alert("Error: " + response.message);
+                            
+                            $("#performanceError").text(response.message);
                         }
                     },
                     error: function (xhr) {
                         console.error("❌ AJAX Error:", xhr.responseText);
-                        alert("An error occurred while updating performance.");
+
+                        let errorMsg = "An error occurred while updating performance.";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        $("#performanceError").text(errorMsg);
                     }
+
                 });
             });
 

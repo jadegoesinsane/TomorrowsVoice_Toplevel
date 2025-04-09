@@ -1,23 +1,24 @@
 ﻿@model List<TomorrowsVoice_Toplevel.ViewModels.EnrollmentVM>
 <style>
     th {
-        white-space: nowrap; /* Prevents line breaks inside <th> */
+        white-space: nowrap; 
     }
 
     td {
-        white-space: nowrap; /* Prevents line breaks inside <th> */
+        white-space: nowrap; 
     }
 
     
 
     .modal .modal-dialog {
-        max-width: 70%; /* 设置最大宽度为视口宽度的 90% */
+        max-width: 70%; 
     }
 
     .modal input[type="checkbox"] {
-        transform: scale(1.5); /* 放大 1.5 倍 */
+        transform: scale(1.5); }
 
 </style>
+<div id="performanceError" class="text-danger mb-2"></div>
 <table class="table" id="performanceTable">
     <thead>
         <tr>
