@@ -1,5 +1,26 @@
 ﻿@model List<TomorrowsVoice_Toplevel.ViewModels.EnrollmentVM>
 
+<style>
+    th {
+        white-space: nowrap;
+    }
+
+    td {
+        white-space: nowrap;
+    }
+
+
+
+    .modal .modal-dialog {
+        max-width: 70%;
+    }
+
+    .modal input[type="checkbox"] {
+        transform: scale(1.5); }
+
+</style>
+
+<div id="performanceError" class="text-danger mb-2"></div>
 <table class="table" id="performanceTable">
     <thead>
         <tr>
