@@ -90,6 +90,8 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				{
 					UserID = volunteer.ID,
 					ShiftID = (int)ShiftID,
+					StartAt = shift.StartAt,
+					EndAt = shift.EndAt,
 				};
 
 				_context.Add(userShift);
@@ -227,6 +229,7 @@ namespace TomorrowsVoice_Toplevel.Controllers
 						enrollment.NoShow = enrollmentVM.ShowOrNot;
 						enrollment.StartAt = enrollmentVM.StartAt;
 						enrollment.EndAt = enrollmentVM.EndAt;
+						enrollment.HourRecordedVolunteer= true;
 					}
 				}
 

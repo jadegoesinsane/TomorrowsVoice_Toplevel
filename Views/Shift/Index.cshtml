@@ -88,18 +88,13 @@
                                          bool condition2 = false;
                                         foreach (var d in item.UserShifts)
                                         {
-                                            if (d.NoShow == true)
+                                            if (d.HourRecordedVolunteer == true)
                                             {
                                                 condition = true;
                                                 continue;
 
                                             }
-                                            else if (d.NoShow == false && d.EndAt - d.StartAt > TimeSpan.Zero)
-                                            {
-                                                condition = true;
-                                                continue;
-
-                                            }
+                                           
                                             else
                                             {
                                                 condition = false;
