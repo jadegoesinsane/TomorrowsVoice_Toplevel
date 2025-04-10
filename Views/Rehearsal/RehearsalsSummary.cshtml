@@ -12,14 +12,15 @@
 	<div class="row my-2 p-2">
 		<div class="col-md-2">
 			<div class="form-floating">
-				<input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" max="9999-12-12" aria-labelledby="lblStartDate" />
+				<input type="date" id="startDate" name="startDate" class="form-control" value="@selectedStartDate" max="9999-12-12" aria-labelledby="lblStartDate" oninput="validateEndDate()" />
 				<label id="lblStartDate" for="startDate" class="control-label">Start Date:</label>
 			</div>
 		</div>
 		<div class="col-md-2">
 			<div class="form-floating">
-				<input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" max="9999-12-12" aria-labelledby="lblEndDate" />
+				<input type="date" id="endDate" name="endDate" class="form-control" value="@selectedEndDate" max="9999-12-12" aria-labelledby="lblEndDate" oninput="validateEndDate()" />
 				<label id="lblEndDate" for="endDate" class="control-label">End Date:</label>
+				<span id="endDateError" class="text-danger small d-block mt-1"></span>
 			</div>
 		</div>
 		<div class="col-md">
@@ -84,6 +85,45 @@
 </form>
 
 @section Scripts {
+	<script>
+		function validateEndDate() {
+			const endDateInput = document.getElementById('endDate');
+			const startDateInput = document.getElementById('startDate');
+			const endDateError = document.getElementById('endDateError');
+			const submitButtons = document.querySelectorAll('button[type="submit"], button[type="button"]');
+
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+
+			const selectedEndDate = new Date(endDateInput.value);
+			const selectedStartDate = new Date(startDateInput.value);
+
+			let hasError = false;
+
+			// 清除旧状态
+			endDateError.textContent = "";
+			endDateInput.classList.remove("is-invalid");
+
+			// 验证 1：Start Date > End Date
+			if (selectedStartDate > selectedEndDate) {
+				endDateError.textContent = "Start Date cannot be later than End Date.";
+				endDateInput.classList.add("is-invalid");
+				hasError = true;
+			}
+
+			// 验证 2：End Date 在未来
+			if (selectedEndDate > today) {
+				endDateError.textContent = "End Date cannot be in the future.";
+				endDateInput.classList.add("is-invalid");
+				hasError = true;
+			}
+
+			// 根据是否有错误来禁用/启用按钮
+			submitButtons.forEach(btn => btn.disabled = hasError);
+		}
+	</script>
+
+
 	<script>
 		function exportToExcel3() {
 

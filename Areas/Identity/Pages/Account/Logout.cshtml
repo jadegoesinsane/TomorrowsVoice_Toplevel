@@ -5,7 +5,14 @@
 }
 
 <header>
+
     <h1>@ViewData["Title"]</h1>
+    @if (TempData["LogoutMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["LogoutMessage"]
+        </div>
+    }
     @{
         if (User.Identity?.IsAuthenticated ?? false)
         {

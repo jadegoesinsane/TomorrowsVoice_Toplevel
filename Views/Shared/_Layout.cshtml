@@ -60,6 +60,12 @@
 	</style>
 </head>
 <body>
+	@if (TempData["LogoutMessage"] != null)
+	{
+		<div class="alert alert-success" style="background-color: #800080; color: #ffffff;">
+			@TempData["LogoutMessage"]
+		</div>
+	}
 	<header>
 		<nav class="navbar navbar-expand-md navbar-toggleable-sm navbar-light mb-3">
 			<!-- bg-white border-bottom box-shadow -->

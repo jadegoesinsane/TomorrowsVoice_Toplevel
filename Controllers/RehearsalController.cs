@@ -708,6 +708,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			startDate ??= new DateTime(2020, 1, 1);  // Default to January 1st, 1st year
 			endDate ??= DateTime.Now;  // Default to today's date
+			if (endDate > DateTime.Now)
+			{
+				endDate = DateTime.Now;  
+			}
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
 				 .Include(c => c.Director)
 				 .Include(c => c.Chapter)
@@ -735,6 +739,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		{
 			startDate ??= new DateTime(2020, 1, 1);
 			endDate ??= DateTime.Now;
+			if (endDate > DateTime.Now)
+			{
+				endDate = DateTime.Now;
+			}
 			ViewData["city"] = city;
 			var details = await _context.Rehearsals
 				.Include(r => r.RehearsalAttendances)
@@ -755,6 +763,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult RehearsalsSummaryReport(DateTime? startDate, DateTime? endDate)
 		{
+			if (endDate > DateTime.Now)
+			{
+				endDate = DateTime.Now;
+			}
 			var sumQ = _context.Rehearsals.Include(c => c.RehearsalAttendances)
 				  .Include(c => c.Director)
 				  .Include(c => c.Chapter)
@@ -859,6 +871,10 @@ namespace TomorrowsVoice_Toplevel.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult RehearsalsDetailReport(DateTime? startDate, DateTime? endDate)
 		{
+			if (endDate > DateTime.Now)
+			{
+				endDate = DateTime.Now;
+			}
 			var appts = _context.RehearsalAttendances
 				.Include(c => c.Rehearsal)
 					.ThenInclude(c => c.Director)
