@@ -87,23 +87,46 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Edit(string Id, string[] selectedRoles)
 		{
-			var _user = await _userManager.FindByIdAsync(Id);//IdentityRole
+			var _user = await _userManager.FindByIdAsync(Id);
+			if (_user == null)
+			{
+				return NotFound();
+			}
+
 			UserVM user = new UserVM
 			{
 				Id = _user.Id,
 				UserName = _user.UserName,
 				UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
 			};
+
 			try
 			{
+			
+				var currentUserId = _userManager.GetUserId(User);
+				bool isEditingSelf = _user.Id == currentUserId;
+				bool wasAdmin = user.UserRoles.Contains("Admin");
+				bool isRemovingAdmin = !selectedRoles.Contains("Admin");
+
+				if (isEditingSelf && wasAdmin && isRemovingAdmin)
+				{
+					var admins = await _userManager.GetUsersInRoleAsync("Admin");
+					if (admins.Count == 1) 
+					{
+						ModelState.AddModelError("", "You are the last administrator.There must be at least one administrator.");
+						PopulateAssignedRoleData(user);
+						return View(user);
+					}
+				}
+
 				await UpdateUserRoles(selectedRoles, user);
 				return RedirectToAction("Index");
 			}
 			catch (Exception)
 			{
-				ModelState.AddModelError(string.Empty,
-								"Unable to save changes.");
+				ModelState.AddModelError(string.Empty, "Unable to save changes.");
 			}
+
 			PopulateAssignedRoleData(user);
 			return View(user);
 		}

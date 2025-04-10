@@ -73,7 +73,11 @@
 						<li class="nav-item">
 							<!--<a class="navbar-brand d-none d-md-flex" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" style="height: 80px;" /></a>-->
 							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-								<img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" class="navbar-brand d-none d-md-inline-block" style="height: 80px;" /> Dashboard
+								<img src="~/images/TV-Logo2.png" alt="Tomorrow's Voices" class="navbar-brand d-none d-md-inline-block" style="height: 80px;" />
+								@if (User.IsInRole("Director") || User.IsInRole("Admin") || User.IsInRole("Volunteer"))
+								{
+									<span>Dashboard</span>
+								}
 							</a>
 						</li>
 						@if (User.IsInRole("Director") || User.IsInRole("Admin"))
