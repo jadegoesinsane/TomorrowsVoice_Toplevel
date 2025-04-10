@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NToastNotify;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using Org.BouncyCastle.Asn1;
 using TomorrowsVoice_Toplevel.CustomControllers;
 using TomorrowsVoice_Toplevel.Data;
@@ -532,7 +534,53 @@ namespace TomorrowsVoice_Toplevel.Controllers
 				return new SelectList(items, "Value", "Text", selectedId);
 			}*/
 		}
+		public IActionResult Sample()
+		{
+			using (ExcelPackage excel = new ExcelPackage())
+			{
+				
+				var workSheet = excel.Workbook.Worksheets.Add("Singers");
 
+				
+				workSheet.Cells[1, 1].Value = "FirstName";
+				workSheet.Cells[1, 2].Value = "MiddleName";
+				workSheet.Cells[1, 3].Value = "LastName";
+				workSheet.Cells[1, 4].Value = "Email";
+				workSheet.Cells[1, 5].Value = "ContactName";
+				workSheet.Cells[1, 6].Value = "Phone";
+				workSheet.Cells[1, 7].Value = "Chapter";
+				workSheet.Cells[1, 8].Value = "Note";
+
+				
+				using (ExcelRange headings = workSheet.Cells[1, 1, 1, 8])
+				{
+					headings.Style.Font.Bold = true;
+					var fill = headings.Style.Fill;
+					fill.PatternType = ExcelFillStyle.Solid;
+					fill.BackgroundColor.SetColor(Color.LightBlue);
+				}
+
+				
+				workSheet.Cells.AutoFitColumns();
+
+				
+				try
+				{
+					Byte[] theData = excel.GetAsByteArray();
+					string filename = "Singers.xlsx";
+					string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+					return File(theData, mimeType, filename);
+				}
+				catch (Exception)
+				{
+					return BadRequest("Could not build and download the file.");
+				}
+			}
+
+
+
+
+		}
 		public async Task<IActionResult> InsertFromExcel(IFormFile theExcel)
 		{
 			string feedBack = string.Empty;

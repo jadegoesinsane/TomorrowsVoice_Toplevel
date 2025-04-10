@@ -4,6 +4,8 @@
 <div class="text-danger">@Html.Raw(TempData["Feedback"])</div>
 <form asp-action="InsertFromExcel" asp-controller="Singer" method="post" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+	
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
@@ -24,6 +26,11 @@
 				<br />From the second row onward, enter each person's details in a new row under the correct column.
 				<br />The program checks these headers to ensure the file is correct.
 			</p>
+
+		</div>
+		<div class="col g-0 ms-auto d-flex justify-content-evenly justify-content-md-end">
+			@* <a asp-action="Create" class="btn btn-primary col-auto h-100"><i class="bi bi-person-plus-fill"></i> Add @ViewData["ControllerFriendlyName"]</a> *@
+			<a asp-action="Sample" class="btn btn-detail col-auto h-100 ms-4" style="float: right;"><i class="bi bi-download"></i> Sample Excel</a>
 		</div>
 	</div>
 	<div class="row">
