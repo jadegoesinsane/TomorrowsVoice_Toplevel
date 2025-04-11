@@ -782,3 +782,18 @@ circle {
     justify-content: center;
     margin-bottom:2rem;
 }
+
+.dashboard .card-title {
+    color: var(--primary);
+}
+
+.card-title span {
+    color: #899bbd;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.scrollable-activity {
+    max-height: 400px; /* Adjust the height as needed */
+    overflow-y: auto;
+}

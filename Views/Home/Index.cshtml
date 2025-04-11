@@ -5,7 +5,11 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-	@if (User.IsInRole("Director"))
+	@if (User.IsInRole("Admin"))
+	{
+		<partial name="_AdminHome" model="Model" />
+	}
+	else if (User.IsInRole("Director"))
 	{
 		<partial name="_DirectorHome" model="Model" />
 	}
@@ -53,15 +57,15 @@
 			requestAnimationFrame(animate);
 
 			@* setInterval(() => {
-				if (counter >= progress) {
-					clearInterval;
-				} else {
-					counter += 1;
-					let dashOffset = maxDashOffset - (maxDashOffset * (counter / 100));
-					circle.style.strokeDashoffset = dashOffset;
-					number.innerHTML = `${counter}%`;
-				}
-			}, 30); *@
+		if (counter >= progress) {
+		clearInterval;
+		} else {
+		counter += 1;
+		let dashOffset = maxDashOffset - (maxDashOffset * (counter / 100));
+		circle.style.strokeDashoffset = dashOffset;
+		number.innerHTML = `${counter}%`;
+		}
+		}, 30); *@
 		</script>
 	}
 	@if (User.IsInRole("Director"))

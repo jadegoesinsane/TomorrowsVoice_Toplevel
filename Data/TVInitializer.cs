@@ -149,6 +149,29 @@ namespace TomorrowsVoice_Toplevel.Data
                             END;
                         ";
 						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						// Events
+						sqlCmd = @"
+                            CREATE TRIGGER SetEventTimestampOnUpdate
+                            AFTER UPDATE ON Events
+                            BEGIN
+                                UPDATE Events
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
+
+						sqlCmd = @"
+                            CREATE TRIGGER SetEventTimestampOnInsert
+                            AFTER INSERT ON Events
+                            BEGIN
+                                UPDATE Events
+                                SET RowVersion = randomblob(8)
+                                WHERE rowid = NEW.rowid;
+                            END;
+                        ";
+						context.Database.ExecuteSqlRaw(sqlCmd);
 					}
 					else //The database is already created
 					{
@@ -461,8 +484,7 @@ namespace TomorrowsVoice_Toplevel.Data
 								FirstName = "Cave",
 								LastName = "Johnson",
 								Email = $"planner@outlook.com",
-								Phone = $"2221112222",
-								ID = 1000
+								Phone = $"2221112222"
 							});
 
 						for (int i = 0; i < 50; i++)
@@ -533,8 +555,8 @@ namespace TomorrowsVoice_Toplevel.Data
 							(
 								GetEvents
 								("Community Cleanup Tor",
-								new DateTime(2024, 05, 10),
-								new DateTime(2024, 05, 13),
+								new DateTime(2024, 04, 9),
+								new DateTime(2024, 04, 15),
 								"Help us clean the city!",
 								"Toronto",
 								context.ColourSchemes.ElementAtOrDefault(ran.Next(context.ColourSchemes.Count())).ID)

@@ -350,6 +350,47 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.ToTable("FileContent");
                 });
 
+            modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.Transaction", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ChangeTimestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ChangeType")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ChangedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("ItemID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ItemType")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NewValue")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OldValue")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Property")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Transactions");
+                });
+
             modelBuilder.Entity("TomorrowsVoice_Toplevel.Models.UploadedFile", b =>
                 {
                     b.Property<int>("ID")
@@ -435,6 +476,13 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     b.Property<int>("ColourID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Descripion")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -450,11 +498,23 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 

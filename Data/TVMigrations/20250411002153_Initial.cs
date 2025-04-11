@@ -42,6 +42,26 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ItemID = table.Column<long>(type: "INTEGER", nullable: false),
+                    ChangedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    ChangeType = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    ChangeTimestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    OldValue = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    NewValue = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    Property = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    ItemType = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Volunteers",
                 columns: table => new
                 {
@@ -104,7 +124,12 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
                     Descripion = table.Column<string>(type: "TEXT", nullable: false),
                     Location = table.Column<string>(type: "TEXT", nullable: false),
                     ColourID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false)
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
+                    UpdatedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -548,6 +573,9 @@ namespace TomorrowsVoice_Toplevel.Data.TVMigrations
 
             migrationBuilder.DropTable(
                 name: "RehearsalAttendances");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "UserShifts");

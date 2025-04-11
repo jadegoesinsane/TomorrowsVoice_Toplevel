@@ -12,6 +12,9 @@ namespace TomorrowsVoice_Toplevel.Data
 		//To give access to IHttpContextAccessor for Audit Data with IAuditable
 		private readonly IHttpContextAccessor _httpContextAccessor;
 
+		private bool _isLogging = false;
+		private string[] _auditable = new[] { "CreatedBy", "CreatedOn", "UpdatedBy", "UpdatedOn" };
+
 		//Property to hold the UserName value
 		public string UserName
 		{
@@ -71,7 +74,8 @@ namespace TomorrowsVoice_Toplevel.Data
 		public DbSet<Group> Groups { get; set; }
 		public DbSet<VolunteerGroup> VolunteerGroups { get; set; }
 
-		// Messaging DbSets
+		// Logging DbSet
+		public DbSet<Transaction> Transactions { get; set; }
 
 		#endregion DbSets
 
@@ -184,19 +188,24 @@ namespace TomorrowsVoice_Toplevel.Data
 
 		public override int SaveChanges(bool acceptAllChangesOnSuccess)
 		{
-			OnBeforeSaving();
-			return base.SaveChanges(acceptAllChangesOnSuccess);
+			var changes = CaptureChanges(out var tempIDs);
+			var result = base.SaveChanges(acceptAllChangesOnSuccess);
+			LogChanges(changes, tempIDs);
+			return result;
 		}
 
-		public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+		public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
 		{
-			OnBeforeSaving();
-			return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+			var changes = CaptureChanges(out var tempIDs);
+			var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+			LogChanges(changes, tempIDs);
+			return result;
 		}
 
 		private void OnBeforeSaving()
 		{
 			var entries = ChangeTracker.Entries();
+
 			foreach (var entry in entries)
 			{
 				if (entry.Entity is IAuditable trackable)
@@ -217,6 +226,110 @@ namespace TomorrowsVoice_Toplevel.Data
 							break;
 					}
 				}
+			}
+		}
+
+		private List<Transaction> CaptureChanges(out Dictionary<long, int> tempIDs)
+		{
+			OnBeforeSaving();
+			var entries = ChangeTracker.Entries();
+			var logs = new List<Transaction>();
+			tempIDs = new Dictionary<long, int>();
+			foreach (var entry in entries)
+			{
+				if (entry.Entity is IAuditable trackable)
+				{
+					var now = DateTime.UtcNow;
+					switch (entry.State)
+					{
+						case EntityState.Modified:
+							var originalValues = entry.OriginalValues;
+							var currentValues = entry.CurrentValues;
+							foreach (var property in entry.OriginalValues.Properties)
+							{
+								if (_auditable.Contains(property.Name))
+									continue;
+								var originalValue = originalValues[property]?.ToString();
+								var currentValue = currentValues[property]?.ToString();
+								if (originalValue != currentValue)
+								{
+									logs.Add(new Transaction
+									{
+										ItemID = (int)entry.Property("ID").CurrentValue,
+										ChangedBy = UserName,
+										ChangeType = "UPDATE",
+										ChangeTimestamp = now,
+										OldValue = originalValue,
+										NewValue = currentValue,
+										Property = property.Name,
+										ItemType = entry.Entity.GetType().Name
+									});
+								}
+							}
+							break;
+
+						case EntityState.Added:
+							var ID = trackable.CreatedOn.Value.Ticks;
+							tempIDs[ID] = 0;
+							logs.Add(new Transaction
+							{
+								ItemID = ID,
+								ChangedBy = UserName,
+								ChangeType = "INSERT",
+								ChangeTimestamp = now,
+								OldValue = null,
+								NewValue = entry.CurrentValues.ToObject().ToString(),
+								Property = entry.Entity.GetType().Name,
+								ItemType = entry.Entity.GetType().Name
+							});
+							break;
+
+						case EntityState.Deleted:
+							var origin = entry.OriginalValues.ToObject().ToString();
+							logs.Add(new Transaction
+							{
+								ItemID = (int)entry.Property("ID").CurrentValue,
+								ChangedBy = UserName,
+								ChangeType = "DELETE",
+								ChangeTimestamp = now,
+								OldValue = origin,
+								NewValue = null,
+								Property = entry.Entity.GetType().Name,
+								ItemType = entry.Entity.GetType().Name
+							});
+							break;
+					}
+				}
+			}
+			return logs;
+		}
+
+		private void LogChanges(List<Transaction> changes, Dictionary<long, int> tempIDs)
+		{
+			var entries = ChangeTracker.Entries();
+
+			foreach (var entry in entries)
+			{
+				if (entry.Entity is IAuditable trackable)
+				{
+					if (entry.State == EntityState.Unchanged)
+					{
+						var actualID = (int)entry.Property("ID").CurrentValue;
+						var createdOn = ((IAuditable)entry.Entity).CreatedOn.Value.Ticks;
+						if (tempIDs.ContainsKey(createdOn))
+							tempIDs[createdOn] = actualID;
+					}
+				}
+			}
+			foreach (var change in changes.Where(c => c.ChangeType == "INSERT" && tempIDs.ContainsKey(c.ItemID)))
+				change.ItemID = tempIDs[change.ItemID];
+
+			if (changes.Any())
+			{
+				_isLogging = true;
+				Transactions.AddRange(changes);
+				base.SaveChanges();
+				_isLogging = false;
 			}
 		}
 
