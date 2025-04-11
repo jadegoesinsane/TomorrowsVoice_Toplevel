@@ -295,7 +295,113 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(rehearsal);
 		}
 
-        [Authorize(Roles = "Admin, Director")]
+
+		[Authorize(Roles = "Admin, Director")]
+		// GET: Rehearsal/Create
+		public IActionResult CreateTemplate(int? chapterSelect)
+		{
+			Rehearsal rehearsal = new Rehearsal();
+			Director? dUser = GetDirectorFromUser();
+
+			if (dUser != null)
+			{
+				rehearsal.DirectorID = dUser.ID;
+				rehearsal.Director = dUser;
+				rehearsal.ChapterID = dUser.ChapterID;
+				rehearsal.Chapter = dUser.Chapter;
+				PopulateAttendance(rehearsal.ChapterID, rehearsal);
+			}
+			else
+			{
+				PopulateAttendance(_context.Chapters.OrderBy(c => c.City.Name).Where(c => c.Status == Status.Active).Select(c => c.ID).FirstOrDefault(), rehearsal);
+			}
+
+			if (Request.Query.Any(q => q.Key == "Date"))
+			{
+				rehearsal.RehearsalDate = DateTime.Parse(Request.Query.Where(q => q.Key == "Date").Select(q => q.Value).FirstOrDefault());
+			}
+			else
+			{
+				rehearsal.RehearsalDate = DateTime.Today;
+			}
+			rehearsal.TotalSingers = GetActiveSingersCount(_context.Chapters.Select(c => c.ID).FirstOrDefault());
+			ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+
+			PopulateDropDown(rehearsal);
+
+			return View(rehearsal);
+		}
+
+		// POST: Rehearsal/Create
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[Authorize(Roles = "Admin, Director")]
+		public async Task<IActionResult> CreateTemplate(string[] selectedOptions, Rehearsal rehearsal, int? chapterSelect,
+										DayOfWeek selectedDayOfWeek, int repeatCount = 1)
+		{
+			try
+			{
+				int chapterId = rehearsal.ChapterID;
+				int directorId = rehearsal.DirectorID;
+
+				var today = DateTime.Today;
+				int daysUntilTarget = ((int)selectedDayOfWeek - (int)today.DayOfWeek + 7) % 7;
+				DateTime firstDate = today.AddDays(daysUntilTarget);
+
+				for (int i = 0; i < repeatCount; i++)
+				{
+					DateTime thisDate = firstDate.AddDays(i * 7);
+					var newRehearsal = new Rehearsal
+					{
+						RehearsalDate = thisDate,
+						StartAt = rehearsal.StartAt,
+						EndAt = rehearsal.EndAt,
+						Note = rehearsal.Note,
+						ChapterID = chapterId,
+						DirectorID = directorId,
+						TotalSingers = GetActiveSingersCount(chapterId)
+					};
+
+					UpdateAttendance(selectedOptions, newRehearsal);
+					_context.Rehearsals.Add(newRehearsal);
+				}
+
+				await _context.SaveChangesAsync();
+				AddSuccessToast($"{repeatCount} rehearsal(s) created on {selectedDayOfWeek}s");
+				return RedirectToAction(nameof(Index));
+			}
+
+			catch (RetryLimitExceededException /* dex */)//This is a Transaction in the Database!
+			{
+				ModelState.AddModelError("", "Unable to save changes after multiple attempts. " +
+					"Try again, and if the problem persists, see your system administrator.");
+			}
+			catch (DbUpdateException dex)
+			{
+				string message = dex.GetBaseException().Message;
+				if (message.Contains("UNIQUE") && message.Contains("Rehearsals.RehearsalDate"))
+				{
+					ModelState.AddModelError("RehearsalDate", "Unable to save changes. Remember, " +
+						"directors can only have one rehearsal a day.");
+				}
+				else
+				{
+					ModelState.AddModelError("", "Unable to save changes. Please Try Again.");
+				}
+			}
+
+			//ViewBag.Chapters = new SelectList(_context.Chapters, "ID", "Name", chapterSelect);
+
+			// Get all clients and filter by membership if a filter is applied
+			PopulateAttendance(rehearsal.ChapterID, rehearsal);
+
+			PopulateDropDown(rehearsal);
+			return View(rehearsal);
+		}
+
+		[Authorize(Roles = "Admin, Director")]
         // GET: Rehearsal/Edit/5
         public async Task<IActionResult> Edit(int? id, int? chapterSelect)
 		{
