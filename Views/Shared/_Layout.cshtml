@@ -120,10 +120,10 @@
 								<ul class="dropdown-menu" aria-labelledby="eventDropdown">
 									<li><a class="dropdown-item" asp-area="" asp-controller="Event" asp-action="Index">Events</a></li>
 									<li><a class="dropdown-item" asp-area="" asp-controller="Volunteer" asp-action="Index">Volunteers</a></li>
-									@if (User.IsInRole("Admin"))
+									@* @if (User.IsInRole("Admin"))
 									{
 										<li><a class="dropdown-item" asp-area="" asp-controller="Group" asp-action="Index">Groups</a></li>
-									}
+									}*@
 								</ul>
 							</li>
 						}
