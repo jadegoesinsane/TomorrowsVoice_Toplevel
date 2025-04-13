@@ -6,6 +6,7 @@ using NToastNotify;
 using System.Diagnostics;
 using TomorrowsVoice_Toplevel.Data;
 using TomorrowsVoice_Toplevel.Models;
+using TomorrowsVoice_Toplevel.Models.Volunteering;
 using TomorrowsVoice_Toplevel.ViewModels;
 
 namespace TomorrowsVoice_Toplevel.Controllers
@@ -21,13 +22,27 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			_context = context;
 		}
 
-		public IActionResult Index()
+		public IActionResult Index(string? timeHours, string? timeShifts, string? dashaction)
 		{
 			if (User.Identity?.IsAuthenticated == true)
 			{
 				if (User.IsInRole("Admin"))
 				{
-					return View("Index", GetAdminHome());
+					if (dashaction == "timeHours")
+					{
+						HandleViewData("timeHours", timeHours);
+					}
+					else if (dashaction == "timeShifts")
+					{
+						HandleViewData("timeShifts", timeShifts);
+					}
+					else if (string.IsNullOrEmpty(ViewData["timeHours"]?.ToString()) && string.IsNullOrEmpty(ViewData["timeShifts"]?.ToString()))
+					{
+						HandleViewData("timeHours", timeHours);
+						HandleViewData("timeShifts", timeShifts);
+					}
+
+					return View("Index", GetAdminHome(timeHours, timeShifts));
 				}
 				else if (User.IsInRole("Volunteer"))
 				{
@@ -63,33 +78,70 @@ namespace TomorrowsVoice_Toplevel.Controllers
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 
-		private HomeAdminVM GetAdminHome()
+		private HomeAdminVM GetAdminHome(string? timeHours, string? timeShifts)
 		{
+			string[] timeOptions = new[] { "This Month", "This Year", "Today" };
+
 			var month = DateTime.Today.Month;
 			var year = DateTime.Today.Year;
-			var startOfMonth = new DateTime(year, month, 1);
-			var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+			var today = DateTime.Today;
 
 			var singers = _context.Singers.AsNoTracking().ToList();
 
 			var shifts = _context.Volunteers
 				.Include(v => v.UserShifts)
 					.ThenInclude(us => us.Shift)
-				.SelectMany(v => v.UserShifts)
-				.Where(us => us.Shift.ShiftDate.Month == month && us.Shift.ShiftDate.Year == year).ToList();
+				.SelectMany(v => v.UserShifts);
+			IQueryable<UserShift>? shifts_fromlast;
 
-			var ticks = shifts.Sum(us => us.EndAt.Ticks - us.StartAt.Ticks);
-			var total = TimeSpan.FromTicks(ticks).TotalHours;
-			//.AsNoTracking()
-			//.Include(v => v.UserShifts)
-			//.SelectMany(v => v.UserShifts)
-			//.Where(us => us.StartAt.Month == month && us.StartAt.Year == year)
-			//.AsEnumerable() // Switch to client-side evaluation
-			//.Sum(us => us.Duration.TotalHours);
+			IQueryable<Shift>? shiftsFilled = _context.Shifts.Include(s => s.UserShifts);
+			IQueryable<Shift>? shiftsFilled_fromlast;
+
+			switch (ViewData["timeHours"]?.ToString())
+			{
+				case "This Month":
+					shifts_fromlast = shifts.Where(us => us.Shift.ShiftDate.Month == month - 1 && us.Shift.ShiftDate.Year == year);
+					shifts = shifts.Where(us => us.Shift.ShiftDate.Month == month && us.Shift.ShiftDate.Year == year);
+					break;
+
+				case "This Year":
+					shifts_fromlast = shifts.Where(us => us.Shift.ShiftDate.Year == year - 1);
+					shifts = shifts.Where(us => us.Shift.ShiftDate.Year == year);
+					break;
+
+				default:
+					shifts_fromlast = shifts.Where(us => us.Shift.ShiftDate.Date == today.AddDays(-1).Date);
+					shifts = shifts.Where(us => us.Shift.ShiftDate.Date == today.Date);
+					break;
+			}
+
+			switch (ViewData["timeShifts"]?.ToString())
+			{
+				case "This Month":
+					shiftsFilled_fromlast = shiftsFilled.Where(s => s.ShiftDate.Month == month - 1 && s.ShiftDate.Year == year);
+					shiftsFilled = shiftsFilled.Where(s => s.ShiftDate.Month == month && s.ShiftDate.Year == year);
+					break;
+
+				case "This Year":
+					shiftsFilled_fromlast = shiftsFilled.Where(s => s.ShiftDate.Year == year - 1);
+					shiftsFilled = shiftsFilled.Where(s => s.ShiftDate.Year == year);
+					break;
+
+				default:
+					shiftsFilled_fromlast = shiftsFilled.Where(s => s.ShiftDate.Date == today.AddDays(-1).Date);
+					shiftsFilled = shiftsFilled.Where(s => s.ShiftDate.Date == today.Date);
+					break;
+			}
+
+			var totalCurrentHours = TimeSpan.FromTicks(shifts.Sum(us => us.EndAt.Ticks - us.StartAt.Ticks)).TotalHours;
+			var totalLastHours = TimeSpan.FromTicks(shifts_fromlast.Sum(us => us.EndAt.Ticks - us.StartAt.Ticks)).TotalHours;
 
 			var adminHome = new HomeAdminVM
 			{
-				VolunteerHours = (int)total,
+				VolunteerHours = (int)totalCurrentHours,
+				VolunteerHours_Change = (int)GetPercent(totalCurrentHours, totalLastHours),
+				ShiftsFilled = (int)(shiftsFilled?.Sum(s => s.UserShifts.Count()) ?? 0),
+				ShiftsFilled_Change = (int)GetPercent(shiftsFilled?.Sum(s => s.UserShifts.Count()) ?? 0, shiftsFilled_fromlast?.Sum(s => s.UserShifts.Count()) ?? 0),
 				Transactions = GetTransactions()
 			};
 			return adminHome;
@@ -249,5 +301,37 @@ namespace TomorrowsVoice_Toplevel.Controllers
 		}
 
 		#endregion Recent Activities
+
+		private void HandleViewData(string key, string? value)
+		{
+			string[] options = new[] { "This Month", "This Year", "Today" };
+			if (!String.IsNullOrEmpty(value))
+			{
+				ViewData[key] = AssignNextOption(value, options);
+			}
+			else
+			{
+				ViewData[key] = options[0];
+			}
+		}
+
+		private string AssignNextOption(string currentOption, string[] options)
+		{
+			int index = Array.IndexOf(options, currentOption);
+			if (index == -1 || index == options.Length - 1)
+				return options[0];
+			else
+				return options[index + 1];
+		}
+
+		private double GetPercent(double val1, double val2)
+		{
+			double percentChange;
+			if (val2 != 0)
+				percentChange = ((val1 - val2) / val2) * 100;
+			else
+				percentChange = val1 > 0 ? 100 : 0;
+			return percentChange;
+		}
 	}
 }

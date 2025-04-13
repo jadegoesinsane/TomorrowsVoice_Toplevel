@@ -8,7 +8,9 @@ namespace TomorrowsVoice_Toplevel.ViewModels
 		#region Monthly Volunteering Data
 
 		public int VolunteerHours;
-		public string ShiftsFilled = "";
+		public int VolunteerHours_Change;
+		public int ShiftsFilled;
+		public int ShiftsFilled_Change;
 		public int NewVolunteers;
 
 		#endregion Monthly Volunteering Data

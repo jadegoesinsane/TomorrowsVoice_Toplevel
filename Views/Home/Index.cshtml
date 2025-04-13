@@ -24,6 +24,10 @@
 }
 
 @section Scripts {
+	@if (User.IsInRole("Admin"))
+	{
+
+	}
 	@if (User.IsInRole("Volunteer"))
 	{
 		<script type="text/javascript">
